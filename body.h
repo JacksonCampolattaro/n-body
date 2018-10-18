@@ -36,7 +36,7 @@ private:
 public:
 
     /**
-     * Constructor including default values
+     * Constructor including default values. All values are without units.
      *
      * @param position the position coordinates of the body as a vector
      * @param velocity the velocity coordinates of the body as a vector
@@ -48,106 +48,114 @@ public:
     body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
          bool fixed = false) {
 
+        // Setting coordinate values
         this->position = position;
         this->velocity = velocity;
-        this->mass = mass;
 
-
+        // Setting volume based on mass and density
         float volume = mass / density;
 
+        // Setting radius based on volume
         radius = pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
 
+        // Setting properties
+        this->mass = mass;
         this->color = color;
-
         this->fixed = fixed;
     }
 
 
-    // Updates position according to current velocity and a time interval
+    /**
+     * Updates position according to current velocity and a time interval
+     *
+     * @param interval unit-less time interval over which velocity is applied
+     */
     void applyVelocity(float interval) {
         position += velocity * interval;
     }
 
-    // Updates velocity according to the force of gravity.
+    /**
+     * Updates velocity according to the force of gravity and a time interval.
+     *
+     * @param otherBody the other mass
+     * @param interval the time interval
+     * @param gravitationalConstant the gravitational constant
+     */
     void applyGravity(body otherBody, float interval, float gravitationalConstant) {
 
-        // Gives the relationship between the two bodies as a unit vector.
-        vec3 relationship = normalize(otherBody.getPosition() - position);
-
-        // Force of gravity equation, returns a scalar.
-        float forceOfGravity =
-                (gravitationalConstant * mass * otherBody.getMass()) / distance(position, otherBody.position);
-
-        // Gives the force of gravity direction by multiplying it by a unit vector.
-        vec3 force = forceOfGravity * relationship;
-
-        // Converts force to acceleration.
-        vec3 acceleration = force / mass;
-
-        // Velocity is increased according to the acceleration and the time interval.
-        addVelocity(acceleration * interval);
-    }
-
-    // Updates velocity according to the force of gravity.
-    void applyMutualGravity(body *otherBody, float interval, float gravitationalConstant) {
-
-        // Gives the relationship between the two bodies as a unit vector.
-        vec3 relationship = normalize((*otherBody).getPosition() - position);
-
-        // Force of gravity equation, returns a scalar.
-        float forceOfGravity =
-                (gravitationalConstant * mass * (*otherBody).getMass()) / distance(position, (*otherBody).position);
-
-        // Gives the force of gravity direction by multiplying it by a unit vector.
-        vec3 force = forceOfGravity * relationship;
-
-        // Converts force to acceleration.
-        vec3 acceleration = force / mass;
-        vec3 otherAcceleration = -1.0f * force / (*otherBody).getMass();
-
-        // Velocity is increased according to the acceleration and the time interval.
-        addVelocity(acceleration * interval);
-        (*otherBody).addVelocity(otherAcceleration * interval);
-    }
-
-    // Shifts position along a given vector.
-    void shift(vec3 shiftVector) {
-        position += shiftVector;
-    }
-
-    // Adds a velocity vector to the body.
-    void addVelocity(vec3 additionalVelocity) {
         if (!fixed) {
-            velocity += additionalVelocity;
+
+            // Gives the relationship between the two bodies as a unit vector.
+            vec3 relationship = normalize(otherBody.getPosition() - position);
+
+            // Force of gravity equation, returns a scalar.
+            float forceOfGravity =
+                    (gravitationalConstant * mass * otherBody.getMass()) / distance(position, otherBody.position);
+
+            // Gives the force of gravity direction by multiplying it by a unit vector.
+            vec3 force = forceOfGravity * relationship;
+
+            // Converts force to acceleration.
+            vec3 acceleration = force / mass;
+
+            // Velocity is increased according to the acceleration and the time interval.
+            addVelocity(acceleration * interval);
+
         }
     }
 
-    // Returns the position vector of the body
+    /**
+     * Adds a velocity vector to the body.
+     *
+     * @param additionalVelocity the additional velocity as a vector
+     */
+    void addVelocity(vec3 additionalVelocity) {
+        velocity += additionalVelocity;
+    }
+
+    /**
+     * Getter for the body's position
+     * @return the position of the body
+     */
     vec3 getPosition() {
         return position;
     }
 
-    // Returns the velocity vector of the body
+    /**
+     * Getter for the body's velocity
+     * @return the velocity of the body
+     */
     vec3 getVelocity() {
         return velocity;
     }
 
-    // Returns the mass of the body
+    /**
+     * Getter for the body's mass
+     * @return the mass of the body
+     */
     float getMass() {
         return mass;
     }
 
-    // Returns the radius of the body
+    /**
+     * Getter for the body's radius
+     * @return the radius of the body
+     */
     float getRadius() {
         return radius;
     }
 
-    // Returns the color of the body
+    /**
+     * Getter for the body's color
+     * @return the color of the body
+     */
     vec3 getColor() {
         return color;
     }
 
-    // Outputs information about the body to the console
+    /**
+     * Outputs information about the body to the console
+     */
     void soundOff() {
 
         // Prints position, velocity, and mass data in a readable format.
