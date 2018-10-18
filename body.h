@@ -18,8 +18,13 @@ using namespace glm;
 
 class body {
 private:
+    // Coordinates
+
     vec3 position;
     vec3 velocity;
+
+
+    // Properties
 
     float mass;
     float radius;
@@ -30,34 +35,18 @@ private:
 
 public:
 
-    // Constructor of a body
-    body(vec3 position, vec3 velocity, float mass) {
-
-        this->position = position;
-        this->velocity = velocity;
-        this->mass = mass;
-
-        radius = 1;
-        color = vec3(1, 1, 1);
-    }
-
-    // Constructor of a more advanced body with more attributes.
-    body(vec3 position, vec3 velocity, float mass, float density, vec3 color) {
-
-        this->position = position;
-        this->velocity = velocity;
-        this->mass = mass;
-
-
-        float volume = mass / density;
-
-        radius = pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
-
-        this->color = color;
-    }
-
-    // Constructor of a more advanced body with more attributes.
-    body(vec3 position, vec3 velocity, float mass, float density, vec3 color, bool fixed) {
+    /**
+     * Constructor including default values
+     *
+     * @param position the position coordinates of the body as a vector
+     * @param velocity the velocity coordinates of the body as a vector
+     * @param mass the mass of the body
+     * @param density the density of the body
+     * @param color the color of the body
+     * @param fixed whether or not the body can be affected by gravity
+     */
+    body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
+         bool fixed = false) {
 
         this->position = position;
         this->velocity = velocity;
