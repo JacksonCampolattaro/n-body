@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp -march=native")
 
-add_executable(n_body_headless main.cpp simulation.h simulation.cpp body.h body.cpp)
+add_executable(n_body_headless main.cpp simulation.h simulation.cpp body.h body.cpp relationship.cpp relationship.h)
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)

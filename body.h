@@ -17,21 +17,6 @@ using namespace glm;
 
 
 class body {
-private:
-    // Coordinates
-
-    vec3 position;
-    vec3 velocity;
-
-
-    // Properties
-
-    float mass;
-    float radius;
-
-    vec3 color;
-
-    bool fixed = false;
 
 public:
 
@@ -165,6 +150,22 @@ public:
                 " | z Velocity: " + to_string(velocity.z) + " ]\n";
         cout << "[ Mass: " + to_string(mass) + " ] \n\n";
     }
+
+private:
+    // Coordinates
+
+    vec3 position;
+    vec3 velocity;
+
+
+    // Properties
+
+    float mass;
+    float radius;
+
+    vec3 color;
+
+    bool fixed = false;
 
 };
 
