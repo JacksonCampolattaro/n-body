@@ -9,7 +9,7 @@
 #include "body.h"
 
 /**
- * Contains a pair of bodies and methods for the relationship between them.
+ * Contains a pair of bodies and methods for influencing the relationship between them.
  */
 class relationship {
 
@@ -28,18 +28,24 @@ public:
     }
 
     /**
-     * Applies the gravity between the two bodies.
+     * Applies the gravity between the two bodies according to the standard equation.
      *
-     * Gravitational constant is set by default but can be overridden
+     * @param interval the time interval over which gravity should be applied
+     * @param gravitationalConstant the constant of gravity 'G'
+     * @param power the power of the distance factor (e.g Gmm/d^2 vs Gmm/d^1)
      */
-    void applyGravity(float gravitationalConstant = 0.03) {
+    void applyGravity(float interval, float gravitationalConstant = 0.03, int power = 2) {
 
-        // todo apply the gravity between the two bodies
-
+        // Calculating the directionless force of gravity
         float forceOfGravity =
-                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) / distance();
+                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) / (float) pow(distance(), power);
 
+        // Giving the force direction
         vec3 force = forceOfGravity * unitVector();
+
+        // Applying the force to both bodies
+        firstBody->applyForce(force, interval);
+        secondBody->applyForce(-force, interval);
 
 
     }
