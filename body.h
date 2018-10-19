@@ -15,7 +15,9 @@
 using namespace std;
 using namespace glm;
 
-
+/**
+ * The gravitational bodies which interact with each other in the simulation.
+ */
 class body {
 
 public:
