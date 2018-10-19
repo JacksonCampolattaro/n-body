@@ -23,16 +23,23 @@ public:
      */
     relationship(body *firstBody, body *secondBody) {
 
-        this->body1 = firstBody;
-        this->body2 = secondBody;
+        this->firstBody = firstBody;
+        this->secondBody = secondBody;
     }
 
     /**
      * Applies the gravity between the two bodies.
+     *
+     * Gravitational constant is set by default but can be overridden
      */
-    void applyGravity() {
+    void applyGravity(float gravitationalConstant = 0.03) {
 
         // todo apply the gravity between the two bodies
+
+        float forceOfGravity =
+                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) / distance();
+
+
     }
 
 
@@ -41,13 +48,22 @@ public:
      * @return the distance as a float
      */
     float distance() {
-        return glm::distance(body1->getPosition(), body2->getPosition());
+        return glm::distance(firstBody->getPosition(), secondBody->getPosition());
     }
 
 private:
 
-    body *body1;
-    body *body2;
+    /**
+     * Creates a unit vector which represents the relationship between the bodies
+     *
+     * @return unit vector of the line between the bodies
+     */
+    vec3 unitVector() {
+        return normalize(secondBody->getPosition() - firstBody->getPosition());
+    }
+
+    body *firstBody;
+    body *secondBody;
 
 };
 

@@ -17,7 +17,6 @@
 #include <string>
 #include <omp.h>
 
-
 // Libraries from this project
 #include "simulation.h"
 #include "body.h"
@@ -39,7 +38,7 @@ bool colorByVelocity = false;
 ivec2 windowSize(9000, 9000);
 
 // Higher --> more exaggerated gravity
-float accelerationOfGravity = 0.03;
+float accelerationOfGravity = 0.3;
 
 // Lower --> slower & more accurate physics
 float physicsTimeInterval = .01;
@@ -65,7 +64,7 @@ void addBodies() {
     cout << omp_get_max_threads();
 
     // Superheavy body
-    ///*
+    /*
     mySim.addBody(0, 0, -800, 0, 0, 0, 15000000, density, yellow, true);
     //*/
 
@@ -76,7 +75,7 @@ void addBodies() {
     //*/
 
     // Three Body System
-    /*
+    ///*
     mySim.addBody(0.0, 60.0, -100, 30, 0, 0, 500000, density, red);
     mySim.addBody(0.0, -60, -300, -30, 0, 0, 500000, density, white);
     mySim.addBody(-50, 0, -400, 0, 0, 0, 500000, density, yellow);
@@ -89,7 +88,7 @@ void addBodies() {
     //*/
 
     // Cubic Grid
-    ///*
+    /*
     vec3 cornerPosition(-50, 150, -1000);
     vec3 velocity(-800.0f, 0.0f, -0.0f);
     vec3 size(10, 10, 10);

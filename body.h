@@ -77,7 +77,8 @@ public:
 
             // Force of gravity equation, returns a scalar.
             float forceOfGravity =
-                    (gravitationalConstant * mass * otherBody.getMass()) / distance(position, otherBody.position);
+                    (gravitationalConstant * mass * otherBody.getMass()) /
+                    pow(distance(position, otherBody.position), 1);
 
             // Gives the force of gravity direction by multiplying it by a unit vector.
             vec3 force = forceOfGravity * relationship;
