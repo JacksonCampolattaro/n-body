@@ -6,6 +6,7 @@
 #define N_BODY_HEADLESS_SIMULATIONSTATE_H
 
 #include <vector>
+
 #include "body.h"
 #include "relationship.h"
 
@@ -20,7 +21,7 @@ public:
     /**
      * Constructor for a simulation state
      */
-    simulationState(float gravitationalConstant, float timeInterval) {
+    simulationState(float gravitationalConstant, float timeInterval, int power = 3) {
 
         this->gravitationalConstant = gravitationalConstant;
         this->timeInterval = timeInterval;
@@ -34,7 +35,8 @@ public:
      */
     void addBody(body newBody) {
 
-        bodies.push_back(newBody);
+        // Adds a pointer to the new body to the bodies collection
+        bodies.push_back(&newBody);
     }
 
     /**
