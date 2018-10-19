@@ -39,6 +39,8 @@ public:
         float forceOfGravity =
                 (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) / distance();
 
+        vec3 force = forceOfGravity * unitVector();
+
 
     }
 

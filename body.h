@@ -62,6 +62,19 @@ public:
     }
 
     /**
+     * Applies a force to the body and updates the velocity accordingly.
+     *
+     * @param force the force applied
+     */
+    void applyForce(vec3 force, float interval) {
+
+        vec3 acceleration = force / mass;
+
+        vec3 velocity = acceleration * interval;
+
+    }
+
+    /**
      * Updates velocity according to the force of gravity and a time interval.
      *
      * @param otherBody the other mass
