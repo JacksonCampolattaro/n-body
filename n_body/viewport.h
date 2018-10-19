@@ -29,18 +29,21 @@ public:
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
         // Configuring the window
-        glutInitWindowSize(windowSize.x, windowSize.y);
+        glutInitWindowSize(100, 100);
         glutInitWindowPosition(100, 100);
-        glutCreateWindow("n body");
+        glutCreateWindow("n-Body Simulator 0.2.0");
+
+
+        // Fixme I need to tell glut to use the right methods
 
         // Tells glut which method to use to update
         glutTimerFunc(5, update, 0);
 
         // Tells glut which method to use to draw
-        glutDisplayFunc(this->draw);
+        glutDisplayFunc(draw);
 
-        // Tells glut which method to use when the window is resized
-        glutReshapeFunc(this->handleResize);
+        // Tells glut which method to use when you resize the window
+        glutReshapeFunc(handleResize);
 
         // Starts glut
         glutMainLoop();
@@ -53,7 +56,7 @@ public:
      * @param w the new width of the window
      * @param h the new height of the window
      */
-    void handleResize(int w, int h) {
+    static void handleResize(int w, int h) {
 
         // Changing the window size
         glViewport(0, 0, w, h);
@@ -67,9 +70,16 @@ public:
     }
 
     /**
+     * Updates the window
+     */
+    static void update(int value) {
+
+    }
+
+    /**
      * Draws the simulation to the window
      */
-    void draw() {
+    static void draw() {
 
     }
 };
