@@ -13,6 +13,7 @@
 #include "orbitalBody.h"
 #include "relationship.h"
 #include "simulationState.h"
+#include "viewport.h"
 
 int main(int argc, char **argv) {
 
@@ -38,5 +39,7 @@ int main(int argc, char **argv) {
     testBody1->soundOff();
     testBody2->soundOff();
 
+    // Testing GLFW
+    auto testViewport = new viewport();
 
 }
