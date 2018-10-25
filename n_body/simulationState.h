@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "body.h"
+#include "orbitalBody.h"
 #include "relationship.h"
 
 /**
@@ -21,7 +21,7 @@ public:
     /**
      * Constructor for a simulation state
      */
-    simulationState(float gravitationalConstant, float timeInterval, int power = 3) {
+    simulationState(float gravitationalConstant, float timeInterval, int power = 2) {
 
         this->gravitationalConstant = gravitationalConstant;
         this->timeInterval = timeInterval;
@@ -33,10 +33,15 @@ public:
      *
      * @param newBody the body to be added.
      */
-    void addBody(body newBody) {
+    void addBody(orbitalBody *newBody) {
 
-        // Adds a pointer to the new body to the bodies collection
-        bodies.push_back(&newBody);
+        // Adds relationships to link the new body to each of the other bodies in the array.
+        for (orbitalBody *theBody : bodies) {
+            relationships.push_back(new relationship(theBody, newBody));
+        }
+
+        // Adds the new body to the collection
+        bodies.push_back(newBody);
     }
 
     /**
@@ -44,16 +49,28 @@ public:
      */
     void increment() {
 
-        // Updates each relationship
+        // Updates each bodyRelationship
         for (relationship *r : relationships) {
 
             r->applyGravity(timeInterval, gravitationalConstant);
         }
 
-        // Updates each body
-        for (body *b : bodies) {
+        // Updates each orbitalBody
+        for (orbitalBody *b : bodies) {
 
             b->applyVelocity(timeInterval);
+        }
+    }
+
+    /**
+     * Tells each body to draw itself
+     */
+    void draw() {
+
+        // Updates each orbitalBody
+        for (orbitalBody *b : bodies) {
+
+            b->draw();
         }
     }
 
@@ -65,7 +82,7 @@ private:
     float timeInterval;
 
     // Contains all bodies
-    std::vector<body *> bodies;
+    std::vector<orbitalBody *> bodies;
 
     // Contains all relationships between bodies
     std::vector<relationship *> relationships;

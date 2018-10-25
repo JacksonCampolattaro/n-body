@@ -1,16 +1,13 @@
 //
-// Created by jackcamp on 10/18/18.
+// Created by jackcamp on 10/25/18.
 //
 
 #ifndef N_BODY_HEADLESS_RELATIONSHIP_H
 #define N_BODY_HEADLESS_RELATIONSHIP_H
 
+#include <glm/glm.hpp>
+#include "orbitalBody.h"
 
-#include "body.h"
-
-/**
- * Contains a pair of bodies and methods for influencing the relationship between them.
- */
 class relationship {
 
 public:
@@ -21,7 +18,7 @@ public:
      * @param firstBody one body
      * @param secondBody another body
      */
-    relationship(body *firstBody, body *secondBody) {
+    relationship(orbitalBody *firstBody, orbitalBody *secondBody) {
 
         this->firstBody = firstBody;
         this->secondBody = secondBody;
@@ -38,18 +35,19 @@ public:
 
         // Calculating the directionless force of gravity
         float forceOfGravity =
-                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) / (float) pow(distance(), power);
+                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) /
+                ((float) pow(distance(), power));
 
         // Giving the force direction
-        vec3 force = forceOfGravity * unitVector();
+        //glm::vec3 force = forceOfGravity * unitVector();
+        glm::vec3 force = forceOfGravity * glm::vec3(1, 0, 0);
 
         // Applying the force to both bodies
         firstBody->applyForce(force, interval);
         secondBody->applyForce(-force, interval);
-
-
     }
 
+private:
 
     /**
      * Calculates the distance between the two bodies
@@ -59,19 +57,17 @@ public:
         return glm::distance(firstBody->getPosition(), secondBody->getPosition());
     }
 
-private:
-
     /**
      * Creates a unit vector which represents the relationship between the bodies
      *
      * @return unit vector of the line between the bodies
      */
     vec3 unitVector() {
-        return normalize(secondBody->getPosition() - firstBody->getPosition());
+        return glm::normalize(secondBody->getPosition() - firstBody->getPosition());
     }
 
-    body *firstBody;
-    body *secondBody;
+    orbitalBody *firstBody;
+    orbitalBody *secondBody;
 
 };
 

@@ -18,7 +18,7 @@ using namespace glm;
 /**
  * The gravitational bodies which interact with each other in the simulation.
  */
-class body {
+class orbitalBody {
 
 public:
 
@@ -32,8 +32,8 @@ public:
      * @param color the color of the body
      * @param fixed whether or not the body can be affected by gravity
      */
-    body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
-         bool fixed = false) {
+    orbitalBody(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
+                bool fixed = false) {
 
         // Setting coordinate values
         this->position = position;
@@ -58,7 +58,8 @@ public:
      * @param interval unit-less time interval over which velocity is applied
      */
     void applyVelocity(float interval) {
-        position += velocity * interval;
+
+        this->position += this->velocity * interval;
     }
 
     /**
@@ -72,20 +73,22 @@ public:
 
         vec3 velocity = acceleration * interval;
 
-    }
+        this->addVelocity(velocity);
 
-    /**
+    }
+/*
+    *//**
      * Updates velocity according to the force of gravity and a time interval.
      *
      * @param otherBody the other mass
      * @param interval the time interval
      * @param gravitationalConstant the gravitational constant
-     */
-    void applyGravity(body otherBody, float interval, float gravitationalConstant) {
+     *//*
+    void applyGravity(orbitalBody otherBody, float interval, float gravitationalConstant) {
 
         if (!fixed) {
 
-            // Gives the relationship between the two bodies as a unit vector.
+            // Gives the bodyRelationship between the two bodies as a unit vector.
             vec3 relationship = normalize(otherBody.getPosition() - position);
 
             // Force of gravity equation, returns a scalar.
@@ -103,7 +106,7 @@ public:
             addVelocity(acceleration * interval);
 
         }
-    }
+    }*/
 
     /**
      * Adds a velocity vector to the body.
@@ -159,12 +162,22 @@ public:
      */
     void soundOff() {
 
+        std::cout << "";
+
         // Prints position, velocity, and mass data in a readable format.
         cout << "[ x Position: " + to_string(position.x) + " | y Position: " + to_string(position.y) +
                 " | z Position: " + to_string(position.z) + " ]\n";
         cout << "[ x Velocity: " + to_string(velocity.x) + " | y Velocity: " + to_string(velocity.y) +
                 " | z Velocity: " + to_string(velocity.z) + " ]\n";
         cout << "[ Mass: " + to_string(mass) + " ] \n\n";
+    }
+
+    /**
+     * Draws a circle at the location of the body
+     */
+    void draw() {
+
+        //setColor(color);
     }
 
 private:
