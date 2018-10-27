@@ -38,7 +38,7 @@ public:
     /**
      * Tells each body to draw itself
      */
-    void draw(viewport *client);
+    void draw();
 
     /**
      * Tells each body to announce its properties in the console

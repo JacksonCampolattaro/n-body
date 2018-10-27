@@ -83,7 +83,7 @@ void viewport::draw() {
     glEnable(GL_BLEND);
     glLoadIdentity();
 
-    theSim->draw(this);
+    theSim->draw();
 }
 
 void viewport::setColor(vec3 color) {

@@ -97,7 +97,7 @@ public:
     /**
      * Draws a circle at the location of the body
      */
-    void draw(viewport *client);
+    void draw();
 
 private:
     // Coordinates

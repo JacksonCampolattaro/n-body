@@ -39,10 +39,10 @@ void simulationState::increment() {
     }
 }
 
-void simulationState::draw(viewport *client) {
+void simulationState::draw() {
 
     // Updates each orbitalBody
     for (orbitalBody *b : bodies) {
-        b->draw(client);
+        b->draw();
     }
 }

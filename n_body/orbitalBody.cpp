@@ -76,7 +76,7 @@ void orbitalBody::soundOff() {
     cout << "[ Mass: " + to_string(mass) + " ] \n\n";
 }
 
-void orbitalBody::draw(viewport *client) {
+void orbitalBody::draw() {
 
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
