@@ -19,8 +19,8 @@ int main(int argc, char **argv) {
 
     std::cout << "Creating Bodies \n \n";
 
-    orbitalBody *testBody1 = new orbitalBody(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 10000);
-    orbitalBody *testBody2 = new orbitalBody(glm::vec3(100, 0, 0), glm::vec3(0, 0, 0), 10000);
+    orbitalBody *testBody1 = new orbitalBody(glm::vec3(0, 0, -100), glm::vec3(0, 0, 0), 10000, 1);
+    orbitalBody *testBody2 = new orbitalBody(glm::vec3(50, 0, -100), glm::vec3(0, 1, 0), 1000, 1);
 
     testBody1->soundOff();
     testBody2->soundOff();

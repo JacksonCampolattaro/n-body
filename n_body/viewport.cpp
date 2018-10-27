@@ -55,6 +55,8 @@ void viewport::graphicsLoop() {
         // All drawing is done here
         draw();
 
+        theSim->increment();
+
         // Swapping the frame buffers
         glfwSwapBuffers(window);
 
