@@ -18,11 +18,7 @@ public:
      * @param firstBody one body
      * @param secondBody another body
      */
-    relationship(orbitalBody *firstBody, orbitalBody *secondBody) {
-
-        this->firstBody = firstBody;
-        this->secondBody = secondBody;
-    }
+    relationship(orbitalBody *firstBody, orbitalBody *secondBody);
 
     /**
      * Applies the gravity between the two bodies according to the standard equation.
@@ -31,21 +27,7 @@ public:
      * @param gravitationalConstant the constant of gravity 'G'
      * @param power the power of the distance factor (e.g Gmm/d^2 vs Gmm/d^1)
      */
-    void applyGravity(float interval, float gravitationalConstant = 0.03, int power = 2) {
-
-        // Calculating the directionless force of gravity
-        float forceOfGravity =
-                (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) /
-                ((float) pow(distance(), power));
-
-        // Giving the force direction
-        //glm::vec3 force = forceOfGravity * unitVector();
-        glm::vec3 force = forceOfGravity * glm::vec3(1, 0, 0);
-
-        // Applying the force to both bodies
-        firstBody->applyForce(force, interval);
-        secondBody->applyForce(-force, interval);
-    }
+    void applyGravity(float interval, float gravitationalConstant = 0.03, int power = 2);
 
 private:
 
@@ -53,18 +35,14 @@ private:
      * Calculates the distance between the two bodies
      * @return the distance as a float
      */
-    float distance() {
-        return glm::distance(firstBody->getPosition(), secondBody->getPosition());
-    }
+    float distance();
 
     /**
      * Creates a unit vector which represents the relationship between the bodies
      *
      * @return unit vector of the line between the bodies
      */
-    vec3 unitVector() {
-        return glm::normalize(secondBody->getPosition() - firstBody->getPosition());
-    }
+    vec3 unitVector();
 
     orbitalBody *firstBody;
     orbitalBody *secondBody;

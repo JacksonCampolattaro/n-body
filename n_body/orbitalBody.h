@@ -8,8 +8,10 @@
 #include <iostream>
 #include <string>
 
-// Make sure to install these before using; they should be available from the standard repositories.
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
+
+class viewport;
 
 using namespace std;
 using namespace glm;
@@ -32,23 +34,7 @@ public:
      * @param fixed whether or not the body can be affected by gravity
      */
     orbitalBody(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
-                bool fixed = false) {
-
-        // Setting coordinate values
-        this->position = position;
-        this->velocity = velocity;
-
-        // Setting volume based on mass and density
-        float volume = mass / density;
-
-        // Setting radius based on volume
-        radius = pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
-
-        // Setting properties
-        this->mass = mass;
-        this->color = color;
-        this->fixed = fixed;
-    }
+                bool fixed = false);
 
 
     /**
@@ -56,128 +42,62 @@ public:
      *
      * @param interval unit-less time interval over which velocity is applied
      */
-    void applyVelocity(float interval) {
-
-        this->position += this->velocity * interval;
-    }
+    void applyVelocity(float interval);
 
     /**
      * Applies a force to the body and updates the velocity accordingly.
      *
      * @param force the force applied
      */
-    void applyForce(vec3 force, float interval) {
+    void applyForce(vec3 force, float interval);
 
-        vec3 acceleration = force / mass;
-
-        vec3 velocity = acceleration * interval;
-
-        this->addVelocity(velocity);
-
-    }
-/*
-    *//**
-     * Updates velocity according to the force of gravity and a time interval.
-     *
-     * @param otherBody the other mass
-     * @param interval the time interval
-     * @param gravitationalConstant the gravitational constant
-     *//*
-    void applyGravity(orbitalBody otherBody, float interval, float gravitationalConstant) {
-
-        if (!fixed) {
-
-            // Gives the bodyRelationship between the two bodies as a unit vector.
-            vec3 relationship = normalize(otherBody.getPosition() - position);
-
-            // Force of gravity equation, returns a scalar.
-            float forceOfGravity =
-                    (gravitationalConstant * mass * otherBody.getMass()) /
-                    pow(distance(position, otherBody.position), 1);
-
-            // Gives the force of gravity direction by multiplying it by a unit vector.
-            vec3 force = forceOfGravity * relationship;
-
-            // Converts force to acceleration.
-            vec3 acceleration = force / mass;
-
-            // Velocity is increased according to the acceleration and the time interval.
-            addVelocity(acceleration * interval);
-
-        }
-    }*/
 
     /**
      * Adds a velocity vector to the body.
      *
      * @param additionalVelocity the additional velocity as a vector
      */
-    void addVelocity(vec3 additionalVelocity) {
-        velocity += additionalVelocity;
-    }
+    void addVelocity(vec3 additionalVelocity);
 
     /**
      * Getter for the body's position
      * @return the position of the body
      */
-    vec3 getPosition() {
-        return position;
-    }
+    vec3 getPosition();
 
     /**
      * Getter for the body's velocity
      * @return the velocity of the body
      */
-    vec3 getVelocity() {
-        return velocity;
-    }
+    vec3 getVelocity();
 
     /**
      * Getter for the body's mass
      * @return the mass of the body
      */
-    float getMass() {
-        return mass;
-    }
+    float getMass();
 
     /**
      * Getter for the body's radius
      * @return the radius of the body
      */
-    float getRadius() {
-        return radius;
-    }
+    float getRadius();
 
     /**
      * Getter for the body's color
      * @return the color of the body
      */
-    vec3 getColor() {
-        return color;
-    }
+    vec3 getColor();
 
     /**
      * Outputs information about the body to the console
      */
-    void soundOff() {
-
-        std::cout << "";
-
-        // Prints position, velocity, and mass data in a readable format.
-        cout << "[ x Position: " + to_string(position.x) + " | y Position: " + to_string(position.y) +
-                " | z Position: " + to_string(position.z) + " ]\n";
-        cout << "[ x Velocity: " + to_string(velocity.x) + " | y Velocity: " + to_string(velocity.y) +
-                " | z Velocity: " + to_string(velocity.z) + " ]\n";
-        cout << "[ Mass: " + to_string(mass) + " ] \n\n";
-    }
+    void soundOff();
 
     /**
      * Draws a circle at the location of the body
      */
-    void draw() {
-
-        //setColor(color);
-    }
+    void draw(viewport *client);
 
 private:
     // Coordinates

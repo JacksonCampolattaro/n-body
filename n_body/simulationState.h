@@ -21,58 +21,24 @@ public:
     /**
      * Constructor for a simulation state
      */
-    simulationState(float gravitationalConstant, float timeInterval, int power = 2) {
-
-        this->gravitationalConstant = gravitationalConstant;
-        this->timeInterval = timeInterval;
-
-    }
+    simulationState(float gravitationalConstant, float timeInterval, int power = 2);
 
     /**
      * Adds a pre-built body to the simulation
      *
      * @param newBody the body to be added.
      */
-    void addBody(orbitalBody *newBody) {
-
-        // Adds relationships to link the new body to each of the other bodies in the array.
-        for (orbitalBody *theBody : bodies) {
-            relationships.push_back(new relationship(theBody, newBody));
-        }
-
-        // Adds the new body to the collection
-        bodies.push_back(newBody);
-    }
+    void addBody(orbitalBody *newBody);
 
     /**
      * Increments the simulation by applying physics to all bodies
      */
-    void increment() {
-
-        // Updates each bodyRelationship
-        for (relationship *r : relationships) {
-
-            r->applyGravity(timeInterval, gravitationalConstant);
-        }
-
-        // Updates each orbitalBody
-        for (orbitalBody *b : bodies) {
-
-            b->applyVelocity(timeInterval);
-        }
-    }
+    void increment();
 
     /**
      * Tells each body to draw itself
      */
-    void draw() {
-
-        // Updates each orbitalBody
-        for (orbitalBody *b : bodies) {
-
-            b->draw();
-        }
-    }
+    void draw(viewport *client);
 
     /**
      * Tells each body to announce its properties in the console
