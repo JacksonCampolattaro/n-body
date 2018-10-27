@@ -30,11 +30,13 @@ void orbitalBody::applyVelocity(float interval) {
 
 void orbitalBody::applyForce(vec3 force, float interval) {
 
-    vec3 acceleration = force / mass;
+    if (!fixed) {
+        vec3 acceleration = force / mass;
 
-    vec3 velocity = acceleration * interval;
+        vec3 velocity = acceleration * interval;
 
-    this->addVelocity(velocity);
+        this->addVelocity(velocity);
+    }
 
 }
 

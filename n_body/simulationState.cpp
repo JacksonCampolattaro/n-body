@@ -9,6 +9,7 @@ simulationState::simulationState(float gravitationalConstant, float timeInterval
 
     this->gravitationalConstant = gravitationalConstant;
     this->timeInterval = timeInterval;
+    this->power = power;
 
 }
 
@@ -28,7 +29,7 @@ void simulationState::increment() {
     // Updates each bodyRelationship
     for (relationship *r : relationships) {
 
-        r->applyGravity(timeInterval, gravitationalConstant);
+        r->applyGravity(timeInterval, gravitationalConstant, power);
     }
 
     // Updates each orbitalBody

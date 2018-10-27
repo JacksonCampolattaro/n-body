@@ -58,6 +58,7 @@ private:
     // Simulation parameters
     float gravitationalConstant;
     float timeInterval;
+    int power;
 
     // Contains all bodies
     std::vector<orbitalBody *> bodies;

@@ -2,7 +2,6 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include <GL/glew.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -19,15 +18,16 @@ int main(int argc, char **argv) {
 
     std::cout << "Creating Bodies \n \n";
 
-    orbitalBody *testBody1 = new orbitalBody(glm::vec3(0, 0, -100), glm::vec3(0, 0, 0), 10000, 1);
-    orbitalBody *testBody2 = new orbitalBody(glm::vec3(50, 0, -100), glm::vec3(0, 1, 0), 1000, 1);
+    orbitalBody *testBody1 = new orbitalBody(glm::vec3(0, 0, -1000), glm::vec3(0, 0, 0), 10000000, 1, vec3(1, 1, 1),
+                                             true);
+    orbitalBody *testBody2 = new orbitalBody(glm::vec3(50, 0, -100), glm::vec3(0, 0, 0), 10000, 1);
 
     testBody1->soundOff();
     testBody2->soundOff();
 
     std::cout << "Creating Simulation and Adding Bodies \n \n";
 
-    auto testSimulationState = new simulationState(.03, 1);
+    auto testSimulationState = new simulationState(.03, 1, 2);
 
     testSimulationState->addBody(testBody1);
     testSimulationState->addBody(testBody2);
@@ -40,6 +40,6 @@ int main(int argc, char **argv) {
     testBody2->soundOff();
 
     // Testing GLFW
-    auto testViewport = new viewport(testSimulationState);
+    auto testViewport = new viewport(testSimulationState, 3000, 1500);
 
 }
