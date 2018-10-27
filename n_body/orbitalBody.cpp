@@ -81,3 +81,5 @@ void orbitalBody::draw() {
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
 }
+
+
