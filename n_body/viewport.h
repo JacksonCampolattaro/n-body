@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
+#include <GL/glu.h>
 
 #include <cstdlib>
 #include <stdio.h>
@@ -31,6 +32,10 @@ public:
         // Setting the simulation
         this->theSim = theSim;
 
+        // Setting the window dimensions
+        this->width = width;
+        this->height = height;
+
         // Setting the function for handling errors
         glfwSetErrorCallback(handleError);
 
@@ -48,8 +53,13 @@ public:
             exit(EXIT_FAILURE);
         }
 
+        // Setting this viewport as the user of the window
+        glfwSetWindowUserPointer(window, this);
+
         // Setting the function for handling window resizing
         glfwSetWindowSizeCallback(window, handleResize);
+
+
 
         // Setting the window's minimum size
         glfwSetWindowSizeLimits(window, 400, 400, GLFW_DONT_CARE, GLFW_DONT_CARE);
@@ -59,6 +69,13 @@ public:
 
         // Sets the number of frames between buffer swaps
         glfwSwapInterval(1);
+
+
+
+        // Sets the initial perspective
+        gluPerspective(60, (double) width / (double) height, 0.01, 100);
+
+
 
         // Starts the graphics loop
         graphicsLoop();
@@ -75,8 +92,6 @@ public:
 
             // All drawing is done here
             draw();
-
-
 
             // Swapping the frame buffers
             glfwSwapBuffers(window);
@@ -105,8 +120,8 @@ public:
         glLoadIdentity();
 
         // Testing
-        vec3 testCirclePosition = vec3(0, 0, -1);
-        drawCircle(testCirclePosition, 3);
+        vec3 testCirclePosition = vec3(0, 0, -200);
+        drawCircle(testCirclePosition, 30);
     }
 
     static void drawCircle(vec3 position, float radius) {
@@ -130,13 +145,24 @@ public:
         glEnd();
     }
 
+    void setDimensions(int width, int height) {
+
+        // Setting the window dimensions
+        this->width = width;
+        this->height = height;
+    }
+
     static void handleError(int error, const char *description) {
         fprintf(stderr, "Error: %s\n", description);
     }
 
     static void handleResize(GLFWwindow *window, int width, int height) {
 
-        // Getting the size of the window
+        // Updating the window dimensions
+        auto user = (viewport *) glfwGetWindowUserPointer(window);
+        user->setDimensions(width, height);
+
+        // Getting the aspect ratio of the window
         float ratio = width / (float) height;
 
         // Setting the window to the right size
@@ -148,12 +174,17 @@ public:
         glLoadIdentity(); // Resets the camera
 
         // Resetting the camera perspective
+        gluPerspective(60, ratio, 0.01, 1000);
     }
 
 private:
 
     // The window
     GLFWwindow *window;
+
+    // Window dimensions
+    int width;
+    int height;
 
     // The simulation
     simulationState *theSim;
