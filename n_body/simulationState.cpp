@@ -26,16 +26,16 @@ void simulationState::addBody(orbitalBody *newBody) {
 
 void simulationState::increment() {
 
-    // Updates each bodyRelationship
-    for (relationship *r : relationships) {
-
-        r->applyGravity(timeInterval, gravitationalConstant, power);
+    // Updates each Relationship
+#pragma omp parallel for
+    for (int i = 0; i < relationships.size(); ++i) {
+        relationships[i]->applyGravity(timeInterval, gravitationalConstant, power);
     }
 
     // Updates each orbitalBody
-    for (orbitalBody *b : bodies) {
-
-        b->applyVelocity(timeInterval);
+#pragma omp parallel for
+    for (int j = 0; j < bodies.size(); ++j) {
+        bodies[j]->applyVelocity(timeInterval);
     }
 }
 

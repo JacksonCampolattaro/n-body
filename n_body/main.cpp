@@ -24,7 +24,7 @@ vec3 blue = vec3(0, 0, 1);
 vec3 teal = vec3(0, 1, 1);
 vec3 grey = vec3(.5, .5, .5);
 
-float density = 40;
+float density = 30;
 
 simulationState *theSimulation;
 
@@ -40,16 +40,16 @@ void addBodies() {
 
     // Massive fixed mass
     ///*
-    theSimulation->addBody(new orbitalBody(vec3(0, 0, -800), vec3(0, 0, 0), 15000000, density, yellow, true));
+    theSimulation->addBody(new orbitalBody(vec3(0, 0, -400), vec3(0, 0, 0), 15000000, density, yellow, true));
     //*/
 
     // Cubic Grid
     ///*
-    vec3 cornerPosition(-50, 150, -1000);
+    vec3 cornerPosition(-50, 150, -600);
     vec3 velocity(-800.0f, 0.0f, -0.0f);
-    vec3 size(10, 10, 10);
+    vec3 size(10, 10, 5);
     float spacing = 10.0f;
-    float mass = 500.0f;
+    float mass = 1000.0f;
 
     for (int x = 0; x < size.x; ++x) {
         for (int y = 0; y < size.y; ++y) {
