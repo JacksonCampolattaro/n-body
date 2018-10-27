@@ -42,4 +42,6 @@ int main(int argc, char **argv) {
     // Testing GLFW
     auto testViewport = new viewport();
 
+    testViewport->graphicsLoop(testSimulationState);
+
 }

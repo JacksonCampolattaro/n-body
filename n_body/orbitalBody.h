@@ -10,7 +10,6 @@
 
 // Make sure to install these before using; they should be available from the standard repositories.
 #include <glm/glm.hpp>
-#include <GL/glew.h>
 
 using namespace std;
 using namespace glm;
