@@ -74,6 +74,18 @@ public:
         }
     }
 
+    /**
+     * Tells each body to announce its properties in the console
+     */
+    void soundOff() {
+
+        // Updates each orbitalBody
+        for (orbitalBody *b : bodies) {
+
+            b->soundOff();
+        }
+    }
+
 
 private:
 

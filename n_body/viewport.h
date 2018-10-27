@@ -19,10 +19,20 @@ class viewport {
 
 public:
 
-    viewport(int width = 1000, int height = 1000, const char *title = "n_Body Simulator 0.2.0") {
+    /**
+     * Constructor for the window
+     * @param width the width of the window in pixels
+     * @param height the height of the window in pixels
+     * @param title the status bar title of the window
+     */
+    explicit viewport(simulationState *theSim, int width = 1000, int height = 1000,
+                      const char *title = "n_Body Simulator 0.2.0") {
+
+        // Setting the simulation
+        this->theSim = theSim;
 
         // Setting the function for handling errors
-        glfwSetErrorCallback(error_callback);
+        glfwSetErrorCallback(handleError);
 
         // Initializing GLFW
         if (!glfwInit()) {
@@ -38,6 +48,9 @@ public:
             exit(EXIT_FAILURE);
         }
 
+        // Setting the function for handling window resizing
+        glfwSetWindowSizeCallback(window, handleResize);
+
         // Setting the window's minimum size
         glfwSetWindowSizeLimits(window, 400, 400, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
@@ -47,31 +60,23 @@ public:
         // Sets the number of frames between buffer swaps
         glfwSwapInterval(1);
 
-
+        // Starts the graphics loop
+        graphicsLoop();
     }
 
-    void graphicsLoop(simulationState *theSim) {
+    void graphicsLoop() {
+
+        // Resetting the camera perspective
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
 
         // Executed until it's time for the window to close
         while (!glfwWindowShouldClose(window)) {
 
-            // Getting the size of the window
-            float ratio;
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            ratio = width / (float) height;
+            // All drawing is done here
+            draw();
 
-            // Setting the window to the right size
-            glViewport(0, 0, width, height);
-            glClear(GL_COLOR_BUFFER_BIT);
 
-            // Setting the camera perspective to match the window aspect ratio
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity(); // Resets the camera
-            //gluPerspective( 45.0f, ratio, 1.0f, 100.0f );
-
-            //All drawing is done here
-            draw(theSim);
 
             // Swapping the frame buffers
             glfwSwapBuffers(window);
@@ -86,30 +91,30 @@ public:
         exit(EXIT_SUCCESS);
     }
 
-    void draw(simulationState *theSim) {
+    void draw() {
 
         // Sets the background to black
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        // Removes all vertices from the last draw
+        // Clear information and sets up the 3d model world
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glMatrixMode(GL_MODELVIEW);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_POLYGON_SMOOTH);
+        glEnable(GL_BLEND);
+        glLoadIdentity();
 
-        glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
-        glLoadIdentity(); //Reset the drawing perspective
-
-        vec3 testCirclePosition = vec3(0, 0, -50);
-        drawCircle(testCirclePosition, 20);
-    }
-
-    static void error_callback(int error, const char *description) {
-        fprintf(stderr, "Error: %s\n", description);
+        // Testing
+        vec3 testCirclePosition = vec3(0, 0, -1);
+        drawCircle(testCirclePosition, 3);
     }
 
     static void drawCircle(vec3 position, float radius) {
 
-        // Number of segments defines how 'smooth' the circle needs to be. these are far away, so it doesn't need to be too high.
-        int numSegments = 36;
+        glDepthRange(0.5, 1000);
 
+        // Number of segments affects how 'smooth' the circle will be.
+        int numSegments = 36;
 
         glBegin(GL_TRIANGLE_FAN);
 
@@ -119,16 +124,39 @@ public:
 
             float x = radius * cosf(angle);
             float y = radius * sinf(angle);
-
             glVertex3f(x + position.x, y + position.y, position.z);
         }
 
         glEnd();
     }
 
+    static void handleError(int error, const char *description) {
+        fprintf(stderr, "Error: %s\n", description);
+    }
+
+    static void handleResize(GLFWwindow *window, int width, int height) {
+
+        // Getting the size of the window
+        float ratio = width / (float) height;
+
+        // Setting the window to the right size
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Setting the camera perspective to match the window aspect ratio
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity(); // Resets the camera
+
+        // Resetting the camera perspective
+    }
+
 private:
 
+    // The window
     GLFWwindow *window;
+
+    // The simulation
+    simulationState *theSim;
 
 };
 

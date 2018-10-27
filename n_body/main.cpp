@@ -40,8 +40,6 @@ int main(int argc, char **argv) {
     testBody2->soundOff();
 
     // Testing GLFW
-    auto testViewport = new viewport();
-
-    testViewport->graphicsLoop(testSimulationState);
+    auto testViewport = new viewport(testSimulationState);
 
 }
