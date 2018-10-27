@@ -33,6 +33,8 @@ public:
 
     void draw();
 
+    static void setColor(vec3 color);
+
     static void drawCircle(vec3 position, float radius);
 
     static void handleError(int error, const char *description);

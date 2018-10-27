@@ -77,5 +77,7 @@ void orbitalBody::soundOff() {
 }
 
 void orbitalBody::draw(viewport *client) {
-    client->drawCircle(position, radius);
+
+    viewport::setColor(color);
+    viewport::drawCircle(position, radius);
 }

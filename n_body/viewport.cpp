@@ -86,6 +86,10 @@ void viewport::draw() {
     theSim->draw(this);
 }
 
+void viewport::setColor(vec3 color) {
+    glColor3f(color.r, color.g, color.b);
+}
+
 void viewport::drawCircle(vec3 position, float radius) {
 
     // Number of segments affects how 'smooth' the circle will be.
