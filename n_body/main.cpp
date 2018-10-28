@@ -32,19 +32,19 @@ simulationState *theSimulation;
 void addBodies() {
 
     // Three body simulation
-    /*
+    ///*
     theSimulation->addBody( new orbitalBody(vec3(8.0, 60.0, -100), vec3(30, 0, 0), 500000, density, red));
     theSimulation->addBody( new orbitalBody(vec3(0.0, -60, -300), vec3(-30, 0, 0), 500000, density, white));
     theSimulation->addBody( new orbitalBody(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
     //*/
 
     // Massive fixed mass
-    ///*
+    /*
     theSimulation->addBody(new orbitalBody(vec3(0, 0, -400), vec3(0, 0, 0), 15000000, density, yellow, true));
     //*/
 
     // Cubic Grid
-    ///*
+    /*
     vec3 cornerPosition(-50, 150, -600);
     vec3 velocity(-800.0f, 0.0f, -0.0f);
     vec3 size(10, 10, 5);
@@ -77,7 +77,7 @@ void addBodies() {
 int main(int argc, char **argv) {
 
     // Creating simulation
-    theSimulation = new simulationState(.2, .001, 1);
+    theSimulation = new simulationState(.2, .01, 1);
 
     // Adding bodies
     addBodies();
