@@ -11,6 +11,8 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
+#include "drawable.h"
+
 class viewport;
 
 using namespace std;
@@ -19,7 +21,7 @@ using namespace glm;
 /**
  * The gravitational bodies which interact with each other in the simulation.
  */
-class orbitalBody {
+class orbitalBody : public drawable {
 
 public:
 
@@ -97,7 +99,7 @@ public:
     /**
      * Draws a circle at the location of the body
      */
-    void draw();
+    void draw() override;
 
 private:
     // Coordinates
