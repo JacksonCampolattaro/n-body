@@ -2,15 +2,7 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <omp.h>
-
 #include "orbitalBody.h"
-#include "relationship.h"
 #include "simulationState.h"
 #include "viewport.h"
 
@@ -77,7 +69,7 @@ void addBodies() {
 int main(int argc, char **argv) {
 
     // Creating simulation
-    theSimulation = new simulationState(.2, .01, 1);
+    theSimulation = new simulationState(.2, .001, 1);
 
     // Adding bodies
     addBodies();
