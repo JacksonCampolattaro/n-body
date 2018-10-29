@@ -76,6 +76,9 @@ private:
     // The simulation
     simulationState *theSim;
 
+    // All drawable objects
+    std::vector<drawable *> drawables;
+
 };
 
 

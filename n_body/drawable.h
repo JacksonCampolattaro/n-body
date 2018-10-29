@@ -10,6 +10,10 @@ class drawable {
 
 public:
 
+    /**
+     * Drawables are registered to the graphics function
+     * When each drawable must have a method for drawing itself.
+     */
     virtual void draw() = 0;
 
 };
