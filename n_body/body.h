@@ -21,7 +21,7 @@ using namespace glm;
 /**
  * The gravitational bodies which interact with each other in the simulation.
  */
-class orbitalBody : public drawable {
+class body : public drawable {
 
 public:
 
@@ -35,8 +35,8 @@ public:
      * @param color the color of the body
      * @param fixed whether or not the body can be affected by gravity
      */
-    orbitalBody(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
-                bool fixed = false);
+    body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
+         bool fixed = false);
 
 
     /**
@@ -72,6 +72,8 @@ public:
      * @return the velocity of the body
      */
     vec3 getVelocity();
+
+    void setVelocity(vec3 newVelocity);
 
     /**
      * Getter for the body's mass

@@ -2,10 +2,10 @@
 // Created by jackcamp on 10/19/18.
 //
 
-#include "simulationState.h"
+#include "simulation.h"
 #include "viewport.h"
 
-simulationState::simulationState(float gravitationalConstant, float timeInterval, int power) {
+simulation::simulation(float gravitationalConstant, float timeInterval, int power) {
 
     this->gravitationalConstant = gravitationalConstant;
     this->timeInterval = timeInterval;
@@ -13,10 +13,10 @@ simulationState::simulationState(float gravitationalConstant, float timeInterval
 
 }
 
-void simulationState::addBody(orbitalBody *newBody) {
+void simulation::addBody(body *newBody) {
 
     // Adds relationships to link the new body to each of the other bodies in the array.
-    for (orbitalBody *theBody : bodies) {
+    for (body *theBody : bodies) {
         relationships.push_back(new relationship(theBody, newBody));
     }
 
@@ -24,7 +24,7 @@ void simulationState::addBody(orbitalBody *newBody) {
     bodies.push_back(newBody);
 }
 
-void simulationState::increment() {
+void simulation::increment() {
 
     // Updates each Relationship
 #pragma omp parallel for
@@ -32,17 +32,25 @@ void simulationState::increment() {
         relationships[i]->applyGravity(timeInterval, gravitationalConstant, power);
     }
 
-    // Updates each orbitalBody
+    // Updates each body
 #pragma omp parallel for
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
 }
 
-void simulationState::draw() {
+void simulation::draw() {
 
-    // Updates each orbitalBody
-    for (orbitalBody *b : bodies) {
+    // Updates each body
+    for (body *b : bodies) {
         b->draw();
     }
+}
+
+void simulation::orbit(body *sunBody, body *satelliteBody) {
+
+    // Calculating the necessary velocity
+    float distance = glm::distance(sunBody->getPosition(), satelliteBody->getPosition());
+    float orbitalVelocity = sqrt((gravitationalConstant * sunBody->getMass() / distance));
+    satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
 }

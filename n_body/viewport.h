@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "simulationState.h"
+#include "simulation.h"
 
 
 class viewport {
@@ -26,8 +26,14 @@ public:
      * @param height the height of the window in pixels
      * @param title the status bar title of the window
      */
-    explicit viewport(simulationState *theSim, int width = 1000, int height = 1000,
+    explicit viewport(simulation *theSim, int width = 1000, int height = 1000,
                       const char *title = "n_Body Simulator 0.2.0");
+
+    /**
+     * Adds a new item to the render to be drawn each cycle
+     * @param newDrawable The new drawable to be added
+     */
+    void registerDrawable(drawable *newDrawable);
 
     /**
      * Main loop of the application's graphics
@@ -74,7 +80,7 @@ private:
     GLFWwindow *window;
 
     // The simulation
-    simulationState *theSim;
+    simulation *theSim;
 
     // All drawable objects
     std::vector<drawable *> drawables;

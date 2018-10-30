@@ -4,7 +4,7 @@
 
 #include "viewport.h"
 
-viewport::viewport(simulationState *theSim, int width, int height, const char *title) {
+viewport::viewport(simulation *theSim, int width, int height, const char *title) {
 
     // Setting the simulation
     this->theSim = theSim;
@@ -42,9 +42,12 @@ viewport::viewport(simulationState *theSim, int width, int height, const char *t
 
     // Sets the perspective before beginning the loop
     handleResize(window, width, height);
+}
 
-    // Starts the graphics loop
-    graphicsLoop();
+void viewport::registerDrawable(drawable *newDrawable) {
+
+    // Adds the new item to the array
+    drawables.push_back(newDrawable);
 }
 
 void viewport::graphicsLoop() {
@@ -83,7 +86,9 @@ void viewport::draw() {
     glEnable(GL_BLEND);
     glLoadIdentity();
 
-    theSim->draw();
+    for (auto theDrawable : drawables) {
+        theDrawable->draw();
+    }
 }
 
 void viewport::setColor(vec3 color) {
@@ -129,3 +134,5 @@ void viewport::handleResize(GLFWwindow *window, int width, int height) {
     // Resetting the camera perspective
     gluPerspective(60, ratio, 0.01, 10000);
 }
+
+

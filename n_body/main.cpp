@@ -2,8 +2,8 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include "orbitalBody.h"
-#include "simulationState.h"
+#include "body.h"
+#include "simulation.h"
 #include "viewport.h"
 
 
@@ -16,31 +16,55 @@ vec3 blue = vec3(0, 0, 1);
 vec3 teal = vec3(0, 1, 1);
 vec3 grey = vec3(.5, .5, .5);
 
-float density = 30;
+float density = 10;
 
-simulationState *theSimulation;
+simulation *theSimulation;
+viewport *theViewport;
+
+
+void addBody(body *newBody) {
+    theSimulation->addBody(newBody);
+    theViewport->registerDrawable(newBody);
+}
 
 
 void addBodies() {
 
+    // Orbit simulation
+    /*
+    auto sun = new body(vec3(0, 0, -4000), vec3(0, 0, 0), 50000000, density, yellow, true);
+    addBody(sun);
+
+    auto earth = new body(vec3(2000, 0, -4000), vec3(0, 1, 0), 4000000, density, blue);
+    addBody(earth);
+    theSimulation->orbit(sun, earth);
+
+    auto moon = new body(vec3(2000, -130, -4000), vec3(0, 0, 1), 500, .1, white);
+    theSimulation->orbit(earth, moon);
+    moon->addVelocity(earth->getVelocity());
+    addBody(moon);
+    //*/
+
     // Three body simulation
     ///*
-    theSimulation->addBody( new orbitalBody(vec3(8.0, 60.0, -100), vec3(30, 0, 0), 500000, density, red));
-    theSimulation->addBody( new orbitalBody(vec3(0.0, -60, -300), vec3(-30, 0, 0), 500000, density, white));
-    theSimulation->addBody( new orbitalBody(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
+    addBody(new body(vec3(8.0, 60.0, -100), vec3(3, 0, 0), 500000, density, red));
+    addBody(new body(vec3(0.0, -60, -300), vec3(-3, 0, 0), 500000, density, white));
+    addBody(new body(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
     //*/
 
     // Massive fixed mass
     /*
-    theSimulation->addBody(new orbitalBody(vec3(0, 0, -400), vec3(0, 0, 0), 15000000, density, yellow, true));
+    auto superHeavy = new body(vec3(0, 0, -400), vec3(0, 0, 0), 150000000, 100, yellow, true);
+    addBody(superHeavy);
     //*/
 
     // Cubic Grid
     /*
-    vec3 cornerPosition(-50, 150, -600);
-    vec3 velocity(-800.0f, 0.0f, -0.0f);
-    vec3 size(10, 10, 5);
-    float spacing = 10.0f;
+
+    vec3 cornerPosition(-150, -0, -300);
+    vec3 velocity(10.0f, 10.0f, 0.0f);
+    vec3 size(1, 1, 1000);
+    float spacing = 1.0f;
     float mass = 1000.0f;
 
     for (int x = 0; x < size.x; ++x) {
@@ -49,7 +73,10 @@ void addBodies() {
 
                 vec3 coordinate(x, y, z);
                 vec3 position = cornerPosition + (coordinate * spacing);
-                //velocity.x = 200.0f * (coordinate.z ) - 1000.0f;
+
+                if (x < 0) {
+                    velocity *= -1;
+                }
 
                 vec3 multiColor = coordinate / size + 0.2f;
                 vec3 yellowToRed(1, coordinate.y / size.y, 0);
@@ -59,7 +86,10 @@ void addBodies() {
                                       1 - coordinate.y / size.y + coordinate.x / size.x);
                 vec3 rainbow(coordinate.y / size.y, coordinate.x / size.x, 1 - coordinate.y / size.y);
 
-                theSimulation->addBody(new orbitalBody(position, velocity, mass, density, blueToRedToWhite, false));
+
+                auto newBody = new body(position, velocity, mass, density, blueToRedToWhite, false);
+                theSimulation->orbit(superHeavy, newBody);
+                addBody(newBody);
             }
         }
     }
@@ -69,12 +99,15 @@ void addBodies() {
 int main(int argc, char **argv) {
 
     // Creating simulation
-    theSimulation = new simulationState(.2, .001, 1);
+    theSimulation = new simulation(.01, .1, 2);
+
+    // Testing GLFW
+    theViewport = new viewport(theSimulation, 10000, 20000);
 
     // Adding bodies
     addBodies();
 
-    // Testing GLFW
-    auto theViewport = new viewport(theSimulation, 3000, 1500);
+    // Starting the simulation
+    theViewport->graphicsLoop();
 
 }

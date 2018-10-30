@@ -2,10 +2,10 @@
 // Created by JackCamp on 8/2/18.
 //
 
-#include "orbitalBody.h"
+#include "body.h"
 #include "viewport.h"
 
-orbitalBody::orbitalBody(vec3 position, vec3 velocity, float mass, float density, vec3 color, bool fixed) {
+body::body(vec3 position, vec3 velocity, float mass, float density, vec3 color, bool fixed) {
 
     // Setting coordinate values
     this->position = position;
@@ -23,12 +23,12 @@ orbitalBody::orbitalBody(vec3 position, vec3 velocity, float mass, float density
     this->fixed = fixed;
 }
 
-void orbitalBody::applyVelocity(float interval) {
+void body::applyVelocity(float interval) {
 
     this->position += this->velocity * interval;
 }
 
-void orbitalBody::applyForce(vec3 force, float interval) {
+void body::applyForce(vec3 force, float interval) {
 
     if (!fixed) {
         vec3 acceleration = force / mass;
@@ -40,31 +40,35 @@ void orbitalBody::applyForce(vec3 force, float interval) {
 
 }
 
-void orbitalBody::addVelocity(vec3 additionalVelocity) {
+void body::addVelocity(vec3 additionalVelocity) {
     velocity += additionalVelocity;
 }
 
-vec3 orbitalBody::getPosition() {
+vec3 body::getPosition() {
     return position;
 }
 
-vec3 orbitalBody::getVelocity() {
+vec3 body::getVelocity() {
     return velocity;
 }
 
-float orbitalBody::getMass() {
+void body::setVelocity(vec3 newVelocity) {
+    velocity = newVelocity;
+}
+
+float body::getMass() {
     return mass;
 }
 
-float orbitalBody::getRadius() {
+float body::getRadius() {
     return radius;
 }
 
-vec3 orbitalBody::getColor() {
+vec3 body::getColor() {
     return color;
 }
 
-void orbitalBody::soundOff() {
+void body::soundOff() {
 
     std::cout << "";
 
@@ -76,10 +80,12 @@ void orbitalBody::soundOff() {
     cout << "[ Mass: " + to_string(mass) + " ] \n\n";
 }
 
-void orbitalBody::draw() {
+void body::draw() {
 
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
 }
+
+
 
 

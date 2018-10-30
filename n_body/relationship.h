@@ -6,7 +6,7 @@
 #define N_BODY_HEADLESS_RELATIONSHIP_H
 
 #include <glm/glm.hpp>
-#include "orbitalBody.h"
+#include "body.h"
 
 class relationship {
 
@@ -18,7 +18,7 @@ public:
      * @param firstBody one body
      * @param secondBody another body
      */
-    relationship(orbitalBody *firstBody, orbitalBody *secondBody);
+    relationship(body *firstBody, body *secondBody);
 
     /**
      * Applies the gravity between the two bodies according to the standard equation.
@@ -44,8 +44,8 @@ private:
      */
     vec3 unitVector();
 
-    orbitalBody *firstBody;
-    orbitalBody *secondBody;
+    body *firstBody;
+    body *secondBody;
 
 };
 
