@@ -15,7 +15,7 @@ public:
 
     octant(glm::vec3 location, float sideLength);
 
-    void addBody(body *theBody);
+    void addBody(body *newBody);
 
 private:
 
@@ -23,13 +23,14 @@ private:
     glm::vec3 location;
 
     // Bounds of the octant
-    glm::vec3 bounds;
+    float sidelength;
 
     // The body contained if this is the lowest node
+    bool occupied = false;
     body *theBody = nullptr; // No body by default
 
     // 3d array of the subdivisions of this octant
-    octant *subdivisions[8] = {nullptr}; // No subnodes by default
+    octant *subdivisions[8] = {nullptr}; // No sub-nodes by default
 
 };
 
