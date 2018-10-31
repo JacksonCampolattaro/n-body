@@ -7,15 +7,6 @@
 #include "viewport.h"
 
 
-// Colors to use
-vec3 white = vec3(1, 1, 1);
-vec3 yellow = vec3(1, 1, 0);
-vec3 red = vec3(1, 0, 0);
-vec3 green = vec3(0, 1, 0);
-vec3 blue = vec3(0, 0, 1);
-vec3 teal = vec3(0, 1, 1);
-vec3 grey = vec3(.5, .5, .5);
-
 float density = 10;
 
 simulation *theSimulation;
@@ -29,6 +20,15 @@ void addBody(body *newBody) {
 
 
 void addBodies() {
+
+    // Colors to use
+    vec3 white = vec3(1, 1, 1);
+    vec3 yellow = vec3(1, 1, 0);
+    vec3 red = vec3(1, 0, 0);
+    vec3 green = vec3(0, 1, 0);
+    vec3 blue = vec3(0, 0, 1);
+    vec3 teal = vec3(0, 1, 1);
+    vec3 grey = vec3(.5, .5, .5);
 
     // Orbit simulation
     /*
@@ -46,25 +46,25 @@ void addBodies() {
     //*/
 
     // Three body simulation
-    ///*
+    /*
     addBody(new body(vec3(8.0, 60.0, -100), vec3(3, 0, 0), 500000, density, red));
     addBody(new body(vec3(0.0, -60, -300), vec3(-3, 0, 0), 500000, density, white));
     addBody(new body(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
     //*/
 
     // Massive fixed mass
-    /*
-    auto superHeavy = new body(vec3(0, 0, -400), vec3(0, 0, 0), 150000000, 100, yellow, true);
+    ///*
+    auto superHeavy = new body(vec3(0, 0, -400), vec3(0, 0, 0), 180000000, 1000, white, true);
     addBody(superHeavy);
     //*/
 
     // Cubic Grid
-    /*
+    ///*
 
     vec3 cornerPosition(-150, -0, -300);
     vec3 velocity(10.0f, 10.0f, 0.0f);
-    vec3 size(1, 1, 1000);
-    float spacing = 1.0f;
+    vec3 size(2, 10, 100);
+    float spacing = 11.0f;
     float mass = 1000.0f;
 
     for (int x = 0; x < size.x; ++x) {
@@ -99,10 +99,10 @@ void addBodies() {
 int main(int argc, char **argv) {
 
     // Creating simulation
-    theSimulation = new simulation(.01, .1, 2);
+    theSimulation = new simulation(.01, .02, 2);
 
     // Testing GLFW
-    theViewport = new viewport(theSimulation, 10000, 20000);
+    theViewport = new viewport(theSimulation, 2000, 1000);
 
     // Adding bodies
     addBodies();
