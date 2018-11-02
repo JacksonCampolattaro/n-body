@@ -7,83 +7,32 @@
 octant::octant(glm::vec3 location, float sideLength) {
 
     this->location = location;
-    this->sidelength = sideLength;
+    this->sideLength = sideLength;
 }
 
 void octant::addBody(body *newBody) {
 
+    // If the
+    if (divided) {
+
+    }
 
     // If a body has already been added
     if (occupied) {
 
-        // If the subdivisions haven't been initialized yet
-        if (subdivisions[0] == nullptr) {
+        // Initializing the subdivisions
+        divide();
 
-            float offset = sidelength / 4;
+        // Comparing the new body's position to the center of the octant
+        vec3 comparison = glm::greaterThanEqual(newBody->getPosition(), location);
 
-            // Creating each of the subdivisions
-            subdivisions[0] = new octant(location += glm::vec3(offset, offset, offset), sidelength / 2);
-            subdivisions[1] = new octant(location += glm::vec3(offset, offset, -offset), sidelength / 2);
-            subdivisions[2] = new octant(location += glm::vec3(-offset, offset, -offset), sidelength / 2);
-            subdivisions[3] = new octant(location += glm::vec3(-offset, offset, offset), sidelength / 2);
-            subdivisions[4] = new octant(location += glm::vec3(offset, -offset, offset), sidelength / 2);
-            subdivisions[5] = new octant(location += glm::vec3(offset, -offset, -offset), sidelength / 2);
-            subdivisions[6] = new octant(location += glm::vec3(-offset, -offset, -offset), sidelength / 2);
-            subdivisions[7] = new octant(location += glm::vec3(-offset, -offset, offset), sidelength / 2);
-        }
+        // Adding the body at the appropriate index
+        subdivisionContaining(newBody)->addBody(newBody);
 
-        // Selecting the location of the new body
-        if (newBody->getPosition().x >= location.x) {
-            // +
-            if (newBody->getPosition().y >= location.y) {
-                // ++
-                if (newBody->getPosition().z >= location.z) {
-                    // +++
-                    subdivisions[0]->addBody(theBody);
-                    subdivisions[0]->addBody(newBody);
-                } else {
-                    // ++-
-                    subdivisions[1]->addBody(theBody);
-                    subdivisions[1]->addBody(newBody);
-                }
-            } else {
-                // +-
-                if (newBody->getPosition().z >= location.z) {
-                    // +-+
-                    subdivisions[4]->addBody(theBody);
-                    subdivisions[4]->addBody(newBody);
-                } else {
-                    // +--
-                    subdivisions[5]->addBody(theBody);
-                    subdivisions[5]->addBody(newBody);
-                }
-            }
-        } else {
-            // -
-            if (newBody->getPosition().y >= location.y) {
-                // -+
-                if (newBody->getPosition().z >= location.z) {
-                    // -++
-                    subdivisions[3]->addBody(theBody);
-                    subdivisions[3]->addBody(newBody);
-                } else {
-                    // -+-
-                    subdivisions[2]->addBody(theBody);
-                    subdivisions[2]->addBody(newBody);
-                }
-            } else {
-                // --
-                if (newBody->getPosition().z >= location.z) {
-                    // --+
-                    subdivisions[7]->addBody(theBody);
-                    subdivisions[7]->addBody(newBody);
-                } else {
-                    // ---
-                    subdivisions[6]->addBody(theBody);
-                    subdivisions[6]->addBody(newBody);
-                }
-            }
-        }
+        // Moving the body already contained
+        subdivisionContaining(theBody)->addBody(theBody);
+        theBody = nullptr;
+
     } else {
         // In cases where the first body has not been added yet
         this->theBody = newBody;
@@ -91,4 +40,43 @@ void octant::addBody(body *newBody) {
     }
 
     occupied = true;
+}
+
+void octant::divide() {
+
+    // If the subdivisions haven't been initialized yet
+    if (!divided) {
+
+        float offset = sideLength / 4;
+
+        // Initializing all the subdivisions with their locations and sizes
+        for (int x = 0; x < 1; ++x) {
+            for (int y = 0; y < 1; ++y) {
+                for (int z = 0; z < 1; ++z) {
+
+                    // Getting the sign in the x, y, and z axes
+                    int xSign = (2 * x) - 1;
+                    int ySign = (2 * y) - 1;
+                    int zSign = (2 * z) - 1;
+
+                    // Initializing the subdivision
+                    subdivisions[x][y][z] = new octant(
+                            location += glm::vec3(xSign * offset, ySign * offset, zSign * offset), sideLength / 2);
+                }
+            }
+        }
+
+        // Setting divided to true
+        divided = true;
+    }
+
+}
+
+octant *octant::subdivisionContaining(body *b) {
+
+    // Comparing the new body's position to the center of the octant
+    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
+
+    // Adding the body at the appropriate index
+    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }

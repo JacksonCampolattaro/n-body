@@ -12,6 +12,15 @@ float density = 10;
 simulation *theSimulation;
 viewport *theViewport;
 
+// Colors to use
+static vec3 white = vec3(1, 1, 1);
+static vec3 yellow = vec3(1, 1, 0);
+static vec3 red = vec3(1, 0, 0);
+static vec3 green = vec3(0, 1, 0);
+static vec3 blue = vec3(0, 0, 1);
+static vec3 teal = vec3(0, 1, 1);
+static vec3 grey = vec3(.5, .5, .5);
+
 
 void addBody(body *newBody) {
     theSimulation->addBody(newBody);
@@ -19,53 +28,23 @@ void addBody(body *newBody) {
 }
 
 
-void addBodies() {
-
-    // Colors to use
-    vec3 white = vec3(1, 1, 1);
-    vec3 yellow = vec3(1, 1, 0);
-    vec3 red = vec3(1, 0, 0);
-    vec3 green = vec3(0, 1, 0);
-    vec3 blue = vec3(0, 0, 1);
-    vec3 teal = vec3(0, 1, 1);
-    vec3 grey = vec3(.5, .5, .5);
-
-    // Orbit simulation
-    /*
-    auto sun = new body(vec3(0, 0, -4000), vec3(0, 0, 0), 50000000, density, yellow, true);
-    addBody(sun);
-
-    auto earth = new body(vec3(2000, 0, -4000), vec3(0, 1, 0), 4000000, density, blue);
-    addBody(earth);
-    theSimulation->orbit(sun, earth);
-
-    auto moon = new body(vec3(2000, -130, -4000), vec3(0, 0, 1), 500, .1, white);
-    theSimulation->orbit(earth, moon);
-    moon->addVelocity(earth->getVelocity());
-    addBody(moon);
-    //*/
-
-    // Three body simulation
-    /*
-    addBody(new body(vec3(8.0, 60.0, -100), vec3(3, 0, 0), 500000, density, red));
-    addBody(new body(vec3(0.0, -60, -300), vec3(-3, 0, 0), 500000, density, white));
-    addBody(new body(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
-    //*/
+void bigDemo() {
 
     // Massive fixed mass
-    ///*
-    auto superHeavy = new body(vec3(0, 0, -400), vec3(0, 0, 0), 180000000, 1000, white, true);
+    //*
+    auto superHeavy = new body(vec3(0, 0, -300), vec3(0, 0, 0), 180000000, 1000, white, true);
     addBody(superHeavy);
     //*/
 
     // Cubic Grid
     ///*
 
-    vec3 cornerPosition(-150, -0, -300);
+    vec3 cornerPosition(-50, -50, -250);
     vec3 velocity(10.0f, 10.0f, 0.0f);
-    vec3 size(2, 10, 100);
-    float spacing = 11.0f;
-    float mass = 1000.0f;
+    vec3 size(8, 4, 20);
+    float spacing = 10.0f;
+    float mass = 10000.0f;
+    density = 40;
 
     for (int x = 0; x < size.x; ++x) {
         for (int y = 0; y < size.y; ++y) {
@@ -96,10 +75,41 @@ void addBodies() {
     //*/
 }
 
+
+void threeBodyDemo() {
+    // Three body simulation
+    ///*
+    addBody(new body(vec3(8.0, 60.0, -100), vec3(3, 0, 0), 500000, density, red));
+    addBody(new body(vec3(0.0, -60, -300), vec3(-3, 0, 0), 500000, density, white));
+    addBody(new body(vec3(-8, 0, -400), vec3(0, 0, 0), 500000, density, yellow));
+    //*/
+}
+
+
+void addBodies() {
+
+    // Orbit simulation
+    /*
+    auto sun = new body(vec3(0, 0, -4000), vec3(0, 0, 0), 50000000, density, yellow, true);
+    addBody(sun);
+
+    auto earth = new body(vec3(2000, 0, -4000), vec3(0, 1, 0), 4000000, density, blue);
+    addBody(earth);
+    theSimulation->orbit(sun, earth);
+
+    auto moon = new body(vec3(2000, -130, -4000), vec3(0, 0, 1), 500, .1, white);
+    theSimulation->orbit(earth, moon);
+    moon->addVelocity(earth->getVelocity());
+    addBody(moon);
+    //*/
+
+    threeBodyDemo();
+}
+
 int main(int argc, char **argv) {
 
     // Creating simulation
-    theSimulation = new simulation(.01, .02, 2);
+    theSimulation = new simulation(.05, .005, 2);
 
     // Testing GLFW
     theViewport = new viewport(theSimulation, 2000, 1000);

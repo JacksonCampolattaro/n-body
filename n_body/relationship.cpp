@@ -15,7 +15,7 @@ void relationship::applyGravity(float interval, float gravitationalConstant, int
     // Calculating the directionless force of gravity
     float forceOfGravity =
             (gravitationalConstant * firstBody->getMass() * secondBody->getMass()) /
-            ((float) pow(distance(), power) + 0.000000001f);
+            ((float) pow(distance(), power) + 0.0001f);
 
     // Giving the force direction
     //glm::vec3 force = forceOfGravity * unitVector();

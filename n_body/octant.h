@@ -23,14 +23,19 @@ private:
     glm::vec3 location;
 
     // Bounds of the octant
-    float sidelength;
+    float sideLength;
 
     // The body contained if this is the lowest node
     bool occupied = false;
     body *theBody = nullptr; // No body by default
 
     // 3d array of the subdivisions of this octant
-    octant *subdivisions[8] = {nullptr}; // No sub-nodes by default
+    bool divided = false;
+    octant *subdivisions[2][2][2] = {nullptr}; // No sub-nodes by default
+
+    void divide();
+
+    octant *subdivisionContaining(body *b);
 
 };
 
