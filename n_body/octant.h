@@ -9,12 +9,24 @@
 #include "body.h"
 
 
+/**
+ * My implementation of the Barnes-Hut algorithm
+ */
 class octant {
 
 public:
 
+    /**
+     * Constructor for a new octant
+     * @param location The center of the octant as a vector
+     * @param sideLength The length of the octant
+     */
     octant(glm::vec3 location, float sideLength);
 
+    /**
+     * Adds a body to the octant
+     * @param newBody The body to be added
+     */
     void addBody(body *newBody);
 
 private:
@@ -35,7 +47,7 @@ private:
 
     void divide();
 
-    octant *subdivisionContaining(body *b);
+    octant *subdivisionEnclosing(body *b);
 
 };
 

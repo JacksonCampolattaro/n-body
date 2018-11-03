@@ -12,9 +12,10 @@ octant::octant(glm::vec3 location, float sideLength) {
 
 void octant::addBody(body *newBody) {
 
-    // If the
+    // If this octant has already been divided into subdivisions
     if (divided) {
-
+        subdivisionEnclosing(theBody)->addBody(theBody);
+        return;
     }
 
     // If a body has already been added
@@ -23,22 +24,18 @@ void octant::addBody(body *newBody) {
         // Initializing the subdivisions
         divide();
 
-        // Comparing the new body's position to the center of the octant
-        vec3 comparison = glm::greaterThanEqual(newBody->getPosition(), location);
-
         // Adding the body at the appropriate index
-        subdivisionContaining(newBody)->addBody(newBody);
+        subdivisionEnclosing(newBody)->addBody(newBody);
 
         // Moving the body already contained
-        subdivisionContaining(theBody)->addBody(theBody);
+        subdivisionEnclosing(theBody)->addBody(theBody);
         theBody = nullptr;
 
-    } else {
-        // In cases where the first body has not been added yet
-        this->theBody = newBody;
+        return;
 
     }
 
+    this->theBody = newBody;
     occupied = true;
 }
 
@@ -72,7 +69,7 @@ void octant::divide() {
 
 }
 
-octant *octant::subdivisionContaining(body *b) {
+octant *octant::subdivisionEnclosing(body *b) {
 
     // Comparing the new body's position to the center of the octant
     vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);

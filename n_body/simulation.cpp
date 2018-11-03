@@ -54,3 +54,15 @@ void simulation::orbit(body *sunBody, body *satelliteBody) {
     float orbitalVelocity = sqrt((gravitationalConstant * sunBody->getMass() / distance));
     satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
 }
+
+void simulation::setGravitationalConstant(float gravitationalConstant) {
+    simulation::gravitationalConstant = gravitationalConstant;
+}
+
+void simulation::setTimeInterval(float timeInterval) {
+    simulation::timeInterval = timeInterval;
+}
+
+void simulation::setPower(int power) {
+    simulation::power = power;
+}

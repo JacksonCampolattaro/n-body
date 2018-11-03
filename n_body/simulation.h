@@ -64,6 +64,14 @@ private:
 
     // Simulation parameters
     float gravitationalConstant;
+public:
+    void setGravitationalConstant(float gravitationalConstant);
+
+    void setTimeInterval(float timeInterval);
+
+    void setPower(int power);
+
+private:
     float timeInterval;
     int power;
 
