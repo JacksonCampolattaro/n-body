@@ -64,7 +64,9 @@ private:
 
     // Simulation parameters
     float gravitationalConstant;
+
 public:
+
     void setGravitationalConstant(float gravitationalConstant);
 
     void setTimeInterval(float timeInterval);
