@@ -77,3 +77,5 @@ octant *octant::subdivisionEnclosing(body *b) {
     // Adding the body at the appropriate index
     return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
+
+

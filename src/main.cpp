@@ -2,6 +2,10 @@
 // Created by jackcamp on 10/25/18.
 //
 
+#include <gtest/gtest.h>
+
+
+
 #include "body.h"
 #include "simulation.h"
 #include "viewport.h"

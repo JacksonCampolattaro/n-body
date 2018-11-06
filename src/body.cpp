@@ -87,5 +87,3 @@ void body::draw() {
 }
 
 
-
-
