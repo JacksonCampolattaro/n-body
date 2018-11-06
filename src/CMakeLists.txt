@@ -1,20 +1,20 @@
 
-
-cmake_minimum_required(VERSION 3.12)
-project(n_body_headless)
-
+# Sets CMake standard
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp -march=native")
+# Adds my files to compilation path
+add_executable(${CMAKE_PROJECT_NAME} n_body/body.h n_body/body.cpp n_body/simulation.cpp n_body/simulation.h n_body/relationship.cpp n_body/relationship.h n_body/main.cpp n_body/viewport.cpp n_body/viewport.h n_body/drawable.cpp n_body/drawable.h n_body/octant.cpp n_body/octant.h)
 
-add_executable(n_body_headless n_body/body.h n_body/body.cpp n_body/simulation.cpp n_body/simulation.h n_body/relationship.cpp n_body/relationship.h n_body/main.cpp n_body/viewport.cpp n_body/viewport.h n_body/drawable.cpp n_body/drawable.h n_body/octant.cpp n_body/octant.h)
-
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
+# Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
+
+# Sets OpenMP compilation flags to allow for multithreaded performance
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+
+# Makes sure OpenGL libraries are present and installed properly
+find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 
-include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-#target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_LIBRARIES} glfw gtest gtest_main)
+# Addls OpenGL libraries to compilation path
+target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_LIBRARIES} glfw)
 

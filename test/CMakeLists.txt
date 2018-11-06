@@ -18,6 +18,8 @@ include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${GLFW_INCLUDE_D
 
 target_link_libraries(#[=[${CMAKE_PROJECT_NAME}]=] ${OPENGL_LIBRARIES} glfw gtest gtest_main)]]
 
-project(n_body)
+project(Test)
 
-#target_link_libraries(gtest gtest_main)
+add_executable(runUnitTests testAll.cpp)
+
+target_link_libraries(runUnitTests gtest gtest_main)
