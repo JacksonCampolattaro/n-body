@@ -9,4 +9,4 @@ project(n_body)
 add_subdirectory(src)
 
 # Adds the testing directory
-add_subdirectory(test)
+add_subdirectory(tests)

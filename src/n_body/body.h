@@ -74,6 +74,10 @@ public:
      */
     vec3 getVelocity();
 
+    /**
+     * Setter for the body's velocity
+     * @param newVelocity The new velocity of the body
+     */
     void setVelocity(vec3 newVelocity);
 
     /**
