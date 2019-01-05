@@ -3,7 +3,7 @@
 //
 
 #include <gtest/gtest.h>
-
+#include <omp.h>
 
 
 #include "body.h"
@@ -81,7 +81,7 @@ void bigDemo() {
     // Cubic Grid
     vec3 cornerPosition(-50, -50, -250);
     vec3 velocity(10.0f, 10.0f, 0.0f);
-    vec3 size(8, 4, 20);
+    vec3 size(4, 4, 100);
     float spacing = 10.0f;
     float mass = 10000.0f;
     density = 40;
@@ -148,6 +148,8 @@ void addBodies() {
 }
 
 int main(int argc, char **argv) {
+
+    //cout << " number of devices: " << omp_get_num_devices() << endl;
 
     // Creating simulation
     theSimulation = new simulation(.05, .005, 2);

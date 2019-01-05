@@ -54,6 +54,19 @@ public:
      */
     void applyForce(vec3 force, float interval);
 
+    /**
+     * Applies an acceleration to the body and updates the velocity accordingly.
+     *
+     * @param acceleration the acceleration applied
+     */
+    void applyAcceleration(vec3 acceleration, float interval);
+
+    /**
+     * Applies an force to the body and returns the resultant acceleration.
+     *
+     * @param force the force applied
+     */
+    vec3 getAcceleration(vec3 force, float interval);
 
     /**
      * Adds a velocity vector to the body.

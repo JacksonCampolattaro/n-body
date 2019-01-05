@@ -40,6 +40,29 @@ void body::applyForce(vec3 force, float interval) {
 
 }
 
+void body::applyAcceleration(vec3 acceleration, float interval) {
+
+    if (!fixed) {
+
+        vec3 velocity = acceleration * interval;
+
+        this->addVelocity(velocity);
+    }
+
+}
+
+vec3 body::getAcceleration(vec3 force, float interval) {
+
+    if (!fixed) {
+        vec3 acceleration = force / mass;
+
+        return acceleration;
+    }
+
+    return vec3(0,0,0);
+
+}
+
 void body::addVelocity(vec3 additionalVelocity) {
     velocity += additionalVelocity;
 }

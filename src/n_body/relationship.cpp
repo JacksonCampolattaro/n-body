@@ -21,9 +21,29 @@ void relationship::applyGravity(float interval, float gravitationalConstant, int
     //glm::vec3 force = forceOfGravity * unitVector();
     glm::vec3 force = forceOfGravity * unitVector();
 
-    // Applying the force to both bodies
-    firstBody->applyForce(force, interval);
-    secondBody->applyForce(-force, interval);
+    // Getting acceleration from both bodies
+    vec3 firstAcceleration = firstBody->getAcceleration(force, interval);
+    vec3 secondAcceleration = secondBody->getAcceleration(-force, interval);
+
+    // Getting magnitudes of both accelerations
+    float firstMagnitude = glm::length(firstAcceleration);
+    float secondMagnitude = glm::length(secondAcceleration);
+
+    // If either acceleration is too large and time resolution is within bounds
+    if ((firstMagnitude > maximumAllowableAcceleration ||
+        secondMagnitude > maximumAllowableAcceleration) &&
+        interval > timeResolutionLimit) {
+
+        // Decompose the operation into shorter timescales
+        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
+        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
+
+    } else {
+        // Base case
+
+        firstBody->applyAcceleration(firstAcceleration, interval);
+        secondBody->applyAcceleration(secondAcceleration, interval);
+    }
 }
 
 float relationship::distance() {

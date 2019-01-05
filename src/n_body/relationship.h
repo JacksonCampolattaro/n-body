@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include "body.h"
 
+static const float maximumAllowableAcceleration = 1000;
+static const float timeResolutionLimit = 0.0001;
+
 class relationship {
 
 public:
@@ -46,7 +49,6 @@ private:
 
     body *firstBody;
     body *secondBody;
-
 };
 
 
