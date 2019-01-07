@@ -47,6 +47,18 @@ public:
      */
     octant* getSubdivision(ivec3);
 
+    /**
+     * Takes a poll of the bodies
+     * @return the number of bodies contained by the octant
+     */
+    int numBodies();
+
+    /**
+     * Creates a string representation of the entire tree
+     * @return a string describing the octant
+     */
+    std::string toString(int level = 0);
+
 private:
 
     // Location of the octant
@@ -57,7 +69,7 @@ private:
 
     // The body contained if this is the lowest node
     bool isLeaf = false;
-    body *theBody = nullptr; // No body by default
+    body *theBody = new body(vec3(0, 0, 0), vec3(0, 0, 0), 0, 0, vec3(0, 0, 0), true); // Mass-less body by default
 
     // 3d array of the subdivisions of this octant
     bool divided = false;

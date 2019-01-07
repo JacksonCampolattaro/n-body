@@ -14,12 +14,12 @@ void octant::addBody(body *newBody) {
 
     // If this octant has already been divided into subdivisions
     if (divided) {
-        subdivisionEnclosing(theBody)->addBody(theBody);
+        subdivisionEnclosing(newBody)->addBody(newBody);
         return;
     }
 
     // If a body has already been added
-    if (isLeaf) {
+    else if (isLeaf) {
 
         // Initializing the subdivisions
         divide();
@@ -31,42 +31,52 @@ void octant::addBody(body *newBody) {
         subdivisionEnclosing(newBody)->addBody(newBody);
 
         isLeaf = false;
-        theBody = nullptr;
+        divided = true;
 
         return;
-
     }
 
-    this->theBody = newBody;
-    isLeaf = true;
+    // If the node doesnt yet contain any bodies at all
+    else {
+
+        this->theBody = newBody;
+        isLeaf = true;
+    }
 }
 
 void octant::calculateCenterMass() {
 
-    // First base case: contains only one body
+    // Base case: contains only one body
     if (isLeaf) {
+
+        // The center of mass is the body contained
         return;
     }
 
     // Getting center of mass of non-leaf node
     if (divided) {
 
+        // The center of mass will be calculated from all subnodes
         glm::vec3 COM = glm::vec3(0, 0, 0);
         float totalMass = 0;
 
         // Iterating through all subdivisions
-        for (int x = 0; x < 1; ++x) {
-            for (int y = 0; y < 1; ++y) {
-                for (int z = 0; z < 1; ++z) {
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
 
-                    // Recursively finding center of mass
-                    subdivisions[x][y][z]->calculateCenterMass();
+                    // Ignoring nodes that don't contain any bodies
+                    if (subdivisions[x][y][z]->isLeaf || subdivisions[x][y][z]->divided) {
 
-                    // Center of Mass = sum of masses * positions / total mass
-                    COM += subdivisions[x][y][z]->getCenterMass()->getMass() *
-                           subdivisions[x][y][z]->getCenterMass()->getPosition();
+                        // Recursively finding center of mass
+                        subdivisions[x][y][z]->calculateCenterMass();
 
-                    totalMass += subdivisions[x][y][z]->getCenterMass()->getMass();
+                        // Center of Mass = sum of masses * positions / total mass
+                        COM += subdivisions[x][y][z]->getCenterMass()->getMass() *
+                               subdivisions[x][y][z]->getCenterMass()->getPosition();
+
+                        totalMass += subdivisions[x][y][z]->getCenterMass()->getMass();
+                    }
                 }
             }
         }
@@ -75,14 +85,14 @@ void octant::calculateCenterMass() {
 
         // A placeholder body is created representing the center of mass
         theBody = new body(COM, vec3(0, 0, 0), totalMass, 0, vec3(0, 0, 0), true);
+
+        return;
     }
 
-    // Second base case: contains no bodies
-    theBody = new body(vec3(0, 0, 0), vec3(0, 0, 0), 0, 0, vec3(0, 0, 0), true);
+
 }
 
 body *octant::getCenterMass() {
-
     return theBody;
 }
 
@@ -93,12 +103,81 @@ octant *octant::getSubdivision(ivec3 position) {
     return subdivisions[position.x][position.y][position.z];
 }
 
+int octant::numBodies() {
+
+    // Base case
+    if (isLeaf) {
+        return 1;
+    }
+
+    int total = 0;
+
+    if (divided) {
+
+        // Recursively checking lower subnodes
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    total += subdivisions[x][y][z]->numBodies();
+                }
+            }
+        }
+
+    }
+
+    return total;
+}
+
+std::string octant::toString(int level) {
+
+    std::string theString = "";
+    std::string indent = "";
+
+    for (int i = 0; i < level; ++i) {
+        indent += "           | ";
+    }
+
+    if (isLeaf) {
+        theString += indent + "> [Leaf Node] Body mass = " + std::to_string(theBody->getMass()) + " Position = (" +
+                     std::to_string(theBody->getPosition().x) + ", " + std::to_string(theBody->getPosition().y) + ", " +
+                     std::to_string(theBody->getPosition().z) + ")\n";
+    } else {
+
+        theString += indent + "> [Level " + std::to_string(level) + " Subnode]\n";
+        theString += indent + "  Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
+        theString += indent + "  Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
+                     std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
+        theString += indent + "  Center of Mass = (" + std::to_string(theBody->getPosition().x) + ", " +
+                     std::to_string(theBody->getPosition().y) + ", " + std::to_string(theBody->getPosition().z) +
+                     ") Total Mass = " + std::to_string(theBody->getMass()) + "\n";
+
+        theString += indent + "  Contains |\n";
+
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    if (subdivisions[x][y][z]->isLeaf || subdivisions[x][y][z]->divided) {
+
+                        theString += subdivisions[x][y][z]->toString(level + 1);
+
+                    }
+                }
+            }
+        }
+    }
+
+    return theString;
+}
+
 void octant::divide() {
 
     // If the subdivisions haven't been initialized yet
     if (!divided) {
 
-        float offset = sideLength / 4;
+        float offset = sideLength / 2;
+        float subdivisionSideLength = sideLength / 2;
 
         // Initializing all the subdivisions with their locations and sizes
         for (int x = 0; x <= 1; ++x) {
@@ -111,8 +190,12 @@ void octant::divide() {
                     int zSign = (2 * z) - 1;
 
                     // Initializing the subdivision
-                    subdivisions[x][y][z] = new octant(
-                            location += glm::vec3(xSign * offset, ySign * offset, zSign * offset), sideLength / 2);
+                    octant *newNode = new octant(
+                            this->location + glm::vec3(xSign * subdivisionSideLength,
+                                                       ySign * subdivisionSideLength,
+                                                       zSign * subdivisionSideLength), subdivisionSideLength);
+
+                    subdivisions[x][y][z] = newNode;
                 }
             }
         }

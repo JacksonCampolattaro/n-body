@@ -8,8 +8,8 @@ add_executable(${CMAKE_PROJECT_NAME} n_body/body.h n_body/body.cpp n_body/simula
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
 
-# Sets OpenMP compilation flags to allow for multithreaded performance
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+# Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx ${OpenMP_CXX_FLAGS}")
 
 # Makes sure OpenGL libraries are present and installed properly
 find_package(OpenGL REQUIRED)
