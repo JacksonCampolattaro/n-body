@@ -81,7 +81,7 @@ void bigDemo() {
     // Cubic Grid
     vec3 cornerPosition(-50, -50, -250);
     vec3 velocity(10.0f, 10.0f, 0.0f);
-    vec3 size(4, 4, 100);
+    vec3 size(4, 4, 500);
     float spacing = 10.0f;
     float mass = 10000.0f;
     density = 40;

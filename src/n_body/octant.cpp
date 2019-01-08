@@ -35,6 +35,7 @@ void octant::addBody(body *newBody) {
         isLeaf = false;
         divided = true;
         calculatedCOM = false;
+
         return;
     }
 
@@ -44,6 +45,8 @@ void octant::addBody(body *newBody) {
         this->theBody = newBody;
         isLeaf = true;
         calculatedCOM = true;
+
+        return;
     }
 }
 
@@ -136,7 +139,7 @@ std::vector<relationship *> octant::getRelationships(body *inputBody, float thet
         }
 
         // Determining whether subdividing is necessary
-        /* Node is treated as a single body if S/D > theta where S = sideLength and D = distance*/
+        /* Node is treated as a single body if S/D < theta where S = sideLength and D = distance*/
         if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
 
             relationships.push_back(new relationship(inputBody, theBody));
@@ -269,6 +272,8 @@ void octant::divide() {
 
         // Setting divided to true
         divided = true;
+
+        return;
     }
 
 }

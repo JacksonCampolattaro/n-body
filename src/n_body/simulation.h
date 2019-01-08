@@ -9,6 +9,7 @@
 
 #include "body.h"
 #include "relationship.h"
+#include "octant.h"
 
 /**
  * Contains the current state of the simulation
@@ -83,6 +84,8 @@ private:
     // Contains all relationships between bodies
     std::vector<relationship *> relationships;
 
+    // Root octant used for Barnes-Hut optimization
+    octant *octree = new octant(vec3(0, 0, 0), 100000);
 };
 
 
