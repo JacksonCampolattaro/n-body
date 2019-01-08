@@ -59,7 +59,7 @@ vec3 body::getAcceleration(vec3 force, float interval) {
         return acceleration;
     }
 
-    return vec3(0,0,0);
+    return vec3(0, 0, 0);
 
 }
 
@@ -101,6 +101,25 @@ void body::soundOff() {
     cout << "[ x Velocity: " + to_string(velocity.x) + " | y Velocity: " + to_string(velocity.y) +
             " | z Velocity: " + to_string(velocity.z) + " ]\n";
     cout << "[ Mass: " + to_string(mass) + " ] \n\n";
+}
+
+std::string body::toString() {
+
+    // TODO More attributes should be included in the toString
+
+    std::string
+            theString = "Body : Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " +
+                        std::to_string(position.z) + ") Velocity = <" + std::to_string(velocity.x) + ", " +
+                        std::to_string(velocity.y) + ", " + std::to_string(velocity.z) + "> Mass = " +
+                        std::to_string(mass);
+
+    if (fixed) {
+        theString += " [Fixed] ";
+    }
+
+    theString += "\n";
+
+    return theString;
 }
 
 void body::draw() {

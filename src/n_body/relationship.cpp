@@ -46,6 +46,15 @@ void relationship::applyGravity(float interval, float gravitationalConstant, int
     }
 }
 
+std::string relationship::toString() {
+
+    std::string theString = "Relationship : Distance = " + std::to_string(distance()) + "\n";
+    theString += "┣━ " + firstBody->toString();
+    theString += "┗━ " + secondBody->toString();
+
+    return theString;
+}
+
 float relationship::distance() {
     return glm::distance(firstBody->getPosition(), secondBody->getPosition());
 }

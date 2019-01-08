@@ -3,8 +3,10 @@
 //
 
 #include <gtest/gtest.h>
+#include <exception>
 #include "../src/n_body/octant.h"
 #include "../src/n_body/body.h"
+
 
 class octantTest : public ::testing::Test {
 protected:
@@ -51,4 +53,29 @@ TEST_F(octantTest, octantTest_addBody_Test) {
     EXPECT_FLOAT_EQ(-5.0f/8.0f, theOctant->getCenterMass()->getPosition().z);
 
     cout << "\n**** toString Output ****\n" << theOctant->toString() << "\n\n";
+}
+
+TEST_F(octantTest, octantTest_getRelationships_Test) {
+
+    body *body1 = new body(vec3(1, 1, 1), vec3(0, 0, 0), 100);
+
+
+    // Adding several bodies
+    theOctant->addBody(body1);
+    theOctant->addBody(new body(vec3(1, 1, -1), vec3(0, 0, 0), 100));
+    theOctant->addBody(new body(vec3(0, 0, 0), vec3(0, 0, 0), 100));
+    theOctant->addBody(new body(vec3(0, 0, -1), vec3(0, 0, 0), 200));
+    theOctant->addBody(new body(vec3(15, 15, 15), vec3(0, 0, 0), 100));
+    theOctant->addBody(new body(vec3(15.1, 15, 15), vec3(0, 0, 0), 100));
+
+    // Obtaining the relationships with the first body for theta = 1
+    std::vector<relationship *> relationships = theOctant->getRelationships(body1, 1);
+
+    cout << "\n\n";
+
+    cout << std::to_string(relationships.size()) << " relationships created: \n\n";
+
+    for (int i = 0; i < relationships.size(); ++i) {
+        cout << "Relationship " << std::to_string(i) << "\n" << relationships[i]->toString() << "\n";
+    }
 }

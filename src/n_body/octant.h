@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include "body.h"
+#include "relationship.h"
 
 
 /**
@@ -39,13 +40,21 @@ public:
      * Returns the body that represents the center of mass of the region
      * @return body sum of contained bodies
      */
-    body* getCenterMass();
+    body *getCenterMass();
+
+    /**
+     * Pairs the body with all the masses acting on it
+     * @param theBody The body to be affected
+     * @param theta Constant determining accuracy, Lower --> More accurate
+     * @return the list of all relationships affecting the body
+     */
+    std::vector<relationship *> getRelationships(body *inputBody, float theta);
 
     /**
      * Returns the requested subdivision of the octant
      * @return one of the eight octants contained by the parent
      */
-    octant* getSubdivision(ivec3);
+    octant *getSubdivision(ivec3);
 
     /**
      * Takes a poll of the bodies
@@ -70,6 +79,7 @@ private:
     // The body contained if this is the lowest node
     bool isLeaf = false;
     body *theBody = new body(vec3(0, 0, 0), vec3(0, 0, 0), 0, 0, vec3(0, 0, 0), true); // Mass-less body by default
+    bool calculatedCOM = false;
 
     // 3d array of the subdivisions of this octant
     bool divided = false;

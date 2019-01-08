@@ -32,6 +32,12 @@ public:
      */
     void applyGravity(float interval, float gravitationalConstant = 0.03, int power = 2);
 
+    /**
+     * Converts the relationship to a string
+     * @return a string describing both bodies of the relationship
+     */
+    std::string toString();
+
 private:
 
     /**

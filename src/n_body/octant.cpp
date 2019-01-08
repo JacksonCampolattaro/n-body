@@ -3,6 +3,7 @@
 //
 
 #include "octant.h"
+#include <exception>
 
 octant::octant(glm::vec3 location, float sideLength) {
 
@@ -15,10 +16,11 @@ void octant::addBody(body *newBody) {
     // If this octant has already been divided into subdivisions
     if (divided) {
         subdivisionEnclosing(newBody)->addBody(newBody);
+        calculatedCOM = false;
         return;
     }
 
-    // If a body has already been added
+        // If a body has already been added
     else if (isLeaf) {
 
         // Initializing the subdivisions
@@ -32,24 +34,30 @@ void octant::addBody(body *newBody) {
 
         isLeaf = false;
         divided = true;
-
+        calculatedCOM = false;
         return;
     }
 
-    // If the node doesnt yet contain any bodies at all
+        // If the node doesnt yet contain any bodies at all
     else {
 
         this->theBody = newBody;
         isLeaf = true;
+        calculatedCOM = true;
     }
 }
 
 void octant::calculateCenterMass() {
 
+    if (calculatedCOM) {
+        return;
+    }
+
     // Base case: contains only one body
     if (isLeaf) {
 
         // The center of mass is the body contained
+        calculatedCOM = true;
         return;
     }
 
@@ -86,6 +94,7 @@ void octant::calculateCenterMass() {
         // A placeholder body is created representing the center of mass
         theBody = new body(COM, vec3(0, 0, 0), totalMass, 0, vec3(0, 0, 0), true);
 
+        calculatedCOM = true;
         return;
     }
 
@@ -93,7 +102,65 @@ void octant::calculateCenterMass() {
 }
 
 body *octant::getCenterMass() {
+
+    // Handling un-calculated center of mass
+    if (!calculatedCOM) {
+        this->calculateCenterMass();
+    }
+
     return theBody;
+}
+
+std::vector<relationship *> octant::getRelationships(body *inputBody, float theta) {
+
+    std::vector<relationship *> relationships;
+
+    // Base case
+    if (isLeaf) {
+
+        // The input body is unaffected by any body with the same position, including itself
+        if (theBody->getPosition() == inputBody->getPosition()) {
+            return relationships;
+        }
+
+        // Otherwise the relationship is added to the list
+        relationships.push_back(new relationship(inputBody, theBody));;
+    }
+
+        // Recursive case
+    else if (divided) {
+
+        // Handling an un-calculated center of mass
+        if (!calculatedCOM) {
+            this->calculateCenterMass();
+        }
+
+        // Determining whether subdividing is necessary
+        /* Node is treated as a single body if S/D > theta where S = sideLength and D = distance*/
+        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
+
+            relationships.push_back(new relationship(inputBody, theBody));
+        }
+            /* Otherwise the node is subdivided */
+        else {
+
+            for (int x = 0; x <= 1; ++x) {
+                for (int y = 0; y <= 1; ++y) {
+                    for (int z = 0; z <= 1; ++z) {
+
+                        // Getting all the relationships from this subdivision
+                        std::vector<relationship *> recursiveList = subdivisions[x][y][z]->getRelationships(inputBody,
+                                                                                                            theta);
+
+                        relationships.insert(std::end(relationships), std::begin(recursiveList),
+                                             std::end(recursiveList));
+                    }
+                }
+            }
+        }
+    }
+
+    return relationships;
 }
 
 octant *octant::getSubdivision(ivec3 position) {
@@ -135,24 +202,22 @@ std::string octant::toString(int level) {
     std::string indent = "";
 
     for (int i = 0; i < level; ++i) {
-        indent += "           | ";
+        indent += "┃ ";
     }
 
+    theString += indent + "┏━━━ \n";
+
     if (isLeaf) {
-        theString += indent + "> [Leaf Node] Body mass = " + std::to_string(theBody->getMass()) + " Position = (" +
-                     std::to_string(theBody->getPosition().x) + ", " + std::to_string(theBody->getPosition().y) + ", " +
-                     std::to_string(theBody->getPosition().z) + ")\n";
+        theString += indent + "┃ [Leaf Node] " + theBody->toString();
     } else {
 
-        theString += indent + "> [Level " + std::to_string(level) + " Subnode]\n";
-        theString += indent + "  Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
-        theString += indent + "  Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
-                     std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
-        theString += indent + "  Center of Mass = (" + std::to_string(theBody->getPosition().x) + ", " +
+        theString += indent + "┃ [Level " + std::to_string(level) + " Subnode]\n";
+        theString += indent + "┃ Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
+        theString += indent + "┃ Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
+                std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
+        theString += indent + "┃ Center of Mass = (" + std::to_string(theBody->getPosition().x) + ", " +
                      std::to_string(theBody->getPosition().y) + ", " + std::to_string(theBody->getPosition().z) +
                      ") Total Mass = " + std::to_string(theBody->getMass()) + "\n";
-
-        theString += indent + "  Contains |\n";
 
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
@@ -167,6 +232,8 @@ std::string octant::toString(int level) {
             }
         }
     }
+
+    theString += indent + "┗━━━ \n";
 
     return theString;
 }

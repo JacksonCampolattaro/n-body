@@ -117,6 +117,12 @@ public:
     void soundOff();
 
     /**
+     * Converts the body to a string
+     * @return a string describing the body
+     */
+    std::string toString();
+
+    /**
      * Draws a circle at the location of the body
      */
     void draw() override;
