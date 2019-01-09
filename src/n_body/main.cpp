@@ -37,9 +37,9 @@ void cubicGrid() {
     theSimulation->setPower(2);
 
     // Creates a cubic grid
-    vec3 cornerPosition(-50, -50, -250);
-    vec3 velocity(0.0f, 0.0f, 0.0f);
-    vec3 size(10, 10, 10);
+    vec3 cornerPosition(-100, -100, -200);
+    vec3 velocity(0.0f, 0.0f, -100.0f);
+    vec3 size(20, 20, 20);
     float spacing = 10.0f;
     float mass = 10000.0f;
     density = 40;
@@ -81,7 +81,7 @@ void bigDemo() {
     // Cubic Grid
     vec3 cornerPosition(-50, -50, -250);
     vec3 velocity(10.0f, 10.0f, 0.0f);
-    vec3 size(4, 4, 500);
+    vec3 size(5, 5, 500);
     float spacing = 10.0f;
     float mass = 10000.0f;
     density = 40;
@@ -145,6 +145,8 @@ void addBodies() {
     //*/
 
     bigDemo();
+
+    //cubicGrid();
 }
 
 int main(int argc, char **argv) {

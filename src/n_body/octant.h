@@ -9,6 +9,7 @@
 #include "body.h"
 #include "relationship.h"
 
+class simulation;
 
 /**
  * My implementation of the Barnes-Hut algorithm
@@ -23,6 +24,16 @@ public:
      * @param sideLength The length of the octant
      */
     octant(glm::vec3 location, float sideLength);
+
+    /**
+     * Standard destructor for the class
+     */
+    virtual ~octant();
+
+    /**
+     * Empties the octant and resets
+     */
+    void clear();
 
     /**
      * Adds a body to the octant
@@ -49,6 +60,13 @@ public:
      * @return the list of all relationships affecting the body
      */
     std::vector<relationship *> getRelationships(body *inputBody, float theta);
+
+    /**
+     * Applies all forces to the body
+     * @param theBody The body to be affected
+     * @param theta Constant determining accuracy, Lower --> More accurate
+     */
+    void applyGravity(body *inputBody, float theta, simulation *simulation);
 
     /**
      * Returns the requested subdivision of the octant

@@ -23,6 +23,10 @@ body::body(vec3 position, vec3 velocity, float mass, float density, vec3 color, 
     this->fixed = fixed;
 }
 
+body::~body() {
+
+}
+
 void body::applyVelocity(float interval) {
 
     this->position += this->velocity * interval;

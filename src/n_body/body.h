@@ -39,6 +39,10 @@ public:
     body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
          bool fixed = false);
 
+    /**
+     * Standard destructor for the class
+     */
+    virtual ~body();
 
     /**
      * Updates position according to current velocity and a time interval

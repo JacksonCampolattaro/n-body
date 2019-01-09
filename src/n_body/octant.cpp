@@ -3,12 +3,40 @@
 //
 
 #include "octant.h"
-#include <exception>
+#include "simulation.h"
 
 octant::octant(glm::vec3 location, float sideLength) {
 
     this->location = location;
     this->sideLength = sideLength;
+}
+
+octant::~octant() {
+
+    for (int x = 0; x <= 1; ++x) {
+        for (int y = 0; y <= 1; ++y) {
+            for (int z = 0; z <= 1; ++z) {
+                delete subdivisions[x][y][z];
+            }
+        }
+    }
+
+    if (!isLeaf) {
+        delete theBody;
+    }
+}
+
+void octant::clear() {
+
+    for (int x = 0; x <= 1; ++x) {
+        for (int y = 0; y <= 1; ++y) {
+            for (int z = 0; z <= 1; ++z) {
+                delete subdivisions[x][y][z];
+                subdivisions[x][y][z] = nullptr;
+            }
+        }
+    }
+
 }
 
 void octant::addBody(body *newBody) {
@@ -166,6 +194,48 @@ std::vector<relationship *> octant::getRelationships(body *inputBody, float thet
     return relationships;
 }
 
+void octant::applyGravity(body *inputBody, float theta, simulation *simulation) {
+
+    // Base case
+    if (isLeaf) {
+
+        // The input body is unaffected by any body with the same position, including itself
+        if (theBody->getPosition() == inputBody->getPosition()) {
+            return;
+        }
+
+        simulation->applyGravity(inputBody, theBody);
+    }
+
+    else if (divided) {
+
+        // Determining whether subdividing is necessary
+        /* Node is treated as a single body if S/D < theta where S = sideLength and D = distance */
+        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
+
+            // Handling an un-calculated center of mass
+            if (!calculatedCOM) {
+                this->calculateCenterMass();
+            }
+
+            simulation->applyGravity(inputBody, theBody);
+        }
+            /* Otherwise the node is subdivided */
+        else {
+
+            for (int x = 0; x <= 1; ++x) {
+                for (int y = 0; y <= 1; ++y) {
+                    for (int z = 0; z <= 1; ++z) {
+
+                        // Recursively dividing the work
+                        subdivisions[x][y][z]->applyGravity(inputBody, theta, simulation);
+                    }
+                }
+            }
+        }
+    }
+}
+
 octant *octant::getSubdivision(ivec3 position) {
 
     // Gets the octant at this position
@@ -217,7 +287,7 @@ std::string octant::toString(int level) {
         theString += indent + "┃ [Level " + std::to_string(level) + " Subnode]\n";
         theString += indent + "┃ Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
         theString += indent + "┃ Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
-                std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
+                     std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
         theString += indent + "┃ Center of Mass = (" + std::to_string(theBody->getPosition().x) + ", " +
                      std::to_string(theBody->getPosition().y) + ", " + std::to_string(theBody->getPosition().z) +
                      ") Total Mass = " + std::to_string(theBody->getMass()) + "\n";

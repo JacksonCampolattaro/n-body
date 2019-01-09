@@ -16,11 +16,6 @@ simulation::simulation(float gravitationalConstant, float timeInterval, int powe
 
 void simulation::addBody(body *newBody) {
 
-    // Adds relationships to link the new body to each of the other bodies in the array.
-    /*for (body *theBody : bodies) {
-        relationships.push_back(new relationship(theBody, newBody));
-    }*/
-
     // Adds the new body to the collection
     bodies.push_back(newBody);
 }
@@ -28,8 +23,7 @@ void simulation::addBody(body *newBody) {
 void simulation::increment() {
 
     // Clearing all data from last cycle
-    relationships.clear();
-    relationships.reserve(bodies.size() * bodies.size());
+    //relationships.clear();
     octree = new octant(vec3(0, 0, 0), 100000);
 
     // Populates the Barnes-Hut Octree
@@ -40,38 +34,57 @@ void simulation::increment() {
     // Calculates center of mass data for non-leaf nodes of the tree
     octree->calculateCenterMass();
 
-    // Array of relationships lists sorted by body (For thread safety)
-    std::vector<relationship *> independentRelationships[bodies.size()];
-
-    // Generates reduced relationship list using octants
+    // Applying gravity to each body
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
 
-        // Adding each list of relationships to the array
-        independentRelationships[b] = octree->getRelationships(bodies[b], 0.9);
+        octree->applyGravity(bodies[b], 0.5, this);
     }
 
-    // Combining the lists by adding each one to the master list
-    for (int c = 0; c < bodies.size(); ++c) {
-
-        // Adding each list of relationships to the array
-        relationships.insert(std::end(relationships), std::begin(independentRelationships[c]),
-                             std::end(independentRelationships[c]));
-    }
-
-    cout << relationships.size() << " Relationships\n";
-
-    // Updates each Relationship
-    #pragma omp parallel for
-    for (int i = 0; i < relationships.size(); ++i) {
-        relationships[i]->applyGravity(timeInterval, gravitationalConstant, power);
-    }
-
-    // Updates each body
+    // Updates each body's position
     #pragma omp parallel for
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
+
+    delete octree;
+}
+
+void simulation::applyGravity(body *passive, body *active) {
+
+    // Calculating the directionless force of gravity
+    float forceOfGravity =
+            (gravitationalConstant * passive->getMass() * active->getMass()) /
+            ((float) pow(glm::distance(passive->getPosition(), active->getPosition()), power) + 0.0001f);
+
+    // Giving the force direction
+    glm::vec3 force = forceOfGravity * glm::normalize(active->getPosition() - passive->getPosition());
+
+    // Getting acceleration
+    vec3 acceleration = force / passive->getMass();
+
+    // Applying the acceleration to the body
+    passive->applyAcceleration(acceleration, timeInterval);
+
+    /*// Getting magnitudes of both accelerations
+    float firstMagnitude = glm::length(firstAcceleration);
+    float secondMagnitude = glm::length(secondAcceleration);
+
+    // If either acceleration is too large and time resolution is within bounds
+    if ((firstMagnitude > maximumAllowableAcceleration ||
+         secondMagnitude > maximumAllowableAcceleration) &&
+        interval > timeResolutionLimit) {
+
+        // Decompose the operation into shorter timescales
+        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
+        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
+
+    } else {
+        // Base case
+
+        firstBody->applyAcceleration(firstAcceleration, interval);
+        secondBody->applyAcceleration(secondAcceleration, interval);
+    }*/
 }
 
 void simulation::draw() {

@@ -37,6 +37,14 @@ public:
     void increment();
 
     /**
+     * Applies the gravity on the first body from the second and changes the velocity accordingly
+     *
+     * @param passive the body being affected
+     * @param active the body creating the force
+     */
+    void applyGravity(body *passive, body *active);
+
+    /**
      * Tells each body to draw itself
      */
     void draw();
