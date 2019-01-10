@@ -24,7 +24,6 @@ body::body(vec3 position, vec3 velocity, float mass, float density, vec3 color, 
 }
 
 body::~body() {
-
 }
 
 void body::applyVelocity(float interval) {
@@ -130,6 +129,22 @@ void body::draw() {
 
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
+}
+
+bool body::isFixed() const {
+    return fixed;
+}
+
+void body::setPosition(const vec3 &position) {
+    body::position = position;
+}
+
+void body::setMass(float mass) {
+    body::mass = mass;
+}
+
+void body::setFixed(bool fixed) {
+    body::fixed = fixed;
 }
 
 

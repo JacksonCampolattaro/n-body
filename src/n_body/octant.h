@@ -96,7 +96,8 @@ private:
 
     // The body contained if this is the lowest node
     bool isLeaf = false;
-    body *theBody = new body(vec3(0, 0, 0), vec3(0, 0, 0), 0, 0, vec3(0, 0, 0), true); // Mass-less body by default
+    std::unique_ptr<body> theMass;
+    body *theBody = nullptr; // Mass-less body by default
     bool calculatedCOM = false;
 
     // 3d array of the subdivisions of this octant
@@ -106,6 +107,7 @@ private:
     void divide();
 
     octant *subdivisionEnclosing(body *b);
+    std::unique_ptr<octant> subdivisionEnclosing(std::unique_ptr<body> *b);
 
 };
 

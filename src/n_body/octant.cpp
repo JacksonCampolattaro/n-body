@@ -13,7 +13,7 @@ octant::octant(glm::vec3 location, float sideLength) {
 
 octant::~octant() {
 
-    for (int x = 0; x <= 1; ++x) {
+    /*for (int x = 0; x <= 1; ++x) {
         for (int y = 0; y <= 1; ++y) {
             for (int z = 0; z <= 1; ++z) {
                 delete subdivisions[x][y][z];
@@ -23,19 +23,29 @@ octant::~octant() {
 
     if (!isLeaf) {
         delete theBody;
-    }
+    }*/
 }
 
 void octant::clear() {
 
-    for (int x = 0; x <= 1; ++x) {
-        for (int y = 0; y <= 1; ++y) {
-            for (int z = 0; z <= 1; ++z) {
-                delete subdivisions[x][y][z];
-                subdivisions[x][y][z] = nullptr;
+    if (divided) {
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+                    delete subdivisions[x][y][z];
+                    subdivisions[x][y][z] = nullptr;
+                }
             }
         }
     }
+
+    if (!isLeaf) {
+        delete theBody;
+        theBody = nullptr;
+    }
+
+    isLeaf = false;
+    divided = false;
 
 }
 
@@ -100,6 +110,7 @@ void octant::calculateCenterMass() {
         float totalMass = 0;
 
         // Iterating through all subdivisions
+        #pragma omp parallel for collapse(3)
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
                 for (int z = 0; z <= 1; ++z) {
@@ -223,6 +234,7 @@ void octant::applyGravity(body *inputBody, float theta, simulation *simulation) 
             /* Otherwise the node is subdivided */
         else {
 
+            #pragma omp parallel for collapse(3)
             for (int x = 0; x <= 1; ++x) {
                 for (int y = 0; y <= 1; ++y) {
                     for (int z = 0; z <= 1; ++z) {
@@ -355,6 +367,15 @@ octant *octant::subdivisionEnclosing(body *b) {
 
     // Adding the body at the appropriate index
     return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
+}
+
+std::unique_ptr<octant> octant::subdivisionEnclosing(std::unique_ptr<body> b) {
+
+    // Comparing the new body's position to the center of the octant
+    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
+
+    // Adding the body at the appropriate index
+    return std::unique_ptr<octant> subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
 
 

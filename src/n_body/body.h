@@ -141,11 +141,21 @@ private:
     // Properties
 
     float mass;
+public:
+    void setPosition(const vec3 &position);
+
+    void setMass(float mass);
+
+    void setFixed(bool fixed);
+
+private:
     float radius;
 
     vec3 color;
 
     bool fixed = false;
+public:
+    bool isFixed() const;
 
 };
 

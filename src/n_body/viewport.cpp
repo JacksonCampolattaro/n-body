@@ -9,6 +9,10 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
     // Setting the simulation
     this->theSim = theSim;
 
+    /*// Enabling antialiasing
+    glEnable(GL_MULTISAMPLE);
+    glfwWindowHint(GLFW_SAMPLES, 8);*/
+
     // Setting the function for handling errors
     glfwSetErrorCallback(handleError);
 
@@ -32,7 +36,7 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
 
 
     // Setting the window's minimum size
-    glfwSetWindowSizeLimits(window, 400, 400, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    glfwSetWindowSizeLimits(window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
     // Sets the window as the current OpenGL context
     glfwMakeContextCurrent(window);
@@ -42,6 +46,7 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
 
     // Sets the perspective before beginning the loop
     handleResize(window, width, height);
+
 }
 
 void viewport::registerDrawable(drawable *newDrawable) {

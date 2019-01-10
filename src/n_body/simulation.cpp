@@ -12,6 +12,8 @@ simulation::simulation(float gravitationalConstant, float timeInterval, int powe
     this->timeInterval = timeInterval;
     this->power = power;
 
+    octree = new octant(vec3(0, 0, 0), 100000);
+
 }
 
 void simulation::addBody(body *newBody) {
@@ -21,10 +23,6 @@ void simulation::addBody(body *newBody) {
 }
 
 void simulation::increment() {
-
-    // Clearing all data from last cycle
-    //relationships.clear();
-    octree = new octant(vec3(0, 0, 0), 100000);
 
     // Populates the Barnes-Hut Octree
     for (body *theBody : bodies) {
@@ -37,8 +35,9 @@ void simulation::increment() {
     // Applying gravity to each body
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
-
-        octree->applyGravity(bodies[b], 0.5, this);
+        if (!bodies[b]->isFixed()) {
+            octree->applyGravity(bodies[b], 0.5, this);
+        }
     }
 
     // Updates each body's position
@@ -47,7 +46,7 @@ void simulation::increment() {
         bodies[j]->applyVelocity(timeInterval);
     }
 
-    delete octree;
+    octree->clear();
 }
 
 void simulation::applyGravity(body *passive, body *active) {
@@ -65,26 +64,6 @@ void simulation::applyGravity(body *passive, body *active) {
 
     // Applying the acceleration to the body
     passive->applyAcceleration(acceleration, timeInterval);
-
-    /*// Getting magnitudes of both accelerations
-    float firstMagnitude = glm::length(firstAcceleration);
-    float secondMagnitude = glm::length(secondAcceleration);
-
-    // If either acceleration is too large and time resolution is within bounds
-    if ((firstMagnitude > maximumAllowableAcceleration ||
-         secondMagnitude > maximumAllowableAcceleration) &&
-        interval > timeResolutionLimit) {
-
-        // Decompose the operation into shorter timescales
-        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
-        this->applyGravity(interval / 2.0f, gravitationalConstant, power);
-
-    } else {
-        // Base case
-
-        firstBody->applyAcceleration(firstAcceleration, interval);
-        secondBody->applyAcceleration(secondAcceleration, interval);
-    }*/
 }
 
 void simulation::draw() {
