@@ -24,6 +24,8 @@ void simulation::addBody(body *newBody) {
 
 void simulation::increment() {
 
+    clock_t time_a = clock();
+
     // Creates the Barnes-Hut Octree
     std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
 
@@ -48,24 +50,11 @@ void simulation::increment() {
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
+
+    clock_t time_b = clock();
+
+    cout << std::to_string(time_b - time_a) << endl;
 }
-
-/*void simulation::applyGravity(body *passive, body *active) {
-
-    // Calculating the directionless force of gravity
-    float forceOfGravity =
-            (gravitationalConstant * passive->getMass() * active->getMass()) /
-            ((float) pow(glm::distance(passive->getPosition(), active->getPosition()), power) + 0.0001f);
-
-    // Giving the force direction
-    glm::vec3 force = forceOfGravity * glm::normalize(active->getPosition() - passive->getPosition());
-
-    // Getting acceleration
-    vec3 acceleration = force / passive->getMass();
-
-    // Applying the acceleration to the body
-    passive->applyAcceleration(acceleration, timeInterval);
-}*/
 
 void simulation::applyGravity(body *passive, vec3 activePosition, float activeMass) {
 

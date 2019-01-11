@@ -32,11 +32,6 @@ public:
     virtual ~octant();
 
     /**
-     * Empties the octant and resets
-     */
-    void clear();
-
-    /**
      * Adds a body to the octant
      * @param newBody The body to be added
      *//*
@@ -54,20 +49,6 @@ public:
      * @return body sum of contained bodies
      */
     void calculateCenterMass();
-
-    /**
-     * Returns the body that represents the center of mass of the region
-     * @return body sum of contained bodies
-     */
-    body *getCenterMass();
-
-    /**
-     * Pairs the body with all the masses acting on it
-     * @param theBody The body to be affected
-     * @param theta Constant determining accuracy, Lower --> More accurate
-     * @return the list of all relationships affecting the body
-     */
-    std::vector<relationship *> getRelationships(body *inputBody, float theta);
 
     /**
      * Applies all forces to the body
@@ -102,13 +83,13 @@ private:
     // Bounds of the octant
     float sideLength;
 
-    // The body contained if this is the lowest node
-    //std::unique_ptr<body> theBody;
-    //body *theBody = nullptr;
-    bool isLeaf = false;
+    // Position and mass of the body or bodies contained by the node
     vec3 position;
     float mass;
+    bool isLeaf = false;
+
 public:
+
     const vec3 &getPosition() const;
 
     float getMass() const;
@@ -122,8 +103,6 @@ private:
     std::shared_ptr<octant> subdivisions[2][2][2]; // No sub-nodes by default
 
     void divide();
-
-    std::shared_ptr<octant> subdivisionEnclosing(body * b);
 
     std::shared_ptr<octant> subdivisionEnclosing(vec3 position);
 

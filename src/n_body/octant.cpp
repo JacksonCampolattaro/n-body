@@ -13,29 +13,6 @@ octant::octant(glm::vec3 location, float sideLength) {
 
 octant::~octant() = default;
 
-void octant::clear() {
-
-    /*if (divided) {
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-                    delete subdivisions[x][y][z];
-                    subdivisions[x][y][z] = nullptr;
-                }
-            }
-        }
-    }
-
-    if (!isLeaf) {
-        delete theBody;
-        theBody = nullptr;
-    }
-
-    isLeaf = false;
-    divided = false;*/
-
-}
-
 void octant::addBody(vec3 newPosition, float newMass) {
 
     // If this octant has already been divided into subdivisions
@@ -131,68 +108,6 @@ void octant::calculateCenterMass() {
 
 
 }
-
-/*body *octant::getCenterMass() {
-
-    // Handling un-calculated center of mass
-    if (!calculatedCOM) {
-        this->calculateCenterMass();
-    }
-
-    return theBody;
-}*/
-
-/*std::vector<relationship *> octant::getRelationships(body *inputBody, float theta) {
-
-    std::vector<relationship *> relationships;
-
-    // Base case
-    if (isLeaf) {
-
-        // The input body is unaffected by any body with the same position, including itself
-        if (position == inputBody->getPosition()) {
-            return relationships;
-        }
-
-        // Otherwise the relationship is added to the list
-        relationships.push_back(new relationship(inputBody, theBody));;
-    }
-
-        // Recursive case
-    else if (divided) {
-
-        // Handling an un-calculated center of mass
-        if (!calculatedCOM) {
-            this->calculateCenterMass();
-        }
-
-        // Determining whether subdividing is necessary
-        *//* Node is treated as a single body if S/D < theta where S = sideLength and D = distance*//*
-        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
-
-            relationships.push_back(new relationship(inputBody, theBody));
-        }
-            *//* Otherwise the node is subdivided *//*
-        else {
-
-            for (int x = 0; x <= 1; ++x) {
-                for (int y = 0; y <= 1; ++y) {
-                    for (int z = 0; z <= 1; ++z) {
-
-                        // Getting all the relationships from this subdivision
-                        std::vector<relationship *> recursiveList = subdivisions[x][y][z]->getRelationships(inputBody,
-                                                                                                            theta);
-
-                        relationships.insert(std::end(relationships), std::begin(recursiveList),
-                                             std::end(recursiveList));
-                    }
-                }
-            }
-        }
-    }
-
-    return relationships;
-}*/
 
 void octant::applyGravity(body *inputBody, float theta, simulation *simulation) {
 
@@ -346,29 +261,6 @@ void octant::divide() {
     }
 
 }
-
-/*octant *octant::subdivisionEnclosing(body *b) {
-
-    // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
-
-    // Adding the body at the appropriate index
-    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z].get();
-}*/
-
-/*std::shared_ptr<octant> octant::subdivisionEnclosing(body * b) {
-
-    // Making sure the subdivisions exist
-    if (!divided) {
-        divide();
-    }
-
-    // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
-
-    // Adding the body at the appropriate index
-    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
-}*/
 
 std::shared_ptr<octant> octant::subdivisionEnclosing(vec3 position) {
 
