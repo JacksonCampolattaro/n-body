@@ -45,6 +45,15 @@ public:
     void applyGravity(body *passive, body *active);
 
     /**
+     * Applies the gravity on the first body from the second and changes the velocity accordingly
+     *
+     * @param passive the body being affected
+     * @param activePosition the position of the body creating the force
+     * @param activePosition the mass of the body creating the force
+     */
+    void applyGravity(body *passive, vec3 activePosition, float activeMass);
+
+    /**
      * Tells each body to draw itself
      */
     void draw();
@@ -93,7 +102,7 @@ private:
     std::vector<relationship *> relationships;
 
     // Root octant used for Barnes-Hut optimization
-    octant *octree = new octant(vec3(0, 0, 0), 100000);
+    //octant *octree = new octant(vec3(0, 0, 0), 100000);
 };
 
 

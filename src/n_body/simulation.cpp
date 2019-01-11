@@ -12,7 +12,7 @@ simulation::simulation(float gravitationalConstant, float timeInterval, int powe
     this->timeInterval = timeInterval;
     this->power = power;
 
-    octree = new octant(vec3(0, 0, 0), 100000);
+    //octree = new octant(vec3(0, 0, 0), 100000);
 
 }
 
@@ -24,9 +24,12 @@ void simulation::addBody(body *newBody) {
 
 void simulation::increment() {
 
+    // Creates the Barnes-Hut Octree
+    std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
+
     // Populates the Barnes-Hut Octree
     for (body *theBody : bodies) {
-        octree->addBody(theBody);
+        octree->addBody(theBody->getPosition(), theBody->getMass());
     }
 
     // Calculates center of mass data for non-leaf nodes of the tree
@@ -45,11 +48,9 @@ void simulation::increment() {
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
-
-    octree->clear();
 }
 
-void simulation::applyGravity(body *passive, body *active) {
+/*void simulation::applyGravity(body *passive, body *active) {
 
     // Calculating the directionless force of gravity
     float forceOfGravity =
@@ -58,6 +59,23 @@ void simulation::applyGravity(body *passive, body *active) {
 
     // Giving the force direction
     glm::vec3 force = forceOfGravity * glm::normalize(active->getPosition() - passive->getPosition());
+
+    // Getting acceleration
+    vec3 acceleration = force / passive->getMass();
+
+    // Applying the acceleration to the body
+    passive->applyAcceleration(acceleration, timeInterval);
+}*/
+
+void simulation::applyGravity(body *passive, vec3 activePosition, float activeMass) {
+
+    // Calculating the directionless force of gravity
+    float forceOfGravity =
+            (gravitationalConstant * passive->getMass() * activeMass) /
+            ((float) pow(glm::distance(passive->getPosition(), activePosition), power) + 0.0001f);
+
+    // Giving the force direction
+    glm::vec3 force = forceOfGravity * glm::normalize(activePosition - passive->getPosition());
 
     // Getting acceleration
     vec3 acceleration = force / passive->getMass();

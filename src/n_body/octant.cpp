@@ -11,24 +11,11 @@ octant::octant(glm::vec3 location, float sideLength) {
     this->sideLength = sideLength;
 }
 
-octant::~octant() {
-
-    /*for (int x = 0; x <= 1; ++x) {
-        for (int y = 0; y <= 1; ++y) {
-            for (int z = 0; z <= 1; ++z) {
-                delete subdivisions[x][y][z];
-            }
-        }
-    }
-
-    if (!isLeaf) {
-        delete theBody;
-    }*/
-}
+octant::~octant() = default;
 
 void octant::clear() {
 
-    if (divided) {
+    /*if (divided) {
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
                 for (int z = 0; z <= 1; ++z) {
@@ -45,15 +32,15 @@ void octant::clear() {
     }
 
     isLeaf = false;
-    divided = false;
+    divided = false;*/
 
 }
 
-void octant::addBody(body *newBody) {
+void octant::addBody(vec3 newPosition, float newMass) {
 
     // If this octant has already been divided into subdivisions
     if (divided) {
-        subdivisionEnclosing(newBody)->addBody(newBody);
+        subdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
         calculatedCOM = false;
         return;
     }
@@ -65,10 +52,10 @@ void octant::addBody(body *newBody) {
         divide();
 
         // Moving the body already contained
-        subdivisionEnclosing(theBody)->addBody(theBody);
+        subdivisionEnclosing(this->position)->addBody(this->position, this->mass);
 
         // Adding the body at the appropriate index
-        subdivisionEnclosing(newBody)->addBody(newBody);
+        subdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
 
         isLeaf = false;
         divided = true;
@@ -80,7 +67,8 @@ void octant::addBody(body *newBody) {
         // If the node doesnt yet contain any bodies at all
     else {
 
-        this->theBody = newBody;
+        this->position = newPosition;
+        this->mass = newMass;
         isLeaf = true;
         calculatedCOM = true;
 
@@ -122,10 +110,10 @@ void octant::calculateCenterMass() {
                         subdivisions[x][y][z]->calculateCenterMass();
 
                         // Center of Mass = sum of masses * positions / total mass
-                        COM += subdivisions[x][y][z]->getCenterMass()->getMass() *
-                               subdivisions[x][y][z]->getCenterMass()->getPosition();
+                        COM += subdivisions[x][y][z].get()->getMass() *
+                               subdivisions[x][y][z].get()->getPosition();
 
-                        totalMass += subdivisions[x][y][z]->getCenterMass()->getMass();
+                        totalMass += subdivisions[x][y][z]->getMass();
                     }
                 }
             }
@@ -133,8 +121,9 @@ void octant::calculateCenterMass() {
 
         COM = COM / totalMass;
 
-        // A placeholder body is created representing the center of mass
-        theBody = new body(COM, vec3(0, 0, 0), totalMass, 0, vec3(0, 0, 0), true);
+        // Setting center of mass data
+        this->position = COM;
+        this->mass = totalMass;
 
         calculatedCOM = true;
         return;
@@ -143,7 +132,7 @@ void octant::calculateCenterMass() {
 
 }
 
-body *octant::getCenterMass() {
+/*body *octant::getCenterMass() {
 
     // Handling un-calculated center of mass
     if (!calculatedCOM) {
@@ -151,9 +140,9 @@ body *octant::getCenterMass() {
     }
 
     return theBody;
-}
+}*/
 
-std::vector<relationship *> octant::getRelationships(body *inputBody, float theta) {
+/*std::vector<relationship *> octant::getRelationships(body *inputBody, float theta) {
 
     std::vector<relationship *> relationships;
 
@@ -161,7 +150,7 @@ std::vector<relationship *> octant::getRelationships(body *inputBody, float thet
     if (isLeaf) {
 
         // The input body is unaffected by any body with the same position, including itself
-        if (theBody->getPosition() == inputBody->getPosition()) {
+        if (position == inputBody->getPosition()) {
             return relationships;
         }
 
@@ -178,12 +167,12 @@ std::vector<relationship *> octant::getRelationships(body *inputBody, float thet
         }
 
         // Determining whether subdividing is necessary
-        /* Node is treated as a single body if S/D < theta where S = sideLength and D = distance*/
+        *//* Node is treated as a single body if S/D < theta where S = sideLength and D = distance*//*
         if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
 
             relationships.push_back(new relationship(inputBody, theBody));
         }
-            /* Otherwise the node is subdivided */
+            *//* Otherwise the node is subdivided *//*
         else {
 
             for (int x = 0; x <= 1; ++x) {
@@ -203,7 +192,7 @@ std::vector<relationship *> octant::getRelationships(body *inputBody, float thet
     }
 
     return relationships;
-}
+}*/
 
 void octant::applyGravity(body *inputBody, float theta, simulation *simulation) {
 
@@ -211,25 +200,22 @@ void octant::applyGravity(body *inputBody, float theta, simulation *simulation) 
     if (isLeaf) {
 
         // The input body is unaffected by any body with the same position, including itself
-        if (theBody->getPosition() == inputBody->getPosition()) {
-            return;
+        if (position != inputBody->getPosition()) {
+            simulation->applyGravity(inputBody, position, mass);
         }
 
-        simulation->applyGravity(inputBody, theBody);
-    }
-
-    else if (divided) {
+    } else if (divided) {
 
         // Determining whether subdividing is necessary
         /* Node is treated as a single body if S/D < theta where S = sideLength and D = distance */
-        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), theBody->getPosition())) {
+        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), position)) {
 
             // Handling an un-calculated center of mass
             if (!calculatedCOM) {
                 this->calculateCenterMass();
             }
 
-            simulation->applyGravity(inputBody, theBody);
+            simulation->applyGravity(inputBody, position, mass);
         }
             /* Otherwise the node is subdivided */
         else {
@@ -252,7 +238,7 @@ octant *octant::getSubdivision(ivec3 position) {
 
     // Gets the octant at this position
     // TODO I need to add vetting: positions must be either 0 or 1
-    return subdivisions[position.x][position.y][position.z];
+    return subdivisions[position.x][position.y][position.z].get();
 }
 
 int octant::numBodies() {
@@ -293,16 +279,18 @@ std::string octant::toString(int level) {
     theString += indent + "┏━━━ \n";
 
     if (isLeaf) {
-        theString += indent + "┃ [Leaf Node] " + theBody->toString();
+        theString +=
+                indent + "┃ [Leaf Node] Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) +
+                ", " + std::to_string(position.z) + ") Total Mass = " + std::to_string(mass) + "\n";
     } else {
 
         theString += indent + "┃ [Level " + std::to_string(level) + " Subnode]\n";
         theString += indent + "┃ Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
         theString += indent + "┃ Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
                      std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
-        theString += indent + "┃ Center of Mass = (" + std::to_string(theBody->getPosition().x) + ", " +
-                     std::to_string(theBody->getPosition().y) + ", " + std::to_string(theBody->getPosition().z) +
-                     ") Total Mass = " + std::to_string(theBody->getMass()) + "\n";
+        theString += indent + "┃ Center of Mass = (" + std::to_string(position.x) + ", " +
+                     std::to_string(position.y) + ", " + std::to_string(position.z) +
+                     ") Total Mass = " + std::to_string(mass) + "\n";
 
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
@@ -328,7 +316,6 @@ void octant::divide() {
     // If the subdivisions haven't been initialized yet
     if (!divided) {
 
-        float offset = sideLength / 2;
         float subdivisionSideLength = sideLength / 2;
 
         // Initializing all the subdivisions with their locations and sizes
@@ -341,11 +328,11 @@ void octant::divide() {
                     int ySign = (2 * y) - 1;
                     int zSign = (2 * z) - 1;
 
-                    // Initializing the subdivision
-                    octant *newNode = new octant(
-                            this->location + glm::vec3(xSign * subdivisionSideLength,
-                                                       ySign * subdivisionSideLength,
-                                                       zSign * subdivisionSideLength), subdivisionSideLength);
+                    std::shared_ptr<octant> newNode(new octant(this->location +
+                                                               glm::vec3(xSign * subdivisionSideLength,
+                                                                         ySign * subdivisionSideLength,
+                                                                         zSign * subdivisionSideLength),
+                                                               subdivisionSideLength));
 
                     subdivisions[x][y][z] = newNode;
                 }
@@ -360,22 +347,51 @@ void octant::divide() {
 
 }
 
-octant *octant::subdivisionEnclosing(body *b) {
+/*octant *octant::subdivisionEnclosing(body *b) {
+
+    // Comparing the new body's position to the center of the octant
+    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
+
+    // Adding the body at the appropriate index
+    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z].get();
+}*/
+
+/*std::shared_ptr<octant> octant::subdivisionEnclosing(body * b) {
+
+    // Making sure the subdivisions exist
+    if (!divided) {
+        divide();
+    }
 
     // Comparing the new body's position to the center of the octant
     vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
 
     // Adding the body at the appropriate index
     return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
-}
+}*/
 
-std::unique_ptr<octant> octant::subdivisionEnclosing(std::unique_ptr<body> b) {
+std::shared_ptr<octant> octant::subdivisionEnclosing(vec3 position) {
+
+    // Making sure the subdivisions exist
+    if (!divided) {
+        divide();
+    }
 
     // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(b->getPosition(), location);
+    vec3 comparison = glm::greaterThanEqual(position, this->location);
 
     // Adding the body at the appropriate index
-    return std::unique_ptr<octant> subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
+    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
+
+const vec3 &octant::getPosition() const {
+    return position;
+}
+
+float octant::getMass() const {
+    return mass;
+}
+
+
 
 

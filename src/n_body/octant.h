@@ -6,6 +6,7 @@
 #define N_BODY_HEADLESS_OCTANT_H
 
 #include <glm/glm.hpp>
+#include <boost/multi_array.hpp>
 #include "body.h"
 #include "relationship.h"
 
@@ -38,8 +39,15 @@ public:
     /**
      * Adds a body to the octant
      * @param newBody The body to be added
+     *//*
+    void addBody(body *newBody);*/
+
+    /**
+     * Adds a body to the octant by its parameters
+     * @param newPosition the location of the body
+     * @param newMass the mass of the body
      */
-    void addBody(body *newBody);
+    void addBody(vec3 newPosition, float newMass);
 
     /**
      * Creates a body that represents the center of mass of the region
@@ -95,19 +103,29 @@ private:
     float sideLength;
 
     // The body contained if this is the lowest node
+    //std::unique_ptr<body> theBody;
+    //body *theBody = nullptr;
     bool isLeaf = false;
-    std::unique_ptr<body> theMass;
-    body *theBody = nullptr; // Mass-less body by default
+    vec3 position;
+    float mass;
+public:
+    const vec3 &getPosition() const;
+
+    float getMass() const;
+
+private:
+
     bool calculatedCOM = false;
 
     // 3d array of the subdivisions of this octant
     bool divided = false;
-    octant *subdivisions[2][2][2] = {nullptr}; // No sub-nodes by default
+    std::shared_ptr<octant> subdivisions[2][2][2]; // No sub-nodes by default
 
     void divide();
 
-    octant *subdivisionEnclosing(body *b);
-    std::unique_ptr<octant> subdivisionEnclosing(std::unique_ptr<body> *b);
+    std::shared_ptr<octant> subdivisionEnclosing(body * b);
+
+    std::shared_ptr<octant> subdivisionEnclosing(vec3 position);
 
 };
 
