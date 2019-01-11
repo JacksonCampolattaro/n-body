@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <gtest/gtest.h>
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -38,6 +39,10 @@ public:
     body(vec3 position, vec3 velocity, float mass = 100, float density = 100, vec3 color = vec3(1, 1, 1),
          bool fixed = false);
 
+    /**
+     * Standard destructor for the class
+     */
+    virtual ~body();
 
     /**
      * Updates position according to current velocity and a time interval
@@ -53,6 +58,19 @@ public:
      */
     void applyForce(vec3 force, float interval);
 
+    /**
+     * Applies an acceleration to the body and updates the velocity accordingly.
+     *
+     * @param acceleration the acceleration applied
+     */
+    void applyAcceleration(vec3 acceleration, float interval);
+
+    /**
+     * Applies an force to the body and returns the resultant acceleration.
+     *
+     * @param force the force applied
+     */
+    vec3 getAcceleration(vec3 force, float interval);
 
     /**
      * Adds a velocity vector to the body.
@@ -73,6 +91,10 @@ public:
      */
     vec3 getVelocity();
 
+    /**
+     * Setter for the body's velocity
+     * @param newVelocity The new velocity of the body
+     */
     void setVelocity(vec3 newVelocity);
 
     /**
@@ -99,6 +121,12 @@ public:
     void soundOff();
 
     /**
+     * Converts the body to a string
+     * @return a string describing the body
+     */
+    std::string toString();
+
+    /**
      * Draws a circle at the location of the body
      */
     void draw() override;
@@ -113,11 +141,21 @@ private:
     // Properties
 
     float mass;
+public:
+    void setPosition(const vec3 &position);
+
+    void setMass(float mass);
+
+    void setFixed(bool fixed);
+
+private:
     float radius;
 
     vec3 color;
 
     bool fixed = false;
+public:
+    bool isFixed() const;
 
 };
 

@@ -23,6 +23,9 @@ body::body(vec3 position, vec3 velocity, float mass, float density, vec3 color, 
     this->fixed = fixed;
 }
 
+body::~body() {
+}
+
 void body::applyVelocity(float interval) {
 
     this->position += this->velocity * interval;
@@ -37,6 +40,29 @@ void body::applyForce(vec3 force, float interval) {
 
         this->addVelocity(velocity);
     }
+
+}
+
+void body::applyAcceleration(vec3 acceleration, float interval) {
+
+    if (!fixed) {
+
+        vec3 velocity = acceleration * interval;
+
+        this->addVelocity(velocity);
+    }
+
+}
+
+vec3 body::getAcceleration(vec3 force, float interval) {
+
+    if (!fixed) {
+        vec3 acceleration = force / mass;
+
+        return acceleration;
+    }
+
+    return vec3(0, 0, 0);
 
 }
 
@@ -80,10 +106,45 @@ void body::soundOff() {
     cout << "[ Mass: " + to_string(mass) + " ] \n\n";
 }
 
+std::string body::toString() {
+
+    // TODO More attributes should be included in the toString
+
+    std::string
+            theString = "Body : Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " +
+                        std::to_string(position.z) + ") Velocity = <" + std::to_string(velocity.x) + ", " +
+                        std::to_string(velocity.y) + ", " + std::to_string(velocity.z) + "> Mass = " +
+                        std::to_string(mass);
+
+    if (fixed) {
+        theString += " [Fixed] ";
+    }
+
+    theString += "\n";
+
+    return theString;
+}
+
 void body::draw() {
 
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
+}
+
+bool body::isFixed() const {
+    return fixed;
+}
+
+void body::setPosition(const vec3 &position) {
+    body::position = position;
+}
+
+void body::setMass(float mass) {
+    body::mass = mass;
+}
+
+void body::setFixed(bool fixed) {
+    body::fixed = fixed;
 }
 
 

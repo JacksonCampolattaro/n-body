@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include "body.h"
 
+static const float maximumAllowableAcceleration = 1000;
+static const float timeResolutionLimit = 0.0001;
+
 class relationship {
 
 public:
@@ -29,6 +32,12 @@ public:
      */
     void applyGravity(float interval, float gravitationalConstant = 0.03, int power = 2);
 
+    /**
+     * Converts the relationship to a string
+     * @return a string describing both bodies of the relationship
+     */
+    std::string toString();
+
 private:
 
     /**
@@ -46,7 +55,6 @@ private:
 
     body *firstBody;
     body *secondBody;
-
 };
 
 

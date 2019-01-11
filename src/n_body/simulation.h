@@ -9,6 +9,7 @@
 
 #include "body.h"
 #include "relationship.h"
+#include "octant.h"
 
 /**
  * Contains the current state of the simulation
@@ -34,6 +35,23 @@ public:
      * Increments the simulation by applying physics to all bodies
      */
     void increment();
+
+    /**
+     * Applies the gravity on the first body from the second and changes the velocity accordingly
+     *
+     * @param passive the body being affected
+     * @param active the body creating the force
+     */
+    void applyGravity(body *passive, body *active);
+
+    /**
+     * Applies the gravity on the first body from the second and changes the velocity accordingly
+     *
+     * @param passive the body being affected
+     * @param activePosition the position of the body creating the force
+     * @param activePosition the mass of the body creating the force
+     */
+    void applyGravity(body *passive, vec3 activePosition, float activeMass);
 
     /**
      * Tells each body to draw itself
@@ -64,6 +82,16 @@ private:
 
     // Simulation parameters
     float gravitationalConstant;
+
+public:
+
+    void setGravitationalConstant(float gravitationalConstant);
+
+    void setTimeInterval(float timeInterval);
+
+    void setPower(int power);
+
+private:
     float timeInterval;
     int power;
 
@@ -73,6 +101,8 @@ private:
     // Contains all relationships between bodies
     std::vector<relationship *> relationships;
 
+    // Root octant used for Barnes-Hut optimization
+    //octant *octree = new octant(vec3(0, 0, 0), 100000);
 };
 
 
