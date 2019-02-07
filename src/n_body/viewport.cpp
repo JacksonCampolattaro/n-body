@@ -9,9 +9,7 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
     // Setting the simulation
     this->theSim = theSim;
 
-    /*// Enabling antialiasing
-    glEnable(GL_MULTISAMPLE);
-    glfwWindowHint(GLFW_SAMPLES, 8);*/
+
 
     // Setting the function for handling errors
     glfwSetErrorCallback(handleError);
@@ -22,6 +20,7 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
         exit(EXIT_FAILURE);
     }
 
+
     // Creating the window
     window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (!window) {
@@ -30,10 +29,12 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
         exit(EXIT_FAILURE);
     }
 
+    // Enabling antialiasing
+    glEnable(GL_MULTISAMPLE);
+    glfwWindowHint(GLFW_SAMPLES, 8);
+
     // Setting the function for handling window resizing
     glfwSetWindowSizeCallback(window, handleResize);
-
-
 
     // Setting the window's minimum size
     glfwSetWindowSizeLimits(window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
@@ -46,7 +47,6 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
 
     // Sets the perspective before beginning the loop
     handleResize(window, width, height);
-
 }
 
 void viewport::registerDrawable(drawable *newDrawable) {

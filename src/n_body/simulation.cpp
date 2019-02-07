@@ -24,8 +24,6 @@ void simulation::addBody(body *newBody) {
 
 void simulation::increment() {
 
-    clock_t time_a = clock();
-
     // Creates the Barnes-Hut Octree
     std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
 
@@ -38,7 +36,7 @@ void simulation::increment() {
     octree->calculateCenterMass();
 
     // Applying gravity to each body
-    #pragma omp parallel for
+    #pragma omp parallel
     for (int b = 0; b < bodies.size(); ++b) {
         if (!bodies[b]->isFixed()) {
             octree->applyGravity(bodies[b], 0.5, this);
@@ -50,10 +48,6 @@ void simulation::increment() {
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
-
-    clock_t time_b = clock();
-
-    cout << std::to_string(time_b - time_a) << endl;
 }
 
 void simulation::applyGravity(body *passive, vec3 activePosition, float activeMass) {

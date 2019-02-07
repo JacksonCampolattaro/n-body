@@ -26,8 +26,8 @@ public:
      * @param height the height of the window in pixels
      * @param title the status bar title of the window
      */
-    explicit viewport(simulation *theSim, int width = 1000, int height = 1000,
-                      const char *title = "n_Body Simulator 0.2.0");
+    explicit viewport(simulation *theSim, int width = 1920, int height = 1080,
+                      const char *title = "n_Body Simulator 0.3.0");
 
     /**
      * Adds a new item to the render to be drawn each cycle
