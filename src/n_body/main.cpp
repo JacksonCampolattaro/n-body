@@ -69,27 +69,25 @@ void cubicGrid(vec3 cornerPosition = vec3(-100, -100, -200), vec3 velocity = vec
 void bigDemo() {
 
     // Massive fixed mass
-    auto superHeavy = new body(vec3(0, 0, -500), vec3(0, 0, 0), 180000000, 1000, white, true);
+    auto superHeavy = new body(vec3(0, 0, -500), vec3(0, 0, 0), 180000000, 10000, white, true);
     addBody(superHeavy);
 
     // Cubic Grid
     vec3 cornerPosition(-50, -100, -450);
-    vec3 velocity(30.0f, 15.0f, 0.0f);
-    vec3 size(4, 4, 150);
+    vec3 velocity(60.0f, 15.0f, 0.0f);
+    vec3 size(6, 6, 60);
     float spacing = 10.0f;
-    float mass = 10000.0f;
+    float mass = 5000.0f;
 
     for (int x = 0; x < size.x; ++x) {
         for (int y = 0; y < size.y; ++y) {
             for (int z = 0; z < size.z; ++z) {
 
+                // Used to generate colors
                 vec3 coordinate(x, y, z);
                 vec3 position = cornerPosition + (coordinate * spacing);
 
-                if (x < 0) {
-                    velocity *= -1;
-                }
-
+                // Color options
                 vec3 multiColor = coordinate / size + 0.2f;
                 vec3 yellowToRed(1, coordinate.y / size.y, 0);
                 vec3 yellowToRed_Z(1, coordinate.z / size.z, 0);
@@ -102,8 +100,8 @@ void bigDemo() {
                                       1 - coordinate.y / size.y + coordinate.z / size.z);
                 vec3 rainbow(coordinate.y / size.y, coordinate.x / size.x, 1 - coordinate.y / size.y);
 
-
-                auto newBody = new body(position, velocity, mass, density, yellowToRed, false);
+                // Creating and adding the bodies
+                auto newBody = new body(position, velocity, mass, density, blueToRedToWhite, false);
                 theSimulation->orbit(superHeavy, newBody);
                 addBody(newBody);
             }
@@ -115,9 +113,9 @@ void bigDemo() {
 void threeBodyDemo() {
     // Three body simulation
 
-    theSimulation->setPower(1);
-    theSimulation->setGravitationalConstant(1);
-    theSimulation->setTimeInterval(.001);
+    theSimulation->setPower(2);
+    theSimulation->setGravitationalConstant(2);
+    theSimulation->setTimeInterval(.01);
     addBody(new body(vec3(20.0, 50.0, -300), vec3(30, -50, 0), 500000, density, red));
     addBody(new body(vec3(0.0, -50, -400), vec3(-30, 0, 0), 500000, density, white));
     addBody(new body(vec3(-20, 0, -700), vec3(0, 50, 0), 500000, density, yellow));
@@ -142,7 +140,7 @@ void addBodies() {
     //*/
 
     bigDemo();
-    //cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -50), vec3(20, 20, 20));
+    //density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(20, 20, 100), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(vec3(-50, -50, -500), vec3(100, 0, 0), vec3(10, 10, 10));
@@ -154,10 +152,10 @@ int main(int argc, char **argv) {
     cout << " number of devices: " << omp_get_num_devices() << endl;
 
     // Creating simulation
-    theSimulation = new simulation(.05, .005, 2);
+    theSimulation = new simulation(.05, .001, 2);
 
     // Starting GLFW
-    theViewport = new viewport(theSimulation, 2000, 1000);
+    theViewport = new viewport(theSimulation, 1920, 1080);
 
     // Adding bodies
     addBodies();

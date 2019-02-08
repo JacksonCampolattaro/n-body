@@ -2,6 +2,7 @@
 // Created by jackcamp on 10/30/18.
 //
 
+#include <omp.h>
 #include "octant.h"
 #include "simulation.h"
 
@@ -15,41 +16,90 @@ octant::~octant() = default;
 
 void octant::addBody(vec3 newPosition, float newMass) {
 
-    // If this octant has already been divided into subdivisions
-    if (divided) {
-        subdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
-        calculatedCOM = false;
-        return;
-    }
+    // Making room for new bodies by dividing if the node is a leaf
+    if (isLeaf) {
 
-        // If a body has already been added
-    else if (isLeaf) {
-
-        // Initializing the subdivisions
+        // Subdividing the octant
         divide();
 
         // Moving the body already contained
         subdivisionEnclosing(this->position)->addBody(this->position, this->mass);
+    }
 
-        // Adding the body at the appropriate index
+    // Adding the body to the appropriate subdivision if the node is divided
+    if (divided) {
+
+        // Adding the new body to the appropriate octant
         subdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
 
-        isLeaf = false;
-        divided = true;
+        return;
+    }
+
+    // If the node doesnt yet contain any bodies at all
+    this->position = newPosition;
+    this->mass = newMass;
+    isLeaf = true;
+    calculatedCOM = true;
+}
+
+void octant::addBodies(std::vector<body*> newBodies) {
+
+    // Preventing wasted time on an empty list
+    if (newBodies.empty()) {
+        return;
+    }
+
+    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
+    if (isLeaf || newBodies.size() > 1) {
+        divide();
+    }
+
+    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
+    if (divided) {
+
+
+        // Array of lists to be added to each subdivision
+        std::vector<body*> dividedBodies[2][2][2];
+
+
+        // Checking which subdivision each body belongs to
+        // TODO This can be made parallel if I switch to a thread safe data container
+        for (body* theBody : newBodies) {
+
+            // Comparing the new body's position to the center of the octant
+            vec3 comparison = glm::greaterThanEqual(theBody->getPosition(), this->location);
+
+
+            // Adding the body at the appropriate index
+            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push_back(theBody);
+        }
+
+        // Transferring the lists to the appropriate subdivisions
+        #pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    // Adding the list of bodies to the appropriate subdivision
+                    subdivisions[x][y][z]->addBodies(dividedBodies[x][y][z]);
+                }
+            }
+        }
+
+        // Making sure the current COM is marked false
         calculatedCOM = false;
 
         return;
     }
 
-        // If the node doesnt yet contain any bodies at all
-    else {
+    // Base case, only one body left in the list, and the node isn't divided
+    if (newBodies.size() == 1) {
 
-        this->position = newPosition;
-        this->mass = newMass;
+        position = newBodies[0]->getPosition();
+        mass = newBodies[0]->getMass();
+
         isLeaf = true;
         calculatedCOM = true;
-
-        return;
     }
 }
 
@@ -256,6 +306,8 @@ void octant::divide() {
 
         // Setting divided to true
         divided = true;
+        isLeaf = false;
+        calculatedCOM = false;
 
         return;
     }

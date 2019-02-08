@@ -90,6 +90,11 @@ float body::getRadius() {
     return radius;
 }
 
+void body::update() {
+    previousPosition = position;
+    previousVelocity = velocity;
+}
+
 vec3 body::getColor() {
     return color;
 }
@@ -145,6 +150,14 @@ void body::setMass(float mass) {
 
 void body::setFixed(bool fixed) {
     body::fixed = fixed;
+}
+
+const vec3 &body::getPreviousPosition() const {
+    return previousPosition;
+}
+
+const vec3 &body::getPreviousVelocity() const {
+    return previousVelocity;
 }
 
 

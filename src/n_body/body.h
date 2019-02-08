@@ -110,6 +110,11 @@ public:
     float getRadius();
 
     /**
+     * Updates the body's position and velocity
+     */
+    void update();
+
+    /**
      * Getter for the body's color
      * @return the color of the body
      */
@@ -137,8 +142,14 @@ private:
     vec3 position;
     vec3 velocity;
 
+    vec3 previousPosition;
+public:
+    const vec3 &getPreviousPosition() const;
 
-    // Properties
+    const vec3 &getPreviousVelocity() const;
+
+private:
+    vec3 previousVelocity;
 
     float mass;
 public:

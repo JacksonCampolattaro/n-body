@@ -10,16 +10,18 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
     this->theSim = theSim;
 
 
-
-    // Setting the function for handling errors
-    glfwSetErrorCallback(handleError);
-
     // Initializing GLFW
     if (!glfwInit()) {
         // Exits if GLFW Fails to load
         exit(EXIT_FAILURE);
     }
 
+    // Setting the function for handling errors
+    glfwSetErrorCallback(handleError);
+
+    // Enabling antialiasing
+    glEnable(GL_MULTISAMPLE);
+    glfwWindowHint(GLFW_SAMPLES, 8);
 
     // Creating the window
     window = glfwCreateWindow(width, height, title, nullptr, nullptr);
@@ -28,10 +30,6 @@ viewport::viewport(simulation *theSim, int width, int height, const char *title)
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
-
-    // Enabling antialiasing
-    glEnable(GL_MULTISAMPLE);
-    glfwWindowHint(GLFW_SAMPLES, 8);
 
     // Setting the function for handling window resizing
     glfwSetWindowSizeCallback(window, handleResize);

@@ -32,17 +32,17 @@ public:
     virtual ~octant();
 
     /**
-     * Adds a body to the octant
-     * @param newBody The body to be added
-     *//*
-    void addBody(body *newBody);*/
-
-    /**
      * Adds a body to the octant by its parameters
      * @param newPosition the location of the body
      * @param newMass the mass of the body
      */
     void addBody(vec3 newPosition, float newMass);
+
+    /**
+     * Adds a list of bodies to the octant
+     * @param newBodies the bodies to be added
+     */
+    void addBodies(std::vector<body*> newBodies);
 
     /**
      * Creates a body that represents the center of mass of the region
@@ -75,6 +75,10 @@ public:
      */
     std::string toString(int level = 0);
 
+    const vec3 &getPosition() const;
+
+    float getMass() const;
+
 private:
 
     // Location of the octant
@@ -87,14 +91,6 @@ private:
     vec3 position;
     float mass;
     bool isLeaf = false;
-
-public:
-
-    const vec3 &getPosition() const;
-
-    float getMass() const;
-
-private:
 
     bool calculatedCOM = false;
 
