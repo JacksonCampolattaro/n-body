@@ -5,63 +5,52 @@
 #include <omp.h>
 #include "simulation.h"
 #include "viewport.h"
+#include "tracker.h"
 
 simulation::simulation(float gravitationalConstant, float timeInterval, int power) {
 
     this->gravitationalConstant = gravitationalConstant;
     this->timeInterval = timeInterval;
     this->power = power;
+
+    numBodies = 0;
 }
 
 void simulation::addBody(body *newBody) {
 
     // Adds the new body to the collection
     bodies.push_back(newBody);
+    numBodies++;
 }
 
 void simulation::increment() {
 
     cout << endl << "Starting physics increment, all times in clock ticks" << endl;
-    cout << std::to_string(bodies.size()) << " bodies in simulation." << endl;
-    clock_t startTime;
-    clock_t endTime;
+    //cout << std::to_string(bodies.size()) << " bodies in simulation." << endl;
 
     // Creates the Barnes-Hut Octree
-    startTime = clock();
     std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
-    endTime = clock();
-    cout << "Creating the root octant: " << std::to_string(endTime - startTime) << endl;
 
     // Populates the Barnes-Hut Octree
-    startTime = clock();
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
         #pragma omp critical
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
     //octree->addBodies(bodies);
-    endTime = clock();
-    cout << "Populating the octree: " << std::to_string(endTime - startTime) << endl;
 
     // Calculates center of mass data for non-leaf nodes of the tree
-    startTime = clock();
     octree->calculateCenterMass();
-    endTime = clock();
-    cout << "Generating center of mass data: " << std::to_string(endTime - startTime) << endl;
 
     // Applying gravity to each body
-    startTime = clock();
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
         if (!bodies[b]->isFixed()) {
             octree->applyGravity(bodies[b], 0.8, this);
         }
     }
-    endTime = clock();
-    cout << "Applying gravity: " << std::to_string(endTime - startTime) << endl;
 
     // Updates each body's position
-    startTime = clock();
     #pragma omp parallel for
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
@@ -70,8 +59,10 @@ void simulation::increment() {
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->update();
     }
-    endTime = clock();
-    cout << "Updating positions: " << std::to_string(endTime - startTime) << endl;
+
+    tracker::instance();
+    tracker::instance()->recordFrame();
+    tracker::instance()->reportFrame();
 }
 
 void simulation::applyGravity(body *passive, vec3 activePosition, float activeMass) {
@@ -97,6 +88,10 @@ void simulation::draw() {
     for (body *b : bodies) {
         b->draw();
     }
+}
+
+int simulation::getNumBodies() {
+    return numBodies;
 }
 
 void simulation::orbit(body *sunBody, body *satelliteBody) {

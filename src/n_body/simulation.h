@@ -40,14 +40,6 @@ public:
      * Applies the gravity on the first body from the second and changes the velocity accordingly
      *
      * @param passive the body being affected
-     * @param active the body creating the force
-     */
-    void applyGravity(body *passive, body *active);
-
-    /**
-     * Applies the gravity on the first body from the second and changes the velocity accordingly
-     *
-     * @param passive the body being affected
      * @param activePosition the position of the body creating the force
      * @param activePosition the mass of the body creating the force
      */
@@ -57,6 +49,12 @@ public:
      * Tells each body to draw itself
      */
     void draw();
+
+    /**
+     * Gets the number of bodies in the simulation
+     * @return the number of bodies as an integer
+     */
+    int getNumBodies();
 
     /**
      * Tells each body to announce its properties in the console
@@ -97,6 +95,7 @@ private:
 
     // Contains all bodies
     std::vector<body *> bodies;
+    int numBodies;
 
     // Contains all relationships between bodies
     std::vector<relationship *> relationships;

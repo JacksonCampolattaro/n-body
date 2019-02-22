@@ -8,6 +8,7 @@
 #include "body.h"
 #include "simulation.h"
 #include "viewport.h"
+#include "tracker.h"
 
 
 float density = 100;
@@ -153,6 +154,9 @@ int main(int argc, char **argv) {
 
     // Creating simulation
     theSimulation = new simulation(.05, .001, 2);
+
+    // Initializing the tracker
+    tracker::instance()->setSimulation(theSimulation);
 
     // Starting GLFW
     theViewport = new viewport(theSimulation, 1920, 1080);
