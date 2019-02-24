@@ -55,27 +55,22 @@ void simulation::preCalculate() {
 void simulation::increment() {
 
     // Creates the Barnes-Hut Octree
-    std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
+    std::unique_ptr<octant> octree(new octant(centerOfMass, 1000));
 
 
     // Populates the Octree
+    // Traditional Method
     for (int b = 0; b < bodies.size(); ++b) {
-
-        //octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
-        /*
-        octree->enqueueBody(bodies[b]->getPosition(), bodies[b]->getMass());
-
-        #pragma omp critical
-        octree->processBodyQueue();
-         //*/
-
+        octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
-    octree->eightThreadAdd(bodies);
+    // Splits only the root node into threads for each subtree
+    //octree->eightThreadAdd(bodies);
     tracker::instance()->markTreeCompleted();
 
 
     // Calculates center of mass data for non-leaf nodes of the tree
     octree->calculateCenterMass();
+    centerOfMass = octree->getPosition();
     tracker::instance()->markCenterMassCalculated();
 
     // Applying gravity to each body

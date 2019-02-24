@@ -14,6 +14,7 @@ tracker *tracker::instance() {
         internalInstance = new tracker();
 
         internalInstance->numFrames = 0;
+        internalInstance->programStartTime = clock();
     }
     return internalInstance;
 }
@@ -29,11 +30,11 @@ void tracker::markFrameCompleted() {
     numFrames++;
 
     // Getting time to calculate frame
-    totalFrameTime = clock() - startTime;
+    totalFrameTime = clock() - frameStartTime;
 
     // Resetting values for next frame
-    startTime = clock();
-    timeStamp = startTime;
+    frameStartTime = clock();
+    timeStamp = frameStartTime;
 }
 
 void tracker::markTreeCompleted() {
@@ -69,19 +70,15 @@ void tracker::outputStatus() {
     cout << "      Number of bodies:                    " << theSim->getNumBodies() << endl;
     cout << "      Total calculation time:              " << totalFrameTime << " clock cycles --> "
          << inSeconds(totalFrameTime) << " s" << endl;
-    cout << "           Tree Population:                " << treePopulationTime << " clock cycles --> "
-         << inSeconds(treePopulationTime) << " s" << endl;
-    cout << "           Center of Mass Propegation:     " << centerMassCalculationTime << " clock cycles --> "
-         << inSeconds(centerMassCalculationTime) << " s" << endl;
-    cout << "           Gravitational Calculations:     " << gravityCalculationTime << " clock cycles --> "
-         << inSeconds(gravityCalculationTime) << " s" << endl;
-    cout << "           Application of Velocity:        " << velocityApplicationTime << " clock cycles --> "
-         << inSeconds(velocityApplicationTime) << " s" << endl;
-    cout << "           Updating Positions:             " << positionUpdateTime << " clock cycles --> "
-         << inSeconds(positionUpdateTime) << " s" << endl;
-    cout << "           Rendering:                      " << renderingTime << " clock cycles --> "
-         << inSeconds(renderingTime) << " s" << endl;
+    cout << setprecision(3);
+    cout << "           Tree Population:                " << 100.0 * ((double) treePopulationTime / (double) totalFrameTime) << "%         " << inSeconds(treePopulationTime) << " s" << endl;
+    cout << "           Center of Mass Propegation:     " << 100.0 * ((double) centerMassCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(centerMassCalculationTime) << " s" << endl;
+    cout << "           Gravitational Calculations:     " << 100.0 * ((double) gravityCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(gravityCalculationTime) << " s" << endl;
+    cout << "           Application of Velocity:        " << 100.0 * ((double) velocityApplicationTime / (double) totalFrameTime) << "%       " << inSeconds(velocityApplicationTime) << " s" << endl;
+    cout << "           Updating Positions:             " << 100.0 * ((double) positionUpdateTime / (double) totalFrameTime) << "%      " << inSeconds(positionUpdateTime) << " s" << endl;
+    cout << "           Rendering:                      " << 100.0 * ((double) renderingTime / (double) totalFrameTime) << "%       " << inSeconds(renderingTime) << " s" << endl;
     cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(totalFrameTime) << " FPS" << endl;
+    cout << "      Framerate (average):                 " << 1 / inSeconds((clock() - programStartTime) / numFrames) << " FPS" << endl;
     cout << endl;
 }
 

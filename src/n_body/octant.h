@@ -46,7 +46,17 @@ public:
      */
     void addBodies(std::vector<body*> newBodies);
 
+    /**
+     * Adds the list of bodies to the octant, dedicating one thread to each subtree
+     * @param newBodies The list of bodies to be added
+     */
     void eightThreadAdd(std::vector<body*> newBodies);
+
+    /**
+     * Processes a queue of bodies using only one thread
+     * @param newBodies the bodies to be processed
+     */
+    void singleThreadProcess(tbb::concurrent_queue<body*> newBodies);
 
     /**
      * Adds a body to a queue to be added to the tree in a multi-threaded way

@@ -45,7 +45,8 @@ private:
     // Data held by the tracker
     int numFrames;
 
-    clock_t startTime;
+    clock_t programStartTime;
+    clock_t frameStartTime;
     clock_t timeStamp;
     clock_t treePopulationTime;
     clock_t centerMassCalculationTime;

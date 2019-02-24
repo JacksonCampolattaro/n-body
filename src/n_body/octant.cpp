@@ -148,16 +148,7 @@ void octant::eightThreadAdd(std::vector<body *> newBodies) {
             for (int y = 0; y <= 1; ++y) {
                 for (int z = 0; z <= 1; ++z) {
 
-                    // Processing each queue of bodies, one body at a time, but simultaneously between queues
-                    while (!dividedBodies[x][y][z].empty()) {
-
-                        // Getting the body to be added
-                        body* nextBody;
-                        dividedBodies[x][y][z].try_pop(nextBody);
-
-                        // Adding the body to the appropriate subnode
-                        subdivisions[x][y][z]->addBody(nextBody->getPosition(), nextBody->getMass());
-                    }
+                    subdivisions[x][y][z]->singleThreadProcess(dividedBodies[x][y][z]);
                 }
             }
         }
@@ -176,6 +167,20 @@ void octant::eightThreadAdd(std::vector<body *> newBodies) {
 
         isLeaf = true;
         calculatedCOM = true;
+    }
+}
+
+void octant::singleThreadProcess(tbb::concurrent_queue<body *> newBodies) {
+
+    // Iterates through the queue
+    while (!newBodies.empty()) {
+
+        // Getting the body to be added
+        body* nextBody;
+        newBodies.try_pop(nextBody);
+
+        // Adding the body to the appropriate subnode
+        this->addBody(nextBody->getPosition(), nextBody->getMass());
     }
 }
 

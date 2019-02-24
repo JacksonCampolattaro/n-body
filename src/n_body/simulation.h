@@ -108,8 +108,8 @@ private:
     // Contains all relationships between bodies
     std::vector<relationship *> relationships;
 
-    // Root octant used for Barnes-Hut optimization
-    //octant *octree = new octant(vec3(0, 0, 0), 100000);
+    // Keeping the center of mass of the simulation to optimize tree position
+    vec3 centerOfMass = vec3(0, 0, 0);
 };
 
 
