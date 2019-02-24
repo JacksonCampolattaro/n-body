@@ -149,3 +149,7 @@ void simulation::setTimeInterval(float timeInterval) {
 void simulation::setPower(int power) {
     simulation::power = power;
 }
+
+float simulation::getTheta() const {
+    return theta;
+}

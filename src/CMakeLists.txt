@@ -3,7 +3,7 @@
 set(CMAKE_CXX_STANDARD 14)
 
 # Adds my files to compilation path
-add_executable(${CMAKE_PROJECT_NAME} n_body/body.h n_body/body.cpp n_body/simulation.cpp n_body/simulation.h n_body/relationship.cpp n_body/relationship.h n_body/main.cpp n_body/viewport.cpp n_body/viewport.h n_body/drawable.cpp n_body/drawable.h n_body/octant.cpp n_body/octant.h n_body/tracker.cpp n_body/tracker.h)
+add_executable(${CMAKE_PROJECT_NAME} n_body/body.h n_body/body.cpp n_body/simulation.cpp n_body/simulation.h n_body/relationship.cpp n_body/relationship.h n_body/main.cpp n_body/viewport.cpp n_body/viewport.h n_body/drawable.cpp n_body/drawable.h n_body/octant.cpp n_body/octant.h n_body/tracker.cpp n_body/tracker.h n_body/threadSafe_octant.cpp n_body/threadSafe_octant.h)
 
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)

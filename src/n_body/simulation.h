@@ -100,6 +100,10 @@ private:
     float timeInterval;
     int power;
     float theta;
+public:
+    float getTheta() const;
+
+private:
 
     // Contains all bodies
     std::vector<body *> bodies;
