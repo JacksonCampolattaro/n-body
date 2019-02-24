@@ -3,15 +3,17 @@
 //
 
 #include <omp.h>
+
 #include "simulation.h"
 #include "viewport.h"
 #include "tracker.h"
 
-simulation::simulation(float gravitationalConstant, float timeInterval, int power) {
+simulation::simulation(float gravitationalConstant, float timeInterval, int power, float theta) {
 
     this->gravitationalConstant = gravitationalConstant;
     this->timeInterval = timeInterval;
     this->power = power;
+    this->theta = theta;
 
     numBodies = 0;
 }
@@ -23,10 +25,7 @@ void simulation::addBody(body *newBody) {
     numBodies++;
 }
 
-void simulation::increment() {
-
-    cout << endl << "Starting physics increment, all times in clock ticks" << endl;
-    //cout << std::to_string(bodies.size()) << " bodies in simulation." << endl;
+void simulation::preCalculate() {
 
     // Creates the Barnes-Hut Octree
     std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
@@ -37,32 +36,74 @@ void simulation::increment() {
         #pragma omp critical
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
-    //octree->addBodies(bodies);
+
+    octree->calculateCenterMass();
+
+    timeInterval *= 0.5;
+
+    #pragma omp parallel for
+    for (int b = 0; b < bodies.size(); ++b) {
+        if (!bodies[b]->isFixed()) {
+            octree->applyGravity(bodies[b], theta, this);
+        }
+    }
+
+    timeInterval *= 2.0;
+
+}
+
+void simulation::increment() {
+
+    // Creates the Barnes-Hut Octree
+    std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
+
+
+    // Populates the Octree
+    for (int b = 0; b < bodies.size(); ++b) {
+
+        //octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
+        /*
+        octree->enqueueBody(bodies[b]->getPosition(), bodies[b]->getMass());
+
+        #pragma omp critical
+        octree->processBodyQueue();
+         //*/
+
+    }
+    octree->eightThreadAdd(bodies);
+    tracker::instance()->markTreeCompleted();
+
 
     // Calculates center of mass data for non-leaf nodes of the tree
     octree->calculateCenterMass();
+    tracker::instance()->markCenterMassCalculated();
 
     // Applying gravity to each body
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
         if (!bodies[b]->isFixed()) {
-            octree->applyGravity(bodies[b], 0.8, this);
+            octree->applyGravity(bodies[b], theta, this);
         }
     }
+    tracker::instance()->markGravityCalculated();
 
     // Updates each body's position
     #pragma omp parallel for
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->applyVelocity(timeInterval);
     }
+    tracker::instance()->markVelocityApplied();
+
     #pragma omp parallel for
     for (int j = 0; j < bodies.size(); ++j) {
         bodies[j]->update();
     }
+    tracker::instance()->markPositionsUpdated();
 
+    cout << endl;
     tracker::instance();
-    tracker::instance()->recordFrame();
-    tracker::instance()->reportFrame();
+    tracker::instance()->markFrameCompleted();
+    tracker::instance()->outputStatus();
 }
 
 void simulation::applyGravity(body *passive, vec3 activePosition, float activeMass) {

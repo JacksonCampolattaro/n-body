@@ -103,6 +103,152 @@ void octant::addBodies(std::vector<body*> newBodies) {
     }
 }
 
+void octant::eightThreadAdd(std::vector<body *> newBodies) {
+
+    // Preventing wasted time on an empty list
+    if (newBodies.empty()) {
+        return;
+    }
+
+    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
+    if (isLeaf || newBodies.size() > 1) {
+        divide();
+    }
+
+    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
+    if (divided) {
+
+
+        // Array of lists to be added to each subdivision
+        tbb::concurrent_queue<body*> dividedBodies[2][2][2];
+
+
+        // Checking which subdivision each body belongs to
+        #pragma omp parallel for
+        for (int b = 0; b < newBodies.size(); ++b) {
+
+            vec3 comparison = glm::greaterThanEqual(newBodies[b]->getPosition(), this->location);
+
+            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push(newBodies[b]);
+        }
+
+        /*for (body* theBody : newBodies) {
+
+            // Comparing the new body's position to the center of the octant
+            vec3 comparison = glm::greaterThanEqual(theBody->getPosition(), this->location);
+
+
+            // Adding the body at the appropriate index
+            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push_back(theBody);
+        }*/
+
+        // Transferring the lists to the appropriate subdivisions
+        #pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    // Processing each queue of bodies, one body at a time, but simultaneously between queues
+                    while (!dividedBodies[x][y][z].empty()) {
+
+                        // Getting the body to be added
+                        body* nextBody;
+                        dividedBodies[x][y][z].try_pop(nextBody);
+
+                        // Adding the body to the appropriate subnode
+                        subdivisions[x][y][z]->addBody(nextBody->getPosition(), nextBody->getMass());
+                    }
+                }
+            }
+        }
+
+        // Making sure the current COM is marked false
+        calculatedCOM = false;
+
+        return;
+    }
+
+    // Base case, only one body left in the list, and the node isn't divided
+    if (newBodies.size() == 1) {
+
+        position = newBodies[0]->getPosition();
+        mass = newBodies[0]->getMass();
+
+        isLeaf = true;
+        calculatedCOM = true;
+    }
+}
+
+void octant::enqueueBody(vec3 newPosition, float newMass) {
+    positionsToBeProcessed.push(newPosition);
+    massesToBeProcessed.push(newMass);
+}
+
+void octant::processBodyQueue() {
+
+    // Preventing wasted time on an empty queue
+    if (positionsToBeProcessed.empty()) {
+        return;
+    }
+
+    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
+    if (isLeaf || positionsToBeProcessed.unsafe_size() > 1) {
+        divide();
+    }
+
+    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
+    if (divided) {
+
+        // Getting the size of the queue to be processed
+        unsigned long queueLength = positionsToBeProcessed.unsafe_size();
+
+        // Checking which subdivision each body belongs to
+        //#pragma parallel for
+        for (int j = 0; j < queueLength; ++j) {
+
+            // Retrieving the location and mass of the next body to be processed
+            vec3 newPosition;
+            positionsToBeProcessed.try_pop(newPosition);
+            float newMass;
+            massesToBeProcessed.try_pop(newMass);
+
+            // Comparing the new body's position to the center of the octant to determine where it should go
+            vec3 comparison = glm::greaterThanEqual(newPosition, this->location);
+
+            // Adding the next body to the appropriate subdivision
+            subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z]->enqueueBody(newPosition, newMass);
+        }
+
+        // Repeating this entire process for each subdivision
+        //#pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    // Each subdivision will distribute it's own queue in a new thread
+                    subdivisions[x][y][z]->processBodyQueue();
+                }
+            }
+        }
+
+        // Making sure the current COM is marked false
+        calculatedCOM = false;
+
+        return;
+    }
+
+    // Base case, only one body left in the list, and the node isn't divided
+    if (positionsToBeProcessed.unsafe_size() == 1) {
+
+        // Attempts to set the position and mass
+        positionsToBeProcessed.try_pop(position);
+        massesToBeProcessed.try_pop(mass);
+
+        isLeaf = true;
+        calculatedCOM = true;
+    }
+}
+
 void octant::calculateCenterMass() {
 
     if (calculatedCOM) {
@@ -182,7 +328,7 @@ void octant::applyGravity(body *inputBody, float theta, simulation *simulation) 
 
             simulation->applyGravity(inputBody, position, mass);
         }
-            /* Otherwise the node is subdivided */
+        /* Otherwise the node is subdivided */
         else {
 
             #pragma omp parallel for collapse(3)

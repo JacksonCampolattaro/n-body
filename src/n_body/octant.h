@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 #include <boost/multi_array.hpp>
+#include <tbb/tbb.h>
+
 #include "body.h"
 #include "relationship.h"
 
@@ -43,6 +45,20 @@ public:
      * @param newBodies the bodies to be added
      */
     void addBodies(std::vector<body*> newBodies);
+
+    void eightThreadAdd(std::vector<body*> newBodies);
+
+    /**
+     * Adds a body to a queue to be added to the tree in a multi-threaded way
+     * @param newPosition the location of the body
+     * @param newMass the mass of the body
+     */
+    void enqueueBody(vec3 newPosition, float newMass);
+
+    /**
+     * Distributes the queue of bodies to the octant's subnodes
+     */
+    void processBodyQueue();
 
     /**
      * Creates a body that represents the center of mass of the region
@@ -93,6 +109,10 @@ private:
     bool isLeaf = false;
 
     bool calculatedCOM = false;
+
+    // A thread safe way to add and retrieve bodies to be processed
+    tbb::concurrent_queue<vec3> positionsToBeProcessed;
+    tbb::concurrent_queue<float> massesToBeProcessed;
 
     // 3d array of the subdivisions of this octant
     bool divided = false;

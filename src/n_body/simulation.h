@@ -22,7 +22,7 @@ public:
     /**
      * Constructor for a simulation state
      */
-    simulation(float gravitationalConstant, float timeInterval, int power = 2);
+    simulation(float gravitationalConstant, float timeInterval, int power = 2, float theta = 0.8);
 
     /**
      * Adds a pre-built body to the simulation
@@ -30,6 +30,13 @@ public:
      * @param newBody the body to be added.
      */
     void addBody(body *newBody);
+
+    /**
+     * Calculates the first velocities with a half time-step.
+     * This is necessary for leapfrog integration.
+     * Should make the program more accurate than when using euler integration.
+     */
+    void preCalculate();
 
     /**
      * Increments the simulation by applying physics to all bodies
@@ -92,6 +99,7 @@ public:
 private:
     float timeInterval;
     int power;
+    float theta;
 
     // Contains all bodies
     std::vector<body *> bodies;

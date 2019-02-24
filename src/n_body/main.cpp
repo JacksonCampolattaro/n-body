@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <omp.h>
+#include <curses.h>
 
 #include "body.h"
 #include "simulation.h"
@@ -76,7 +77,7 @@ void bigDemo() {
     // Cubic Grid
     vec3 cornerPosition(-50, -100, -450);
     vec3 velocity(60.0f, 15.0f, 0.0f);
-    vec3 size(6, 6, 60);
+    vec3 size(6, 6, 10);
     float spacing = 10.0f;
     float mass = 5000.0f;
 
@@ -127,6 +128,8 @@ void addBodies() {
 
     // Orbit simulation
     /*
+    density = 10;
+
     auto sun = new body(vec3(0, 0, -4000), vec3(0, 0, 0), 50000000, density, yellow, true);
     addBody(sun);
 
@@ -134,14 +137,16 @@ void addBodies() {
     addBody(earth);
     theSimulation->orbit(sun, earth);
 
-    auto moon = new body(vec3(2000, -130, -4000), vec3(0, 0, 1), 500, .1, white);
+    auto moon = new body(vec3(2000, -130, -4000), vec3(0, 0, 1), 500, 0.05, white);
     theSimulation->orbit(earth, moon);
     moon->addVelocity(earth->getVelocity());
     addBody(moon);
+
+    theSimulation->setTimeInterval(0.05);
     //*/
 
-    bigDemo();
-    //density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(20, 20, 100), 10, 5000);
+    //bigDemo();
+    density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(2, 2, 2), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(vec3(-50, -50, -500), vec3(100, 0, 0), vec3(10, 10, 10));
@@ -153,7 +158,7 @@ int main(int argc, char **argv) {
     cout << " number of devices: " << omp_get_num_devices() << endl;
 
     // Creating simulation
-    theSimulation = new simulation(.05, .001, 2);
+    theSimulation = new simulation(.05, .001, 2, 0.8);
 
     // Initializing the tracker
     tracker::instance()->setSimulation(theSimulation);
@@ -163,6 +168,9 @@ int main(int argc, char **argv) {
 
     // Adding bodies
     addBodies();
+
+    // Enables Leapfrog integration of physics
+    theSimulation->preCalculate();
 
     // Starting the simulation
     theViewport->graphicsLoop();
