@@ -5,14 +5,17 @@
 #ifndef N_BODY_THREADSAFE_OCTANT_H
 #define N_BODY_THREADSAFE_OCTANT_H
 
+#include "simulation.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
+#include <memory>
 #include <atomic>
 #include <mutex>
 
+
 #include "body.h"
-#include "simulation.h"
+
 
 
 /**
@@ -100,7 +103,7 @@ private:
     once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
-    shared_ptr<threadSafe_octant> children[2][2][2];
+    std::shared_ptr<threadSafe_octant> children[2][2][2];
 
 
     // Metadata about the node

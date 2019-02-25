@@ -2,7 +2,9 @@
 // Created by jackcamp on 2/24/19.
 //
 
+
 #include "octant.h"
+
 
 
 // Public methods
