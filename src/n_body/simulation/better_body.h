@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
-#include "drawable.h"
+#include "../drawable.h"
 
 /**
  * Intended to streamline the functionality of the old body
