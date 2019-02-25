@@ -10,7 +10,6 @@
 #include "body.h"
 #include "relationship.h"
 #include "octant.h"
-#include "threadSafe_octant.h"
 
 /**
  * Contains the current state of the simulation

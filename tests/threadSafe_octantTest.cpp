@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <exception>
-#include "../src/n_body/threadSafe_octant.h"
+#include "../src/n_body/octant.h"
 #include "../src/n_body/tracker.h"
 
 

@@ -1,23 +1,31 @@
 //
-// Created by jackcamp on 10/30/18.
+// Created by jackcamp on 2/24/19.
 //
 
-#ifndef N_BODY_HEADLESS_OCTANT_H
-#define N_BODY_HEADLESS_OCTANT_H
+#ifndef N_BODY_THREADSAFE_OCTANT_H
+#define N_BODY_THREADSAFE_OCTANT_H
 
+
+#include <iostream>
 #include <glm/glm.hpp>
-#include <boost/multi_array.hpp>
-#include <tbb/tbb.h>
+#include <atomic>
+#include <mutex>
 
 #include "body.h"
-#include "relationship.h"
+#include "simulation.h"
 
-class simulation;
 
 /**
- * My implementation of the Barnes-Hut algorithm
+ * This octree is designed from the ground up with multi-threading in mind
+ *
+ * The goal is to make every method thread safe, using no locking
+ * This is achieved by using atomic initialization markers,
+ * so that certain processes can only ever be called once per instance of an octant
+ *
+ * I'm also trying to streamline the class by combining methods that are always used together
+ * For example, the center of mass is calculated the first time it needs to be retrieved
  */
-class octant {
+class threadSafe_octant {
 
 public:
 
@@ -26,74 +34,46 @@ public:
      * @param location The center of the octant as a vector
      * @param sideLength The length of the octant
      */
-    octant(glm::vec3 location, float sideLength);
+    threadSafe_octant(glm::vec3 location, float sideLength);
 
     /**
      * Standard destructor for the class
      */
-    virtual ~octant();
+    virtual ~threadSafe_octant() = default;
 
     /**
      * Adds a body to the octant by its parameters
+     * This is used for the creation of the tree
      * @param newPosition the location of the body
      * @param newMass the mass of the body
      */
-    void addBody(vec3 newPosition, float newMass);
+    void addBody(glm::vec3 newPosition, float newMass);
 
     /**
-     * Adds a list of bodies to the octant
-     * @param newBodies the bodies to be added
+     * Applies gravity to a body based on the parameters of a simulation
+     * This is used for the traversal of the tree
+     * @param theBody The body to apply the forces of gravity to
+     * @param theSimulation the simulation in which calculations are defined
      */
-    void addBodies(std::vector<body*> newBodies);
+    void applyGravityToBody(body *theBody, simulation *theSimulation);
 
     /**
-     * Adds the list of bodies to the octant, dedicating one thread to each subtree
-     * @param newBodies The list of bodies to be added
+     * Getter for the number of bodies contained by the octant
+     * @return One if leaf node, otherwise the sum of the bodies in all child nodes
      */
-    void eightThreadAdd(std::vector<body*> newBodies);
+    int getNumBodies();
 
     /**
-     * Processes a queue of bodies using only one thread
-     * @param newBodies the bodies to be processed
+     * Getter for the center of mass, which calculates it if it isn't already generated
+     * @return The center of mass as a vector
      */
-    void singleThreadProcess(tbb::concurrent_queue<body*> newBodies);
+    vec3 getCenterOfMass();
 
     /**
-     * Adds a body to a queue to be added to the tree in a multi-threaded way
-     * @param newPosition the location of the body
-     * @param newMass the mass of the body
+     * Getter for the average position of the bodies in the tree, which calculates it if necessary
+     * @return The ideal position of the next iteration's octree
      */
-    void enqueueBody(vec3 newPosition, float newMass);
-
-    /**
-     * Distributes the queue of bodies to the octant's subnodes
-     */
-    void processBodyQueue();
-
-    /**
-     * Creates a body that represents the center of mass of the region
-     * @return body sum of contained bodies
-     */
-    void calculateCenterMass();
-
-    /**
-     * Applies all forces to the body
-     * @param theBody The body to be affected
-     * @param theta Constant determining accuracy, Lower --> More accurate
-     */
-    void applyGravity(body *inputBody, float theta, simulation *simulation);
-
-    /**
-     * Returns the requested subdivision of the octant
-     * @return one of the eight octants contained by the parent
-     */
-    octant *getSubdivision(ivec3);
-
-    /**
-     * Takes a poll of the bodies
-     * @return the number of bodies contained by the octant
-     */
-    int numBodies();
+    vec3 getAveragePosition();
 
     /**
      * Creates a string representation of the entire tree
@@ -101,38 +81,54 @@ public:
      */
     std::string toString(int level = 0);
 
-    const vec3 &getPosition() const;
-
-    float getMass() const;
-
 private:
 
-    // Location of the octant
-    glm::vec3 location;
+    // Values used for gravity calculations
 
-    // Bounds of the octant
+    /*Position and mass of the body or bodies contained by the node*/
+    vec3 centerOfMass;
+    float totalMass;
+
+    /*By keeping track of this, center of mass doesn't have to be recalculated every time a body is added*/
+    atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
+
+
+    // Subdivisions of the node
+
+    /*Whether or not the node is already divided, atomic for thread safety reasons*/
+    atomic_bool divided = {false};
+    once_flag split;
+
+    /*Three dimensional array of smart pointers to child trees*/
+    shared_ptr<threadSafe_octant> children[2][2][2];
+
+
+    // Metadata about the node
+
+    /*Whether or not the node isn't empty, atomic for thread safety reasons*/
+    atomic_bool initialized = {false};
+
+    /*Size of the node and position of its center*/
     float sideLength;
+    vec3 octantLocation;
 
-    // Position and mass of the body or bodies contained by the node
-    vec3 position;
-    float mass;
-    bool isLeaf = false;
+    /*Useful data for determining the ideal position of the next iteration's octree*/
+    vec3 averagePosition = vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
+    atomic_bool validAveragePosition = {true};
 
-    bool calculatedCOM = false;
+    /*Total number of bodies contained by the octant or its children*/
+    int numBodies;
 
-    // A thread safe way to add and retrieve bodies to be processed
-    tbb::concurrent_queue<vec3> positionsToBeProcessed;
-    tbb::concurrent_queue<float> massesToBeProcessed;
 
-    // 3d array of the subdivisions of this octant
-    bool divided = false;
-    std::shared_ptr<octant> subdivisions[2][2][2]; // No sub-nodes by default
+    // Helper methods
 
+    /*Splits the octant into subnodes*/
     void divide();
 
-    std::shared_ptr<octant> subdivisionEnclosing(vec3 position);
+    /*Finds the appropriate child to add a body to*/
+    shared_ptr<threadSafe_octant> getSubdivisionEnclosing(vec3 position);
 
 };
 
 
-#endif //N_BODY_HEADLESS_OCTANT_H
+#endif //N_BODY_THREADSAFE_OCTANT_H

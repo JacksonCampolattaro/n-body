@@ -28,7 +28,7 @@ void simulation::addBody(body *newBody) {
 void simulation::preCalculate() {
 
     // Creates the Barnes-Hut Octree
-    std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
+    std::unique_ptr<threadSafe_octant> octree(new threadSafe_octant(vec3(0, 0, 0), 100000));
 
     // Populates the Barnes-Hut Octree
     #pragma omp parallel for
@@ -37,14 +37,14 @@ void simulation::preCalculate() {
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
 
-    octree->calculateCenterMass();
+    octree->getCenterOfMass();
 
     timeInterval *= 0.5;
 
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
         if (!bodies[b]->isFixed()) {
-            octree->applyGravity(bodies[b], theta, this);
+            octree->applyGravityToBody(bodies[b], this);
         }
     }
 
@@ -102,7 +102,6 @@ void simulation::increment() {
     tracker::instance()->markPositionsUpdated();
 
     tracker::instance()->outputStatus();
-    cout << threadSafe_octree->toString() << endl;
 
 
 

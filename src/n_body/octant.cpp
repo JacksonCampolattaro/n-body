@@ -1,392 +1,129 @@
 //
-// Created by jackcamp on 10/30/18.
+// Created by jackcamp on 2/24/19.
 //
 
-#include <omp.h>
 #include "octant.h"
-#include "simulation.h"
 
-octant::octant(glm::vec3 location, float sideLength) {
 
-    this->location = location;
+// Public methods
+
+threadSafe_octant::threadSafe_octant(glm::vec3 location, float sideLength) {
+
+    this->octantLocation = location;
     this->sideLength = sideLength;
 }
 
-octant::~octant() = default;
+void threadSafe_octant::addBody(glm::vec3 newPosition, float newMass) {
 
-void octant::addBody(vec3 newPosition, float newMass) {
 
-    // Making room for new bodies by dividing if the node is a leaf
-    if (isLeaf) {
+    /*// Adding the first body (only executes the first time through)
+    call_once(init, [=] () mutable {
 
-        // Subdividing the octant
+        centerOfMass = newPosition;
+        averagePosition = newPosition;
+
+        totalMass = newMass;
+        numBodies = 1;
+    });
+
+    // If it gets this far, then it's definitely initialized, set it to true and return
+    if (!initialized) {
+        initialized = true;
+        return;
+    }
+
+
+    // Adding the second body (only executes the second time through)
+    call_once(split, [=] {
+
+        // Dividing the octant
         divide();
 
-        // Moving the body already contained
-        subdivisionEnclosing(this->position)->addBody(this->position, this->mass);
-    }
+    });
 
-    // Adding the body to the appropriate subdivision if the node is divided
+    // Adding all future bodies (executes every time after the first)
+    getSubdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
+    totalMass += newMass;
+    numBodies++;*/
+
+    // Used when adding all but the first and second bodies
     if (divided) {
 
-        // Adding the new body to the appropriate octant
-        subdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
-
-        return;
+        getSubdivisionEnclosing(newPosition)->addBody(newPosition, newMass);
+        totalMass += newMass;
+        numBodies++;
     }
+    // Used when adding the first body
+    else if (!initialized) {
 
-    // If the node doesnt yet contain any bodies at all
-    this->position = newPosition;
-    this->mass = newMass;
-    isLeaf = true;
-    calculatedCOM = true;
-}
+        initialized = true;
 
-void octant::addBodies(std::vector<body*> newBodies) {
+        centerOfMass = newPosition;
+        averagePosition = newPosition;
 
-    // Preventing wasted time on an empty list
-    if (newBodies.empty()) {
-        return;
+        totalMass = newMass;
+        numBodies = 1;
     }
+    // Used only when adding the second body
+    else {
 
-    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
-    if (isLeaf || newBodies.size() > 1) {
-        divide();
-    }
+        call_once(split, [=] {
 
-    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
-    if (divided) {
+            // Dividing the octant
+            divide();
 
+            // Adding the new body
+            this->addBody(newPosition, newMass);
 
-        // Array of lists to be added to each subdivision
-        std::vector<body*> dividedBodies[2][2][2];
-
-
-        // Checking which subdivision each body belongs to
-        // TODO This can be made parallel if I switch to a thread safe data container
-        for (body* theBody : newBodies) {
-
-            // Comparing the new body's position to the center of the octant
-            vec3 comparison = glm::greaterThanEqual(theBody->getPosition(), this->location);
-
-
-            // Adding the body at the appropriate index
-            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push_back(theBody);
-        }
-
-        // Transferring the lists to the appropriate subdivisions
-        #pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-
-                    // Adding the list of bodies to the appropriate subdivision
-                    subdivisions[x][y][z]->addBodies(dividedBodies[x][y][z]);
-                }
-            }
-        }
-
-        // Making sure the current COM is marked false
-        calculatedCOM = false;
-
-        return;
-    }
-
-    // Base case, only one body left in the list, and the node isn't divided
-    if (newBodies.size() == 1) {
-
-        position = newBodies[0]->getPosition();
-        mass = newBodies[0]->getMass();
-
-        isLeaf = true;
-        calculatedCOM = true;
+        });
     }
 }
 
-void octant::eightThreadAdd(std::vector<body *> newBodies) {
+void threadSafe_octant::applyGravityToBody(body *theBody, simulation *theSimulation) {
 
-    // Preventing wasted time on an empty list
-    if (newBodies.empty()) {
+    // Ignores empty nodes
+    if (!initialized) {
         return;
     }
 
-    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
-    if (isLeaf || newBodies.size() > 1) {
-        divide();
-    }
+    // Base case 1: Leaf node
+    if (!divided) {
 
-    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
-    if (divided) {
+        // Ignores the node if it contains the body to be acted upon
+        if (centerOfMass != theBody->getPosition()) {
 
-
-        // Array of lists to be added to each subdivision
-        tbb::concurrent_queue<body*> dividedBodies[2][2][2];
-
-
-        // Checking which subdivision each body belongs to
-        #pragma omp parallel for
-        for (int b = 0; b < newBodies.size(); ++b) {
-
-            vec3 comparison = glm::greaterThanEqual(newBodies[b]->getPosition(), this->location);
-
-            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push(newBodies[b]);
+            theSimulation->applyGravity(theBody, centerOfMass, totalMass);
         }
-
-        /*for (body* theBody : newBodies) {
-
-            // Comparing the new body's position to the center of the octant
-            vec3 comparison = glm::greaterThanEqual(theBody->getPosition(), this->location);
-
-
-            // Adding the body at the appropriate index
-            dividedBodies[(int) comparison.x][(int) comparison.y][(int) comparison.z].push_back(theBody);
-        }*/
-
-        // Transferring the lists to the appropriate subdivisions
-        #pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-
-                    subdivisions[x][y][z]->singleThreadProcess(dividedBodies[x][y][z]);
-                }
-            }
-        }
-
-        // Making sure the current COM is marked false
-        calculatedCOM = false;
 
         return;
     }
 
-    // Base case, only one body left in the list, and the node isn't divided
-    if (newBodies.size() == 1) {
+    // Base case 2: Divided, but subdivision is unnecessary
+    /* Node is treated as a single body if S/D < theta (where S = sideLength and D = distance) */
+    if (theSimulation->getTheta() > (float) sideLength / (float) distance(theBody->getPosition(), centerOfMass)) {
 
-        position = newBodies[0]->getPosition();
-        mass = newBodies[0]->getMass();
-
-        isLeaf = true;
-        calculatedCOM = true;
-    }
-}
-
-void octant::singleThreadProcess(tbb::concurrent_queue<body *> newBodies) {
-
-    // Iterates through the queue
-    while (!newBodies.empty()) {
-
-        // Getting the body to be added
-        body* nextBody;
-        newBodies.try_pop(nextBody);
-
-        // Adding the body to the appropriate subnode
-        this->addBody(nextBody->getPosition(), nextBody->getMass());
-    }
-}
-
-void octant::enqueueBody(vec3 newPosition, float newMass) {
-    positionsToBeProcessed.push(newPosition);
-    massesToBeProcessed.push(newMass);
-}
-
-void octant::processBodyQueue() {
-
-    // Preventing wasted time on an empty queue
-    if (positionsToBeProcessed.empty()) {
-        return;
-    }
-
-    // Making room for new bodies by dividing if the node is a leaf (or if there is more than one body to add)
-    if (isLeaf || positionsToBeProcessed.unsafe_size() > 1) {
-        divide();
-    }
-
-    // If the node is subdivided, all the bodies in the list will be added to the subdivisions
-    if (divided) {
-
-        // Getting the size of the queue to be processed
-        unsigned long queueLength = positionsToBeProcessed.unsafe_size();
-
-        // Checking which subdivision each body belongs to
-        //#pragma parallel for
-        for (int j = 0; j < queueLength; ++j) {
-
-            // Retrieving the location and mass of the next body to be processed
-            vec3 newPosition;
-            positionsToBeProcessed.try_pop(newPosition);
-            float newMass;
-            massesToBeProcessed.try_pop(newMass);
-
-            // Comparing the new body's position to the center of the octant to determine where it should go
-            vec3 comparison = glm::greaterThanEqual(newPosition, this->location);
-
-            // Adding the next body to the appropriate subdivision
-            subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z]->enqueueBody(newPosition, newMass);
-        }
-
-        // Repeating this entire process for each subdivision
-        //#pragma omp parallel for collapse(3) // This should be thread safe because the subdivisions are independent
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-
-                    // Each subdivision will distribute it's own queue in a new thread
-                    subdivisions[x][y][z]->processBodyQueue();
-                }
-            }
-        }
-
-        // Making sure the current COM is marked false
-        calculatedCOM = false;
+        theSimulation->applyGravity(theBody, centerOfMass, totalMass);
 
         return;
     }
 
-    // Base case, only one body left in the list, and the node isn't divided
-    if (positionsToBeProcessed.unsafe_size() == 1) {
+    // Recursive case: Divided, and not far enough to avoid subdividing
+    #pragma omp parallel for collapse(3)
+    for (int x = 0; x <= 1; ++x) {
+        for (int y = 0; y <= 1; ++y) {
+            for (int z = 0; z <= 1; ++z) {
 
-        // Attempts to set the position and mass
-        positionsToBeProcessed.try_pop(position);
-        massesToBeProcessed.try_pop(mass);
-
-        isLeaf = true;
-        calculatedCOM = true;
-    }
-}
-
-void octant::calculateCenterMass() {
-
-    if (calculatedCOM) {
-        return;
-    }
-
-    // Base case: contains only one body
-    if (isLeaf) {
-
-        // The center of mass is the body contained
-        calculatedCOM = true;
-        return;
-    }
-
-    // Getting center of mass of non-leaf node
-    if (divided) {
-
-        // The center of mass will be calculated from all subnodes
-        glm::vec3 COM = glm::vec3(0, 0, 0);
-        float totalMass = 0;
-
-        // Iterating through all subdivisions
-        #pragma omp parallel for collapse(3)
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-
-                    // Ignoring nodes that don't contain any bodies
-                    if (subdivisions[x][y][z]->isLeaf || subdivisions[x][y][z]->divided) {
-
-                        // Recursively finding center of mass
-                        subdivisions[x][y][z]->calculateCenterMass();
-
-                        // Center of Mass = sum of masses * positions / total mass
-                        COM += subdivisions[x][y][z].get()->getMass() *
-                               subdivisions[x][y][z].get()->getPosition();
-
-                        totalMass += subdivisions[x][y][z]->getMass();
-                    }
-                }
-            }
-        }
-
-        COM = COM / totalMass;
-
-        // Setting center of mass data
-        this->position = COM;
-        this->mass = totalMass;
-
-        calculatedCOM = true;
-        return;
-    }
-
-
-}
-
-void octant::applyGravity(body *inputBody, float theta, simulation *simulation) {
-
-    // Base case
-    if (isLeaf) {
-
-        // The input body is unaffected by any body with the same position, including itself
-        if (position != inputBody->getPosition()) {
-            simulation->applyGravity(inputBody, position, mass);
-        }
-
-    } else if (divided) {
-
-        // Determining whether subdividing is necessary
-        /* Node is treated as a single body if S/D < theta where S = sideLength and D = distance */
-        if (theta > (float) sideLength / (float) glm::distance(inputBody->getPosition(), position)) {
-
-            // Handling an un-calculated center of mass
-            if (!calculatedCOM) {
-                this->calculateCenterMass();
-            }
-
-            simulation->applyGravity(inputBody, position, mass);
-        }
-        /* Otherwise the node is subdivided */
-        else {
-
-            #pragma omp parallel for collapse(3)
-            for (int x = 0; x <= 1; ++x) {
-                for (int y = 0; y <= 1; ++y) {
-                    for (int z = 0; z <= 1; ++z) {
-
-                        // Recursively dividing the work
-                        subdivisions[x][y][z]->applyGravity(inputBody, theta, simulation);
-                    }
-                }
+                // Recursively dividing the work
+                children[x][y][z]->applyGravityToBody(theBody, theSimulation);
             }
         }
     }
 }
 
-octant *octant::getSubdivision(ivec3 position) {
+std::string threadSafe_octant::toString(int level) {
 
-    // Gets the octant at this position
-    // TODO I need to add vetting: positions must be either 0 or 1
-    return subdivisions[position.x][position.y][position.z].get();
-}
-
-int octant::numBodies() {
-
-    // Base case
-    if (isLeaf) {
-        return 1;
-    }
-
-    int total = 0;
-
-    if (divided) {
-
-        // Recursively checking lower subnodes
-        for (int x = 0; x <= 1; ++x) {
-            for (int y = 0; y <= 1; ++y) {
-                for (int z = 0; z <= 1; ++z) {
-
-                    total += subdivisions[x][y][z]->numBodies();
-                }
-            }
-        }
-
-    }
-
-    return total;
-}
-
-std::string octant::toString(int level) {
-
-    std::string theString = "";
-    std::string indent = "";
+    std::string theString;
+    std::string indent;
 
     for (int i = 0; i < level; ++i) {
         indent += "┃ ";
@@ -394,27 +131,29 @@ std::string octant::toString(int level) {
 
     theString += indent + "┏━━━ \n";
 
-    if (isLeaf) {
+    if (!divided) {
         theString +=
-                indent + "┃ [Leaf Node] Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) +
-                ", " + std::to_string(position.z) + ") Total Mass = " + std::to_string(mass) + "\n";
+                indent + "┃ [Leaf Node] Position = (" + std::to_string(centerOfMass.x) + ", " + std::to_string(centerOfMass.y) +
+                ", " + std::to_string(centerOfMass.z) + ") Total Mass = " + std::to_string(totalMass) + "\n";
     } else {
 
         theString += indent + "┃ [Level " + std::to_string(level) + " Subnode]\n";
-        theString += indent + "┃ Enclosing " + std::to_string(this->numBodies()) + " bodies" + "\n";
-        theString += indent + "┃ Position = (" + std::to_string(location.x) + ", " + std::to_string(location.y) + ", " +
-                     std::to_string(location.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
-        theString += indent + "┃ Center of Mass = (" + std::to_string(position.x) + ", " +
-                     std::to_string(position.y) + ", " + std::to_string(position.z) +
-                     ") Total Mass = " + std::to_string(mass) + "\n";
+        theString += indent + "┃ Enclosing " + std::to_string(numBodies) + " bodies" + "\n";
+        theString +=
+                indent + "┃ Position = (" + std::to_string(octantLocation.x) + ", " + std::to_string(octantLocation.y) +
+                ", " +
+                std::to_string(octantLocation.z) + ") Side Length = " + std::to_string(sideLength) + "\n";
+        theString += indent + "┃ Center of Mass = (" + std::to_string(centerOfMass.x) + ", " +
+                     std::to_string(centerOfMass.y) + ", " + std::to_string(centerOfMass.z) +
+                     ") Total Mass = " + std::to_string(totalMass) + "\n";
 
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
                 for (int z = 0; z <= 1; ++z) {
 
-                    if (subdivisions[x][y][z]->isLeaf || subdivisions[x][y][z]->divided) {
+                    if (children[x][y][z]->initialized) {
 
-                        theString += subdivisions[x][y][z]->toString(level + 1);
+                        theString += children[x][y][z]->toString(level + 1);
 
                     }
                 }
@@ -427,45 +166,123 @@ std::string octant::toString(int level) {
     return theString;
 }
 
-void octant::divide() {
+int threadSafe_octant::getNumBodies() {
+    return numBodies;
+}
 
-    // If the subdivisions haven't been initialized yet
-    if (!divided) {
+vec3 threadSafe_octant::getCenterOfMass() {
 
-        float subdivisionSideLength = sideLength / 2;
 
-        // Initializing all the subdivisions with their locations and sizes
+    // If the center of mass hasn't been calculated, calculate it
+    if (!validCenterOfMass) {
+        vec3 COM = vec3(0, 0, 0);
+
+        // Summing all subdivisions
+        // TODO This only seems to work in parallel if I output to the console before returning...?
+        //#pragma omp parallel for collapse(3)
         for (int x = 0; x <= 1; ++x) {
             for (int y = 0; y <= 1; ++y) {
                 for (int z = 0; z <= 1; ++z) {
 
-                    // Getting the sign in the x, y, and z axes
-                    int xSign = (2 * x) - 1;
-                    int ySign = (2 * y) - 1;
-                    int zSign = (2 * z) - 1;
+                    // Nodes that don't contain any bodies are ignored
+                    if (children[x][y][z]->initialized) {
 
-                    std::shared_ptr<octant> newNode(new octant(this->location +
-                                                               glm::vec3(xSign * subdivisionSideLength,
-                                                                         ySign * subdivisionSideLength,
-                                                                         zSign * subdivisionSideLength),
-                                                               subdivisionSideLength));
-
-                    subdivisions[x][y][z] = newNode;
+                        // Adding each position, weighted by mass
+                        /*Center of Mass = (sum of masses * positions) / total mass*/
+                        COM += (children[x][y][z]->totalMass * children[x][y][z]->getCenterOfMass());
+                    }
                 }
             }
         }
 
-        // Setting divided to true
-        divided = true;
-        isLeaf = false;
-        calculatedCOM = false;
+        // Dividing by the total mass
+        /*Center of Mass = (sum of masses * positions) / total mass*/
+        centerOfMass = COM / totalMass;
 
-        return;
     }
 
+    //cout << totalMass << "  " << centerOfMass.x << centerOfMass.y << centerOfMass.z << endl;
+
+    // Returns the position held by the octant
+    /*Note: Position is a null vector if the octant is not initialized*/
+    return centerOfMass;
 }
 
-std::shared_ptr<octant> octant::subdivisionEnclosing(vec3 position) {
+vec3 threadSafe_octant::getAveragePosition() {
+
+    // If the average position hasn't been calculated, calculate it
+    if (!validAveragePosition) {
+
+        vec3 avg = vec3(0, 0, 0);
+
+        // Summing all subdivisions, safely done in parallel
+        //#pragma omp parallel for collapse(3)
+        for (int x = 0; x <= 1; ++x) {
+            for (int y = 0; y <= 1; ++y) {
+                for (int z = 0; z <= 1; ++z) {
+
+                    // Nodes that don't contain any bodies are ignored
+                    if (children[x][y][z]->initialized) {
+
+                        // Adding each position, unweighted
+                        /*Average Position = sum of positions / number of positions*/
+                        avg += children[x][y][z]->getAveragePosition();
+                    }
+                }
+            }
+        }
+
+        // Dividing by the total number of bodies in this tree
+        /*Average Position = sum of positions / number of positions*/
+        averagePosition = avg / (float) numBodies;
+
+    }
+
+    return averagePosition;
+}
+
+
+// Private methods
+
+void threadSafe_octant::divide() {
+
+    // The child nodes are half the size of this one
+    float subdivisionSideLength = sideLength / 2;
+
+    // Initializing all the subdivisions with their locations and sizes
+    for (int x = 0; x <= 1; ++x) {
+        for (int y = 0; y <= 1; ++y) {
+            for (int z = 0; z <= 1; ++z) {
+
+                // Getting the sign in the x, y, and z axes
+                int xSign = (2 * x) - 1;
+                int ySign = (2 * y) - 1;
+                int zSign = (2 * z) - 1;
+
+                // Creating the node with the right position
+                std::shared_ptr<threadSafe_octant> newNode(new threadSafe_octant(this->octantLocation +
+                                                                                 glm::vec3(xSign * subdivisionSideLength,
+                                                                                           ySign * subdivisionSideLength,
+                                                                                           zSign * subdivisionSideLength),
+                                                                                 subdivisionSideLength));
+
+                // Adding the node to the right index
+                children[x][y][z] = newNode;
+            }
+        }
+    }
+
+    // Setting divided to true
+    divided = true;
+
+    // Invalidates the center of mass, so it should be recalculated before it is used
+    validCenterOfMass = false;
+    validAveragePosition = false;
+
+    getSubdivisionEnclosing(this->centerOfMass)->addBody(this->centerOfMass, this->totalMass);
+}
+
+shared_ptr<threadSafe_octant> threadSafe_octant::getSubdivisionEnclosing(vec3 position) {
 
     // Making sure the subdivisions exist
     if (!divided) {
@@ -473,20 +290,10 @@ std::shared_ptr<octant> octant::subdivisionEnclosing(vec3 position) {
     }
 
     // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(position, this->location);
+    vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
 
     // Adding the body at the appropriate index
-    return subdivisions[(int) comparison.x][(int) comparison.y][(int) comparison.z];
+    return children[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
-
-const vec3 &octant::getPosition() const {
-    return position;
-}
-
-float octant::getMass() const {
-    return mass;
-}
-
-
 
 
