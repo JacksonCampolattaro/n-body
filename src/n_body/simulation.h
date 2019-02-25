@@ -109,9 +109,6 @@ private:
     std::vector<body *> bodies;
     int numBodies;
 
-    // Contains all relationships between bodies
-    std::vector<relationship *> relationships;
-
     // Keeping the center of mass of the simulation to optimize tree position
     vec3 idealTreeCenterLocation = vec3(0, 0, 0);
 };

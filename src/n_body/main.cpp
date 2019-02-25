@@ -4,7 +4,6 @@
 
 #include <gtest/gtest.h>
 #include <omp.h>
-#include <curses.h>
 
 #include "body.h"
 #include "simulation.h"

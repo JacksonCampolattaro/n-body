@@ -5,6 +5,8 @@
 #ifndef N_BODY_BETTER_SIMULATION_H
 #define N_BODY_BETTER_SIMULATION_H
 
+#include "better_body.h"
+
 /**
  * A more streamlined simulation class
  * I'm using the fluent interface paradigm to make it simpler to construct.
@@ -40,10 +42,10 @@ public:
     better_simulation *setT(float T);
 
     /**
-     * Selects whether Barnes-Hut optimizations is enabled, off by default
+     * Selects whether Force Softening is enabled, off by default
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *enableSuperSampling(bool enabled = true);
+    better_simulation *enableForceSoftening(bool enabled = true);
 
     /**
      * Sets the shortest time interval to use
@@ -65,6 +67,19 @@ public:
      */
     better_simulation *setTheta(float Theta);
 
+    void preCalculate();
+
+    void increment();
+
+    /**
+     * Applies the gravity on the first body from the second and changes the velocity accordingly
+     *
+     * @param passive the body being affected
+     * @param activePosition the position of the body creating the force
+     * @param activePosition the mass of the body creating the force
+     */
+    void applyGravity(better_body *passive, glm::vec3 activePosition, float activeMass);
+
 private:
 
     // Constants defining forces
@@ -82,7 +97,7 @@ private:
     float T = 1.0;
 
     /*Flag for whether or not super-sampling should be used in cases of extreme acceleration*/
-    bool SuperSamplingEnable = false;
+    bool ForceSofteningEnable = false;
 
     /*The smallest time granularity allowed when super-sampling is enabled*/
     float minimumT = 0.001;
