@@ -34,10 +34,29 @@ public:
 
     /**
      * Sets the time interval of the simulation
-     * @param T Unitless time interval
+     * @param T Unit-less time interval
      * @return This simulation, for use in chaining named parameters.
      */
     better_simulation *setT(float T);
+
+    /**
+     * Selects whether Barnes-Hut optimizations is enabled, off by default
+     * @return This simulation, for use in chaining named parameters.
+     */
+    better_simulation *enableSuperSampling(bool enabled = true);
+
+    /**
+     * Sets the shortest time interval to use
+     * @param T The smallest time granularity allowed when super-sampling is enabled
+     * @return This simulation, for use in chaining named parameters.
+     */
+    better_simulation *setMinimumT(float T);
+
+    /**
+     * Selects whether Barnes-Hut optimizations is enabled, on by default
+     * @return This simulation, for use in chaining named parameters.
+     */
+    better_simulation *enableBarnesHut(bool enabled = true);
 
     /**
      * Sets the accuracy of the simulation (lower is more accurate, 0 is naive)
@@ -62,8 +81,18 @@ private:
     /*The time interval that forces are calculated with respect to*/
     float T = 1.0;
 
+    /*Flag for whether or not super-sampling should be used in cases of extreme acceleration*/
+    bool SuperSamplingEnable = false;
+
+    /*The smallest time granularity allowed when super-sampling is enabled*/
+    float minimumT = 0.001;
+
+    /*Flag for whether or not the barnes-hut tree should be used*/
+    bool BarnesHutEnable = true;
+
     /*Ratio defining how far any group of bodies must be before they can be grouped together*/
-    float Theta = 0;
+    float Theta = 0.8;
+
 };
 
 
