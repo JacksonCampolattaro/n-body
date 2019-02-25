@@ -1,28 +1,51 @@
 //
-// Created by jackcamp on 1/5/19.
+// Created by jackcamp on 2/24/19.
 //
 
 #include <gtest/gtest.h>
 #include <exception>
-#include "../src/n_body/octant.h"
-#include "../src/n_body/body.h"
+#include "../src/n_body/threadSafe_octant.h"
+#include "../src/n_body/tracker.h"
 
 
-class octantTest : public ::testing::Test {
+class threadSafe_octantTest : public ::testing::Test {
 protected:
 
     virtual void SetUp() {
-        theOctant = new octant(glm::vec3(0,0,0), 16);
+        theOctant = new threadSafe_octant(glm::vec3(0, 0, 0), 16);
+        tracker::instance();
     }
 
     virtual void TearDown() {
         delete theOctant;
     }
 
-    octant *theOctant;
+    threadSafe_octant *theOctant;
 };
 
-TEST_F(octantTest, octantTest_addBody_Test) {
+TEST_F(threadSafe_octantTest, threadSafe_octantTest_addBody_Test) {
+
+    // Adding one body to the octant
+    theOctant->addBody(vec3(1, 1, 1), 100);
+    EXPECT_EQ(1, theOctant->getNumBodies());
+    EXPECT_EQ(vec3(1, 1, 1), theOctant->getCenterOfMass());
+    EXPECT_EQ(vec3(1, 1, 1), theOctant->getAveragePosition());
+    cout << theOctant->toString();
+
+    // Adding a second body to the octant and finding a center of mass between the two
+    theOctant->addBody(vec3(1, 1, -1), 100);
+    EXPECT_EQ(2, theOctant->getNumBodies());
+    EXPECT_EQ(vec3(1, 1, 0), theOctant->getCenterOfMass());
+    EXPECT_EQ(vec3(1, 1, 0), theOctant->getAveragePosition());
+    cout << theOctant->toString();
+
+    // Adding a third body to the octant and finding an non-integer center of mass
+    theOctant->addBody(vec3(0, 0, 0), 100);
+    EXPECT_EQ(3, theOctant->getNumBodies());
+    EXPECT_FLOAT_EQ(2.0f/3.0f, theOctant->getCenterOfMass().x);
+    EXPECT_FLOAT_EQ(2.0f/3.0f, theOctant->getCenterOfMass().y);
+    EXPECT_FLOAT_EQ(0, theOctant->getCenterOfMass().z);
+
 
     /*// Adding one body to the octant
     theOctant->addBody(new body(vec3(1, 1, 1), vec3(0, 0, 0), 100));
@@ -55,27 +78,3 @@ TEST_F(octantTest, octantTest_addBody_Test) {
     cout << "\n**** toString Output ****\n" << theOctant->toString() << "\n\n";*/
 }
 
-TEST_F(octantTest, octantTest_getRelationships_Test) {
-
-    /*body *body1 = new body(vec3(1, 1, 1), vec3(0, 0, 0), 100);
-
-
-    // Adding several bodies
-    theOctant->addBody(body1);
-    theOctant->addBody(new body(vec3(1, 1, -1), vec3(0, 0, 0), 100));
-    theOctant->addBody(new body(vec3(0, 0, 0), vec3(0, 0, 0), 100));
-    theOctant->addBody(new body(vec3(0, 0, -1), vec3(0, 0, 0), 200));
-    theOctant->addBody(new body(vec3(15, 15, 15), vec3(0, 0, 0), 100));
-    theOctant->addBody(new body(vec3(15.1, 15, 15), vec3(0, 0, 0), 100));
-
-    // Obtaining the relationships with the first body for theta = 1
-    std::vector<relationship *> relationships = theOctant->getRelationships(body1, 1);
-
-    cout << "\n\n";
-
-    cout << std::to_string(relationships.size()) << " relationships created: \n\n";
-
-    for (int i = 0; i < relationships.size(); ++i) {
-        cout << "Relationship " << std::to_string(i) << "\n" << relationships[i]->toString() << "\n";
-    }*/
-}

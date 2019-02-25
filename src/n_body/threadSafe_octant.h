@@ -9,6 +9,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <atomic>
+#include <mutex>
 
 #include "body.h"
 #include "simulation.h"
@@ -86,16 +87,17 @@ private:
 
     /*Position and mass of the body or bodies contained by the node*/
     vec3 centerOfMass;
-    float mass;
+    float totalMass;
 
     /*By keeping track of this, center of mass doesn't have to be recalculated every time a body is added*/
-    atomic_bool validCenterOfMass = {true}; /*Valid by default, because the COM will naturally be correct when this is a leaf*/
+    atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
 
 
     // Subdivisions of the node
 
     /*Whether or not the node is already divided, atomic for thread safety reasons*/
     atomic_bool divided = {false};
+    once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
     shared_ptr<threadSafe_octant> children[2][2][2];
@@ -111,10 +113,10 @@ private:
     vec3 octantLocation;
 
     /*Useful data for determining the ideal position of the next iteration's octree*/
-    vec3 averagePosition = vec3(0, 0, 0);
+    vec3 averagePosition = vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
     atomic_bool validAveragePosition = {true};
 
-    /*What the center of mass would be if all bodies had identical masses*/
+    /*Total number of bodies contained by the octant or its children*/
     int numBodies;
 
 

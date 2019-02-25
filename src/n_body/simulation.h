@@ -10,6 +10,7 @@
 #include "body.h"
 #include "relationship.h"
 #include "octant.h"
+#include "threadSafe_octant.h"
 
 /**
  * Contains the current state of the simulation
@@ -113,7 +114,7 @@ private:
     std::vector<relationship *> relationships;
 
     // Keeping the center of mass of the simulation to optimize tree position
-    vec3 centerOfMass = vec3(0, 0, 0);
+    vec3 idealTreeCenterLocation = vec3(0, 0, 0);
 };
 
 

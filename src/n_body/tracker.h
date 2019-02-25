@@ -25,6 +25,8 @@ public:
     /**
      * Markers for various events in the calculation of the frame
      */
+    void markCalculationsStart();
+    void markTreeCreated();
     void markTreeCompleted();
     void markCenterMassCalculated();
     void markGravityCalculated();
@@ -48,6 +50,9 @@ private:
     clock_t programStartTime;
     clock_t frameStartTime;
     clock_t timeStamp;
+
+    clock_t calculationStartTime;
+    clock_t treeCreationTime;
     clock_t treePopulationTime;
     clock_t centerMassCalculationTime;
     clock_t gravityCalculationTime;

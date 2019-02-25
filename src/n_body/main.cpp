@@ -146,7 +146,7 @@ void addBodies() {
     //*/
 
     //bigDemo();
-    density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(20, 20, 20), 10, 5000);
+    density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(2, 2, 2), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(vec3(-50, -50, -500), vec3(100, 0, 0), vec3(10, 10, 10));
