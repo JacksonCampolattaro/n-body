@@ -41,7 +41,7 @@ public:
 private:
     static tracker *internalInstance; // The tracker contains one and only one instance of itself
 
-    // This keeps a reference to the simulation being tracked
+    // This keeps a reference to the model being tracked
     simulation *theSim;
 
     // Data held by the tracker

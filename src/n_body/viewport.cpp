@@ -6,7 +6,7 @@
 
 viewport::viewport(simulation *theSim, int width, int height, const char *title) {
 
-    // Setting the simulation
+    // Setting the model
     this->theSim = theSim;
 
 

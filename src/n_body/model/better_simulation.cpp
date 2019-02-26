@@ -4,9 +4,7 @@
 
 #include "better_simulation.h"
 
-better_simulation::better_simulation() {
 
-}
 
 void better_simulation::addBody(better_body *body) {
 
@@ -75,12 +73,12 @@ void better_simulation::increment() {
 
     // Precalculations
 
-    // Adds the offset that turns euler into leapfrog integration
+    /*Adds the offset that turns euler into leapfrog integration*/
     if (LeapFrogEnabled) {
 
         // TODO Physics calculations will go here
 
-        // This ensures that the offset is only added the first time through the loop
+        /*This ensures that the offset is only added the first time through the loop*/
         LeapFrogEnabled = false;
     }
 
@@ -89,7 +87,7 @@ void better_simulation::increment() {
     calculateGravity();
     tracker::instance()->markGravityCalculated();
 
-    // Updating positions
+    // Updating velocities and positions
     for (int b = 0; b < bodies.size(); ++b) {
         bodies[b]->update();
     }
@@ -101,7 +99,7 @@ void better_simulation::increment() {
 void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec3 actorPosition, float actorMass) {
 
     // Added on the bottom of the equation to prevent infinities
-    // TODO Should this be a simulation parameter?
+    // TODO Should this be a model parameter?
     float infinityPrevention = 0.0001;
 
     // Calculating the force of gravity as a scalar

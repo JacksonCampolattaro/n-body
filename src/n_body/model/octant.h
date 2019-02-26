@@ -5,7 +5,7 @@
 #ifndef N_BODY_THREADSAFE_OCTANT_H
 #define N_BODY_THREADSAFE_OCTANT_H
 
-#include "simulation.h"
+#include "../simulation.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -14,7 +14,7 @@
 #include <mutex>
 
 
-#include "body.h"
+#include "../body.h"
 
 
 

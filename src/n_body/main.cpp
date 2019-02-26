@@ -112,7 +112,7 @@ void bigDemo() {
 
 
 void threeBodyDemo() {
-    // Three body simulation
+    // Three body model
 
     theSimulation->setPower(2);
     theSimulation->setGravitationalConstant(2);
@@ -125,7 +125,7 @@ void threeBodyDemo() {
 
 void addBodies() {
 
-    // Orbit simulation
+    // Orbit model
     /*
     density = 10;
 
@@ -156,7 +156,7 @@ int main(int argc, char **argv) {
 
     cout << " number of devices: " << omp_get_num_devices() << endl;
 
-    // Creating simulation
+    // Creating model
     theSimulation = new simulation(.05, .001, 2, 0.8);
 
     // Initializing the tracker
@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
     // Enables Leapfrog integration of physics
     theSimulation->preCalculate();
 
-    // Starting the simulation
+    // Starting the model
     theViewport->graphicsLoop();
 
 }

@@ -9,7 +9,7 @@
 
 #include "body.h"
 #include "relationship.h"
-#include "octant.h"
+#include "model/octant.h"
 
 /**
  * Contains the current state of the simulation
@@ -109,7 +109,7 @@ private:
     std::vector<body *> bodies;
     int numBodies;
 
-    // Keeping the center of mass of the simulation to optimize tree position
+    // Keeping the center of mass of the model to optimize tree position
     vec3 idealTreeCenterLocation = vec3(0, 0, 0);
 };
 

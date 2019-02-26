@@ -96,6 +96,11 @@ void better_body::addVelocity(glm::vec3 deltaV) {
 
 void better_body::update() {
 
+    // Calculating the next position
+    this->nextPosition = this->position + this->velocity;
+
+
+    // Updating position and velocity
     this->position = this->nextPosition;
     this->velocity = this->nextVelocity;
 

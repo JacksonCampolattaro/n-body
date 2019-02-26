@@ -11,7 +11,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../drawable.h"
+#include "drawable.h"
 #include "../viewport.h"
 
 /**

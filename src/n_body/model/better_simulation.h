@@ -21,7 +21,7 @@ public:
     /**
      * Constructor for the simulation, every parameter starts with a default
      */
-    better_simulation();
+    better_simulation() = default;
 
     /**
      * Adds a new body to the simulation
@@ -142,9 +142,9 @@ private:
     bool LeapFrogEnabled = false; /*Set back to false immediately after the offset is added*/
 
 
-    // Values used as a part of the simulation
+    // Values used as a part of the model
 
-    /*Filled with bodies before the start of the simulation, bodies are passed by reference and not removed*/
+    /*Filled with bodies before the start of the model, bodies are passed by reference and not removed*/
     std::vector<better_body *> bodies;
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/

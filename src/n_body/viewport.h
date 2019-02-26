@@ -79,7 +79,7 @@ private:
     // The window
     GLFWwindow *window;
 
-    // The simulation
+    // The model
     simulation *theSim;
 
     // All drawable objects
