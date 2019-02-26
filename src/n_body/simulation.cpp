@@ -126,7 +126,7 @@ void simulation::increment() {
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
         if (!bodies[b]->isFixed()) {
-            octree->applyGravity(bodies[b], theta, this);
+            octree->applyGravityBetweenBodies(bodies[b], theta, this);
         }
     }
     tracker::instance()->markGravityCalculated();

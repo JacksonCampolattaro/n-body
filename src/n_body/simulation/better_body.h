@@ -10,9 +10,9 @@
 #include <string>
 
 #include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
 
 #include "../drawable.h"
+#include "../viewport.h"
 
 /**
  * Intended to streamline the functionality of the old body
@@ -21,17 +21,16 @@
 class better_body : public drawable {
 public:
 
+    // Constructor
+
     /**
      * The constructor only takes in the position, all other values start at their defaults.
      * @param position The starting location of the body (as a three dimensional vector)
      */
     better_body(glm::vec3 position);
 
-    /**
-     * Getter for the location of the body
-     * @return the position of the body as a vector
-     */
-    glm::vec3 getPosition();
+
+    // Setters (to be used as named parameters)
 
     /**
      * Sets the starting velocity of the body to something other than <0, 0, 0>
@@ -41,23 +40,11 @@ public:
     better_body *setVelocity(glm::vec3 velocity);
 
     /**
-     * Adds to the velocity of the body
-     * @param deltaV the change in velocity as a vector
-     */
-    void addVelocity(glm::vec3 deltaV);
-
-    /**
      * Sets the mass of the body to something other than 100
      * @param mass the mass to set
      * @return This body, for use in chaining named parameters.
      */
     better_body *setMass(float mass);
-
-    /**
-     * Getter for the mass of the body
-     * @return the mass as a float
-     */
-    float getMass();
 
     /**
      * Sets fixed to true, locking the body's location
@@ -72,16 +59,80 @@ public:
     better_body *makePassive();
 
     /**
-     * Sets the starting velocity of the body to something other than <1, 1, 1>
+     * Sets the color of the body to something other than <1, 1, 1>
      * @param color the color to set
      * @return This body, for use in chaining named parameters.
      */
     better_body *setColor(glm::vec3 color);
 
     /**
+     * Forces the body to be drawn with a specific radius, regardless of its density
+     * @param radius the new radius of the body
+     * @return This body, for use in chaining named parameters.
+     */
+    better_body *setRadius(float radius);
+
+
+    // Getters
+
+    /**
+     * Getter for the location of the body
+     * @return the position of the body as a vector
+     */
+    glm::vec3 getPosition();
+
+    /**
+     * Getter for the next location of the body
+     * @return the (future) position of the body as a vector
+     */
+    glm::vec3 getNextPosition();
+
+    /**
+     * Getter for the velocity of the body
+     * @return the velocity of the body as a vector
+     */
+    glm::vec3 getVelocity();
+
+    /**
+     * Getter for the next velocity of the body
+     * @return the (future) velocity of the body as a vector
+     */
+    glm::vec3 getNextVelocity();
+
+    /**
+     * Getter for the mass of the body
+     * @return the mass as a float
+     */
+    float getMass();
+
+    /**
+     * Getter for the value of the fixed flag
+     * @return Whether the body is fixed in place or not
+     */
+    bool isFixed();
+
+    /**
+     * Getter for the value of the passive flag
+     * @return Whether the body can affect others or not
+     */
+    bool isPassive();
+
+
+    // Physics operators
+
+    /**
+     * Adds to the velocity of the body
+     * @param deltaV the change in velocity as a vector
+     */
+    void addVelocity(glm::vec3 deltaV);
+
+    /**
      * Updates the position of the body based on its velocity
      */
     void update();
+
+
+    // Graphics & Diagnostics
 
     /**
      * Draws a circle at the location of the body
@@ -123,10 +174,10 @@ private:
     glm::vec3 color = glm::vec3(1, 1, 1);
 
     /*The radius of the circle representing the body*/
-    float radius;
+    float radius = 10.0;
 
     /*Used only to generate the radius based on the mass*/
-    float density;
+    float density = 1.0;
 
 };
 

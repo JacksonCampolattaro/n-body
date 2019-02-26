@@ -6,6 +6,7 @@
 #define N_BODY_BETTER_SIMULATION_H
 
 #include "better_body.h"
+#include "../tracker.h"
 
 /**
  * A more streamlined simulation class
@@ -15,10 +16,21 @@ class better_simulation {
 
 public:
 
+    // Constructor
+
     /**
      * Constructor for the simulation, every parameter starts with a default
      */
     better_simulation();
+
+    /**
+     * Adds a new body to the simulation
+     * @param body the body to be included
+     */
+    void addBody(better_body* body);
+
+
+    // Setters (with support for chaining)
 
     /**
      * Sets the constant of gravity
@@ -49,10 +61,10 @@ public:
 
     /**
      * Sets the shortest time interval to use
-     * @param T The smallest time granularity allowed when super-sampling is enabled
+     * @param minimumT The smallest time granularity allowed when super-sampling is enabled
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setMinimumT(float T);
+    better_simulation *setMinimumT(float minimumT);
 
     /**
      * Selects whether Barnes-Hut optimizations is enabled, on by default
@@ -67,18 +79,38 @@ public:
      */
     better_simulation *setTheta(float Theta);
 
-    void preCalculate();
+    /**
+     * Leapfrog approximation starts the first increment with a velocity pre-calculation on a half time-step
+     * @return This simulation, for use in chaining named parameters.
+     */
+    better_simulation *enableLeapfrog();
 
+
+    // Physics methods
+
+    /**
+     * Calculates the next time step of the simulation, by calculating forces on all bodies.
+     */
     void increment();
 
     /**
      * Applies the gravity on the first body from the second and changes the velocity accordingly
      *
-     * @param passive the body being affected
-     * @param activePosition the position of the body creating the force
-     * @param activePosition the mass of the body creating the force
+     * @param subject the body being affected
+     * @param actorPosition the position of the body creating the force
+     * @param actorPosition the mass of the body creating the force
      */
-    void applyGravity(better_body *passive, glm::vec3 activePosition, float activeMass);
+    void applyGravityBetweenBodies(better_body *subject, glm::vec3 actorPosition, float actorMass);
+
+
+    // User facing tools
+
+    /**
+     * Allows the user to force a body to orbit another by changing its velocity
+     * @param sunBody The body to orbit
+     * @param satelliteBody The body orbiting
+     */
+    void orbit(better_body *sunBody, better_body *satelliteBody);
 
 private:
 
@@ -97,16 +129,44 @@ private:
     float T = 1.0;
 
     /*Flag for whether or not super-sampling should be used in cases of extreme acceleration*/
-    bool ForceSofteningEnable = false;
-
+    bool ForceSofteningEnabled = false;
     /*The smallest time granularity allowed when super-sampling is enabled*/
     float minimumT = 0.001;
 
     /*Flag for whether or not the barnes-hut tree should be used*/
-    bool BarnesHutEnable = true;
-
+    bool BarnesHutEnabled = true;
     /*Ratio defining how far any group of bodies must be before they can be grouped together*/
-    float Theta = 0.8;
+    float Theta = 0.8; /*A Theta value of 0 degenerates to the naive algorithm*/
+
+    /*Flag that tells the increment function to do a velocity pre-calculation on a half time-step*/
+    bool LeapFrogEnabled = false; /*Set back to false immediately after the offset is added*/
+
+
+    // Values used as a part of the simulation
+
+    /*Filled with bodies before the start of the simulation, bodies are passed by reference and not removed*/
+    std::vector<better_body *> bodies;
+
+    /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
+    vec3 idealTreeCenterLocation = vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/
+
+
+    // Private helper methods
+
+    /**
+     * Selects which algorithm to use, and calculates gravity on all bodies
+     */
+    void calculateGravity();
+
+    /**
+     * Applies gravity to all bodies using the naive algorithm: direct interaction between all bodies.
+     */
+    void NaiveGravity();
+
+    /**
+     * Applies gravity to all bodies using the Barnes-Hut algorithm: octree center of mass method
+     */
+    void BarnesHutGravity();
 
 };
 
