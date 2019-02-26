@@ -6,6 +6,8 @@
 
 
 
+better_simulation::better_simulation() = default;
+
 void better_simulation::addBody(better_body *body) {
 
     this->bodies.push_back(body);
@@ -20,7 +22,7 @@ better_simulation *better_simulation::setG(float G) {
 
 better_simulation *better_simulation::setPower(int Power) {
 
-    this->Power = Power;
+    this->Exponent = Power;
 
     return this;
 }
@@ -66,6 +68,14 @@ better_simulation *better_simulation::enableLeapfrog() {
     return this;
 }
 
+better_simulation *better_simulation::attachViewport(better_viewport *viewport) {
+
+    this->viewport = viewport;
+
+    return this;
+}
+
+
 void better_simulation::increment() {
 
     tracker::instance()->markFrameCompleted(); /*Marks the completion of the previous frame, including rendering*/
@@ -92,8 +102,6 @@ void better_simulation::increment() {
         bodies[b]->update();
     }
 
-
-
 }
 
 void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec3 actorPosition, float actorMass) {
@@ -105,7 +113,7 @@ void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec
     // Calculating the force of gravity as a scalar
     float forceOfGravity =
             (G * subject->getMass() * actorMass) /
-            ((float) pow(glm::distance(subject->getPosition(), actorPosition), Power) + infinityPrevention);
+            ((float) pow(glm::distance(subject->getPosition(), actorPosition), Exponent) + infinityPrevention);
 
     // Giving the force direction
     glm::vec3 force = forceOfGravity * glm::normalize(actorPosition - subject->getPosition());
@@ -135,6 +143,7 @@ void better_simulation::orbit(better_body *sunBody, better_body *satelliteBody) 
 }
 
 void better_simulation::calculateGravity() {
+
 
     if (BarnesHutEnabled) {
 
@@ -172,4 +181,13 @@ void better_simulation::NaiveGravity() {
 void better_simulation::BarnesHutGravity() {
 
     // TODO Implementation using the rewritten octree
+
+    // Creating the tree
+
+    // Populating the tree
+
+    // Getting the ideal location for the next tree
+
+    // Doing gravitational calculations
 }
+

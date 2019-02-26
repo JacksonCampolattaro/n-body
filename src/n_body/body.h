@@ -12,7 +12,7 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
-#include "model/drawable.h"
+#include "interface/drawable.h"
 
 class viewport;
 

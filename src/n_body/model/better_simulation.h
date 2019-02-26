@@ -7,6 +7,7 @@
 
 #include "better_body.h"
 #include "../tracker.h"
+#include "../interface/better_viewport.h"
 
 /**
  * A more streamlined simulation class
@@ -21,7 +22,7 @@ public:
     /**
      * Constructor for the simulation, every parameter starts with a default
      */
-    better_simulation() = default;
+    better_simulation();
 
     /**
      * Adds a new body to the simulation
@@ -85,6 +86,13 @@ public:
      */
     better_simulation *enableLeapfrog();
 
+    /**
+     * Links the viewport to be used to draw bodies to the screen
+     * @param viewport a pointer to the viewport
+     * @return This simulation, for use in chaining named parameters.
+     */
+    better_simulation *attachViewport(better_viewport *viewport);
+
 
     // Physics methods
 
@@ -95,7 +103,6 @@ public:
 
     /**
      * Applies the gravity on the first body from the second and changes the velocity accordingly
-     *
      * @param subject the body being affected
      * @param actorPosition the position of the body creating the force
      * @param actorPosition the mass of the body creating the force
@@ -120,7 +127,7 @@ private:
     float G = 1.0;
 
     /*The power distance is raised to when calculating the force of gravity*/
-    int Power = 2;
+    int Exponent = 2;
 
 
     // Constants defining accuracy
@@ -128,7 +135,8 @@ private:
     /*The time interval that forces are calculated with respect to*/
     float T = 1.0;
 
-    /*Flag for whether or not super-sampling should be used in cases of extreme acceleration*/
+    /*Flag for whether or not super-sampling of forces should be used in cases of extreme acceleration*/
+    // TODO Not yet implemented
     bool ForceSofteningEnabled = false;
     /*The smallest time granularity allowed when super-sampling is enabled*/
     float minimumT = 0.001;
@@ -141,6 +149,10 @@ private:
     /*Flag that tells the increment function to do a velocity pre-calculation on a half time-step*/
     bool LeapFrogEnabled = false; /*Set back to false immediately after the offset is added*/
 
+    /*Flag telling the simulation to account for collisions between bodies*/
+    // TODO Not yet implemented
+    bool CollisionsEnabled = false;
+
 
     // Values used as a part of the model
 
@@ -149,6 +161,12 @@ private:
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
     vec3 idealTreeCenterLocation = vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/
+
+
+    // Graphics
+
+    /*The viewport used to draw bodies to the screen*/
+    better_viewport *viewport;
 
 
     // Private helper methods

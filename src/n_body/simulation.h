@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "body.h"
-#include "relationship.h"
 #include "model/octant.h"
 
 /**

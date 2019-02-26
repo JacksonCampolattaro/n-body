@@ -9,7 +9,8 @@
 #include <glm/glm.hpp>
 #include <string>
 
-#include "../model/drawable.h"
+#include "drawable.h"
+#include "../model/better_simulation.h"
 
 /**
  * Improved viewport system
@@ -46,17 +47,24 @@ public:
 
     // Setup tools
 
+    better_viewport *attachSimulation(better_simulation *simulation);
+
     /**
      * Adds a new item to the render to be drawn each cycle
      * @param newDrawable The new drawable to be added
      */
-    void registerDrawable(drawable *newDrawable);
+    better_viewport *registerDrawable(drawable *drawable);
+
+    /**
+     * Creates the window and starts the graphics loop
+     */
+    better_viewport *start();
 
 
     // Graphics tools
 
     /**
-     * Allows for more easily setting the color in OpenGL
+     * Allows for setting the color in OpenGL from outside the viewport
      * @param color The color as a vector (rgb)
      */
     static void setColor(glm::vec3 color);
@@ -68,7 +76,63 @@ public:
      */
     static void drawCircle(glm::vec3 position, float radius);
 
+
+    // GLFW boilerplate
+
+    /**
+     * GLFW's method for reporting errors
+     * @param error The error to be passed
+     * @param description The description of the error
+     */
+    static void handleError(int error, const char *description);
+
+    /**
+     * GLFW method for responding to a change in the window's size
+     * @param window The window that was resized
+     * @param width The new width of the window in pixels
+     * @param height The new height of the window in pixels
+     */
+    static void handleResize(GLFWwindow *window, int width, int height);
+
 private:
+
+    // Parameters defining the window
+
+    /*Vector representing the <X, Y> dimensions of the window*/
+    glm::vec2 dimensions;
+
+    /*The label of the window*/
+    string title;
+
+
+    // References the model and associated drawables
+
+    /*A reference is kept to the simulation being rendered*/
+    better_simulation *simulation;
+
+    /*The list of drawables that will be put on the screen each time it's updated*/
+    std::vector<drawable *> drawables;
+
+
+    // Parameters which define the interface - model relationship
+
+    // TODO This should be mutable with flags
+
+
+    // Parameters affecting image quality
+
+    /*Multisampling prevents jagged, pixellated edges on diagonal lines and curves*/
+    bool multisamplingEnabled = true;
+    unsigned int samplingRatio = 4;
+
+
+    // Helper methods
+
+    void draw();
+
+
+
+
 
 
 };
