@@ -35,14 +35,14 @@ public:
      * @param dimensions Vector representing the <X, Y> dimensions of the window
      * @return This viewport, for use in chaining named parameters.
      */
-    better_viewport *setDimensions(glm::vec2 dimensions);
+    better_viewport *setDimensions(glm::ivec2 dimensions);
 
     /**
      * Sets the title of the window
      * @param title The new title
      * @return This viewport, for use in chaining named parameters.
      */
-    better_viewport *setTitle(std::string title);
+    better_viewport *setTitle(const char *title);
 
 
     // Setup tools
@@ -58,7 +58,7 @@ public:
     /**
      * Creates the window and starts the graphics loop
      */
-    better_viewport *start();
+    void start();
 
 
     // Graphics tools
@@ -98,11 +98,14 @@ private:
 
     // Parameters defining the window
 
+    /*A reference to the window itself*/
+    GLFWwindow *window;
+
     /*Vector representing the <X, Y> dimensions of the window*/
-    glm::vec2 dimensions;
+    glm::ivec2 dimensions;
 
     /*The label of the window*/
-    string title;
+    const char *title = "n_Body Simulator 0.3.0";
 
 
     // References the model and associated drawables
@@ -128,6 +131,10 @@ private:
 
     // Helper methods
 
+    /*Infinite loop handling graphics*/
+    void graphicsLoop();
+
+    /*Draws all the drawables to the screen*/
     void draw();
 
 
