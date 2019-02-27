@@ -5,7 +5,10 @@
 #ifndef N_BODY_TRACKER_H
 #define N_BODY_TRACKER_H
 
-#include "simulation.h"
+#include "model/simulation.h"
+
+#include <cstdlib>
+#include <stdio.h>
 
 
 class tracker {
@@ -15,7 +18,7 @@ public:
     /**
      * Sets the simulation to actively request information from.
      */
-    void setSimulation(simulation* theSim);
+    //void setSimulation(simulation* theSim);
 
     /**
      * Marks the completion of a new frame of the simulation
@@ -42,7 +45,7 @@ private:
     static tracker *internalInstance; // The tracker contains one and only one instance of itself
 
     // This keeps a reference to the model being tracked
-    simulation *theSim;
+    //simulation *theSim;
 
     // Data held by the tracker
     int numFrames;

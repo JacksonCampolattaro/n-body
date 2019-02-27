@@ -11,11 +11,10 @@
 #include <memory>
 #include <atomic>
 #include <mutex>
+#include <threads.h>
 
-
-#include "../simulation.h"
-#include "../body.h"
-#include "better_simulation.h"
+#include "body.h"
+#include "simulation.h"
 
 
 /**
@@ -55,10 +54,10 @@ public:
     /**
      * Applies gravity to a body based on the parameters of a simulation
      * This is used for the traversal of the tree
-     * @param theBody The body to apply the forces of gravity to
+     * @param body The body to apply the forces of gravity to
      * @param simulation the simulation in which calculations are defined
      */
-    void applyGravityToBody(better_body *theBody, better_simulation *simulation);
+    void applyGravityToBody(body *body, simulation *simulation);
 
     /**
      * Getter for the number of bodies contained by the octant
@@ -70,13 +69,13 @@ public:
      * Getter for the center of mass, which calculates it if it isn't already generated
      * @return The center of mass as a vector
      */
-    vec3 getCenterOfMass();
+    glm::vec3 getCenterOfMass();
 
     /**
      * Getter for the average position of the bodies in the tree, which calculates it if necessary
      * @return The ideal position of the next iteration's octree
      */
-    vec3 getAveragePosition();
+    glm::vec3 getAveragePosition();
 
     /**
      * Creates a string representation of the entire tree
@@ -89,18 +88,18 @@ private:
     // Values used for gravity calculations
 
     /*Position and mass of the body or bodies contained by the node*/
-    vec3 centerOfMass;
+    glm::vec3 centerOfMass;
     float totalMass;
 
     /*By keeping track of this, center of mass doesn't have to be recalculated every time a body is added*/
-    atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
+    std::atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
 
 
     // Subdivisions of the node
 
     /*Whether or not the node is already divided, atomic for thread safety reasons*/
-    atomic_bool divided = {false};
-    once_flag split;
+    std::atomic_bool divided = {false};
+    std::once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
     std::shared_ptr<octant> children[2][2][2];
@@ -109,15 +108,15 @@ private:
     // Metadata about the node
 
     /*Whether or not the node isn't empty, atomic for thread safety reasons*/
-    atomic_bool initialized = {false};
+    std::atomic_bool initialized = {false};
 
     /*Size of the node and position of its center*/
     float sideLength;
-    vec3 octantLocation;
+    glm::vec3 octantLocation;
 
     /*Useful data for determining the ideal position of the next iteration's octree*/
-    vec3 averagePosition = vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
-    atomic_bool validAveragePosition = {true};
+    glm::vec3 averagePosition = glm::vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
+    std::atomic_bool validAveragePosition = {true};
 
     /*Total number of bodies contained by the octant or its children*/
     int numBodies;
@@ -129,7 +128,7 @@ private:
     void divide();
 
     /*Finds the appropriate child to add a body to*/
-    shared_ptr<octant> getSubdivisionEnclosing(vec3 position);
+    std::shared_ptr<octant> getSubdivisionEnclosing(glm::vec3 position);
 
 };
 

@@ -2,91 +2,91 @@
 // Created by jackcamp on 2/25/19.
 //
 
-#include "better_body.h"
+#include "body.h"
 
-better_body::better_body(glm::vec3 position) {
+body::body(glm::vec3 position) {
 
     this->position = position;
 }
 
-better_body *better_body::setVelocity(glm::vec3 velocity) {
+body *body::setVelocity(glm::vec3 velocity) {
 
     this->nextVelocity = velocity;
 
     return this;
 }
 
-better_body *better_body::setMass(float mass) {
+body *body::setMass(float mass) {
 
     this->mass = mass;
 
     return this;
 }
 
-better_body *better_body::makeFixed() {
+body *body::makeFixed() {
 
     this->fixed = true;
 
     return this;
 }
 
-better_body *better_body::makePassive() {
+body *body::makePassive() {
 
     this->passive = true;
 
     return this;
 }
 
-better_body *better_body::setColor(glm::vec3 color) {
+body *body::setColor(glm::vec3 color) {
 
     this->color = color;
 
     return this;
 }
 
-better_body *better_body::setRadius(float radius) {
+body *body::setRadius(float radius) {
 
     this->radius = radius;
 
     return this;
 }
 
-glm::vec3 better_body::getPosition() {
+glm::vec3 body::getPosition() {
 
     return this->position;
 }
 
-glm::vec3 better_body::getNextPosition() {
+glm::vec3 body::getNextPosition() {
 
     return this->nextPosition;
 }
 
-glm::vec3 better_body::getVelocity() {
+glm::vec3 body::getVelocity() {
 
     return this->velocity;
 }
 
-glm::vec3 better_body::getNextVelocity() {
+glm::vec3 body::getNextVelocity() {
 
     return this->nextVelocity;
 }
 
-float better_body::getMass() {
+float body::getMass() {
 
     return this->mass;
 }
 
-bool better_body::isFixed() {
+bool body::isFixed() {
 
     return this->fixed;
 }
 
-bool better_body::isPassive() {
+bool body::isPassive() {
 
     return this->passive;
 }
 
-void better_body::addVelocity(glm::vec3 deltaV) {
+void body::addVelocity(glm::vec3 deltaV) {
 
     if (!fixed) {
         this->velocity += deltaV;
@@ -94,7 +94,7 @@ void better_body::addVelocity(glm::vec3 deltaV) {
 
 }
 
-void better_body::update() {
+void body::update() {
 
     // Calculating the next position
     this->nextPosition = this->position + this->velocity;
@@ -106,14 +106,14 @@ void better_body::update() {
 
 }
 
-void better_body::draw() {
+void body::draw() {
 
     viewport::setColor(color);
     viewport::drawCircle(position, radius);
 
 }
 
-std::string better_body::toString() {
+std::string body::toString() {
 
     std::string
             theString = "Body : Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " +

@@ -5,18 +5,21 @@
 #ifndef N_BODY_BETTER_VIEWPORT_H
 #define N_BODY_BETTER_VIEWPORT_H
 
+#include <GLFW/glfw3.h>
+#include <GL/glu.h>
 
 #include <glm/glm.hpp>
+#include <vector>
 #include <string>
 
 #include "drawable.h"
-#include "../model/better_simulation.h"
+#include "../model/simulation.h"
 
 /**
  * Improved viewport system
  * I'm using the fluent interface paradigm to make it simpler to construct.
  */
-class better_viewport {
+class viewport {
 
 public:
 
@@ -25,7 +28,7 @@ public:
     /**
      * Creates the viewport with default parameters
      */
-    explicit better_viewport() = default;
+    explicit viewport() = default;
 
 
     // Setters (with support for chaining)
@@ -35,25 +38,25 @@ public:
      * @param dimensions Vector representing the <X, Y> dimensions of the window
      * @return This viewport, for use in chaining named parameters.
      */
-    better_viewport *setDimensions(glm::ivec2 dimensions);
+    viewport *setDimensions(glm::ivec2 dimensions);
 
     /**
      * Sets the title of the window
      * @param title The new title
      * @return This viewport, for use in chaining named parameters.
      */
-    better_viewport *setTitle(const char *title);
+    viewport *setTitle(const char *title);
 
 
     // Setup tools
 
-    better_viewport *attachSimulation(better_simulation *simulation);
+    viewport *attachSimulation(simulation *simulation);
 
     /**
      * Adds a new item to the render to be drawn each cycle
      * @param newDrawable The new drawable to be added
      */
-    better_viewport *registerDrawable(drawable *drawable);
+    viewport *registerDrawable(drawable *drawable);
 
 
     // Controller tools
@@ -114,7 +117,7 @@ private:
     // References the model and associated drawables
 
     /*A reference is kept to the simulation being rendered*/
-    better_simulation *simulation;
+    simulation *simulation = nullptr;
 
     /*The list of drawables that will be put on the screen each time it's updated*/
     std::vector<drawable *> drawables;

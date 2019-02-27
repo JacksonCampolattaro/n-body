@@ -12,13 +12,13 @@
 #include <glm/glm.hpp>
 
 #include "../interface/drawable.h"
-#include "../viewport.h"
+#include "../interface/viewport.h"
 
 /**
  * Intended to streamline the functionality of the old body
  * The goal is to retain all the same features, while reducing the number of methods.
  */
-class better_body : public drawable {
+class body : public drawable {
 public:
 
     // Constructor
@@ -27,7 +27,7 @@ public:
      * The constructor only takes in the position, all other values start at their defaults.
      * @param position The starting location of the body (as a three dimensional vector)
      */
-    better_body(glm::vec3 position);
+    body(glm::vec3 position);
 
 
     // Setters (to be used as named parameters)
@@ -37,40 +37,40 @@ public:
      * @param velocity The velocity to set
      * @return This body, for use in chaining named parameters.
      */
-    better_body *setVelocity(glm::vec3 velocity);
+    body *setVelocity(glm::vec3 velocity);
 
     /**
      * Sets the mass of the body to something other than 100
      * @param mass the mass to set
      * @return This body, for use in chaining named parameters.
      */
-    better_body *setMass(float mass);
+    body *setMass(float mass);
 
     /**
      * Sets fixed to true, locking the body's location
      * @return This body, for use in chaining named parameters.
      */
-    better_body *makeFixed();
+    body *makeFixed();
 
     /**
      * Sets passive to true, preventing the body from affecting others
      * @return This body, for use in chaining named parameters.
      */
-    better_body *makePassive();
+    body *makePassive();
 
     /**
      * Sets the color of the body to something other than <1, 1, 1>
      * @param color the color to set
      * @return This body, for use in chaining named parameters.
      */
-    better_body *setColor(glm::vec3 color);
+    body *setColor(glm::vec3 color);
 
     /**
      * Forces the body to be drawn with a specific radius, regardless of its density
      * @param radius the new radius of the body
      * @return This body, for use in chaining named parameters.
      */
-    better_body *setRadius(float radius);
+    body *setRadius(float radius);
 
 
     // Getters

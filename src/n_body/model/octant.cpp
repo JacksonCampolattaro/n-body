@@ -81,7 +81,7 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 }
 
-void octant::applyGravityToBody(better_body *theBody, better_simulation *simulation) {
+void octant::applyGravityToBody(body *body, simulation *simulation) {
 
     // FIXME This needs to use the new simulation class
 
@@ -94,9 +94,9 @@ void octant::applyGravityToBody(better_body *theBody, better_simulation *simulat
     if (!divided) {
 
         // Ignores the node if it contains the body to be acted upon
-        if (centerOfMass != theBody->getPosition()) {
+        if (centerOfMass != body->getPosition()) {
 
-            simulation->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
+            simulation->applyGravityBetweenBodies(body, centerOfMass, totalMass);
         }
 
         return;
@@ -104,21 +104,21 @@ void octant::applyGravityToBody(better_body *theBody, better_simulation *simulat
 
     // Base case 2: Divided, but subdivision is unnecessary
     /* Node is treated as a single body if S/D < theta (where S = sideLength and D = distance) */
-    if (simulation->getTheta() > (float) sideLength / (float) distance(theBody->getPosition(), centerOfMass)) {
+    if (simulation->getTheta() > (float) sideLength / (float) distance(body->getPosition(), centerOfMass)) {
 
-        simulation->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
+        simulation->applyGravityBetweenBodies(body, centerOfMass, totalMass);
 
         return;
     }
 
     // Recursive case: Divided, and not far enough to avoid subdividing
-    #pragma omp parallel for collapse(3)
+    //#pragma omp parallel for collapse(3)
     for (int x = 0; x <= 1; ++x) {
         for (int y = 0; y <= 1; ++y) {
             for (int z = 0; z <= 1; ++z) {
 
                 // Recursively dividing the work
-                children[x][y][z]->applyGravityToBody(theBody, simulation);
+                children[x][y][z]->applyGravityToBody(body, simulation);
             }
         }
     }
@@ -174,12 +174,12 @@ int octant::getNumBodies() {
     return numBodies;
 }
 
-vec3 octant::getCenterOfMass() {
+glm::vec3 octant::getCenterOfMass() {
 
 
     // If the center of mass hasn't been calculated, calculate it
     if (!validCenterOfMass) {
-        vec3 COM = vec3(0, 0, 0);
+        glm::vec3 COM = glm::vec3(0, 0, 0);
 
         // Summing all subdivisions
         // TODO This only seems to work in parallel if I output to the console before returning...?
@@ -212,12 +212,12 @@ vec3 octant::getCenterOfMass() {
     return centerOfMass;
 }
 
-vec3 octant::getAveragePosition() {
+glm::vec3 octant::getAveragePosition() {
 
     // If the average position hasn't been calculated, calculate it
     if (!validAveragePosition) {
 
-        vec3 avg = vec3(0, 0, 0);
+        glm::vec3 avg = glm::vec3(0, 0, 0);
 
         // Summing all subdivisions, safely done in parallel
         //#pragma omp parallel for collapse(3)
@@ -286,7 +286,7 @@ void octant::divide() {
     getSubdivisionEnclosing(this->centerOfMass)->addBody(this->centerOfMass, this->totalMass);
 }
 
-shared_ptr<octant> octant::getSubdivisionEnclosing(vec3 position) {
+std::shared_ptr<octant> octant::getSubdivisionEnclosing(glm::vec3 position) {
 
     // Making sure the subdivisions exist
     if (!divided) {
@@ -294,7 +294,7 @@ shared_ptr<octant> octant::getSubdivisionEnclosing(vec3 position) {
     }
 
     // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
+    glm::vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
 
     // Adding the body at the appropriate index
     return children[(int) comparison.x][(int) comparison.y][(int) comparison.z];

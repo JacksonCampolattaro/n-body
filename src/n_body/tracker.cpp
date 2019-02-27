@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <iomanip>
 
 #include "tracker.h"
 
@@ -19,9 +20,9 @@ tracker *tracker::instance() {
     return internalInstance;
 }
 
-void tracker::setSimulation(simulation *theSim) {
+/*void tracker::setSimulation(simulation *theSim) {
     this->theSim = theSim;
-}
+}*/
 
 void tracker::markFrameCompleted() {
 
@@ -80,20 +81,19 @@ void tracker::markPositionsUpdated() {
 
 void tracker::outputStatus() {
 
-    cout << "Frame " << numFrames << ": " << endl;
-    cout << "      Number of bodies:                    " << theSim->getNumBodies() << endl;
-    cout << "      Total calculation time:              " << totalFrameTime << " clock cycles --> "
-         << inSeconds(totalFrameTime) << " s" << endl;
-    cout << setprecision(3);
-    cout << "           Tree Creation:                    " << 100.0 * ((double) treeCreationTime / (double) totalFrameTime) << "%         " << inSeconds(treeCreationTime) << " s" << endl;
-    cout << "           Tree Population:                  " << 100.0 * ((double) treePopulationTime / (double) totalFrameTime) << "%         " << inSeconds(treePopulationTime) << " s" << endl;
-    cout << "           Center of Mass Propegation:       " << 100.0 * ((double) centerMassCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(centerMassCalculationTime) << " s" << endl;
-    cout << "           Gravitational Calculations:       " << 100.0 * ((double) gravityCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(gravityCalculationTime) << " s" << endl;
-    cout << "           Application of Velocity:          " << 100.0 * ((double) velocityApplicationTime / (double) totalFrameTime) << "%       " << inSeconds(velocityApplicationTime) << " s" << endl;
-    cout << "           Updating Positions:               " << 100.0 * ((double) positionUpdateTime / (double) totalFrameTime) << "%      " << inSeconds(positionUpdateTime) << " s" << endl;
-    cout << "           Rendering:                        " << 100.0 * ((double) renderingTime / (double) totalFrameTime) << "%       " << inSeconds(renderingTime) << " s" << endl;
-    cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(totalFrameTime) << " FPS" << endl;
-    cout << "      Framerate (average):                 " << 1 / inSeconds((clock() - programStartTime) / numFrames) << " FPS" << endl;
-    cout << endl;
+    std::cout << "Frame " << numFrames << ": " << std::endl;
+    std::cout << "      Total calculation time:              " << totalFrameTime << " clock cycles --> "
+         << inSeconds(totalFrameTime) << " s" << std::endl;
+    std::cout << std::setprecision(3);
+    std::cout << "           Tree Creation:                    " << 100.0 * ((double) treeCreationTime / (double) totalFrameTime) << "%         " << inSeconds(treeCreationTime) << " s" << std::endl;
+    std::cout << "           Tree Population:                  " << 100.0 * ((double) treePopulationTime / (double) totalFrameTime) << "%         " << inSeconds(treePopulationTime) << " s" << std::endl;
+    std::cout << "           Center of Mass Propegation:       " << 100.0 * ((double) centerMassCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(centerMassCalculationTime) << " s" << std::endl;
+    std::cout << "           Gravitational Calculations:       " << 100.0 * ((double) gravityCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(gravityCalculationTime) << " s" << std::endl;
+    std::cout << "           Application of Velocity:          " << 100.0 * ((double) velocityApplicationTime / (double) totalFrameTime) << "%       " << inSeconds(velocityApplicationTime) << " s" << std::endl;
+    std::cout << "           Updating Positions:               " << 100.0 * ((double) positionUpdateTime / (double) totalFrameTime) << "%      " << inSeconds(positionUpdateTime) << " s" << std::endl;
+    std::cout << "           Rendering:                        " << 100.0 * ((double) renderingTime / (double) totalFrameTime) << "%       " << inSeconds(renderingTime) << " s" << std::endl;
+    std::cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(totalFrameTime) << " FPS" << std::endl;
+    std::cout << "      Framerate (average):                 " << 1 / inSeconds((clock() - programStartTime) / numFrames) << " FPS" << std::endl;
+    std::cout << std::endl;
 }
 

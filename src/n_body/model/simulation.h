@@ -5,15 +5,15 @@
 #ifndef N_BODY_BETTER_SIMULATION_H
 #define N_BODY_BETTER_SIMULATION_H
 
-#include "better_body.h"
+#include "body.h"
 #include "../tracker.h"
-#include "../interface/better_viewport.h"
+#include "../interface/viewport.h"
 
 /**
  * A more streamlined simulation class
  * I'm using the fluent interface paradigm to make it simpler to construct.
  */
-class better_simulation {
+class simulation {
 
 public:
 
@@ -22,13 +22,13 @@ public:
     /**
      * Constructor for the simulation, every parameter starts with a default
      */
-    better_simulation();
+    simulation();
 
     /**
      * Adds a new body to the simulation
      * @param body the body to be included
      */
-    void addBody(better_body* body);
+    void addBody(body* body);
 
 
     // Setters (with support for chaining)
@@ -38,60 +38,60 @@ public:
      * @param G The constant 'G' as a float
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setG(float G);
+    simulation *setG(float G);
 
     /**
      * Sets the power distance is raised to when calculating the force of gravity
      * @param Power the new power of the simulation
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setPower(int Power);
+    simulation *setPower(int Power);
 
     /**
      * Sets the time interval of the simulation
      * @param T Unit-less time interval
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setT(float T);
+    simulation *setT(float T);
 
     /**
      * Selects whether Force Softening is enabled, off by default
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *enableForceSoftening(bool enabled = true);
+    simulation *enableForceSoftening(bool enabled = true);
 
     /**
      * Sets the shortest time interval to use
      * @param minimumT The smallest time granularity allowed when super-sampling is enabled
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setMinimumT(float minimumT);
+    simulation *setMinimumT(float minimumT);
 
     /**
      * Selects whether Barnes-Hut optimizations is enabled, on by default
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *enableBarnesHut(bool enabled = true);
+    simulation *enableBarnesHut(bool enabled = true);
 
     /**
      * Sets the accuracy of the simulation (lower is more accurate, 0 is naive)
      * @param Theta Ratio defining how far any group of bodies must be before they can be grouped together
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *setTheta(float Theta);
+    simulation *setTheta(float Theta);
 
     /**
      * Leapfrog approximation starts the first increment with a velocity pre-calculation on a half time-step
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *enableLeapfrog();
+    simulation *enableLeapfrog();
 
     /**
      * Links the viewport to be used to draw bodies to the screen
      * @param viewport a pointer to the viewport
      * @return This simulation, for use in chaining named parameters.
      */
-    better_simulation *attachViewport(better_viewport *viewport);
+    //simulation *attachViewport(viewport *viewport);
 
 
     // Getters
@@ -116,7 +116,7 @@ public:
      * @param actorPosition the position of the body creating the force
      * @param actorPosition the mass of the body creating the force
      */
-    void applyGravityBetweenBodies(better_body *subject, glm::vec3 actorPosition, float actorMass);
+    void applyGravityBetweenBodies(body *subject, glm::vec3 actorPosition, float actorMass);
 
 
     // User facing tools
@@ -126,7 +126,7 @@ public:
      * @param sunBody The body to orbit
      * @param satelliteBody The body orbiting
      */
-    void orbit(better_body *sunBody, better_body *satelliteBody);
+    void orbit(body *sunBody, body *satelliteBody);
 
 private:
 
@@ -166,16 +166,16 @@ private:
     // Values used as a part of the model
 
     /*Filled with bodies before the start of the model, bodies are passed by reference and not removed*/
-    std::vector<better_body *> bodies;
+    std::vector<body *> bodies;
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
-    vec3 idealTreeCenterLocation = vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/
+    glm::vec3 idealTreeCenterLocation = glm::vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/
 
 
     // Graphics
 
     /*The viewport used to draw bodies to the screen*/
-    better_viewport *viewport;
+    //viewport *viewport;
 
 
     // Private helper methods

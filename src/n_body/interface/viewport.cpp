@@ -2,38 +2,37 @@
 // Created by jackcamp on 2/26/19.
 //
 
-#include "better_viewport.h"
-#include "../model/better_simulation.h"
+#include "viewport.h"
 
-better_viewport *better_viewport::setDimensions(glm::ivec2 dimensions) {
+viewport *viewport::setDimensions(glm::ivec2 dimensions) {
 
     this->dimensions = dimensions;
 
     return this;
 }
 
-better_viewport *better_viewport::setTitle(const char *title) {
+viewport *viewport::setTitle(const char *title) {
 
     this->title = title;
 
     return this;
 }
 
-better_viewport *better_viewport::attachSimulation(better_simulation *simulation) {
+viewport *viewport::attachSimulation(simulation *simulation) {
 
     this->simulation = simulation;
 
     return this;
 }
 
-better_viewport *better_viewport::registerDrawable(drawable *drawable) {
+viewport *viewport::registerDrawable(drawable *drawable) {
 
     this->drawables.push_back(drawable);
 
     return this;
 }
 
-void better_viewport::start() {
+void viewport::start() {
 
     // TODO Boilerplate code that creates the window could be improved
 
@@ -76,13 +75,13 @@ void better_viewport::start() {
     handleResize(window, dimensions.x, dimensions.y);
 }
 
-void better_viewport::setColor(glm::vec3 color) {
+void viewport::setColor(glm::vec3 color) {
 
     // Sets the color used in the next OpenGL action
     glColor3f(color.r, color.g, color.b);
 }
 
-void better_viewport::drawCircle(glm::vec3 position, float radius) {
+void viewport::drawCircle(glm::vec3 position, float radius) {
 
     // Number of segments affects how 'smooth' the circle will be.
     int numSegments = 64;
@@ -102,12 +101,12 @@ void better_viewport::drawCircle(glm::vec3 position, float radius) {
 
 }
 
-void better_viewport::handleError(int error, const char *description) {
+void viewport::handleError(int error, const char *description) {
 
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void better_viewport::handleResize(GLFWwindow *window, int width, int height) {
+void viewport::handleResize(GLFWwindow *window, int width, int height) {
 
     // TODO Must be reworked before enabling camera movement
 
@@ -126,7 +125,7 @@ void better_viewport::handleResize(GLFWwindow *window, int width, int height) {
     gluPerspective(60, ratio, 0.01, 10000);
 }
 
-void better_viewport::graphicsLoop() {
+void viewport::graphicsLoop() {
 
     // TODO May have to be reworked to incorporate flags
 
@@ -152,7 +151,7 @@ void better_viewport::graphicsLoop() {
 
 }
 
-void better_viewport::draw() {
+void viewport::draw() {
 
     // TODO This boilerplate could probably be rewritten
 

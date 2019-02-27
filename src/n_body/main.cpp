@@ -4,38 +4,30 @@
 
 #include <gtest/gtest.h>
 #include <omp.h>
-
-#include "simulation.h"
-#include "body.h"
-#include "viewport.h"
 #include "tracker.h"
 
-#include "model/better_simulation.h"
-#include "model/better_body.h"
-#include "interface/better_viewport.h"
+#include "model/body.h"
+#include "model/simulation.h"
+#include "interface/viewport.h"
 
 
 float density = 100;
 
-simulation *theSimulation;
-viewport *theViewport;
 
 // Colors to use
-static vec3 white = vec3(1, 1, 1);
-static vec3 yellow = vec3(1, 1, 0);
-static vec3 red = vec3(1, 0, 0);
-static vec3 green = vec3(0, 1, 0);
-static vec3 blue = vec3(0, 0, 1);
-static vec3 teal = vec3(0, 1, 1);
-static vec3 grey = vec3(.5, .5, .5);
+static glm::vec3 white = glm::vec3(1, 1, 1);
+static glm::vec3 yellow = glm::vec3(1, 1, 0);
+static glm::vec3 red = glm::vec3(1, 0, 0);
+static glm::vec3 green = glm::vec3(0, 1, 0);
+static glm::vec3 blue = glm::vec3(0, 0, 1);
+static glm::vec3 teal = glm::vec3(0, 1, 1);
+static glm::vec3 grey = glm::vec3(.5, .5, .5);
 
-
+/*
 void addBody(body *newBody) {
-    theSimulation->addBody(newBody);
-    theViewport->registerDrawable(newBody);
-}
+}*/
 
-
+/*
 void cubicGrid(vec3 cornerPosition = vec3(-100, -100, -200), vec3 velocity = vec3(0.0f, 0.0f, -100.0f),
                vec3 size = vec3(20, 20, 20), float spacing = 10.0f, float mass = 10000.0f) {
 
@@ -68,10 +60,10 @@ void cubicGrid(vec3 cornerPosition = vec3(-100, -100, -200), vec3 velocity = vec
             }
         }
     }
-}
+}*/
 
 
-void bigDemo() {
+/*void bigDemo() {
 
     // Massive fixed mass
     auto superHeavy = new body(vec3(0, 0, -500), vec3(0, 0, 0), 180000000, 10000, white, true);
@@ -112,10 +104,10 @@ void bigDemo() {
             }
         }
     }
-}
+}*/
 
 
-void threeBodyDemo() {
+/*void threeBodyDemo() {
     // Three body model
 
     theSimulation->setPower(2);
@@ -124,13 +116,13 @@ void threeBodyDemo() {
     addBody(new body(vec3(20.0, 50.0, -300), vec3(30, -50, 0), 500000, density, red));
     addBody(new body(vec3(0.0, -50, -400), vec3(-30, 0, 0), 500000, density, white));
     addBody(new body(vec3(-20, 0, -700), vec3(0, 50, 0), 500000, density, yellow));
-}
+}*/
 
 
-void addBodies() {
+/*void addBodies() {
 
     // Orbit model
-    /*
+    *//*
     density = 10;
 
     auto sun = new body(vec3(0, 0, -4000), vec3(0, 0, 0), 50000000, density, yellow, true);
@@ -146,7 +138,7 @@ void addBodies() {
     addBody(moon);
 
     theSimulation->setTimeInterval(0.05);
-    //*/
+    //*//*
 
     //bigDemo();
     density = 30; cubicGrid(vec3(-95, -95, -200), vec3(0, 0, -25), vec3(20, 20, 20), 10, 5000);
@@ -154,28 +146,28 @@ void addBodies() {
 
     //cubicGrid(vec3(-50, -50, -500), vec3(100, 0, 0), vec3(10, 10, 10));
     //cubicGrid(vec3(-50, 50, -500), vec3(-100, 0, 0), vec3(10, 10, 10));
-}
+}*/
 
 int main(int argc, char **argv) {
 
 
-    auto simulation = new better_simulation();
+    auto simulation = new simulation();
 
 
-    auto earth = new better_body(vec3(0, 0, -200));
+    auto earth = new body(glm::vec3(0, 0, -200));
     earth->setMass(4000000)->setColor(blue);
     simulation->addBody(earth);
 
-    auto moon = new better_body(vec3(0, -50, -200));
+    auto moon = new body(glm::vec3(0, -50, -200));
     earth->setMass(500)->setColor(blue);
     simulation->addBody(earth);
 
 
-    auto viewport = new better_viewport();
-    viewport->setTitle("test")->attachSimulation(simulation);
+    //auto viewport = new viewport();
+    //viewport->setTitle("test")->attachSimulation(simulation);
 
 
-    viewport->start();
+    //viewport->start();
 
 
     /*cout << " number of devices: " << omp_get_num_devices() << endl;

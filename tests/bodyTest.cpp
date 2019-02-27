@@ -3,14 +3,14 @@
 //
 
 #include <gtest/gtest.h>
-#include "../src/n_body/body.h"
+#include "../src/n_body/model/body.h"
 
 
 class bodyTest : public ::testing::Test {
 protected:
 
     virtual void SetUp() {
-        theBody = new body(vec3(0, 0, 0), vec3(1, 0, 0), 2, 1, vec3(1, 1, 1));
+        theBody = new body(glm::vec3(0, 0, 0));
     }
 
     virtual void TearDown() {
@@ -22,31 +22,32 @@ protected:
 
 TEST_F(bodyTest, bodyTest_applyVelocity_Test) {
 
-    theBody->applyVelocity(1);
-    EXPECT_EQ(vec3(1, 0, 0), theBody->getVelocity());
-    EXPECT_EQ(vec3(1, 0, 0), theBody->getPosition());
+    theBody->addVelocity(glm::vec3(1, 0, 0));
+    theBody->update();
+    EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getVelocity());
+    EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getPosition());
 }
 
 TEST_F(bodyTest, bodyTest_applyForce_Test) {
 
     theBody->applyForce(vec3(1, 0, 0), 2);
-    EXPECT_EQ(vec3(2, 0, 0), theBody->getVelocity());
+    EXPECT_EQ(glm::vec3(2, 0, 0), theBody->getVelocity());
 }
 
 TEST_F(bodyTest, bodyTest_addVelocity_Test) {
 
-    theBody->addVelocity(vec3(1, 0, 0));
-    EXPECT_EQ(vec3(2, 0, 0), theBody->getVelocity());
+    theBody->addVelocity(glm::vec3(1, 0, 0));
+    EXPECT_EQ(glm::vec3(2, 0, 0), theBody->getVelocity());
 }
 
 TEST_F(bodyTest, bodyTest_getPosition_Test) {
 
-    EXPECT_EQ(vec3(0, 0, 0), theBody->getPosition());
+    EXPECT_EQ(glm::vec3(0, 0, 0), theBody->getPosition());
 }
 
 TEST_F(bodyTest, bodyTest_getVelocity_Test) {
 
-    EXPECT_EQ(vec3(1, 0, 0), theBody->getVelocity());
+    EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getVelocity());
 }
 
 TEST_F(bodyTest, bodyTest_getMass_Test) {
@@ -61,5 +62,5 @@ TEST_F(bodyTest, bodyTest_getRadius_Test) {
 
 TEST_F(bodyTest, bodyTest_getColor_Test) {
 
-    EXPECT_EQ(vec3(1, 1, 1), theBody->getColor());
+    EXPECT_EQ(glm::vec3(1, 1, 1), theBody->getColor());
 }

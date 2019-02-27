@@ -2,88 +2,88 @@
 // Created by jackcamp on 2/25/19.
 //
 
-#include "better_simulation.h"
+#include "simulation.h"
 
 
 
-better_simulation::better_simulation() = default;
+simulation::simulation() = default;
 
-void better_simulation::addBody(better_body *body) {
+void simulation::addBody(body *body) {
 
     this->bodies.push_back(body);
 }
 
-better_simulation *better_simulation::setG(float G) {
+simulation *simulation::setG(float G) {
 
     this->G = G;
 
     return this;
 }
 
-better_simulation *better_simulation::setPower(int Power) {
+simulation *simulation::setPower(int Power) {
 
     this->Exponent = Power;
 
     return this;
 }
 
-better_simulation *better_simulation::setT(float T) {
+simulation *simulation::setT(float T) {
 
     this->T = T;
 
     return this;
 }
 
-better_simulation *better_simulation::enableForceSoftening(bool enabled) {
+simulation *simulation::enableForceSoftening(bool enabled) {
 
     this->ForceSofteningEnabled = enabled;
 
     return this;
 }
 
-better_simulation *better_simulation::setMinimumT(float minimumT) {
+simulation *simulation::setMinimumT(float minimumT) {
 
     this->minimumT = minimumT;
 
     return this;
 }
 
-better_simulation *better_simulation::enableBarnesHut(bool enabled) {
+simulation *simulation::enableBarnesHut(bool enabled) {
 
     this->BarnesHutEnabled = enabled;
 
     return this;
 }
 
-better_simulation *better_simulation::setTheta(float Theta) {
+simulation *simulation::setTheta(float Theta) {
     this->Theta = Theta;
 
     return this;
 }
 
-better_simulation *better_simulation::enableLeapfrog() {
+simulation *simulation::enableLeapfrog() {
 
     this->LeapFrogEnabled = true;
 
     return this;
 }
 
-better_simulation *better_simulation::attachViewport(better_viewport *viewport) {
+/*simulation *simulation::attachViewport(viewport *viewport) {
 
     this->viewport = viewport;
 
     return this;
-}
+}*/
 
 
 
-float better_simulation::getTheta() {
+float simulation::getTheta() {
 
     return Theta;
 }
 
 
-void better_simulation::increment() {
+void simulation::increment() {
 
     tracker::instance()->markFrameCompleted(); /*Marks the completion of the previous frame, including rendering*/
     tracker::instance()->markCalculationsStart();
@@ -112,7 +112,7 @@ void better_simulation::increment() {
 
 }
 
-void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec3 actorPosition, float actorMass) {
+void simulation::applyGravityBetweenBodies(body *subject, glm::vec3 actorPosition, float actorMass) {
 
     // Added on the bottom of the equation to prevent infinities
     // TODO Should this be a model parameter?
@@ -127,7 +127,7 @@ void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec
     glm::vec3 force = forceOfGravity * glm::normalize(actorPosition - subject->getPosition());
 
     // Getting acceleration (a = f/m)
-    vec3 acceleration = force / subject->getMass();
+    glm::vec3 acceleration = force / subject->getMass();
 
     // Applying the acceleration to the body (v = at)
     // TODO When I add force softening / super-sampling, this is where it will be done
@@ -135,7 +135,7 @@ void better_simulation::applyGravityBetweenBodies(better_body *subject, glm::vec
 
 }
 
-void better_simulation::orbit(better_body *sunBody, better_body *satelliteBody) {
+void simulation::orbit(body *sunBody, body *satelliteBody) {
 
     // TODO This method needs improvement
 
@@ -150,7 +150,7 @@ void better_simulation::orbit(better_body *sunBody, better_body *satelliteBody) 
     satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
 }
 
-void better_simulation::calculateGravity() {
+void simulation::calculateGravity() {
 
 
     if (BarnesHutEnabled) {
@@ -165,15 +165,15 @@ void better_simulation::calculateGravity() {
     }
 }
 
-void better_simulation::NaiveGravity() {
+void simulation::NaiveGravity() {
 
     // Iterating through each combination of bodies
     for (int subject = 0; subject < bodies.size(); ++subject) {
         for (int actor = 0; actor < bodies.size(); ++actor) {
 
             // Getting this particular pair
-            better_body *subjectBody = bodies[subject];
-            better_body *actorBody = bodies[actor];
+            body *subjectBody = bodies[subject];
+            body *actorBody = bodies[actor];
 
             // Skips this interaction if the subject is fixed or the actor is passive
             if (!subjectBody->isFixed() && !actorBody->isPassive()) {
@@ -186,7 +186,7 @@ void better_simulation::NaiveGravity() {
 
 }
 
-void better_simulation::BarnesHutGravity() {
+void simulation::BarnesHutGravity() {
 
     // TODO Implementation using the rewritten octree
 
