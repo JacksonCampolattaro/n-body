@@ -5,7 +5,6 @@
 #ifndef N_BODY_THREADSAFE_OCTANT_H
 #define N_BODY_THREADSAFE_OCTANT_H
 
-#include "../simulation.h"
 
 #include <iostream>
 #include <glm/glm.hpp>
@@ -14,8 +13,9 @@
 #include <mutex>
 
 
+#include "../simulation.h"
 #include "../body.h"
-
+#include "better_simulation.h"
 
 
 /**
@@ -28,7 +28,7 @@
  * I'm also trying to streamline the class by combining methods that are always used together
  * For example, the center of mass is calculated the first time it needs to be retrieved
  */
-class threadSafe_octant {
+class octant {
 
 public:
 
@@ -37,12 +37,12 @@ public:
      * @param location The center of the octant as a vector
      * @param sideLength The length of the octant
      */
-    threadSafe_octant(glm::vec3 location, float sideLength);
+    octant(glm::vec3 location, float sideLength);
 
     /**
      * Standard destructor for the class
      */
-    virtual ~threadSafe_octant() = default;
+    virtual ~octant() = default;
 
     /**
      * Adds a body to the octant by its parameters
@@ -56,9 +56,9 @@ public:
      * Applies gravity to a body based on the parameters of a simulation
      * This is used for the traversal of the tree
      * @param theBody The body to apply the forces of gravity to
-     * @param theSimulation the simulation in which calculations are defined
+     * @param simulation the simulation in which calculations are defined
      */
-    void applyGravityToBody(body *theBody, simulation *theSimulation);
+    void applyGravityToBody(better_body *theBody, better_simulation *simulation);
 
     /**
      * Getter for the number of bodies contained by the octant
@@ -103,7 +103,7 @@ private:
     once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
-    std::shared_ptr<threadSafe_octant> children[2][2][2];
+    std::shared_ptr<octant> children[2][2][2];
 
 
     // Metadata about the node
@@ -129,7 +129,7 @@ private:
     void divide();
 
     /*Finds the appropriate child to add a body to*/
-    shared_ptr<threadSafe_octant> getSubdivisionEnclosing(vec3 position);
+    shared_ptr<octant> getSubdivisionEnclosing(vec3 position);
 
 };
 

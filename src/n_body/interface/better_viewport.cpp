@@ -3,6 +3,7 @@
 //
 
 #include "better_viewport.h"
+#include "../model/better_simulation.h"
 
 better_viewport *better_viewport::setDimensions(glm::ivec2 dimensions) {
 

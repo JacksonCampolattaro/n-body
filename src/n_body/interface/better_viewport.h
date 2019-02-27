@@ -55,6 +55,9 @@ public:
      */
     better_viewport *registerDrawable(drawable *drawable);
 
+
+    // Controller tools
+
     /**
      * Creates the window and starts the graphics loop
      */

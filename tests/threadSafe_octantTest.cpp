@@ -12,7 +12,7 @@ class threadSafe_octantTest : public ::testing::Test {
 protected:
 
     virtual void SetUp() {
-        theOctant = new threadSafe_octant(glm::vec3(0, 0, 0), 16);
+        theOctant = new octant(glm::vec3(0, 0, 0), 16);
         tracker::instance();
     }
 
@@ -20,7 +20,7 @@ protected:
         delete theOctant;
     }
 
-    threadSafe_octant *theOctant;
+    octant *theOctant;
 };
 
 TEST_F(threadSafe_octantTest, threadSafe_octantTest_addBody_Test) {

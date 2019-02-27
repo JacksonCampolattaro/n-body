@@ -94,6 +94,15 @@ public:
     better_simulation *attachViewport(better_viewport *viewport);
 
 
+    // Getters
+
+    /**
+     * Used by the octree to determine whether a group is far enough away to use the center of mass
+     * @return the constant Theta
+     */
+    float getTheta();
+
+
     // Physics methods
 
     /**

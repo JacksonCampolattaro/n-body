@@ -76,6 +76,13 @@ better_simulation *better_simulation::attachViewport(better_viewport *viewport) 
 }
 
 
+
+float better_simulation::getTheta() {
+
+    return Theta;
+}
+
+
 void better_simulation::increment() {
 
     tracker::instance()->markFrameCompleted(); /*Marks the completion of the previous frame, including rendering*/
@@ -101,6 +108,7 @@ void better_simulation::increment() {
     for (int b = 0; b < bodies.size(); ++b) {
         bodies[b]->update();
     }
+
 
 }
 

@@ -8,7 +8,10 @@
 #include <vector>
 
 #include "body.h"
+
 #include "model/octant.h"
+
+class viewport;
 
 /**
  * Contains the current state of the simulation

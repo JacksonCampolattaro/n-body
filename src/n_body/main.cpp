@@ -5,10 +5,14 @@
 #include <gtest/gtest.h>
 #include <omp.h>
 
-#include "body.h"
 #include "simulation.h"
+#include "body.h"
 #include "viewport.h"
 #include "tracker.h"
+
+#include "model/better_simulation.h"
+#include "model/better_body.h"
+#include "interface/better_viewport.h"
 
 
 float density = 100;
@@ -154,7 +158,27 @@ void addBodies() {
 
 int main(int argc, char **argv) {
 
-    cout << " number of devices: " << omp_get_num_devices() << endl;
+
+    auto simulation = new better_simulation();
+
+
+    auto earth = new better_body(vec3(0, 0, -200));
+    earth->setMass(4000000)->setColor(blue);
+    simulation->addBody(earth);
+
+    auto moon = new better_body(vec3(0, -50, -200));
+    earth->setMass(500)->setColor(blue);
+    simulation->addBody(earth);
+
+
+    auto viewport = new better_viewport();
+    viewport->setTitle("test")->attachSimulation(simulation);
+
+
+    viewport->start();
+
+
+    /*cout << " number of devices: " << omp_get_num_devices() << endl;
 
     // Creating model
     theSimulation = new simulation(.05, .001, 2, 0.8);
@@ -172,6 +196,6 @@ int main(int argc, char **argv) {
     theSimulation->preCalculate();
 
     // Starting the model
-    theViewport->graphicsLoop();
+    theViewport->graphicsLoop();*/
 
 }

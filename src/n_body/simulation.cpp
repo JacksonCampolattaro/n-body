@@ -5,8 +5,8 @@
 #include <omp.h>
 
 #include "simulation.h"
-#include "viewport.h"
 #include "tracker.h"
+#include "model/octant.h"
 
 simulation::simulation(float gravitationalConstant, float timeInterval, int power, float theta) {
 
@@ -28,7 +28,7 @@ void simulation::addBody(body *newBody) {
 void simulation::preCalculate() {
 
     // Creates the Barnes-Hut Octree
-    std::unique_ptr<threadSafe_octant> octree(new threadSafe_octant(vec3(0, 0, 0), 100000));
+    std::unique_ptr<octant> octree(new octant(vec3(0, 0, 0), 100000));
 
     // Populates the Barnes-Hut Octree
     #pragma omp parallel for
@@ -59,7 +59,7 @@ void simulation::increment() {
     tracker::instance()->markCalculationsStart();
 
     // Creates the Barnes-Hut Octree
-    unique_ptr<threadSafe_octant> threadSafe_octree(new threadSafe_octant(idealTreeCenterLocation, 1000));
+    unique_ptr<octant> threadSafe_octree(new octant(idealTreeCenterLocation, 1000));
     tracker::instance()->markTreeCreated();
 
 
