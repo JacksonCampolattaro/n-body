@@ -2,16 +2,14 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include <gtest/gtest.h>
-#include <omp.h>
 #include "tracker.h"
-
 #include "model/body.h"
 #include "model/simulation.h"
 #include "interface/viewport.h"
 
-
-float density = 100;
+#include <glm/glm.hpp>
+#include <gtest/gtest.h>
+#include <omp.h>
 
 
 // Colors to use
@@ -22,6 +20,7 @@ static glm::vec3 green = glm::vec3(0, 1, 0);
 static glm::vec3 blue = glm::vec3(0, 0, 1);
 static glm::vec3 teal = glm::vec3(0, 1, 1);
 static glm::vec3 grey = glm::vec3(.5, .5, .5);
+
 
 /*
 void addBody(body *newBody) {
@@ -150,24 +149,23 @@ void cubicGrid(vec3 cornerPosition = vec3(-100, -100, -200), vec3 velocity = vec
 
 int main(int argc, char **argv) {
 
-
-    auto simulation = new simulation();
-
+    auto theSimulation = new simulation();
+    auto theViewport = new viewport();
 
     auto earth = new body(glm::vec3(0, 0, -200));
     earth->setMass(4000000)->setColor(blue);
-    simulation->addBody(earth);
+    theSimulation->addBody(earth);
+    theViewport->registerDrawable(earth);
 
     auto moon = new body(glm::vec3(0, -50, -200));
     earth->setMass(500)->setColor(blue);
-    simulation->addBody(earth);
+    theSimulation->addBody(earth);
+    theViewport->registerDrawable(moon);
 
 
-    //auto viewport = new viewport();
-    //viewport->setTitle("test")->attachSimulation(simulation);
+    theViewport->setTitle("test");
 
-
-    //viewport->start();
+    theSimulation->increment();
 
 
     /*cout << " number of devices: " << omp_get_num_devices() << endl;

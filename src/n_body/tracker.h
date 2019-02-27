@@ -5,20 +5,12 @@
 #ifndef N_BODY_TRACKER_H
 #define N_BODY_TRACKER_H
 
-#include "model/simulation.h"
-
-#include <cstdlib>
-#include <stdio.h>
-
+#include <iostream> // Used for printing outputs to the terminal
+#include <ctime> // Used for getting and holding time values
 
 class tracker {
 public:
     static tracker *instance();
-
-    /**
-     * Sets the simulation to actively request information from.
-     */
-    //void setSimulation(simulation* theSim);
 
     /**
      * Marks the completion of a new frame of the simulation

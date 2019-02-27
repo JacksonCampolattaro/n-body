@@ -81,7 +81,7 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 }
 
-void octant::applyGravityToBody(body *body, simulation *simulation) {
+void octant::applyGravityToBody(body *theBody, simulation *theSim) {
 
     // FIXME This needs to use the new simulation class
 
@@ -93,20 +93,20 @@ void octant::applyGravityToBody(body *body, simulation *simulation) {
     // Base case 1: Leaf node
     if (!divided) {
 
-        // Ignores the node if it contains the body to be acted upon
-        if (centerOfMass != body->getPosition()) {
+        // Ignores the node if it contains the theBody to be acted upon
+        if (centerOfMass != theBody->getPosition()) {
 
-            simulation->applyGravityBetweenBodies(body, centerOfMass, totalMass);
+            theSim->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
         }
 
         return;
     }
 
     // Base case 2: Divided, but subdivision is unnecessary
-    /* Node is treated as a single body if S/D < theta (where S = sideLength and D = distance) */
-    if (simulation->getTheta() > (float) sideLength / (float) distance(body->getPosition(), centerOfMass)) {
+    /* Node is treated as a single theBody if S/D < theta (where S = sideLength and D = distance) */
+    if (theSim->getTheta() > (float) sideLength / (float) distance(theBody->getPosition(), centerOfMass)) {
 
-        simulation->applyGravityBetweenBodies(body, centerOfMass, totalMass);
+        theSim->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
 
         return;
     }
@@ -118,7 +118,7 @@ void octant::applyGravityToBody(body *body, simulation *simulation) {
             for (int z = 0; z <= 1; ++z) {
 
                 // Recursively dividing the work
-                children[x][y][z]->applyGravityToBody(body, simulation);
+                children[x][y][z]->applyGravityToBody(theBody, theSim);
             }
         }
     }

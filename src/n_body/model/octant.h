@@ -2,19 +2,18 @@
 // Created by jackcamp on 2/24/19.
 //
 
-#ifndef N_BODY_THREADSAFE_OCTANT_H
-#define N_BODY_THREADSAFE_OCTANT_H
+#ifndef N_BODY_OCTANT_H
+#define N_BODY_OCTANT_H
 
 
-#include <iostream>
-#include <glm/glm.hpp>
-#include <memory>
-#include <atomic>
-#include <mutex>
-#include <threads.h>
+#include "body.h" // I pass in a body when I want to calculate the forces on it
+#include "simulation.h" // The gravity method in the simulation does the actual calculations
 
-#include "body.h"
-#include "simulation.h"
+#include <glm/vec3.hpp> // Used for storing locations in cartesian space
+#include <atomic> // Used for atomic variables
+#include <mutex> // Used for the call_once flag and lambda expression
+#include <memory> // I used smart pointers to resolve a memory leak
+#include <string> // Used by the toString method
 
 
 /**
@@ -54,10 +53,10 @@ public:
     /**
      * Applies gravity to a body based on the parameters of a simulation
      * This is used for the traversal of the tree
-     * @param body The body to apply the forces of gravity to
-     * @param simulation the simulation in which calculations are defined
+     * @param theBody The body to apply the forces of gravity to
+     * @param theSim the simulation in which calculations are defined
      */
-    void applyGravityToBody(body *body, simulation *simulation);
+    void applyGravityToBody(body *theBody, simulation *theSim);
 
     /**
      * Getter for the number of bodies contained by the octant
@@ -115,7 +114,8 @@ private:
     glm::vec3 octantLocation;
 
     /*Useful data for determining the ideal position of the next iteration's octree*/
-    glm::vec3 averagePosition = glm::vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
+    glm::vec3 averagePosition = glm::vec3(0, 0,
+                                          0); /*What the center of mass would be if all bodies had identical masses*/
     std::atomic_bool validAveragePosition = {true};
 
     /*Total number of bodies contained by the octant or its children*/
@@ -133,4 +133,4 @@ private:
 };
 
 
-#endif //N_BODY_THREADSAFE_OCTANT_H
+#endif //N_BODY_OCTANT_H

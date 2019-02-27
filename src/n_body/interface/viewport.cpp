@@ -1,8 +1,13 @@
 //
-// Created by jackcamp on 2/26/19.
+// Created by jackcamp on 2/27/19.
 //
 
 #include "viewport.h"
+
+#include <GL/glu.h> // Might already be included with GLFW
+#include <cstdio> // Used for outputting errors GLFW encounters
+
+viewport::viewport() = default;
 
 viewport *viewport::setDimensions(glm::ivec2 dimensions) {
 
@@ -18,12 +23,12 @@ viewport *viewport::setTitle(const char *title) {
     return this;
 }
 
-viewport *viewport::attachSimulation(simulation *simulation) {
+/*viewport *viewport::attachSimulation(simulation *simulation) {
 
     this->simulation = simulation;
 
     return this;
-}
+}*/
 
 viewport *viewport::registerDrawable(drawable *drawable) {
 
@@ -73,6 +78,8 @@ void viewport::start() {
 
     // Sets the perspective before beginning the loop
     handleResize(window, dimensions.x, dimensions.y);
+
+    graphicsLoop();
 }
 
 void viewport::setColor(glm::vec3 color) {
@@ -135,7 +142,7 @@ void viewport::graphicsLoop() {
         // All drawing is done here
         draw();
 
-        simulation->increment();
+        // TODO I'm not sure which class should control the other
 
         // Swapping the frame buffers
         glfwSwapBuffers(window);

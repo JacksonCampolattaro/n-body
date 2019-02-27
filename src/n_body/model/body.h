@@ -6,13 +6,11 @@
 #define N_BODY_BETTER_BODY_H
 
 
-#include <iostream>
-#include <string>
+#include <string> // Used by the toString method
+#include <glm/vec3.hpp> // Used for holding 3d vectors
 
-#include <glm/glm.hpp>
-
-#include "../interface/drawable.h"
-#include "../interface/viewport.h"
+#include "../interface/drawable.h" // Body extends drawable
+#include "../interface/viewport.h" // The draw method uses tools defined by the viewport class
 
 /**
  * Intended to streamline the functionality of the old body

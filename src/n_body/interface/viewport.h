@@ -1,24 +1,18 @@
 //
-// Created by jackcamp on 2/26/19.
+// Created by jackcamp on 2/27/19.
 //
 
-#ifndef N_BODY_BETTER_VIEWPORT_H
-#define N_BODY_BETTER_VIEWPORT_H
+#ifndef N_BODY_VIEWPORT_H
+#define N_BODY_VIEWPORT_H
 
-#include <GLFW/glfw3.h>
-#include <GL/glu.h>
 
-#include <glm/glm.hpp>
-#include <vector>
-#include <string>
+#include "drawable.h" // Objects this class draws are all extensions of drawable
+//#include "../model/simulation.h" // Fix before adding
 
-#include "drawable.h"
-#include "../model/simulation.h"
+#include <GLFW/glfw3.h> // GLFW makes OpenGL simpler to use
+#include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
+#include <vector> // Allows me to keep a list of things to draw
 
-/**
- * Improved viewport system
- * I'm using the fluent interface paradigm to make it simpler to construct.
- */
 class viewport {
 
 public:
@@ -28,7 +22,7 @@ public:
     /**
      * Creates the viewport with default parameters
      */
-    explicit viewport() = default;
+    explicit viewport();
 
 
     // Setters (with support for chaining)
@@ -49,8 +43,6 @@ public:
 
 
     // Setup tools
-
-    viewport *attachSimulation(simulation *simulation);
 
     /**
      * Adds a new item to the render to be drawn each cycle
@@ -100,15 +92,16 @@ public:
      */
     static void handleResize(GLFWwindow *window, int width, int height);
 
+
 private:
 
     // Parameters defining the window
 
     /*A reference to the window itself*/
-    GLFWwindow *window;
+    GLFWwindow *window = nullptr;
 
     /*Vector representing the <X, Y> dimensions of the window*/
-    glm::ivec2 dimensions;
+    glm::ivec2 dimensions = glm::ivec2(1920, 1080);
 
     /*The label of the window*/
     const char *title = "n_Body Simulator 0.3.0";
@@ -117,7 +110,7 @@ private:
     // References the model and associated drawables
 
     /*A reference is kept to the simulation being rendered*/
-    simulation *simulation = nullptr;
+    //simulation *theSim;
 
     /*The list of drawables that will be put on the screen each time it's updated*/
     std::vector<drawable *> drawables;
@@ -143,12 +136,7 @@ private:
     /*Draws all the drawables to the screen*/
     void draw();
 
-
-
-
-
-
 };
 
 
-#endif //N_BODY_BETTER_VIEWPORT_H
+#endif //N_BODY_VIEWPORT_H

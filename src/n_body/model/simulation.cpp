@@ -5,7 +5,6 @@
 #include "simulation.h"
 
 
-
 simulation::simulation() = default;
 
 void simulation::addBody(body *body) {
@@ -68,12 +67,12 @@ simulation *simulation::enableLeapfrog() {
     return this;
 }
 
-/*simulation *simulation::attachViewport(viewport *viewport) {
+simulation *simulation::attachViewport(viewport *theViewport) {
 
-    this->viewport = viewport;
+    this->theViewport = theViewport;
 
     return this;
-}*/
+}
 
 
 

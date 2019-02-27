@@ -2,12 +2,14 @@
 // Created by jackcamp on 2/25/19.
 //
 
-#ifndef N_BODY_BETTER_SIMULATION_H
-#define N_BODY_BETTER_SIMULATION_H
+#ifndef N_BODY_SIMULATION_H
+#define N_BODY_SIMULATION_H
 
-#include "body.h"
-#include "../tracker.h"
-#include "../interface/viewport.h"
+#include "body.h" // The simulation contains bodies
+#include "../tracker.h" // Used to report performance to the tracker
+#include "../interface/viewport.h" // Used to keep a reference to the program's viewport
+
+#include <vector> // Used to hold the list of bodies in the simulation
 
 /**
  * A more streamlined simulation class
@@ -88,10 +90,10 @@ public:
 
     /**
      * Links the viewport to be used to draw bodies to the screen
-     * @param viewport a pointer to the viewport
+     * @param theViewport a pointer to the viewport
      * @return This simulation, for use in chaining named parameters.
      */
-    //simulation *attachViewport(viewport *viewport);
+    simulation *attachViewport(viewport *theViewport);
 
 
     // Getters
@@ -175,7 +177,7 @@ private:
     // Graphics
 
     /*The viewport used to draw bodies to the screen*/
-    //viewport *viewport;
+    viewport *theViewport;
 
 
     // Private helper methods
@@ -198,4 +200,4 @@ private:
 };
 
 
-#endif //N_BODY_BETTER_SIMULATION_H
+#endif //N_BODY_SIMULATION_H

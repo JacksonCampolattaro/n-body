@@ -2,10 +2,10 @@
 // Created by jackcamp on 2/6/19.
 //
 
-#include <iostream>
-#include <iomanip>
-
 #include "tracker.h"
+
+#include <iostream> // Used for printing outputs to the terminal
+#include <iomanip> // Used to set precision of results
 
 tracker *tracker::internalInstance = nullptr;
 
@@ -19,10 +19,6 @@ tracker *tracker::instance() {
     }
     return internalInstance;
 }
-
-/*void tracker::setSimulation(simulation *theSim) {
-    this->theSim = theSim;
-}*/
 
 void tracker::markFrameCompleted() {
 
