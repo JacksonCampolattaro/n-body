@@ -128,6 +128,8 @@ void simulation::increment() {
 
     tracker::instance()->markPositionsUpdated();
 
+    tracker::instance()->markFrameCompleted();
+
 
 }
 
@@ -212,7 +214,8 @@ void simulation::BarnesHutGravity() {
     // TODO Implementation using the rewritten octree
 
     // Creating the tree
-    auto octree = new octant(idealTreeCenterLocation, 10000);
+    //auto octree = new octant(idealTreeCenterLocation, 10000);
+    std::unique_ptr<octant> octree (std::make_unique<octant>(idealTreeCenterLocation, 10000));
     tracker::instance()->markTreeCreated();
 
     // Populating the tree
