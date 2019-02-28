@@ -10,7 +10,7 @@
 #include <glm/vec3.hpp> // Used for holding 3d vectors
 
 #include "../interface/drawable.h" // Body extends drawable
-#include "../interface/viewport.h" // The draw method uses tools defined by the viewport class
+class viewport; // The draw method uses tools defined by the viewport class
 
 /**
  * Intended to streamline the functionality of the old body
@@ -25,7 +25,7 @@ public:
      * The constructor only takes in the position, all other values start at their defaults.
      * @param position The starting location of the body (as a three dimensional vector)
      */
-    body(glm::vec3 position);
+    explicit body(glm::vec3 position);
 
 
     // Setters (to be used as named parameters)
@@ -43,6 +43,13 @@ public:
      * @return This body, for use in chaining named parameters.
      */
     body *setMass(float mass);
+
+    /**
+     * Sets the density of the object used to calculate radius
+     * @param density the new density
+     * @return This body, for use in chaining named parameters.
+     */
+    body *setDensity(float density);
 
     /**
      * Sets fixed to true, locking the body's location
@@ -122,12 +129,18 @@ public:
      * Adds to the velocity of the body
      * @param deltaV the change in velocity as a vector
      */
-    void addVelocity(glm::vec3 deltaV);
+    void kick(glm::vec3 deltaV);
 
     /**
-     * Updates the position of the body based on its velocity
+     * Calculates the next position of the body based on its velocity
+     * @param deltaT the change in time to calculate the shift with respect to
      */
-    void update();
+    void drift(float deltaT);
+
+    /**
+     * Updates the position and velocity of the body to match their calculated next values
+     */
+    void shiftBuffers();
 
 
     // Graphics & Diagnostics
@@ -176,6 +189,14 @@ private:
 
     /*Used only to generate the radius based on the mass*/
     float density = 1.0;
+
+
+    // Helper methods
+
+    /**
+     * Sets the radius according to the mass and the density
+     */
+    void calculateRadius();
 
 };
 

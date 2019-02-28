@@ -7,7 +7,7 @@
 
 
 #include "drawable.h" // Objects this class draws are all extensions of drawable
-//#include "../model/simulation.h" // Fix before adding
+#include "../model/simulation.h" // Fix before adding
 
 #include <GLFW/glfw3.h> // GLFW makes OpenGL simpler to use
 #include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
@@ -49,6 +49,8 @@ public:
      * @param newDrawable The new drawable to be added
      */
     viewport *registerDrawable(drawable *drawable);
+
+    viewport *attachSimulation(simulation *theSim);
 
 
     // Controller tools
@@ -119,13 +121,14 @@ private:
     // Parameters which define the interface - model relationship
 
     // TODO This should be mutable with flags
+    simulation *theSim;
 
 
     // Parameters affecting image quality
 
     /*Multisampling prevents jagged, pixellated edges on diagonal lines and curves*/
     bool multisamplingEnabled = true;
-    unsigned int samplingRatio = 4;
+    unsigned int samplingRatio = 8;
 
 
     // Helper methods

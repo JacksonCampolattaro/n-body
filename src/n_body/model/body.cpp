@@ -4,9 +4,12 @@
 
 #include "body.h"
 
+#include "../interface/viewport.h" // Viewport must be included in here to avoid cyclical dependencies
+
 body::body(glm::vec3 position) {
 
     this->position = position;
+    this->nextPosition = position;
 }
 
 body *body::setVelocity(glm::vec3 velocity) {
@@ -19,6 +22,17 @@ body *body::setVelocity(glm::vec3 velocity) {
 body *body::setMass(float mass) {
 
     this->mass = mass;
+
+    calculateRadius();
+
+    return this;
+}
+
+body *body::setDensity(float density) {
+
+    this->density = density;
+
+    calculateRadius();
 
     return this;
 }
@@ -86,19 +100,20 @@ bool body::isPassive() {
     return this->passive;
 }
 
-void body::addVelocity(glm::vec3 deltaV) {
+void body::kick(glm::vec3 deltaV) {
 
     if (!fixed) {
-        this->velocity += deltaV;
+        this->nextVelocity += deltaV;
     }
 
 }
 
-void body::update() {
+void body::drift(float deltaT) {
 
-    // Calculating the next position
-    this->nextPosition = this->position + this->velocity;
+    this->nextPosition = this->position + (this->velocity * deltaT);
+}
 
+void body::shiftBuffers() {
 
     // Updating position and velocity
     this->position = this->nextPosition;
@@ -132,4 +147,11 @@ std::string body::toString() {
     theString += "\n";
 
     return theString;
+}
+
+void body::calculateRadius() {
+
+    float volume = this->mass / this->density;
+
+    this->radius = (float) pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
 }

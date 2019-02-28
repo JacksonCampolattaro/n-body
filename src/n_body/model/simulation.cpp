@@ -4,6 +4,9 @@
 
 #include "simulation.h"
 
+#include <glm/glm.hpp>
+
+#include "octant.h"
 
 simulation::simulation() = default;
 
@@ -60,19 +63,19 @@ simulation *simulation::setTheta(float Theta) {
     return this;
 }
 
-simulation *simulation::enableLeapfrog() {
+simulation *simulation::enableLeapfrog(bool enabled) {
 
-    this->LeapFrogEnabled = true;
+    this->LeapFrogEnabled = enabled;
 
     return this;
 }
 
-simulation *simulation::attachViewport(viewport *theViewport) {
+/*simulation *simulation::attachViewport(viewport *theViewport) {
 
     this->theViewport = theViewport;
 
     return this;
-}
+}*/
 
 
 
@@ -92,7 +95,9 @@ void simulation::increment() {
     /*Adds the offset that turns euler into leapfrog integration*/
     if (LeapFrogEnabled) {
 
-        // TODO Physics calculations will go here
+        T = T / 2.0f;
+        calculateGravity();
+        T = T * 2.0f;
 
         /*This ensures that the offset is only added the first time through the loop*/
         LeapFrogEnabled = false;
@@ -100,12 +105,16 @@ void simulation::increment() {
 
 
     // Gravitational Calculations
+
     calculateGravity();
+
     tracker::instance()->markGravityCalculated();
 
     // Updating velocities and positions
     for (int b = 0; b < bodies.size(); ++b) {
-        bodies[b]->update();
+
+        bodies[b]->drift(T);
+        bodies[b]->shiftBuffers();
     }
 
 
@@ -130,7 +139,7 @@ void simulation::applyGravityBetweenBodies(body *subject, glm::vec3 actorPositio
 
     // Applying the acceleration to the body (v = at)
     // TODO When I add force softening / super-sampling, this is where it will be done
-    subject->addVelocity(acceleration * T);
+    subject->kick(acceleration * T);
 
 }
 
@@ -142,7 +151,7 @@ void simulation::orbit(body *sunBody, body *satelliteBody) {
     float distance = glm::distance(sunBody->getPosition(), satelliteBody->getPosition());
 
     // Calculating the necessary velocity to maintain orbit
-    float orbitalVelocity = sqrt((G * sunBody->getMass() / distance));
+    float orbitalVelocity = (float) sqrt((G * sunBody->getMass() / distance));
 
     // Setting the velocity
     // TODO ...in a direction perpendicular to the radial distance line?
@@ -167,6 +176,7 @@ void simulation::calculateGravity() {
 void simulation::NaiveGravity() {
 
     // Iterating through each combination of bodies
+    #pragma omp parallel for
     for (int subject = 0; subject < bodies.size(); ++subject) {
         for (int actor = 0; actor < bodies.size(); ++actor) {
 
@@ -175,7 +185,8 @@ void simulation::NaiveGravity() {
             body *actorBody = bodies[actor];
 
             // Skips this interaction if the subject is fixed or the actor is passive
-            if (!subjectBody->isFixed() && !actorBody->isPassive()) {
+            if (!subjectBody->isFixed() && !actorBody->isPassive() &&
+                subjectBody->getPosition() != actorBody->getPosition()) {
 
                 // Applies the force of the actor on the subject
                 applyGravityBetweenBodies(subjectBody, actorBody->getPosition(), actorBody->getMass());
@@ -190,11 +201,20 @@ void simulation::BarnesHutGravity() {
     // TODO Implementation using the rewritten octree
 
     // Creating the tree
+    auto octree = new octant(idealTreeCenterLocation, 10000);
 
     // Populating the tree
+    for (int b = 0; b < bodies.size(); ++b) {
+        octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
+    }
 
-    // Getting the ideal location for the next tree
+    // Getting the center of mass and the ideal location for the next tree
+    octree->getCenterOfMass();
+    idealTreeCenterLocation = octree->getAveragePosition();
 
     // Doing gravitational calculations
+    for (int b = 0; b < bodies.size(); ++b) {
+        octree->applyGravityToBody(bodies[b], this);
+    }
 }
 

@@ -7,7 +7,7 @@
 
 #include "body.h" // The simulation contains bodies
 #include "../tracker.h" // Used to report performance to the tracker
-#include "../interface/viewport.h" // Used to keep a reference to the program's viewport
+//#include "../interface/viewport.h" // Used to keep a reference to the program's viewport
 
 #include <vector> // Used to hold the list of bodies in the simulation
 
@@ -86,14 +86,14 @@ public:
      * Leapfrog approximation starts the first increment with a velocity pre-calculation on a half time-step
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *enableLeapfrog();
+    simulation *enableLeapfrog(bool enabled = true);
 
     /**
      * Links the viewport to be used to draw bodies to the screen
      * @param theViewport a pointer to the viewport
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *attachViewport(viewport *theViewport);
+    //simulation *attachViewport(viewport *theViewport);
 
 
     // Getters
@@ -153,7 +153,7 @@ private:
     float minimumT = 0.001;
 
     /*Flag for whether or not the barnes-hut tree should be used*/
-    bool BarnesHutEnabled = true;
+    bool BarnesHutEnabled = false;
     /*Ratio defining how far any group of bodies must be before they can be grouped together*/
     float Theta = 0.8; /*A Theta value of 0 degenerates to the naive algorithm*/
 
@@ -177,7 +177,7 @@ private:
     // Graphics
 
     /*The viewport used to draw bodies to the screen*/
-    viewport *theViewport;
+    //viewport *theViewport;
 
 
     // Private helper methods

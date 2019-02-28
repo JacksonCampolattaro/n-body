@@ -104,7 +104,7 @@ void octant::applyGravityToBody(body *theBody, simulation *theSim) {
 
     // Base case 2: Divided, but subdivision is unnecessary
     /* Node is treated as a single theBody if S/D < theta (where S = sideLength and D = distance) */
-    if (theSim->getTheta() > (float) sideLength / (float) distance(theBody->getPosition(), centerOfMass)) {
+    if (theSim->getTheta() > (float) sideLength / (float) glm::distance(theBody->getPosition(), centerOfMass)) {
 
         theSim->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
 

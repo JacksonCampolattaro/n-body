@@ -37,6 +37,14 @@ viewport *viewport::registerDrawable(drawable *drawable) {
     return this;
 }
 
+
+viewport *viewport::attachSimulation(simulation *theSim) {
+
+    this->theSim = theSim;
+
+    return this;
+}
+
 void viewport::start() {
 
     // TODO Boilerplate code that creates the window could be improved
@@ -143,6 +151,9 @@ void viewport::graphicsLoop() {
         draw();
 
         // TODO I'm not sure which class should control the other
+        theSim->increment();
+
+        tracker::instance()->outputStatus();
 
         // Swapping the frame buffers
         glfwSwapBuffers(window);
@@ -179,3 +190,4 @@ void viewport::draw() {
         drawables[d]->draw();
     }
 }
+

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp -march=native")
 
 # Adding n_body files to tests compile path
-add_executable(unitTests ../src/n_body/interface/drawable.cpp ../src/n_body/interface/drawable.h ../src/n_body/model/octant.cpp ../src/n_body/model/octant.h ../src/n_body/tracker.cpp ../src/n_body/tracker.h testAll.cpp bodyTest.cpp simulationTest.cpp octantTest.cpp)
+add_executable(unitTests ../src/n_body/interface/viewport.cpp ../src/n_body/interface/viewport.h ../src/n_body/interface/drawable.cpp ../src/n_body/interface/drawable.h ../src/n_body/model/octant.cpp ../src/n_body/model/octant.h ../src/n_body/tracker.cpp ../src/n_body/tracker.h ../src/n_body/model/body.cpp ../src/n_body/model/body.h ../src/n_body/model/simulation.cpp ../src/n_body/model/simulation.h testAll.cpp bodyTest.cpp simulationTest.cpp octantTest.cpp)
 
 # Making sure the right libraries are present
 find_package(OpenGL REQUIRED)

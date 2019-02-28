@@ -24,17 +24,19 @@ TEST_F(bodyTest, bodyTest_applyVelocity_Test) {
 
     auto theBody = new body(glm::vec3(0, 0, 0));
 
-    theBody->addVelocity(glm::vec3(1, 0, 0));
-    theBody->update();
-    //EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getVelocity());
-    //EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getPosition());
+    theBody->kick(glm::vec3(1, 0, 0));
+    theBody->shiftBuffers();
+    theBody->drift(1.0);
+    theBody->shiftBuffers();
+    EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getVelocity());
+    EXPECT_EQ(glm::vec3(1, 0, 0), theBody->getPosition());
 }
 
 /*
 
 TEST_F(bodyTest, bodyTest_addVelocity_Test) {
 
-    theBody->addVelocity(glm::vec3(1, 0, 0));
+    theBody->kick(glm::vec3(1, 0, 0));
     EXPECT_EQ(glm::vec3(2, 0, 0), theBody->getVelocity());
 }
 

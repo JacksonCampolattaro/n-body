@@ -9,7 +9,7 @@
 #include "body.h" // I pass in a body when I want to calculate the forces on it
 #include "simulation.h" // The gravity method in the simulation does the actual calculations
 
-#include <glm/vec3.hpp> // Used for storing locations in cartesian space
+#include <glm/glm.hpp> // Used for storing locations in cartesian space
 #include <atomic> // Used for atomic variables
 #include <mutex> // Used for the call_once flag and lambda expression
 #include <memory> // I used smart pointers to resolve a memory leak
