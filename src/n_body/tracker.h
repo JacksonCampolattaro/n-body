@@ -25,7 +25,6 @@ public:
     void markTreeCompleted();
     void markCenterMassCalculated();
     void markGravityCalculated();
-    void markVelocityApplied();
     void markPositionsUpdated();
 
     /**
@@ -51,7 +50,6 @@ private:
     clock_t treePopulationTime;
     clock_t centerMassCalculationTime;
     clock_t gravityCalculationTime;
-    clock_t velocityApplicationTime;
     clock_t positionUpdateTime;
     clock_t totalCalculationTime;
     clock_t renderingTime;

@@ -89,6 +89,13 @@ public:
     simulation *enableLeapfrog(bool enabled = true);
 
     /**
+     * Used to enable multithreaded workloads via openmp
+     * @param enabled whether multithreading is allowed
+     * @return This simulation, for use in chaining named parameters.
+     */
+    simulation *enableThreading(bool enabled = true);
+
+    /**
      * Links the viewport to be used to draw bodies to the screen
      * @param theViewport a pointer to the viewport
      * @return This simulation, for use in chaining named parameters.
@@ -163,6 +170,9 @@ private:
     /*Flag telling the simulation to account for collisions between bodies*/
     // TODO Not yet implemented
     bool CollisionsEnabled = false;
+
+    /*Flag enabling multithreading of workloads*/
+    bool threadingEnabled = false;
 
 
     // Values used as a part of the model

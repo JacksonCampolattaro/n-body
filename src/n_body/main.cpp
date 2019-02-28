@@ -117,8 +117,8 @@ void addBodies() {
     moon->kick(earth->getVelocity());
     addBody(moon);*/
 
-    bigDemo(); theSimulation->setT(0.005);
-    //density = 30; cubicGrid(glm::vec3(-95, -95, -200), glm::vec3(0, 0, -25), glm::vec3(10, 10, 10), 10, 5000);
+    //bigDemo(); theSimulation->setT(0.005);
+    density = 30; cubicGrid(glm::vec3(-95, -95, -200), glm::vec3(0, 0, -25), glm::vec3(20, 20, 20), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
     theSimulation = new simulation();
     theViewport = new viewport();
 
-    theSimulation->setG(0.03)->setT(0.01)->enableBarnesHut()->setTheta(0.6)->enableLeapfrog();
+    theSimulation->setG(0.03)->setT(0.01)->enableBarnesHut()->setTheta(0.6)->enableLeapfrog()->enableThreading();
     theViewport->setTitle("test")->attachSimulation(theSimulation);
 
     /*auto earth = new body(glm::vec3(0, 0, -100));

@@ -70,6 +70,13 @@ simulation *simulation::enableLeapfrog(bool enabled) {
     return this;
 }
 
+simulation *simulation::enableThreading(bool enabled) {
+
+    this->threadingEnabled = enabled;
+
+    return this;
+}
+
 /*simulation *simulation::attachViewport(viewport *theViewport) {
 
     this->theViewport = theViewport;
@@ -110,12 +117,16 @@ void simulation::increment() {
 
     tracker::instance()->markGravityCalculated();
 
+
     // Updating velocities and positions
+    //#pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
 
         bodies[b]->drift(T);
         bodies[b]->shiftBuffers();
     }
+
+    tracker::instance()->markPositionsUpdated();
 
 
 }
@@ -176,7 +187,7 @@ void simulation::calculateGravity() {
 void simulation::NaiveGravity() {
 
     // Iterating through each combination of bodies
-    #pragma omp parallel for
+    #pragma omp parallel for if(threadingEnabled)
     for (int subject = 0; subject < bodies.size(); ++subject) {
         for (int actor = 0; actor < bodies.size(); ++actor) {
 
@@ -202,19 +213,24 @@ void simulation::BarnesHutGravity() {
 
     // Creating the tree
     auto octree = new octant(idealTreeCenterLocation, 10000);
+    tracker::instance()->markTreeCreated();
 
     // Populating the tree
     for (int b = 0; b < bodies.size(); ++b) {
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
+    tracker::instance()->markTreeCompleted();
 
     // Getting the center of mass and the ideal location for the next tree
     octree->getCenterOfMass();
     idealTreeCenterLocation = octree->getAveragePosition();
+    tracker::instance()->markCenterMassCalculated();
 
     // Doing gravitational calculations
+    #pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
         octree->applyGravityToBody(bodies[b], this);
     }
+    tracker::instance()->markGravityCalculated();
 }
 

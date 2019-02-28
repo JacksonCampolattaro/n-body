@@ -64,11 +64,6 @@ void tracker::markGravityCalculated() {
     timeStamp = clock();
 }
 
-void tracker::markVelocityApplied() {
-    velocityApplicationTime = clock() - timeStamp;
-    timeStamp = clock();
-}
-
 void tracker::markPositionsUpdated() {
     positionUpdateTime = clock() - timeStamp;
     timeStamp = clock();
@@ -85,7 +80,6 @@ void tracker::outputStatus() {
     std::cout << "           Tree Population:                  " << 100.0 * ((double) treePopulationTime / (double) totalFrameTime) << "%         " << inSeconds(treePopulationTime) << " s" << std::endl;
     std::cout << "           Center of Mass Propegation:       " << 100.0 * ((double) centerMassCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(centerMassCalculationTime) << " s" << std::endl;
     std::cout << "           Gravitational Calculations:       " << 100.0 * ((double) gravityCalculationTime / (double) totalFrameTime) << "%         " << inSeconds(gravityCalculationTime) << " s" << std::endl;
-    std::cout << "           Application of Velocity:          " << 100.0 * ((double) velocityApplicationTime / (double) totalFrameTime) << "%       " << inSeconds(velocityApplicationTime) << " s" << std::endl;
     std::cout << "           Updating Positions:               " << 100.0 * ((double) positionUpdateTime / (double) totalFrameTime) << "%      " << inSeconds(positionUpdateTime) << " s" << std::endl;
     std::cout << "           Rendering:                        " << 100.0 * ((double) renderingTime / (double) totalFrameTime) << "%       " << inSeconds(renderingTime) << " s" << std::endl;
     std::cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(totalFrameTime) << " FPS" << std::endl;
