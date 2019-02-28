@@ -94,9 +94,6 @@ float simulation::getTheta() {
 
 void simulation::increment() {
 
-    tracker::instance()->markFrameCompleted(); /*Marks the completion of the previous frame, including rendering*/
-    tracker::instance()->markCalculationsStart();
-
     // Precalculations
 
     /*Adds the offset that turns euler into leapfrog integration*/
@@ -112,23 +109,16 @@ void simulation::increment() {
 
 
     // Gravitational Calculations
-
     calculateGravity();
-
-    tracker::instance()->markGravityCalculated();
 
 
     // Updating velocities and positions
-    //#pragma omp parallel for if(threadingEnabled)
+    #pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
 
         bodies[b]->drift(T);
         bodies[b]->shiftBuffers();
     }
-
-    tracker::instance()->markPositionsUpdated();
-
-    tracker::instance()->markFrameCompleted();
 
 
 }
@@ -215,25 +205,23 @@ void simulation::BarnesHutGravity() {
 
     // Creating the tree
     //auto octree = new octant(idealTreeCenterLocation, 10000);
-    std::unique_ptr<octant> octree (std::make_unique<octant>(idealTreeCenterLocation, 10000));
-    tracker::instance()->markTreeCreated();
+    std::unique_ptr<octant> octree (std::make_unique<octant>(idealTreeCenterLocation, 1000000));
 
     // Populating the tree
+    // TODO Once the octant is threadsafe, this will be possible to do in parallel
+    //#pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
     }
-    tracker::instance()->markTreeCompleted();
 
     // Getting the center of mass and the ideal location for the next tree
     octree->getCenterOfMass();
     idealTreeCenterLocation = octree->getAveragePosition();
-    tracker::instance()->markCenterMassCalculated();
 
     // Doing gravitational calculations
     #pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
         octree->applyGravityToBody(bodies[b], this);
     }
-    tracker::instance()->markGravityCalculated();
 }
 

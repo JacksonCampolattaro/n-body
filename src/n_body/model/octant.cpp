@@ -69,7 +69,7 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
     // Used only when adding the second body
     else {
 
-        call_once(split, [=] {
+        /*call_once(split, [=] {
 
             // Dividing the octant
             divide();
@@ -77,7 +77,13 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
             // Adding the new body
             this->addBody(newPosition, newMass);
 
-        });
+        });*/
+
+        #pragma omp single
+        divide();
+
+        #pragma omp single
+        this->addBody(newPosition, newMass);
     }
 }
 

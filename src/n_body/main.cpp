@@ -52,7 +52,7 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
                 }
 
                 glm::vec3 multiColor = coordinate / size + 0.2f;
-                glm::vec3 yellowToRed(1, coordinate.y / size.y, 0);
+                glm::vec3 yellowToRed(1, coordinate.z / size.z, 0);
                 glm::vec3 greenToWhite(coordinate.y / size.y, 1, coordinate.y / size.y);
                 glm::vec3 blueToRed(coordinate.y / size.y, 0, 1 - coordinate.y / size.y);
                 glm::vec3 blueToRedToWhite(coordinate.y / size.y + coordinate.x / size.x, coordinate.x / size.x,
@@ -61,7 +61,7 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
 
 
                 auto newBody = new body(position);
-                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(blueToRedToWhite);
+                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(yellowToRed);
                 addBody(newBody);
             }
         }
@@ -78,8 +78,8 @@ void bigDemo() {
 
     // Cubic Grid
     glm::vec3 cornerPosition(-50, -100, -450);
-    glm::vec3 velocity(60.0f, 15.0f, 0.0f);
-    glm::vec3 size(6, 6, 10);
+    glm::vec3 velocity(60.0f, 20.0f, 0.0f);
+    glm::vec3 size(6, 6, 100);
     float spacing = 10.0f;
     float mass = 5000.0f;
 
@@ -125,8 +125,8 @@ void addBodies() {
     moon->setMass(500)->setVelocity(glm::vec3(10, 0, 0))->setColor(white);
     addBody(moon);*/
 
-    //bigDemo(); theSimulation->setT(0.005);
-    density = 30; cubicGrid(glm::vec3(-95, -95, -200), glm::vec3(0, 0, -25), glm::vec3(20, 20, 200), 10, 5000);
+    bigDemo(); theSimulation->setT(0.005);
+    //density = 30; cubicGrid(glm::vec3(-95, -95, -200), glm::vec3(0, 0, -25), glm::vec3(20, 20, 20), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
@@ -138,10 +138,9 @@ int main(int argc, char **argv) {
     theSimulation = new simulation();
     theViewport = new viewport();
 
-    theSimulation->setG(0.03)->setT(0.01)->enableBarnesHut()->setTheta(1.2)->enableLeapfrog()->enableThreading();
-    theViewport->setTitle("test")->attachSimulation(theSimulation);
+    theSimulation->setG(0.01)->setT(0.01)->enableBarnesHut()->setTheta(0.9)->enableLeapfrog()->enableThreading();
+    theViewport->setTitle("n body simulator")->attachSimulation(theSimulation);
 
-    // Adding bodies
     addBodies();
 
     theViewport->start();

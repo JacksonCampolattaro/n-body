@@ -153,8 +153,6 @@ void viewport::graphicsLoop() {
         // TODO I'm not sure which class should control the other
         theSim->increment();
 
-        tracker::instance()->outputStatus();
-
         // Swapping the frame buffers
         glfwSwapBuffers(window);
 

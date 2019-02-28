@@ -20,7 +20,7 @@ public:
     /**
      * Markers for various events in the calculation of the frame
      */
-    void markCalculationsStart();
+    void markFrameStarted();
     void markTreeCreated();
     void markTreeCompleted();
     void markCenterMassCalculated();
@@ -54,6 +54,10 @@ private:
     clock_t totalCalculationTime;
     clock_t renderingTime;
     clock_t totalFrameTime;
+
+    // TODO these are temporary
+    clock_t a;
+    clock_t b;
 
     tracker(tracker const &) = default; // The copy constructor is private
     //tracker &operator=(tracker const &) {}; // The assignment operator is private

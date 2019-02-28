@@ -22,6 +22,8 @@ tracker *tracker::instance() {
 
 void tracker::markFrameCompleted() {
 
+    b = clock();
+
     // The timestamp was set at the end of the last frame,
     // rendering time accounts for the gap between calculation times
     renderingTime = clock() - timeStamp;
@@ -36,7 +38,9 @@ void tracker::markFrameCompleted() {
     timeStamp = frameStartTime;
 }
 
-void tracker::markCalculationsStart() {
+void tracker::markFrameStarted() {
+
+    a = clock();
 
     calculationStartTime = clock() - timeStamp;
     timeStamp = clock();
@@ -73,7 +77,10 @@ void tracker::markPositionsUpdated() {
 void tracker::outputStatus() {
 
     std::cout << "Frame " << numFrames << ": " << std::endl;
-    std::cout << "      Total calculation time:              " << totalFrameTime << " clock cycles --> "
+    std::cout << "      Total calculation time: " << inSeconds(totalFrameTime) << std::endl;
+    std::cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(b-a) << " FPS" << std::endl;
+    std::cout << "      Framerate (average):                 " << 1 / inSeconds((clock() - programStartTime) / numFrames) << " FPS" << std::endl;
+    /*std::cout << "      Total calculation time:              " << totalFrameTime << " clock cycles --> "
          << inSeconds(totalFrameTime) << " s" << std::endl;
     std::cout << std::setprecision(3);
     std::cout << "           Tree Creation:                    " << 100.0 * ((double) treeCreationTime / (double) totalFrameTime) << "%         " << inSeconds(treeCreationTime) << " s" << std::endl;
@@ -84,6 +91,6 @@ void tracker::outputStatus() {
     std::cout << "           Rendering:                        " << 100.0 * ((double) renderingTime / (double) totalFrameTime) << "%       " << inSeconds(renderingTime) << " s" << std::endl;
     std::cout << "      Framerate (un-smoothed):             " << 1 / inSeconds(totalFrameTime) << " FPS" << std::endl;
     std::cout << "      Framerate (average):                 " << 1 / inSeconds((clock() - programStartTime) / numFrames) << " FPS" << std::endl;
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 }
 
