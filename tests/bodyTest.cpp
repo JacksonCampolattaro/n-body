@@ -3,26 +3,26 @@
 //
 
 #include <gtest/gtest.h>
-#include "../src/n_body/model/body.h"
+#include "../src/n_body/model/Body.h"
 
 
 class bodyTest : public ::testing::Test {
 protected:
 
     virtual void SetUp() {
-        //theBody = new body(glm::vec3(0, 0, 0));
+        //theBody = new Body(glm::vec3(0, 0, 0));
     }
 
     virtual void TearDown() {
         //delete theBody;
     }
 
-    //body *theBody;
+    //Body *theBody;
 };
 
 TEST_F(bodyTest, bodyTest_applyVelocity_Test) {
 
-    auto theBody = new body(glm::vec3(0, 0, 0));
+    auto theBody = new Body(glm::vec3(0, 0, 0));
 
     theBody->kick(glm::vec3(1, 0, 0));
     theBody->shiftBuffers();

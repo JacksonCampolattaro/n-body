@@ -6,7 +6,7 @@
 #define N_BODY_HEADLESS_DRAWABLE_H
 
 
-class drawable {
+class Drawable {
 
 public:
 

@@ -3,22 +3,22 @@
 //
 
 
-#include "octant.h"
+#include "Octant.h"
 
 
 
 // Public methods
 
-octant::octant(glm::vec3 location, float sideLength) {
+Octant::Octant(glm::vec3 location, float sideLength) {
 
     this->octantLocation = location;
     this->sideLength = sideLength;
 }
 
-void octant::addBody(glm::vec3 newPosition, float newMass) {
+void Octant::addBody(glm::vec3 newPosition, float newMass) {
 
 
-    /*// Adding the first body (only executes the first time through)
+    /*// Adding the first Body (only executes the first time through)
     call_once(init, [=] () mutable {
 
         centerOfMass = newPosition;
@@ -35,10 +35,10 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 
 
-    // Adding the second body (only executes the second time through)
+    // Adding the second Body (only executes the second time through)
     call_once(split, [=] {
 
-        // Dividing the octant
+        // Dividing the Octant
         divide();
 
     });
@@ -55,7 +55,7 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
         totalMass += newMass;
         numBodies++;
     }
-    // Used when adding the first body
+    // Used when adding the first Body
     else if (!initialized) {
 
         initialized = true;
@@ -66,15 +66,15 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
         totalMass = newMass;
         numBodies = 1;
     }
-    // Used only when adding the second body
+    // Used only when adding the second Body
     else {
 
         /*call_once(split, [=] {
 
-            // Dividing the octant
+            // Dividing the Octant
             divide();
 
-            // Adding the new body
+            // Adding the new Body
             this->addBody(newPosition, newMass);
 
         });*/
@@ -87,9 +87,9 @@ void octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 }
 
-void octant::applyGravityToBody(body *theBody, simulation *theSim) {
+void Octant::applyGravityToBody(Body *theBody, Simulation *theSim) {
 
-    // FIXME This needs to use the new simulation class
+    // FIXME This needs to use the new Simulation class
 
     // Ignores empty nodes
     if (!initialized) {
@@ -130,7 +130,7 @@ void octant::applyGravityToBody(body *theBody, simulation *theSim) {
     }
 }
 
-std::string octant::toString(int level) {
+std::string Octant::toString(int level) {
 
     std::string theString;
     std::string indent;
@@ -176,11 +176,11 @@ std::string octant::toString(int level) {
     return theString;
 }
 
-int octant::getNumBodies() {
+int Octant::getNumBodies() {
     return numBodies;
 }
 
-glm::vec3 octant::getCenterOfMass() {
+glm::vec3 Octant::getCenterOfMass() {
 
 
     // If the center of mass hasn't been calculated, calculate it
@@ -213,12 +213,12 @@ glm::vec3 octant::getCenterOfMass() {
 
     //cout << totalMass << "  " << centerOfMass.x << centerOfMass.y << centerOfMass.z << endl;
 
-    // Returns the position held by the octant
-    /*Note: Position is a null vector if the octant is not initialized*/
+    // Returns the position held by the Octant
+    /*Note: Position is a null vector if the Octant is not initialized*/
     return centerOfMass;
 }
 
-glm::vec3 octant::getAveragePosition() {
+glm::vec3 Octant::getAveragePosition() {
 
     // If the average position hasn't been calculated, calculate it
     if (!validAveragePosition) {
@@ -254,7 +254,7 @@ glm::vec3 octant::getAveragePosition() {
 
 // Private methods
 
-void octant::divide() {
+void Octant::divide() {
 
     // The child nodes are half the size of this one
     float subdivisionSideLength = sideLength / 2;
@@ -270,7 +270,7 @@ void octant::divide() {
                 int zSign = (2 * z) - 1;
 
                 // Creating the node with the right position
-                std::shared_ptr<octant> newNode(new octant(this->octantLocation +
+                std::shared_ptr<Octant> newNode(new Octant(this->octantLocation +
                                                                                  glm::vec3(xSign * subdivisionSideLength,
                                                                                            ySign * subdivisionSideLength,
                                                                                            zSign * subdivisionSideLength),
@@ -292,17 +292,17 @@ void octant::divide() {
     getSubdivisionEnclosing(this->centerOfMass)->addBody(this->centerOfMass, this->totalMass);
 }
 
-std::shared_ptr<octant> octant::getSubdivisionEnclosing(glm::vec3 position) {
+std::shared_ptr<Octant> Octant::getSubdivisionEnclosing(glm::vec3 position) {
 
     // Making sure the subdivisions exist
     if (!divided) {
         divide();
     }
 
-    // Comparing the new body's position to the center of the octant
+    // Comparing the new Body's position to the center of the Octant
     glm::vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
 
-    // Adding the body at the appropriate index
+    // Adding the Body at the appropriate index
     return children[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
 

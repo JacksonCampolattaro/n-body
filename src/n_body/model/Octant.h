@@ -6,8 +6,8 @@
 #define N_BODY_OCTANT_H
 
 
-#include "body.h" // I pass in a body when I want to calculate the forces on it
-#include "simulation.h" // The gravity method in the simulation does the actual calculations
+#include "Body.h" // I pass in a Body when I want to calculate the forces on it
+#include "Simulation.h" // The gravity method in the Simulation does the actual calculations
 
 #include <glm/glm.hpp> // Used for storing locations in cartesian space
 #include <atomic> // Used for atomic variables
@@ -26,7 +26,7 @@
  * I'm also trying to streamline the class by combining methods that are always used together
  * For example, the center of mass is calculated the first time it needs to be retrieved
  */
-class octant {
+class Octant {
 
 public:
 
@@ -35,12 +35,12 @@ public:
      * @param location The center of the octant as a vector
      * @param sideLength The length of the octant
      */
-    octant(glm::vec3 location, float sideLength);
+    Octant(glm::vec3 location, float sideLength);
 
     /**
      * Standard destructor for the class
      */
-    virtual ~octant() = default;
+    virtual ~Octant() = default;
 
     /**
      * Adds a body to the octant by its parameters
@@ -56,7 +56,7 @@ public:
      * @param theBody The body to apply the forces of gravity to
      * @param theSim the simulation in which calculations are defined
      */
-    void applyGravityToBody(body *theBody, simulation *theSim);
+    void applyGravityToBody(Body *theBody, Simulation *theSim);
 
     /**
      * Getter for the number of bodies contained by the octant
@@ -86,11 +86,11 @@ private:
 
     // Values used for gravity calculations
 
-    /*Position and mass of the body or bodies contained by the node*/
+    /*Position and mass of the Body or bodies contained by the node*/
     glm::vec3 centerOfMass;
     float totalMass;
 
-    /*By keeping track of this, center of mass doesn't have to be recalculated every time a body is added*/
+    /*By keeping track of this, center of mass doesn't have to be recalculated every time a Body is added*/
     std::atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
 
 
@@ -101,7 +101,7 @@ private:
     std::once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
-    std::shared_ptr<octant> children[2][2][2];
+    std::shared_ptr<Octant> children[2][2][2];
 
 
     // Metadata about the node
@@ -118,17 +118,17 @@ private:
                                           0); /*What the center of mass would be if all bodies had identical masses*/
     std::atomic_bool validAveragePosition = {true};
 
-    /*Total number of bodies contained by the octant or its children*/
+    /*Total number of bodies contained by the Octant or its children*/
     int numBodies;
 
 
     // Helper methods
 
-    /*Splits the octant into subnodes*/
+    /*Splits the Octant into subnodes*/
     void divide();
 
-    /*Finds the appropriate child to add a body to*/
-    std::shared_ptr<octant> getSubdivisionEnclosing(glm::vec3 position);
+    /*Finds the appropriate child to add a Body to*/
+    std::shared_ptr<Octant> getSubdivisionEnclosing(glm::vec3 position);
 
 };
 

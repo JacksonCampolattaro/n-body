@@ -6,14 +6,14 @@
 #define N_BODY_VIEWPORT_H
 
 
-#include "drawable.h" // Objects this class draws are all extensions of drawable
-#include "../model/simulation.h" // Fix before adding
+#include "Drawable.h" // Objects this class draws are all extensions of Drawable
+#include "../model/Simulation.h" // Fix before adding
 
 #include <GLFW/glfw3.h> // GLFW makes OpenGL simpler to use
 #include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
 #include <vector> // Allows me to keep a list of things to draw
 
-class viewport {
+class Viewport {
 
 public:
 
@@ -22,7 +22,7 @@ public:
     /**
      * Creates the viewport with default parameters
      */
-    explicit viewport();
+    explicit Viewport();
 
 
     // Setters (with support for chaining)
@@ -32,14 +32,14 @@ public:
      * @param dimensions Vector representing the <X, Y> dimensions of the window
      * @return This viewport, for use in chaining named parameters.
      */
-    viewport *setDimensions(glm::ivec2 dimensions);
+    Viewport *setDimensions(glm::ivec2 dimensions);
 
     /**
      * Sets the title of the window
      * @param title The new title
      * @return This viewport, for use in chaining named parameters.
      */
-    viewport *setTitle(const char *title);
+    Viewport *setTitle(const char *title);
 
 
     // Setup tools
@@ -48,9 +48,9 @@ public:
      * Adds a new item to the render to be drawn each cycle
      * @param newDrawable The new drawable to be added
      */
-    viewport *registerDrawable(drawable *drawable);
+    Viewport *registerDrawable(Drawable *drawable);
 
-    viewport *attachSimulation(simulation *theSim);
+    Viewport *attachSimulation(Simulation *theSim);
 
 
     // Controller tools
@@ -111,17 +111,17 @@ private:
 
     // References the model and associated drawables
 
-    /*A reference is kept to the simulation being rendered*/
-    //simulation *theSim;
+    /*A reference is kept to the Simulation being rendered*/
+    //Simulation *theSim;
 
     /*The list of drawables that will be put on the screen each time it's updated*/
-    std::vector<drawable *> drawables;
+    std::vector<Drawable *> drawables;
 
 
     // Parameters which define the interface - model relationship
 
     // TODO This should be mutable with flags
-    simulation *theSim;
+    Simulation *theSim;
 
 
     // Parameters affecting image quality

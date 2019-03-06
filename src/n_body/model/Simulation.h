@@ -5,17 +5,17 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
-#include "body.h" // The simulation contains bodies
-#include "../tracker.h" // Used to report performance to the tracker
-//#include "../interface/viewport.h" // Used to keep a reference to the program's viewport
+#include "Body.h" // The Simulation contains bodies
+#include "../Tracker.h" // Used to report performance to the Tracker
+//#include "../interface/Viewport.h" // Used to keep a reference to the program's Viewport
 
-#include <vector> // Used to hold the list of bodies in the simulation
+#include <vector> // Used to hold the list of bodies in the Simulation
 
 /**
  * A more streamlined simulation class
  * I'm using the fluent interface paradigm to make it simpler to construct.
  */
-class simulation {
+class Simulation {
 
 public:
 
@@ -24,13 +24,13 @@ public:
     /**
      * Constructor for the simulation, every parameter starts with a default
      */
-    simulation();
+    Simulation();
 
     /**
      * Adds a new body to the simulation
      * @param body the body to be included
      */
-    void addBody(body* body);
+    void addBody(Body* body);
 
 
     // Setters (with support for chaining)
@@ -40,67 +40,67 @@ public:
      * @param G The constant 'G' as a float
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *setG(float G);
+    Simulation *setG(float G);
 
     /**
      * Sets the power distance is raised to when calculating the force of gravity
      * @param Power the new power of the simulation
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *setPower(int Power);
+    Simulation *setPower(int Power);
 
     /**
      * Sets the time interval of the simulation
      * @param T Unit-less time interval
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *setT(float T);
+    Simulation *setT(float T);
 
     /**
      * Selects whether Force Softening is enabled, off by default
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *enableForceSoftening(bool enabled = true);
+    Simulation *enableForceSoftening(bool enabled = true);
 
     /**
      * Sets the shortest time interval to use
      * @param minimumT The smallest time granularity allowed when super-sampling is enabled
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *setMinimumT(float minimumT);
+    Simulation *setMinimumT(float minimumT);
 
     /**
      * Selects whether Barnes-Hut optimizations is enabled, on by default
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *enableBarnesHut(bool enabled = true);
+    Simulation *enableBarnesHut(bool enabled = true);
 
     /**
      * Sets the accuracy of the simulation (lower is more accurate, 0 is naive)
      * @param Theta Ratio defining how far any group of bodies must be before they can be grouped together
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *setTheta(float Theta);
+    Simulation *setTheta(float Theta);
 
     /**
      * Leapfrog approximation starts the first increment with a velocity pre-calculation on a half time-step
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *enableLeapfrog(bool enabled = true);
+    Simulation *enableLeapfrog(bool enabled = true);
 
     /**
      * Used to enable multithreaded workloads via openmp
      * @param enabled whether multithreading is allowed
      * @return This simulation, for use in chaining named parameters.
      */
-    simulation *enableThreading(bool enabled = true);
+    Simulation *enableThreading(bool enabled = true);
 
     /**
      * Links the viewport to be used to draw bodies to the screen
      * @param theViewport a pointer to the viewport
      * @return This simulation, for use in chaining named parameters.
      */
-    //simulation *attachViewport(viewport *theViewport);
+    //Simulation *attachViewport(Viewport *theViewport);
 
 
     // Getters
@@ -125,7 +125,7 @@ public:
      * @param actorPosition the position of the body creating the force
      * @param actorPosition the mass of the body creating the force
      */
-    void applyGravityBetweenBodies(body *subject, glm::vec3 actorPosition, float actorMass);
+    void applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass);
 
 
     // User facing tools
@@ -135,7 +135,7 @@ public:
      * @param sunBody The body to orbit
      * @param satelliteBody The body orbiting
      */
-    void orbit(body *sunBody, body *satelliteBody);
+    void orbit(Body *sunBody, Body *satelliteBody);
 
 private:
 
@@ -167,7 +167,7 @@ private:
     /*Flag that tells the increment function to do a velocity pre-calculation on a half time-step*/
     bool LeapFrogEnabled = false; /*Set back to false immediately after the offset is added*/
 
-    /*Flag telling the simulation to account for collisions between bodies*/
+    /*Flag telling the Simulation to account for collisions between bodies*/
     // TODO Not yet implemented
     bool CollisionsEnabled = false;
 
@@ -178,7 +178,7 @@ private:
     // Values used as a part of the model
 
     /*Filled with bodies before the start of the model, bodies are passed by reference and not removed*/
-    std::vector<body *> bodies;
+    std::vector<Body *> bodies;
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
     glm::vec3 idealTreeCenterLocation = glm::vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/
@@ -186,8 +186,8 @@ private:
 
     // Graphics
 
-    /*The viewport used to draw bodies to the screen*/
-    //viewport *theViewport;
+    /*The Viewport used to draw bodies to the screen*/
+    //Viewport *theViewport;
 
 
     // Private helper methods

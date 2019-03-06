@@ -2,82 +2,82 @@
 // Created by jackcamp on 2/25/19.
 //
 
-#include "simulation.h"
+#include "Simulation.h"
 
 #include <glm/glm.hpp>
 
-#include "octant.h"
+#include "Octant.h"
 
-simulation::simulation() = default;
+Simulation::Simulation() = default;
 
-void simulation::addBody(body *body) {
+void Simulation::addBody(Body *body) {
 
     this->bodies.push_back(body);
 }
 
-simulation *simulation::setG(float G) {
+Simulation *Simulation::setG(float G) {
 
     this->G = G;
 
     return this;
 }
 
-simulation *simulation::setPower(int Power) {
+Simulation *Simulation::setPower(int Power) {
 
     this->Exponent = Power;
 
     return this;
 }
 
-simulation *simulation::setT(float T) {
+Simulation *Simulation::setT(float T) {
 
     this->T = T;
 
     return this;
 }
 
-simulation *simulation::enableForceSoftening(bool enabled) {
+Simulation *Simulation::enableForceSoftening(bool enabled) {
 
     this->ForceSofteningEnabled = enabled;
 
     return this;
 }
 
-simulation *simulation::setMinimumT(float minimumT) {
+Simulation *Simulation::setMinimumT(float minimumT) {
 
     this->minimumT = minimumT;
 
     return this;
 }
 
-simulation *simulation::enableBarnesHut(bool enabled) {
+Simulation *Simulation::enableBarnesHut(bool enabled) {
 
     this->BarnesHutEnabled = enabled;
 
     return this;
 }
 
-simulation *simulation::setTheta(float Theta) {
+Simulation *Simulation::setTheta(float Theta) {
     this->Theta = Theta;
 
     return this;
 }
 
-simulation *simulation::enableLeapfrog(bool enabled) {
+Simulation *Simulation::enableLeapfrog(bool enabled) {
 
     this->LeapFrogEnabled = enabled;
 
     return this;
 }
 
-simulation *simulation::enableThreading(bool enabled) {
+Simulation *Simulation::enableThreading(bool enabled) {
 
     this->threadingEnabled = enabled;
 
     return this;
 }
 
-/*simulation *simulation::attachViewport(viewport *theViewport) {
+/*Simulation *Simulation::attachViewport(Viewport *theViewport) {
 
     this->theViewport = theViewport;
 
@@ -86,13 +86,13 @@ simulation *simulation::enableThreading(bool enabled) {
 
 
 
-float simulation::getTheta() {
+float Simulation::getTheta() {
 
     return Theta;
 }
 
 
-void simulation::increment() {
+void Simulation::increment() {
 
     // Precalculations
 
@@ -123,7 +123,7 @@ void simulation::increment() {
 
 }
 
-void simulation::applyGravityBetweenBodies(body *subject, glm::vec3 actorPosition, float actorMass) {
+void Simulation::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass) {
 
     // Added on the bottom of the equation to prevent infinities
     // TODO Should this be a model parameter?
@@ -140,13 +140,13 @@ void simulation::applyGravityBetweenBodies(body *subject, glm::vec3 actorPositio
     // Getting acceleration (a = f/m)
     glm::vec3 acceleration = force / subject->getMass();
 
-    // Applying the acceleration to the body (v = at)
+    // Applying the acceleration to the Body (v = at)
     // TODO When I add force softening / super-sampling, this is where it will be done
     subject->kick(acceleration * T);
 
 }
 
-void simulation::orbit(body *sunBody, body *satelliteBody) {
+void Simulation::orbit(Body *sunBody, Body *satelliteBody) {
 
     // TODO This method needs improvement
 
@@ -161,7 +161,7 @@ void simulation::orbit(body *sunBody, body *satelliteBody) {
     satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
 }
 
-void simulation::calculateGravity() {
+void Simulation::calculateGravity() {
 
 
     if (BarnesHutEnabled) {
@@ -176,7 +176,7 @@ void simulation::calculateGravity() {
     }
 }
 
-void simulation::NaiveGravity() {
+void Simulation::NaiveGravity() {
 
     // Iterating through each combination of bodies
     #pragma omp parallel for if(threadingEnabled)
@@ -184,8 +184,8 @@ void simulation::NaiveGravity() {
         for (int actor = 0; actor < bodies.size(); ++actor) {
 
             // Getting this particular pair
-            body *subjectBody = bodies[subject];
-            body *actorBody = bodies[actor];
+            Body *subjectBody = bodies[subject];
+            Body *actorBody = bodies[actor];
 
             // Skips this interaction if the subject is fixed or the actor is passive
             if (!subjectBody->isFixed() && !actorBody->isPassive() &&
@@ -199,16 +199,16 @@ void simulation::NaiveGravity() {
 
 }
 
-void simulation::BarnesHutGravity() {
+void Simulation::BarnesHutGravity() {
 
     // TODO Implementation using the rewritten octree
 
     // Creating the tree
-    //auto octree = new octant(idealTreeCenterLocation, 10000);
-    std::unique_ptr<octant> octree (std::make_unique<octant>(idealTreeCenterLocation, 1000000));
+    //auto octree = new Octant(idealTreeCenterLocation, 10000);
+    std::unique_ptr<Octant> octree (std::make_unique<Octant>(idealTreeCenterLocation, 1000000));
 
     // Populating the tree
-    // TODO Once the octant is threadsafe, this will be possible to do in parallel
+    // TODO Once the Octant is threadsafe, this will be possible to do in parallel
     //#pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies.size(); ++b) {
         octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());

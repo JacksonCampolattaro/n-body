@@ -8,9 +8,9 @@
 #include <iostream> // Used for printing outputs to the terminal
 #include <ctime> // Used for getting and holding time values
 
-class tracker {
+class Tracker {
 public:
-    static tracker *instance();
+    static Tracker *instance();
 
     /**
      * Marks the completion of a new frame of the simulation
@@ -33,12 +33,12 @@ public:
     void outputStatus();
 
 private:
-    static tracker *internalInstance; // The tracker contains one and only one instance of itself
+    static Tracker *internalInstance; // The Tracker contains one and only one instance of itself
 
     // This keeps a reference to the model being tracked
-    //simulation *theSim;
+    //Simulation *theSim;
 
-    // Data held by the tracker
+    // Data held by the Tracker
     int numFrames;
 
     clock_t programStartTime;
@@ -59,9 +59,9 @@ private:
     clock_t a;
     clock_t b;
 
-    tracker(tracker const &) = default; // The copy constructor is private
-    //tracker &operator=(tracker const &) {}; // The assignment operator is private
-    tracker() = default; // Only the tracker is allowed to construct itself
+    Tracker(Tracker const &) = default; // The copy constructor is private
+    //Tracker &operator=(Tracker const &) {}; // The assignment operator is private
+    Tracker() = default; // Only the Tracker is allowed to construct itself
 
     /**
      * Converts clock time to seconds

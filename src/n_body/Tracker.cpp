@@ -2,17 +2,17 @@
 // Created by jackcamp on 2/6/19.
 //
 
-#include "tracker.h"
+#include "Tracker.h"
 
 #include <iostream> // Used for printing outputs to the terminal
 #include <iomanip> // Used to set precision of results
 
-tracker *tracker::internalInstance = nullptr;
+Tracker *Tracker::internalInstance = nullptr;
 
-tracker *tracker::instance() {
+Tracker *Tracker::instance() {
 
     if (!internalInstance) {
-        internalInstance = new tracker();
+        internalInstance = new Tracker();
 
         internalInstance->numFrames = 0;
         internalInstance->programStartTime = clock();
@@ -20,7 +20,7 @@ tracker *tracker::instance() {
     return internalInstance;
 }
 
-void tracker::markFrameCompleted() {
+void Tracker::markFrameCompleted() {
 
     b = clock();
 
@@ -38,7 +38,7 @@ void tracker::markFrameCompleted() {
     timeStamp = frameStartTime;
 }
 
-void tracker::markFrameStarted() {
+void Tracker::markFrameStarted() {
 
     a = clock();
 
@@ -46,35 +46,35 @@ void tracker::markFrameStarted() {
     timeStamp = clock();
 }
 
-void tracker::markTreeCreated() {
+void Tracker::markTreeCreated() {
 
     treeCreationTime = clock() - timeStamp;
     timeStamp = clock();
 }
 
-void tracker::markTreeCompleted() {
+void Tracker::markTreeCompleted() {
 
     treePopulationTime = clock() - timeStamp;
     timeStamp = clock();
 }
 
-void tracker::markCenterMassCalculated() {
+void Tracker::markCenterMassCalculated() {
     centerMassCalculationTime = clock() - timeStamp;
     timeStamp = clock();
 }
 
-void tracker::markGravityCalculated() {
+void Tracker::markGravityCalculated() {
     gravityCalculationTime = clock() - timeStamp;
     timeStamp = clock();
 }
 
-void tracker::markPositionsUpdated() {
+void Tracker::markPositionsUpdated() {
     positionUpdateTime = clock() - timeStamp;
     timeStamp = clock();
 }
 
 
-void tracker::outputStatus() {
+void Tracker::outputStatus() {
 
     std::cout << "Frame " << numFrames << ": " << std::endl;
     std::cout << "      Total calculation time: " << inSeconds(totalFrameTime) << std::endl;

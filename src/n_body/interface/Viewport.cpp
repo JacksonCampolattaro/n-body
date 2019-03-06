@@ -2,35 +2,35 @@
 // Created by jackcamp on 2/27/19.
 //
 
-#include "viewport.h"
+#include "Viewport.h"
 
 #include <GL/glu.h> // Might already be included with GLFW
 #include <cstdio> // Used for outputting errors GLFW encounters
 
-viewport::viewport() = default;
+Viewport::Viewport() = default;
 
-viewport *viewport::setDimensions(glm::ivec2 dimensions) {
+Viewport *Viewport::setDimensions(glm::ivec2 dimensions) {
 
     this->dimensions = dimensions;
 
     return this;
 }
 
-viewport *viewport::setTitle(const char *title) {
+Viewport *Viewport::setTitle(const char *title) {
 
     this->title = title;
 
     return this;
 }
 
-/*viewport *viewport::attachSimulation(simulation *simulation) {
+/*Viewport *Viewport::attachSimulation(Simulation *Simulation) {
 
-    this->simulation = simulation;
+    this->Simulation = Simulation;
 
     return this;
 }*/
 
-viewport *viewport::registerDrawable(drawable *drawable) {
+Viewport *Viewport::registerDrawable(Drawable *drawable) {
 
     this->drawables.push_back(drawable);
 
@@ -38,14 +38,14 @@ viewport *viewport::registerDrawable(drawable *drawable) {
 }
 
 
-viewport *viewport::attachSimulation(simulation *theSim) {
+Viewport *Viewport::attachSimulation(Simulation *theSim) {
 
     this->theSim = theSim;
 
     return this;
 }
 
-void viewport::start() {
+void Viewport::start() {
 
     // TODO Boilerplate code that creates the window could be improved
 
@@ -90,13 +90,13 @@ void viewport::start() {
     graphicsLoop();
 }
 
-void viewport::setColor(glm::vec3 color) {
+void Viewport::setColor(glm::vec3 color) {
 
     // Sets the color used in the next OpenGL action
     glColor3f(color.r, color.g, color.b);
 }
 
-void viewport::drawCircle(glm::vec3 position, float radius) {
+void Viewport::drawCircle(glm::vec3 position, float radius) {
 
     // Number of segments affects how 'smooth' the circle will be.
     int numSegments = 64;
@@ -116,12 +116,12 @@ void viewport::drawCircle(glm::vec3 position, float radius) {
 
 }
 
-void viewport::handleError(int error, const char *description) {
+void Viewport::handleError(int error, const char *description) {
 
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void viewport::handleResize(GLFWwindow *window, int width, int height) {
+void Viewport::handleResize(GLFWwindow *window, int width, int height) {
 
     // TODO Must be reworked before enabling camera movement
 
@@ -140,7 +140,7 @@ void viewport::handleResize(GLFWwindow *window, int width, int height) {
     gluPerspective(60, ratio, 0.01, 10000);
 }
 
-void viewport::graphicsLoop() {
+void Viewport::graphicsLoop() {
 
     // TODO May have to be reworked to incorporate flags
 
@@ -160,14 +160,14 @@ void viewport::graphicsLoop() {
         glfwPollEvents();
     }
 
-    // Closing the viewport when the program is closed
+    // Closing the Viewport when the program is closed
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
 
 }
 
-void viewport::draw() {
+void Viewport::draw() {
 
     // TODO This boilerplate could probably be rewritten
 
@@ -182,7 +182,7 @@ void viewport::draw() {
     glEnable(GL_BLEND);
     glLoadIdentity();
 
-    // Calls the draw function of every registered drawable
+    // Calls the draw function of every registered Drawable
     // TODO There might be advantages to multithreading this, it depends on if the GPU is the limiting factor
     for (int d = 0; d < drawables.size(); ++d) {
         drawables[d]->draw();
