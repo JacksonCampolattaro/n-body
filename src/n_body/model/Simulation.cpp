@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Octant.h"
+#include "calculation/BarnesHut/Octant.h"
 
 Simulation::Simulation() = default;
 
@@ -204,7 +204,6 @@ void Simulation::BarnesHutGravity() {
     // TODO Implementation using the rewritten octree
 
     // Creating the tree
-    //auto octree = new Octant(idealTreeCenterLocation, 10000);
     std::unique_ptr<Octant> octree (std::make_unique<Octant>(idealTreeCenterLocation, 1000000));
 
     // Populating the tree

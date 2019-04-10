@@ -4,6 +4,13 @@
 
 #include "PhysicsContext.h"
 
+PhysicsContext::PhysicsContext() {
+
+    this->G = 1;
+    this->Exponent = 2;
+    this->T = 1;
+}
+
 PhysicsContext *PhysicsContext::setG(float G) {
 
     this->G = G;
@@ -23,6 +30,21 @@ PhysicsContext *PhysicsContext::setT(float T) {
     this->T = T;
 
     return this;
+}
+
+float PhysicsContext::getG() const {
+
+    return G;
+}
+
+int PhysicsContext::getExponent() const {
+
+    return Exponent;
+}
+
+float PhysicsContext::getT() const {
+
+    return T;
 }
 
 PhysicsContext *PhysicsContext::enableForceSoftening(bool enabled) {
@@ -75,3 +97,5 @@ void PhysicsContext::orbit(Body *sunBody, Body *satelliteBody) {
     // TODO ...in a direction perpendicular to the radial distance line?
     satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
 }
+
+

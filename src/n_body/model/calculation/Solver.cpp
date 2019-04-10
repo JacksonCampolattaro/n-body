@@ -4,7 +4,9 @@
 
 #include "Solver.h"
 
-Solver::Solver(PhysicsContext *phys) {
+Solver *Solver::enableThreading(bool enabled) {
 
-    this->phys = phys;
+    this->threadingEnabled = enabled;
+
+    return this;
 }

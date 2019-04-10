@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <exception>
-#include "../src/n_body/model/Octant.h"
+#include "../src/n_body/model/calculation/BarnesHut/Octant.h"
 #include "../src/n_body/Tracker.h"
 
 

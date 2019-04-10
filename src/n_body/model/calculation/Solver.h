@@ -14,17 +14,25 @@ class Solver {
 
 public:
 
-    Solver(PhysicsContext* phys);
+    Solver() = default;
+
+    /**
+     * Used to enable multithreaded workloads via openmp
+     * @param enabled whether or not multithreading should be allowed
+     * @return This solver, for use in chaining named parameters.
+     */
+    Solver *enableThreading(bool enabled = true);
 
     /**
      * Calculates forces between bodies and applies them to each body
      * @param bodies the list of bodies to perform calculations on
      */
-    virtual void solve(std::vector<Body *> bodies) = 0;
+    virtual void solve(std::vector<Body *> bodies, PhysicsContext *phys) = 0;
 
-private:
+protected:
 
-    PhysicsContext* phys;
+    /*Flag enabling multithreading of workloads*/
+    bool threadingEnabled = false;
 
 };
 

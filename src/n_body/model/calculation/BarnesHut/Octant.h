@@ -6,8 +6,9 @@
 #define N_BODY_OCTANT_H
 
 
-#include "Body.h" // I pass in a Body when I want to calculate the forces on it
-#include "Simulation.h" // The gravity method in the Simulation does the actual calculations
+#include "../../Body.h" // I pass in a Body when I want to calculate the forces on it
+#include "../../Simulation.h" // The gravity method in the Simulation does the actual calculations
+#include "../../PhysicsContext.h"
 
 #include <glm/glm.hpp> // Used for storing locations in cartesian space
 #include <atomic> // Used for atomic variables
@@ -57,6 +58,14 @@ public:
      * @param theSim the simulation in which calculations are defined
      */
     void applyGravityToBody(Body *theBody, Simulation *theSim);
+
+    /**
+     * Applies physical interactions to a body based on the parameters of a simulation
+     * @param theBody The body to apply the forces of gravity to
+     * @param phys the physics context in which calculations are defined
+     * @param theta Value determining the accuracy of the calculation
+     */
+    void applyPhysicsToBody(Body *theBody, PhysicsContext *phys, float theta);
 
     /**
      * Getter for the number of bodies contained by the octant

@@ -162,7 +162,7 @@ private:
     /*Flag for whether or not the barnes-hut tree should be used*/
     bool BarnesHutEnabled = false;
     /*Ratio defining how far any group of bodies must be before they can be grouped together*/
-    float Theta = 0.8; /*A Theta value of 0 degenerates to the naive algorithm*/
+    float Theta = 0.8; /*A theta value of 0 degenerates to the naive algorithm*/
 
     /*Flag that tells the increment function to do a velocity pre-calculation on a half time-step*/
     bool LeapFrogEnabled = false; /*Set back to false immediately after the offset is added*/

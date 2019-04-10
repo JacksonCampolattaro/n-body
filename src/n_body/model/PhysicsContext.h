@@ -14,6 +14,11 @@ class PhysicsContext {
 
 public:
 
+    /**
+     * Constructor for the physics context, every parameter starts with a default
+     */
+    PhysicsContext();
+
     // Setting physical constants of the simulation
 
     /**
@@ -36,6 +41,15 @@ public:
      * @return This simulation, for use in chaining named parameters.
      */
     PhysicsContext *setT(float T);
+
+
+    // Getters for physical constants
+
+    float getG() const;
+
+    int getExponent() const;
+
+    float getT() const;
 
 
     // Setting factors controlling the mechanics of the simulation
