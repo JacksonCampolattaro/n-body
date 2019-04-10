@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
     theSimulation = new Simulation();
     theViewport = new Viewport();
 
-    theSimulation->setG(0.01)->setT(.00001)->enableBarnesHut()->setTheta(0.5)->enableLeapfrog()->enableThreading();
+    theSimulation->setG(0.01)->setT(.01)->enableBarnesHut()->setTheta(0.5)->enableLeapfrog()->enableThreading();
     theViewport->setTitle("n Body simulator")->attachSimulation(theSimulation);
 
     addBodies();

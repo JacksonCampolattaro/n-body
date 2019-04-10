@@ -6,9 +6,11 @@
 #define N_BODY_PHYSICSCONTEXT_H
 
 
+#include <glm/geometric.hpp>
+
 #include "Body.h"
 
-class physicsContext {
+class PhysicsContext {
 
 public:
 
@@ -19,21 +21,21 @@ public:
      * @param G The constant 'G' as a float
      * @return This simulation, for use in chaining named parameters.
      */
-    physicsContext *setG(float G);
+    PhysicsContext *setG(float G);
 
     /**
      * Sets the power distance is raised to when calculating the force of gravity
      * @param Power the new power of the simulation
      * @return This simulation, for use in chaining named parameters.
      */
-    physicsContext *setPower(int Power);
+    PhysicsContext *setPower(int Power);
 
     /**
      * Sets the time interval of the simulation
      * @param T Unit-less time interval
      * @return This simulation, for use in chaining named parameters.
      */
-    physicsContext *setT(float T);
+    PhysicsContext *setT(float T);
 
 
     // Setting factors controlling the mechanics of the simulation
@@ -42,14 +44,14 @@ public:
      * Selects whether Force Softening is enabled, off by default
      * @return This simulation, for use in chaining named parameters.
      */
-    physicsContext *enableForceSoftening(bool enabled = true);
+    PhysicsContext *enableForceSoftening(bool enabled = true);
 
     /**
      * Sets the shortest time interval to use
      * @param minimumT The smallest time granularity allowed when super-sampling is enabled
      * @return This simulation, for use in chaining named parameters.
      */
-    physicsContext *setMinimumT(float minimumT);
+    PhysicsContext *setMinimumT(float minimumT);
 
 
     // Methods used by other objects
@@ -90,7 +92,7 @@ private:
     float T = 1.0;
 
     /*Flag for whether or not super-sampling of forces should be used in cases of extreme acceleration*/
-    bool ForceSofteningEnabled = false;
+    bool ForceSofteningEnabled = false; // TODO Not yet implemented
     /*The smallest time granularity allowed when super-sampling is enabled*/
     float minimumT = 0.001;
 

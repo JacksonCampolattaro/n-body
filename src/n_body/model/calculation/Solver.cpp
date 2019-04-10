@@ -3,3 +3,8 @@
 //
 
 #include "Solver.h"
+
+Solver::Solver(PhysicsContext *phys) {
+
+    this->phys = phys;
+}
