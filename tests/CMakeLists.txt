@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp -march=native")
 
 # Adding n_body files to tests compile path
-add_executable(unitTests ../src/n_body/interface/Viewport.cpp ../src/n_body/interface/Viewport.h ../src/n_body/interface/Drawable.cpp ../src/n_body/interface/Drawable.h ../src/n_body/model/Octant.cpp ../src/n_body/model/Octant.h ../src/n_body/Tracker.cpp ../src/n_body/Tracker.h ../src/n_body/model/Body.cpp ../src/n_body/model/Body.h ../src/n_body/model/Simulation.cpp ../src/n_body/model/Simulation.h testAll.cpp bodyTest.cpp simulationTest.cpp octantTest.cpp ../src/n_body/model/physicsContext.cpp ../src/n_body/model/physicsContext.h)
+add_executable(unitTests ../src/n_body/interface/Viewport.cpp ../src/n_body/interface/Viewport.h ../src/n_body/interface/Drawable.cpp ../src/n_body/interface/Drawable.h ../src/n_body/model/Octant.cpp ../src/n_body/model/Octant.h ../src/n_body/Tracker.cpp ../src/n_body/Tracker.h ../src/n_body/model/Body.cpp ../src/n_body/model/Body.h ../src/n_body/model/Simulation.cpp ../src/n_body/model/Simulation.h testAll.cpp bodyTest.cpp simulationTest.cpp octantTest.cpp ../src/n_body/model/PhysicsContext.cpp ../src/n_body/model/PhysicsContext.h)
 
 # Making sure the right libraries are present
 find_package(OpenGL REQUIRED)
