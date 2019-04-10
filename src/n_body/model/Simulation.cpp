@@ -126,7 +126,7 @@ void Simulation::increment() {
 void Simulation::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass) {
 
     // Added on the bottom of the equation to prevent infinities
-    // TODO Should this be a model parameter?
+    // TODO Should this be a Model parameter?
     float infinityPrevention = 0.0001;
 
     // Calculating the force of gravity as a scalar

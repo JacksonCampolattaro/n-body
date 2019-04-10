@@ -95,7 +95,7 @@ void bigDemo() {
 
 
 void threeBodyDemo() {
-    // Three Body model
+    // Three Body Model
 
     theSimulation->setPower(1);
     theSimulation->setG(.2);
@@ -114,7 +114,7 @@ void threeBodyDemo() {
 
 void addBodies() {
 
-    // Orbit model
+    // Orbit Model
 
     density = 10;
 

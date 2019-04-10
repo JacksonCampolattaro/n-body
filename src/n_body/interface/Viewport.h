@@ -109,7 +109,7 @@ private:
     const char *title = "n_Body Simulator 0.3.0";
 
 
-    // References the model and associated drawables
+    // References the Model and associated drawables
 
     /*A reference is kept to the Simulation being rendered*/
     //Simulation *theSim;
@@ -118,7 +118,7 @@ private:
     std::vector<Drawable *> drawables;
 
 
-    // Parameters which define the interface - model relationship
+    // Parameters which define the interface - Model relationship
 
     // TODO This should be mutable with flags
     Simulation *theSim;

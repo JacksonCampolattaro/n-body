@@ -174,7 +174,7 @@ void Viewport::draw() {
     // Sets the background to black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    // Clear information and sets up the 3d model world
+    // Clear information and sets up the 3d Model world
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_DEPTH_TEST);

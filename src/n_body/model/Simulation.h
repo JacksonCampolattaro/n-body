@@ -175,9 +175,9 @@ private:
     bool threadingEnabled = false;
 
 
-    // Values used as a part of the model
+    // Values used as a part of the Model
 
-    /*Filled with bodies before the start of the model, bodies are passed by reference and not removed*/
+    /*Filled with bodies before the start of the Model, bodies are passed by reference and not removed*/
     std::vector<Body *> bodies;
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
