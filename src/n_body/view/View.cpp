@@ -1,51 +1,12 @@
 //
-// Created by jackcamp on 2/27/19.
+// Created by jackcamp on 4/10/19.
 //
 
-#include "Viewport.h"
+#include <cstdio>
+#include <GL/glu.h>
+#include "View.h"
 
-#include <GL/glu.h> // Might already be included with GLFW
-#include <cstdio> // Used for outputting errors GLFW encounters
-
-Viewport::Viewport() = default;
-
-Viewport *Viewport::setDimensions(glm::ivec2 dimensions) {
-
-    this->dimensions = dimensions;
-
-    return this;
-}
-
-Viewport *Viewport::setTitle(const char *title) {
-
-    this->title = title;
-
-    return this;
-}
-
-/*Viewport *Viewport::attachSimulation(Simulation *Simulation) {
-
-    this->Simulation = Simulation;
-
-    return this;
-}*/
-
-Viewport *Viewport::registerDrawable(Drawable *drawable) {
-
-    this->drawables.push_back(drawable);
-
-    return this;
-}
-
-
-Viewport *Viewport::attachSimulation(Simulation *theSim) {
-
-    this->theSim = theSim;
-
-    return this;
-}
-
-void Viewport::start() {
+View::View() {
 
     // TODO Boilerplate code that creates the window could be improved
 
@@ -86,17 +47,43 @@ void Viewport::start() {
 
     // Sets the perspective before beginning the loop
     handleResize(window, dimensions.x, dimensions.y);
-
-    graphicsLoop();
 }
 
-void Viewport::setColor(glm::vec3 color) {
+View *View::setDimensions(glm::ivec2 dimensions) {
+
+    this->dimensions = dimensions;
+
+    return this;
+}
+
+View *View::setTitle(const char *title) {
+
+    glfwSetWindowTitle(window, title);
+
+    return this;
+}
+
+View *View::registerDrawable(Drawable *newDrawable) {
+
+    this->drawables.push_back(newDrawable);
+
+    return this;
+}
+
+View *View::registerDrawables(std::vector<Drawable *> newDrawables) {
+
+    this->drawables.insert(this->drawables.end(), newDrawables.begin(), newDrawables.end());
+
+    return this;
+}
+
+void View::setColor(glm::vec3 color) {
 
     // Sets the color used in the next OpenGL action
     glColor3f(color.r, color.g, color.b);
 }
 
-void Viewport::drawCircle(glm::vec3 position, float radius) {
+void View::drawCircle(glm::vec3 position, float radius) {
 
     // Number of segments affects how 'smooth' the circle will be.
     int numSegments = 64;
@@ -113,15 +100,19 @@ void Viewport::drawCircle(glm::vec3 position, float radius) {
     }
 
     glEnd();
-
 }
 
-void Viewport::handleError(int error, const char *description) {
+void View::drawSphere(glm::vec3 position, float radius) {
+
+    // TODO I'm sure there's a library for this
+}
+
+void View::handleError(int error, const char *description) {
 
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void Viewport::handleResize(GLFWwindow *window, int width, int height) {
+void View::handleResize(GLFWwindow *window, int width, int height) {
 
     // TODO Must be reworked before enabling camera movement
 
@@ -140,36 +131,17 @@ void Viewport::handleResize(GLFWwindow *window, int width, int height) {
     gluPerspective(60, ratio, 0.01, 10000);
 }
 
-void Viewport::graphicsLoop() {
-
-    // TODO May have to be reworked to incorporate flags
-
-    // Executed until it's time for the window to close
-    while (!glfwWindowShouldClose(window)) {
-
-        // All drawing is done here
-        draw();
-
-        // TODO I'm not sure which class should control the other
-        theSim->increment();
-
-        // Swapping the frame buffers
-        glfwSwapBuffers(window);
-
-        // Responding to input
-        glfwPollEvents();
-    }
+void View::draw() {
 
     // Closing the Viewport when the program is closed
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
+    if (glfwWindowShouldClose(window)) {
 
-}
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        exit(EXIT_SUCCESS);
+    }
 
-void Viewport::draw() {
-
-    // TODO This boilerplate could probably be rewritten
+    // Otherwise, perform standard draw operations
 
     // Sets the background to black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -187,5 +159,10 @@ void Viewport::draw() {
     for (int d = 0; d < drawables.size(); ++d) {
         drawables[d]->draw();
     }
-}
 
+    // Swapping the frame buffers
+    glfwSwapBuffers(window);
+
+    // Responding to input
+    glfwPollEvents();
+}

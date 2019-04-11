@@ -9,9 +9,10 @@
 #include "../Solver.h"
 
 
-class NaiveSolver : Solver {
-
+class NaiveSolver : public Solver {
 public:
+
+    NaiveSolver() = default;
 
     void solve(std::vector<Body *> bodies, PhysicsContext *phys) override;
 

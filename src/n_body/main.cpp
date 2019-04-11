@@ -2,41 +2,42 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include "Tracker.h"
 #include "model/Body.h"
-#include "model/Simulation.h"
-#include "interface/Viewport.h"
+#include "view/View.h"
+#include "model/calculation/Solver.h"
+#include "model/calculation/Naive/NaiveSolver.h"
+#include "model/calculation/BarnesHut/BarnesHutSolver.h"
+#include "model/Model.h"
 
 #include <glm/glm.hpp>
-#include <gtest/gtest.h>
-#include <omp.h>
+
+/*#include <gtest/gtest.h>
+#include <omp.h>*/
 
 
-// Colors to use
-static glm::vec3 white = glm::vec3(1, 1, 1);
-static glm::vec3 yellow = glm::vec3(1, 1, 0);
-static glm::vec3 red = glm::vec3(1, 0, 0);
-static glm::vec3 green = glm::vec3(0, 1, 0);
-static glm::vec3 blue = glm::vec3(0, 0, 1);
-static glm::vec3 teal = glm::vec3(0, 1, 1);
-static glm::vec3 grey = glm::vec3(.5, .5, .5);
+// Useful constants
+
+const glm::vec3 white = glm::vec3(1, 1, 1);
+const glm::vec3 yellow = glm::vec3(1, 1, 0);
+const glm::vec3 red = glm::vec3(1, 0, 0);
+const glm::vec3 green = glm::vec3(0, 1, 0);
+const glm::vec3 blue = glm::vec3(0, 0, 1);
+const glm::vec3 teal = glm::vec3(0, 1, 1);
+const glm::vec3 grey = glm::vec3(.5, .5, .5);
 
 float density = 40;
 
-Simulation *theSimulation;
-Viewport *theViewport;
 
-
-void addBody(Body *newBody) {
-    
-    theSimulation->addBody(newBody);
-    theViewport->registerDrawable(newBody);
-}
+// Objects used for the simulation
+View *view;
+Model *model;
+PhysicsContext *physics;
+std::vector<Body *> bodies;
 
 void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3 velocity = glm::vec3(0.0f, 0.0f, -100.0f),
                glm::vec3 size = glm::vec3(20, 20, 20), float spacing = 10.0f, float mass = 10000.0f) {
 
-    theSimulation->setPower(2);
+    density = 40;
 
     // Creates a cubic grid
 
@@ -67,7 +68,7 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
 
                 auto newBody = new Body(position);
                 newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(yellowToRed_Z);
-                addBody(newBody);
+                bodies.push_back(newBody);
             }
         }
     }
@@ -76,17 +77,17 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
 
 void bigDemo() {
 
-    theSimulation->setT(0.005)->setG(0.01);
+    physics->setT(0.005)->setG(0.01)->setPower(2);
 
     // Massive fixed mass
     auto superHeavy = new Body(glm::vec3(0, 0, -500));
     superHeavy->setMass(180000000)->setColor(white)->setDensity(10000)->makeFixed();
-    addBody(superHeavy);
+    bodies.push_back(superHeavy);
 
     // Cubic Grid
     glm::vec3 cornerPosition(-50, -100, -450);
     glm::vec3 velocity(60.0f, 20.0f, 0.0f);
-    glm::vec3 size(6, 6, 50);
+    glm::vec3 size(6, 6, 30);
     float spacing = 10.0f;
     float mass = 5000.0f;
 
@@ -97,26 +98,23 @@ void bigDemo() {
 void threeBodyDemo() {
     // Three Body Model
 
-    theSimulation->setPower(1);
-    theSimulation->setG(.2);
-    theSimulation->setT(.01);
+    physics->setPower(1);
+    physics->setG(.2);
     auto redBody = new Body(glm::vec3(20.0, 50.0, -300));
     redBody->setVelocity(glm::vec3(30, -50, 0))->setMass(500000)->setDensity(density)->setColor(red);
-    addBody(redBody);
+    bodies.push_back(redBody);
     auto whiteBody = new Body(glm::vec3(0.0, -50, -400));
     whiteBody->setVelocity(glm::vec3(-30, 0, 0))->setMass(500000)->setDensity(density)->setColor(white);
-    addBody(whiteBody);
+    bodies.push_back(whiteBody);
     auto yellowBody = new Body(glm::vec3(-20, 0, -700));
     yellowBody->setVelocity(glm::vec3(0, 50, 0))->setMass(500000)->setDensity(density)->setColor(yellow);
-    addBody(yellowBody);
+    bodies.push_back(yellowBody);
 }
 
 
 void addBodies() {
 
     // Orbit Model
-
-    density = 10;
 
     /*auto sun = new Body(glm::vec3(0, 0, -4000), glm::vec3(0, 0, 0), 50000000, density, yellow, true);
     addBody(sun);
@@ -138,9 +136,9 @@ void addBodies() {
     moon->setMass(500)->setVelocity(glm::vec3(10, 0, 0))->setColor(white);
     addBody(moon);*/
 
-    //bigDemo();
+    bigDemo();
     //density = 30; cubicGrid(glm::vec3(-5, -5, -100), glm::vec3(0, 0, -25), glm::vec3(2, 2, 2), 10, 5000);
-    density = 30; cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -25), glm::vec3(20, 20, 20), 10, 5000);
+    //cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -25), glm::vec3(20, 20, 20), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
@@ -149,14 +147,34 @@ void addBodies() {
 
 int main(int argc, char **argv) {
 
-    theSimulation = new Simulation();
-    theViewport = new Viewport();
+    // Creating the physics world
+    physics = new PhysicsContext();
+    physics->setT(0.001)->setG(0.02)->setPower(1);
 
-    theSimulation->setG(0.01)->setT(.01)->enableBarnesHut()->setTheta(0.5)->enableLeapfrog()->enableThreading();
-    theViewport->setTitle("n Body simulator")->attachSimulation(theSimulation);
-
+    // Adding bodies to the simulation
     addBodies();
 
-    theViewport->start();
+    // Creating the solving tool
+    auto *solver = new BarnesHutSolver();
+    solver->setTheta(0)->enableThreading();
+
+    // Creating the view
+    view = new View();
+    view->setTitle("Jackson Campolattaro's n-body Simulator");
+
+    // Adding bodies to the viewport
+    for (Body *b : bodies) {
+        view->registerDrawable(b);
+    }
+
+    // Creating the model
+    model = new Model(physics, solver);
+    model->preCalculate(bodies);
+
+    // Incrementing the simulation
+    for (int i = 0; i < 100000000; ++i) {
+        view->draw();
+        model->increment(bodies);
+    }
 
 }

@@ -14,8 +14,6 @@ class Solver {
 
 public:
 
-    Solver() = default;
-
     /**
      * Used to enable multithreaded workloads via openmp
      * @param enabled whether or not multithreading should be allowed

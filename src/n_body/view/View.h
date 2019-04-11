@@ -1,20 +1,17 @@
 //
-// Created by jackcamp on 2/27/19.
+// Created by jackcamp on 4/10/19.
 //
 
-#ifndef N_BODY_VIEWPORT_H
-#define N_BODY_VIEWPORT_H
+#ifndef N_BODY_VIEW_H
+#define N_BODY_VIEW_H
 
-
-#include "Drawable.h" // Objects this class draws are all extensions of Drawable
-#include "../model/Simulation.h" // Fix before adding
 
 #include <GLFW/glfw3.h> // GLFW makes OpenGL simpler to use
 #include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
 #include <vector> // Allows me to keep a list of things to draw
+#include "Drawable.h"
 
-class Viewport {
-
+class View {
 public:
 
     // Constructor
@@ -22,7 +19,7 @@ public:
     /**
      * Creates the viewport with default parameters
      */
-    explicit Viewport();
+    explicit View();
 
 
     // Setters (with support for chaining)
@@ -32,14 +29,14 @@ public:
      * @param dimensions Vector representing the <X, Y> dimensions of the window
      * @return This viewport, for use in chaining named parameters.
      */
-    Viewport *setDimensions(glm::ivec2 dimensions);
+    View *setDimensions(glm::ivec2 dimensions);
 
     /**
      * Sets the title of the window
      * @param title The new title
      * @return This viewport, for use in chaining named parameters.
      */
-    Viewport *setTitle(const char *title);
+    View *setTitle(const char *title);
 
 
     // Setup tools
@@ -48,17 +45,13 @@ public:
      * Adds a new item to the render to be drawn each cycle
      * @param newDrawable The new drawable to be added
      */
-    Viewport *registerDrawable(Drawable *drawable);
-
-    Viewport *attachSimulation(Simulation *theSim);
-
-
-    // Controller tools
+    View *registerDrawable(Drawable *newDrawable);
 
     /**
-     * Creates the window and starts the graphics loop
+     * Adds a list of items to the render to be drawn each cycle
+     * @param newDrawables The new drawable list to be added
      */
-    void start();
+    View *registerDrawables(std::vector<Drawable *> newDrawables);
 
 
     // Graphics tools
@@ -75,6 +68,14 @@ public:
      * @param radius The size of the circle
      */
     static void drawCircle(glm::vec3 position, float radius);
+
+    /**
+     * Draws a circle in 3d space
+     * @param position The location of the circle
+     * @param radius The size of the circle
+     */
+    static void drawSphere(glm::vec3 position, float radius);
+
 
 
     // GLFW boilerplate
@@ -95,6 +96,12 @@ public:
     static void handleResize(GLFWwindow *window, int width, int height);
 
 
+    // Helper methods
+
+    /*Draws all the drawables to the screen, then updates the buffer*/
+    void draw();
+
+
 private:
 
     // Parameters defining the window
@@ -106,22 +113,7 @@ private:
     glm::ivec2 dimensions = glm::ivec2(1920, 1080);
 
     /*The label of the window*/
-    const char *title = "n_Body Simulator 0.3.0";
-
-
-    // References the Model and associated drawables
-
-    /*A reference is kept to the Simulation being rendered*/
-    //Simulation *theSim;
-
-    /*The list of drawables that will be put on the screen each time it's updated*/
-    std::vector<Drawable *> drawables;
-
-
-    // Parameters which define the interface - Model relationship
-
-    // TODO This should be mutable with flags
-    Simulation *theSim;
+    const char *title = "GLFW Viewport";
 
 
     // Parameters affecting image quality
@@ -131,15 +123,12 @@ private:
     unsigned int samplingRatio = 8;
 
 
-    // Helper methods
+    // References to items to be drawn
 
-    /*Infinite loop handling graphics*/
-    void graphicsLoop();
-
-    /*Draws all the drawables to the screen*/
-    void draw();
+    /*The list of drawables that will be put on the screen each time it's updated*/
+    std::vector<Drawable *> drawables;
 
 };
 
 
-#endif //N_BODY_VIEWPORT_H
+#endif //N_BODY_VIEW_H

@@ -87,47 +87,6 @@ void Octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 }
 
-void Octant::applyGravityToBody(Body *theBody, Simulation *theSim) {
-
-    // Ignores empty nodes
-    if (!initialized) {
-        return;
-    }
-
-    // Base case 1: Leaf node
-    if (!divided) {
-
-        // Ignores the node if it contains the theBody to be acted upon
-        if (centerOfMass != theBody->getPosition()) {
-
-            theSim->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
-        }
-
-        return;
-    }
-
-    // Base case 2: Divided, but subdivision is unnecessary
-    /* Node is treated as a single theBody if S/D < theta (where S = sideLength and D = distance) */
-    if (theSim->getTheta() > (float) sideLength / (float) glm::distance(theBody->getPosition(), centerOfMass)) {
-
-        theSim->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
-
-        return;
-    }
-
-    // Recursive case: Divided, and not far enough to avoid subdividing
-    //#pragma omp parallel for collapse(3)
-    for (int x = 0; x <= 1; ++x) {
-        for (int y = 0; y <= 1; ++y) {
-            for (int z = 0; z <= 1; ++z) {
-
-                // Recursively dividing the work
-                children[x][y][z]->applyGravityToBody(theBody, theSim);
-            }
-        }
-    }
-}
-
 void Octant::applyPhysicsToBody(Body *theBody, PhysicsContext *phys, float theta) {
 
     // Ignores empty nodes

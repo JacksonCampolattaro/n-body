@@ -7,7 +7,6 @@
 
 
 #include "../../Body.h" // I pass in a Body when I want to calculate the forces on it
-#include "../../Simulation.h" // The gravity method in the Simulation does the actual calculations
 #include "../../PhysicsContext.h"
 
 #include <glm/glm.hpp> // Used for storing locations in cartesian space
@@ -50,14 +49,6 @@ public:
      * @param newMass the mass of the body
      */
     void addBody(glm::vec3 newPosition, float newMass);
-
-    /**
-     * Applies gravity to a body based on the parameters of a simulation
-     * This is used for the traversal of the tree
-     * @param theBody The body to apply the forces of gravity to
-     * @param theSim the simulation in which calculations are defined
-     */
-    void applyGravityToBody(Body *theBody, Simulation *theSim);
 
     /**
      * Applies physical interactions to a body based on the parameters of a simulation

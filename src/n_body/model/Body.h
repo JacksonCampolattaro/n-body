@@ -9,8 +9,8 @@
 #include <string> // Used by the toString method
 #include <glm/vec3.hpp> // Used for holding 3d vectors
 
-#include "../interface/Drawable.h" // Body extends Drawable
-class Viewport; // The draw method uses tools defined by the Viewport class
+#include "../view/Drawable.h" // Body extends Drawable
+#include "../view/GLToolkit.h"
 
 /**
  * Intended to streamline the functionality of the old body

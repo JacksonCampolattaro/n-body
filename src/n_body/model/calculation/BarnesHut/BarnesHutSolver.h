@@ -9,7 +9,7 @@
 #include "../Solver.h"
 
 
-class BarnesHutSolver : Solver {
+class BarnesHutSolver : public Solver {
 
 public:
 
