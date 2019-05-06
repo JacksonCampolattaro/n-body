@@ -54,30 +54,6 @@ public:
     View *registerDrawables(std::vector<Drawable *> newDrawables);
 
 
-    // Graphics tools
-
-    /**
-     * Allows for setting the color in OpenGL from outside the viewport
-     * @param color The color as a vector (rgb)
-     */
-    static void setColor(glm::vec3 color);
-
-    /**
-     * Draws a circle in 3d space
-     * @param position The location of the circle
-     * @param radius The size of the circle
-     */
-    static void drawCircle(glm::vec3 position, float radius);
-
-    /**
-     * Draws a circle in 3d space
-     * @param position The location of the circle
-     * @param radius The size of the circle
-     */
-    static void drawSphere(glm::vec3 position, float radius);
-
-
-
     // GLFW boilerplate
 
     /**
@@ -100,6 +76,9 @@ public:
 
     /*Draws all the drawables to the screen, then updates the buffer*/
     void draw();
+
+    /*Draws a list of drawables to the screen, then updates the buffer*/
+    void draw(std::vector<Drawable *> drawables);
 
 
 private:

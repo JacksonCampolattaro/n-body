@@ -77,36 +77,6 @@ View *View::registerDrawables(std::vector<Drawable *> newDrawables) {
     return this;
 }
 
-void View::setColor(glm::vec3 color) {
-
-    // Sets the color used in the next OpenGL action
-    glColor3f(color.r, color.g, color.b);
-}
-
-void View::drawCircle(glm::vec3 position, float radius) {
-
-    // Number of segments affects how 'smooth' the circle will be.
-    int numSegments = 64;
-
-    glBegin(GL_TRIANGLE_FAN);
-
-    for (int i = 0; i < numSegments; ++i) {
-
-        float angle = (2.0f * 3.1415926f * float(i)) / float(numSegments);
-
-        float x = radius * cosf(angle);
-        float y = radius * sinf(angle);
-        glVertex3f(x + position.x, y + position.y, position.z);
-    }
-
-    glEnd();
-}
-
-void View::drawSphere(glm::vec3 position, float radius) {
-
-    // TODO I'm sure there's a library for this
-}
-
 void View::handleError(int error, const char *description) {
 
     fprintf(stderr, "Error: %s\n", description);
@@ -132,6 +102,42 @@ void View::handleResize(GLFWwindow *window, int width, int height) {
 }
 
 void View::draw() {
+
+    // Closing the Viewport when the program is closed
+    if (glfwWindowShouldClose(window)) {
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        exit(EXIT_SUCCESS);
+    }
+
+    // Otherwise, perform standard draw operations
+
+    // Sets the background to black
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // Clear information and sets up the 3d Model world
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_SMOOTH);
+    glEnable(GL_BLEND);
+    glLoadIdentity();
+
+    // Calls the draw function of every registered Drawable
+    // TODO There might be advantages to multithreading this, it depends on if the GPU is the limiting factor
+    for (int d = 0; d < drawables.size(); ++d) {
+        this->drawables[d]->draw();
+    }
+
+    // Swapping the frame buffers
+    glfwSwapBuffers(window);
+
+    // Responding to input
+    glfwPollEvents();
+}
+
+void View::draw(std::vector<Drawable *> drawables) {
 
     // Closing the Viewport when the program is closed
     if (glfwWindowShouldClose(window)) {

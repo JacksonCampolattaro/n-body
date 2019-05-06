@@ -63,11 +63,12 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
                                       1 - coordinate.y / size.y + coordinate.x / size.x);
                 glm::vec3 whiteToBlueToRed(coordinate.y / size.y + coordinate.z / size.z, coordinate.z / size.z,
                                       1 - coordinate.y / size.y + coordinate.z / size.z);
+                glm::vec3 blueToGreen(0, 1 - coordinate.z / size.z, coordinate.z / size.z);
                 glm::vec3 rainbow(coordinate.y / size.y, coordinate.x / size.x, 1 - coordinate.y / size.y);
 
 
                 auto newBody = new Body(position);
-                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(yellowToRed_Z);
+                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(whiteToBlueToRed);
                 bodies.push_back(newBody);
             }
         }
@@ -87,7 +88,7 @@ void bigDemo() {
     // Cubic Grid
     glm::vec3 cornerPosition(-50, -100, -450);
     glm::vec3 velocity(60.0f, 20.0f, 0.0f);
-    glm::vec3 size(6, 6, 30);
+    glm::vec3 size(6, 6, 40);
     float spacing = 10.0f;
     float mass = 5000.0f;
 
@@ -136,9 +137,9 @@ void addBodies() {
     moon->setMass(500)->setVelocity(glm::vec3(10, 0, 0))->setColor(white);
     addBody(moon);*/
 
-    bigDemo();
+    //bigDemo();
     //density = 30; cubicGrid(glm::vec3(-5, -5, -100), glm::vec3(0, 0, -25), glm::vec3(2, 2, 2), 10, 5000);
-    //cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -25), glm::vec3(20, 20, 20), 10, 5000);
+    cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -25), glm::vec3(20, 20, 5), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
@@ -149,14 +150,15 @@ int main(int argc, char **argv) {
 
     // Creating the physics world
     physics = new PhysicsContext();
-    physics->setT(0.001)->setG(0.02)->setPower(1);
+    physics->setT(0.01)->setG(0.02)->setPower(2);
 
     // Adding bodies to the simulation
     addBodies();
 
     // Creating the solving tool
     auto *solver = new BarnesHutSolver();
-    solver->setTheta(0)->enableThreading();
+    solver->enableThreading();
+    solver->setTheta(0.8);
 
     // Creating the view
     view = new View();
@@ -173,6 +175,7 @@ int main(int argc, char **argv) {
 
     // Incrementing the simulation
     for (int i = 0; i < 100000000; ++i) {
+
         view->draw();
         model->increment(bodies);
     }

@@ -37,7 +37,7 @@ void GLToolkit::drawSphere(glm::vec3 position, float radius) {
 
     GLUquadric *quad = gluNewQuadric();
     glTranslatef(position.x, position.y, position.z);
-    gluSphere(quad, radius, 100, 20);
+    gluSphere(quad, radius, 20, 10);
     glTranslatef(-position.x, -position.y, -position.z);
 
 }
