@@ -3,22 +3,22 @@
 //
 
 
-#include "octant.h"
+#include "Octant.h"
 
 
 
 // Public methods
 
-threadSafe_octant::threadSafe_octant(glm::vec3 location, float sideLength) {
+Octant::Octant(glm::vec3 location, float sideLength) {
 
     this->octantLocation = location;
     this->sideLength = sideLength;
 }
 
-void threadSafe_octant::addBody(glm::vec3 newPosition, float newMass) {
+void Octant::addBody(glm::vec3 newPosition, float newMass) {
 
 
-    /*// Adding the first body (only executes the first time through)
+    /*// Adding the first Body (only executes the first time through)
     call_once(init, [=] () mutable {
 
         centerOfMass = newPosition;
@@ -35,10 +35,10 @@ void threadSafe_octant::addBody(glm::vec3 newPosition, float newMass) {
     }
 
 
-    // Adding the second body (only executes the second time through)
+    // Adding the second Body (only executes the second time through)
     call_once(split, [=] {
 
-        // Dividing the octant
+        // Dividing the Octant
         divide();
 
     });
@@ -55,7 +55,7 @@ void threadSafe_octant::addBody(glm::vec3 newPosition, float newMass) {
         totalMass += newMass;
         numBodies++;
     }
-    // Used when adding the first body
+    // Used when adding the first Body
     else if (!initialized) {
 
         initialized = true;
@@ -66,22 +66,28 @@ void threadSafe_octant::addBody(glm::vec3 newPosition, float newMass) {
         totalMass = newMass;
         numBodies = 1;
     }
-    // Used only when adding the second body
+    // Used only when adding the second Body
     else {
 
-        call_once(split, [=] {
+        /*call_once(split, [=] {
 
-            // Dividing the octant
+            // Dividing the Octant
             divide();
 
-            // Adding the new body
+            // Adding the new Body
             this->addBody(newPosition, newMass);
 
-        });
+        });*/
+
+        #pragma omp single
+        divide();
+
+        #pragma omp single
+        this->addBody(newPosition, newMass);
     }
 }
 
-void threadSafe_octant::applyGravityToBody(body *theBody, simulation *theSimulation) {
+void Octant::applyPhysicsToBody(Body *theBody, PhysicsContext *phys, float theta) {
 
     // Ignores empty nodes
     if (!initialized) {
@@ -91,38 +97,37 @@ void threadSafe_octant::applyGravityToBody(body *theBody, simulation *theSimulat
     // Base case 1: Leaf node
     if (!divided) {
 
-        // Ignores the node if it contains the body to be acted upon
+        // Ignores the node if it contains the theBody to be acted upon
         if (centerOfMass != theBody->getPosition()) {
 
-            theSimulation->applyGravity(theBody, centerOfMass, totalMass);
+            phys->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
         }
 
         return;
     }
 
     // Base case 2: Divided, but subdivision is unnecessary
-    /* Node is treated as a single body if S/D < theta (where S = sideLength and D = distance) */
-    if (theSimulation->getTheta() > (float) sideLength / (float) distance(theBody->getPosition(), centerOfMass)) {
+    /* Node is treated as a single theBody if S/D < theta (where S = sideLength and D = distance) */
+    if (theta > (float) sideLength / (float) glm::distance(theBody->getPosition(), centerOfMass)) {
 
-        theSimulation->applyGravity(theBody, centerOfMass, totalMass);
+        phys->applyGravityBetweenBodies(theBody, centerOfMass, totalMass);
 
         return;
     }
 
     // Recursive case: Divided, and not far enough to avoid subdividing
-    #pragma omp parallel for collapse(3)
     for (int x = 0; x <= 1; ++x) {
         for (int y = 0; y <= 1; ++y) {
             for (int z = 0; z <= 1; ++z) {
 
                 // Recursively dividing the work
-                children[x][y][z]->applyGravityToBody(theBody, theSimulation);
+                children[x][y][z]->applyPhysicsToBody(theBody, phys, theta);
             }
         }
     }
 }
 
-std::string threadSafe_octant::toString(int level) {
+std::string Octant::toString(int level) {
 
     std::string theString;
     std::string indent;
@@ -168,16 +173,16 @@ std::string threadSafe_octant::toString(int level) {
     return theString;
 }
 
-int threadSafe_octant::getNumBodies() {
+int Octant::getNumBodies() {
     return numBodies;
 }
 
-vec3 threadSafe_octant::getCenterOfMass() {
+glm::vec3 Octant::getCenterOfMass() {
 
 
     // If the center of mass hasn't been calculated, calculate it
     if (!validCenterOfMass) {
-        vec3 COM = vec3(0, 0, 0);
+        glm::vec3 COM = glm::vec3(0, 0, 0);
 
         // Summing all subdivisions
         // TODO This only seems to work in parallel if I output to the console before returning...?
@@ -205,17 +210,17 @@ vec3 threadSafe_octant::getCenterOfMass() {
 
     //cout << totalMass << "  " << centerOfMass.x << centerOfMass.y << centerOfMass.z << endl;
 
-    // Returns the position held by the octant
-    /*Note: Position is a null vector if the octant is not initialized*/
+    // Returns the position held by the Octant
+    /*Note: Position is a null vector if the Octant is not initialized*/
     return centerOfMass;
 }
 
-vec3 threadSafe_octant::getAveragePosition() {
+glm::vec3 Octant::getAveragePosition() {
 
     // If the average position hasn't been calculated, calculate it
     if (!validAveragePosition) {
 
-        vec3 avg = vec3(0, 0, 0);
+        glm::vec3 avg = glm::vec3(0, 0, 0);
 
         // Summing all subdivisions, safely done in parallel
         //#pragma omp parallel for collapse(3)
@@ -246,7 +251,7 @@ vec3 threadSafe_octant::getAveragePosition() {
 
 // Private methods
 
-void threadSafe_octant::divide() {
+void Octant::divide() {
 
     // The child nodes are half the size of this one
     float subdivisionSideLength = sideLength / 2;
@@ -262,7 +267,7 @@ void threadSafe_octant::divide() {
                 int zSign = (2 * z) - 1;
 
                 // Creating the node with the right position
-                std::shared_ptr<threadSafe_octant> newNode(new threadSafe_octant(this->octantLocation +
+                std::shared_ptr<Octant> newNode(new Octant(this->octantLocation +
                                                                                  glm::vec3(xSign * subdivisionSideLength,
                                                                                            ySign * subdivisionSideLength,
                                                                                            zSign * subdivisionSideLength),
@@ -284,18 +289,19 @@ void threadSafe_octant::divide() {
     getSubdivisionEnclosing(this->centerOfMass)->addBody(this->centerOfMass, this->totalMass);
 }
 
-shared_ptr<threadSafe_octant> threadSafe_octant::getSubdivisionEnclosing(vec3 position) {
+std::shared_ptr<Octant> Octant::getSubdivisionEnclosing(glm::vec3 position) {
 
     // Making sure the subdivisions exist
     if (!divided) {
         divide();
     }
 
-    // Comparing the new body's position to the center of the octant
-    vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
+    // Comparing the new Body's position to the center of the Octant
+    glm::vec3 comparison = glm::greaterThanEqual(position, this->octantLocation);
 
-    // Adding the body at the appropriate index
+    // Adding the Body at the appropriate index
     return children[(int) comparison.x][(int) comparison.y][(int) comparison.z];
 }
+
 
 

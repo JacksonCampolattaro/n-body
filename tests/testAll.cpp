@@ -3,7 +3,6 @@
 //
 
 #include <gtest/gtest.h>
-#include "../src/n_body/body.h"
 
 
 int main(int argc, char **argv) {

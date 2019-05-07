@@ -3,7 +3,7 @@
 set(CMAKE_CXX_STANDARD 14)
 
 # Adds my files to compilation path
-add_executable(${CMAKE_PROJECT_NAME} n_body/body.h n_body/body.cpp n_body/simulation.cpp n_body/simulation.h n_body/relationship.cpp n_body/relationship.h n_body/main.cpp n_body/viewport.cpp n_body/viewport.h n_body/drawable.cpp n_body/drawable.h n_body/tracker.cpp n_body/tracker.h n_body/octant.cpp n_body/octant.h n_body/simulation/better_body.cpp n_body/simulation/better_body.h n_body/simulation/better_simulation.cpp n_body/simulation/better_simulation.h)
+add_executable(${CMAKE_PROJECT_NAME} n_body/main.cpp n_body/view/GLToolkit.cpp n_body/view/GLToolkit.h n_body/view/Drawable.cpp n_body/view/Drawable.h n_body/Tracker.cpp n_body/Tracker.h n_body/model/calculation/BarnesHut/Octant.cpp n_body/model/calculation/BarnesHut/Octant.h n_body/model/Body.cpp n_body/model/Body.h n_body/model/calculation/Solver.cpp n_body/model/calculation/Solver.h n_body/model/calculation/Naive/NaiveSolver.cpp n_body/model/calculation/Naive/NaiveSolver.h n_body/model/PhysicsContext.cpp n_body/model/PhysicsContext.h n_body/model/Model.cpp n_body/model/Model.h n_body/view/View.cpp n_body/view/View.h n_body/model/calculation/BarnesHut/BarnesHutSolver.cpp n_body/model/calculation/BarnesHut/BarnesHutSolver.h)
 
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)

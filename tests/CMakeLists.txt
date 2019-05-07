@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp -march=native")
 
 # Adding n_body files to tests compile path
-add_executable(unitTests ../src/n_body/body.h ../src/n_body/body.cpp ../src/n_body/simulation.cpp ../src/n_body/simulation.h ../src/n_body/relationship.cpp ../src/n_body/relationship.h ../src/n_body/viewport.cpp ../src/n_body/viewport.h ../src/n_body/drawable.cpp ../src/n_body/drawable.h ../src/n_body/octant.cpp ../src/n_body/octant.h ../src/n_body/tracker.cpp ../src/n_body/tracker.h testAll.cpp bodyTest.cpp simulationTest.cpp threadSafe_octantTest.cpp)
+add_executable(unitTests ../src/n_body/view/Drawable.cpp ../src/n_body/view/Drawable.h ../src/n_body/model/calculation/BarnesHut/Octant.cpp ../src/n_body/model/calculation/BarnesHut/Octant.h ../src/n_body/Tracker.cpp ../src/n_body/Tracker.h ../src/n_body/model/Body.cpp ../src/n_body/model/Body.h testAll.cpp bodyTest.cpp simulationTest.cpp octantTest.cpp ../src/n_body/model/PhysicsContext.cpp ../src/n_body/model/PhysicsContext.h ../src/n_body/model/calculation/BarnesHut/BarnesHutSolver.cpp ../src/n_body/model/calculation/BarnesHut/BarnesHutSolver.h ../src/n_body/model/Model.cpp ../src/n_body/model/Model.h ../src/n_body/view/View.cpp ../src/n_body/view/View.h ../src/n_body/view/GLToolkit.cpp ../src/n_body/view/GLToolkit.h)
 
 # Making sure the right libraries are present
 find_package(OpenGL REQUIRED)

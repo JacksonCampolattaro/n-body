@@ -2,20 +2,18 @@
 // Created by jackcamp on 2/24/19.
 //
 
-#ifndef N_BODY_THREADSAFE_OCTANT_H
-#define N_BODY_THREADSAFE_OCTANT_H
-
-#include "simulation.h"
-
-#include <iostream>
-#include <glm/glm.hpp>
-#include <memory>
-#include <atomic>
-#include <mutex>
+#ifndef N_BODY_OCTANT_H
+#define N_BODY_OCTANT_H
 
 
-#include "body.h"
+#include "../../Body.h" // I pass in a Body when I want to calculate the forces on it
+#include "../../PhysicsContext.h"
 
+#include <glm/glm.hpp> // Used for storing locations in cartesian space
+#include <atomic> // Used for atomic variables
+#include <mutex> // Used for the call_once flag and lambda expression
+#include <memory> // I used smart pointers to resolve a memory leak
+#include <string> // Used by the toString method
 
 
 /**
@@ -28,7 +26,7 @@
  * I'm also trying to streamline the class by combining methods that are always used together
  * For example, the center of mass is calculated the first time it needs to be retrieved
  */
-class threadSafe_octant {
+class Octant {
 
 public:
 
@@ -37,12 +35,12 @@ public:
      * @param location The center of the octant as a vector
      * @param sideLength The length of the octant
      */
-    threadSafe_octant(glm::vec3 location, float sideLength);
+    Octant(glm::vec3 location, float sideLength);
 
     /**
      * Standard destructor for the class
      */
-    virtual ~threadSafe_octant() = default;
+    virtual ~Octant() = default;
 
     /**
      * Adds a body to the octant by its parameters
@@ -53,12 +51,12 @@ public:
     void addBody(glm::vec3 newPosition, float newMass);
 
     /**
-     * Applies gravity to a body based on the parameters of a simulation
-     * This is used for the traversal of the tree
+     * Applies physical interactions to a body based on the parameters of a simulation
      * @param theBody The body to apply the forces of gravity to
-     * @param theSimulation the simulation in which calculations are defined
+     * @param phys the physics context in which calculations are defined
+     * @param theta Value determining the accuracy of the calculation
      */
-    void applyGravityToBody(body *theBody, simulation *theSimulation);
+    void applyPhysicsToBody(Body *theBody, PhysicsContext *phys, float theta);
 
     /**
      * Getter for the number of bodies contained by the octant
@@ -70,13 +68,13 @@ public:
      * Getter for the center of mass, which calculates it if it isn't already generated
      * @return The center of mass as a vector
      */
-    vec3 getCenterOfMass();
+    glm::vec3 getCenterOfMass();
 
     /**
      * Getter for the average position of the bodies in the tree, which calculates it if necessary
      * @return The ideal position of the next iteration's octree
      */
-    vec3 getAveragePosition();
+    glm::vec3 getAveragePosition();
 
     /**
      * Creates a string representation of the entire tree
@@ -88,50 +86,51 @@ private:
 
     // Values used for gravity calculations
 
-    /*Position and mass of the body or bodies contained by the node*/
-    vec3 centerOfMass;
+    /*Position and mass of the Body or bodies contained by the node*/
+    glm::vec3 centerOfMass;
     float totalMass;
 
-    /*By keeping track of this, center of mass doesn't have to be recalculated every time a body is added*/
-    atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
+    /*By keeping track of this, center of mass doesn't have to be recalculated every time a Body is added*/
+    std::atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
 
 
     // Subdivisions of the node
 
     /*Whether or not the node is already divided, atomic for thread safety reasons*/
-    atomic_bool divided = {false};
-    once_flag split;
+    std::atomic_bool divided = {false};
+    std::once_flag split;
 
     /*Three dimensional array of smart pointers to child trees*/
-    std::shared_ptr<threadSafe_octant> children[2][2][2];
+    std::shared_ptr<Octant> children[2][2][2];
 
 
     // Metadata about the node
 
     /*Whether or not the node isn't empty, atomic for thread safety reasons*/
-    atomic_bool initialized = {false};
+    std::atomic_bool initialized = {false};
 
     /*Size of the node and position of its center*/
     float sideLength;
-    vec3 octantLocation;
+    glm::vec3 octantLocation;
 
     /*Useful data for determining the ideal position of the next iteration's octree*/
-    vec3 averagePosition = vec3(0, 0, 0); /*What the center of mass would be if all bodies had identical masses*/
-    atomic_bool validAveragePosition = {true};
+    glm::vec3 averagePosition = glm::vec3(0, 0,
+                                          0); /*What the center of mass would be if all bodies had identical masses*/
+    std::atomic_bool validAveragePosition = {true};
 
-    /*Total number of bodies contained by the octant or its children*/
+    /*Total number of bodies contained by the Octant or its children*/
     int numBodies;
 
 
     // Helper methods
 
-    /*Splits the octant into subnodes*/
+    /*Splits the Octant into subnodes*/
     void divide();
 
-    /*Finds the appropriate child to add a body to*/
-    shared_ptr<threadSafe_octant> getSubdivisionEnclosing(vec3 position);
+    /*Finds the appropriate child to add a Body to*/
+    std::shared_ptr<Octant> getSubdivisionEnclosing(glm::vec3 position);
 
 };
 
 
-#endif //N_BODY_THREADSAFE_OCTANT_H
+#endif //N_BODY_OCTANT_H
