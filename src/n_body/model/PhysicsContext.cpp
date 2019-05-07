@@ -63,9 +63,14 @@ PhysicsContext *PhysicsContext::setMinimumT(float minimumT) {
 
 void PhysicsContext::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass) {
 
+    applyGravityBetweenBodies(subject, actorPosition, actorMass, T);
+}
+
+void PhysicsContext::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass, float time) {
+
     // Added on the bottom of the equation to prevent infinities
     // TODO Should this be a Model parameter?
-    float infinityPrevention = 0.0001;
+    float infinityPrevention = 0.00001;
 
     // Calculating the force of gravity as a scalar
     float forceOfGravity =
@@ -79,8 +84,13 @@ void PhysicsContext::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPos
     glm::vec3 acceleration = force / subject->getMass();
 
     // Applying the acceleration to the Body (v = at)
-    // TODO When I add force softening / super-sampling, this is where it will be done
-    subject->kick(acceleration * T);
+    int accelerationThreshold = 100;
+    if (accelerationThreshold < length(acceleration) && minimumT < time) {
+        applyGravityBetweenBodies(subject, actorPosition, actorMass, time / 2);
+        applyGravityBetweenBodies(subject, actorPosition, actorMass, time / 2);
+    } else {
+        subject->kick(acceleration * time);
+    }
 }
 
 void PhysicsContext::orbit(Body *sunBody, Body *satelliteBody) {

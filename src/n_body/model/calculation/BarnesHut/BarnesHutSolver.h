@@ -28,7 +28,7 @@ private:
     float theta = 1;
 
     /*Size of the top level node*/
-    float sideLength = 10000;
+    float sideLength = 100000;
 
     /*Best position for the center of the octree, starts at <0, 0, 0>, but changes each cycle*/
     glm::vec3 idealTreeCenterLocation = glm::vec3(0, 0, 0); /*Placed to divide bodies evenly between its subnodes*/

@@ -123,10 +123,10 @@ void Body::shiftBuffers() {
 
 void Body::draw() {
 
-    //View::setColor(color);
-    //View::drawCircle(position, radius);
     GLToolkit::setColor(color);
-    GLToolkit::drawSphere(position, radius);
+
+    GLToolkit::drawCircle(position, radius);
+    //GLToolkit::drawSphere(position, radius);
 
 }
 

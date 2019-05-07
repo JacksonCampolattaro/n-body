@@ -139,7 +139,7 @@ void addBodies() {
 
     //bigDemo();
     //density = 30; cubicGrid(glm::vec3(-5, -5, -100), glm::vec3(0, 0, -25), glm::vec3(2, 2, 2), 10, 5000);
-    cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -25), glm::vec3(20, 20, 5), 10, 5000);
+    cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -15), glm::vec3(20, 20, 10), 10, 5000);
     //threeBodyDemo();
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
@@ -148,9 +148,10 @@ void addBodies() {
 
 int main(int argc, char **argv) {
 
-    // Creating the physics world
+    // Creating the default physics world
     physics = new PhysicsContext();
     physics->setT(0.01)->setG(0.02)->setPower(2);
+    physics->enableForceSoftening()->setMinimumT(.0001);
 
     // Adding bodies to the simulation
     addBodies();
@@ -171,10 +172,11 @@ int main(int argc, char **argv) {
 
     // Creating the model
     model = new Model(physics, solver);
-    model->preCalculate(bodies);
+    model->preCalculate(bodies); // Enables leapfrog integration
 
     // Incrementing the simulation
-    for (int i = 0; i < 100000000; ++i) {
+    int frameLimit = 100000;
+    for (int i = 0; i < frameLimit; ++i) {
 
         view->draw();
         model->increment(bodies);

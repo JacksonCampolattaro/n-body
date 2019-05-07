@@ -78,6 +78,15 @@ public:
      */
     void applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass);
 
+    /**
+     * Applies the gravity on the first body from the second based on a specific time interval
+     * @param subject the body being affected
+     * @param actorPosition the position of the body creating the force
+     * @param actorPosition the mass of the body creating the force
+     * @param time the period the force is calculated over
+     */
+    void applyGravityBetweenBodies(Body *subject, glm::vec3 actorPosition, float actorMass, float time);
+
 
     // Helper methods used when setting up the simulation
 
