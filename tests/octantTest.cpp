@@ -5,7 +5,6 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include "../src/n_body/model/calculation/BarnesHut/Octant.h"
-#include "../src/n_body/Tracker.h"
 
 
 class octantTest : public ::testing::Test {
@@ -13,7 +12,6 @@ protected:
 
     virtual void SetUp() {
         theOctant = new Octant(glm::vec3(0, 0, 0), 16);
-        Tracker::instance();
     }
 
     virtual void TearDown() {

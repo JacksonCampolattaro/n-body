@@ -10,9 +10,14 @@
 #include "model/Model.h"
 
 #include <glm/glm.hpp>
+#include <iostream>
+#include <iomanip>
 
 /*#include <gtest/gtest.h>
 #include <omp.h>*/
+
+using std::cout;
+using std::endl;
 
 
 // Useful constants
@@ -150,8 +155,8 @@ int main(int argc, char **argv) {
 
     // Creating the default physics world
     physics = new PhysicsContext();
-    physics->setT(0.01)->setG(0.02)->setPower(2);
-    physics->enableForceSoftening()->setMinimumT(.0001);
+    physics->setT(0.001)->setG(0.02)->setPower(2);
+    physics->enableForceSoftening()->setMinimumT(physics->getT() / 100);
 
     // Adding bodies to the simulation
     addBodies();
@@ -174,12 +179,37 @@ int main(int argc, char **argv) {
     model = new Model(physics, solver);
     model->preCalculate(bodies); // Enables leapfrog integration
 
-    // Incrementing the simulation
-    int frameLimit = 100000;
-    for (int i = 0; i < frameLimit; ++i) {
 
+    // Tracking
+    clock_t startTime, endTime;
+    double drawTime, calcTime;
+    cout << std::fixed << std::setprecision(3); // << std::setfill('0') << std::setw(2);
+
+    // Incrementing the simulation
+    for (int i = 0; i < 10000; ++i) {
+
+        startTime = clock();
         view->draw();
+        endTime = clock();
+        drawTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+
+        startTime = clock();
         model->increment(bodies);
+        endTime = clock();
+        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+
+
+        /*cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
+        cout << "Calculation: " << calcTime << "s (" << 1 / calcTime << "hz)" << endl;
+        cout << "Total:       " << (drawTime + calcTime) << "s (" << 1 / (drawTime + calcTime) << "hz)" << endl;*/
+        for (int k = 0; k < drawTime * 100; ++k) {
+            cout << "o";
+        }
+        for (int j = 0; j < calcTime * 100; ++j) {
+            cout << "+";
+        }
+        cout << endl;
+
     }
 
 }

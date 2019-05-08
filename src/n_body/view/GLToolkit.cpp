@@ -33,11 +33,9 @@ void GLToolkit::drawCircle(glm::vec3 position, float radius) {
 
 void GLToolkit::drawSphere(glm::vec3 position, float radius) {
 
-    // TODO I'm sure there's a library for this
-
     GLUquadric *quad = gluNewQuadric();
     glTranslatef(position.x, position.y, position.z);
-    gluSphere(quad, radius, 20, 10);
+    gluSphere(quad, radius, 50, 10);
     glTranslatef(-position.x, -position.y, -position.z);
 
 }
