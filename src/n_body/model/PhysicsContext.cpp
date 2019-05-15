@@ -84,13 +84,14 @@ void PhysicsContext::applyGravityBetweenBodies(Body *subject, glm::vec3 actorPos
     glm::vec3 acceleration = force / subject->getMass();
 
     // Applying the acceleration to the Body (v = at)
-    int accelerationThreshold = 100;
+    // TODO force smoothing isn't actually more accurate without also letting the body move between kicks.
+    /*int accelerationThreshold = 100;
     if (accelerationThreshold < length(acceleration) && minimumT < time) {
         applyGravityBetweenBodies(subject, actorPosition, actorMass, time / 2);
         applyGravityBetweenBodies(subject, actorPosition, actorMass, time / 2);
     } else {
-        subject->kick(acceleration * time);
-    }
+    }*/
+    subject->kick(acceleration * time);
 }
 
 void PhysicsContext::orbit(Body *sunBody, Body *satelliteBody) {

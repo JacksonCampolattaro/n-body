@@ -125,8 +125,8 @@ void Body::draw() {
 
     GLToolkit::setColor(color);
 
-    GLToolkit::drawCircle(position, radius);
-    //GLToolkit::drawSphere(position, radius);
+    //GLToolkit::drawCircle(position, radius);
+    GLToolkit::drawSphere(position, radius);
 
 }
 
