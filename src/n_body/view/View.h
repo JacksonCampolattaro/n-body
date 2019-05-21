@@ -32,6 +32,12 @@ public:
     View *setDimensions(glm::ivec2 dimensions);
 
     /**
+     * Getter for the shape of the window
+     * @return Dimensions of the window as an integer vector
+     */
+    const glm::ivec2 &getDimensions() const;
+
+    /**
      * Sets the title of the window
      * @param title The new title
      * @return This viewport, for use in chaining named parameters.
