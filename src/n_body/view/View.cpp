@@ -52,8 +52,13 @@ View::View() {
 View *View::setDimensions(glm::ivec2 dimensions) {
 
     this->dimensions = dimensions;
+    glfwSetWindowSize(window, dimensions.x, dimensions.y);
 
     return this;
+}
+
+const glm::ivec2 &View::getDimensions() const {
+    return dimensions;
 }
 
 View *View::setTitle(const char *title) {
