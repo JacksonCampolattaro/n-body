@@ -9,14 +9,12 @@
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "model/Model.h"
 #include "view/Recorder.h"
+#include "Controller.h"
 
 #include <glm/glm.hpp>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-
-/*#include <gtest/gtest.h>
-#include <omp.h>*/
 
 using std::cout;
 using std::endl;
@@ -41,6 +39,9 @@ View *view;
 Model *model;
 PhysicsContext *physics;
 std::vector<Body *> bodies;
+
+
+// Tools
 
 void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3 velocity = glm::vec3(0.0f, 0.0f, -100.0f),
                glm::vec3 size = glm::vec3(20, 20, 20), float spacing = 10.0f, float mass = 10000.0f) {
@@ -83,6 +84,7 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
     }
 }
 
+// Example configurations
 
 void blender() {
 
@@ -107,7 +109,6 @@ void blender() {
     cubicGrid(cornerPosition, velocity, size, spacing, mass);
 }
 
-
 void bigDemo() {
 
     physics->setT(0.001)->setG(0.01)->setPower(2);
@@ -127,7 +128,6 @@ void bigDemo() {
     cubicGrid(cornerPosition, velocity, size, spacing, mass);
 }
 
-
 void threeBodyDemo() {
     // Three Body Model
 
@@ -144,6 +144,8 @@ void threeBodyDemo() {
     bodies.push_back(yellowBody);
 }
 
+
+// Setup and run
 
 void addBodies() {
 
@@ -196,82 +198,16 @@ int main(int argc, char **argv) {
 
     // Creating the view
     view = new View();
-    view->setTitle("Jackson Campolattaro's n-body Simulator")->setDimensions(glm::ivec2(3000, 1000));
+    view->setTitle("Jackson Campolattaro's n-body Simulator")->setDimensions(glm::ivec2(1920, 1080));
 
     // Creating the model
     model = new Model(physics, solver);
-    model->preCalculate(bodies); // Enables leapfrog integration
-
-
-    // Tracking
-    clock_t startTime, endTime;
-    double drawTime, calcTime;
-    cout << std::fixed << std::setprecision(3); // << std::setfill('0') << std::setw(2);
 
     // Creating the recorder
-    Recorder recorder = Recorder(view, "/home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4");
+    auto recorder = new Recorder(view, "/home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4");
 
-    // Incrementing the simulation
-    int maxFrames = 36000;
-    int cycle = 0;
-    while (0 == maxFrames || maxFrames > cycle) {
-        cycle++;
-
-
-
-        startTime = clock();
-
-        view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the renderer
-        recorder.renderFrame();
-
-        endTime = clock();
-        drawTime = double(endTime - startTime) / CLOCKS_PER_SEC;
-
-
-
-        startTime = clock();
-
-        model->increment(bodies);
-
-        endTime = clock();
-        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
-
-        cout << endl;
-        cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
-        cout << "Calculation: " << calcTime << "s (" << 1 / calcTime << "hz)" << endl;
-        cout << "Total:       " << (drawTime + calcTime) << "s (" << 1 / (drawTime + calcTime) << "hz)" << endl;
-        for (int k = 0; k < drawTime * 100; ++k) {
-            cout << "o";
-        }
-        for (int j = 0; j < calcTime * 100; ++j) {
-            cout << "+";
-        }
-        cout << endl;
-
-
-        /*// FIXME This isn't actually being done in parallel!
-        startTime = clock();
-        std::vector<Drawable *> drawables = *(std::vector<Drawable *> *) &bodies;
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            {
-                // A copy of the list of bodies is passed to the renderer
-                output->draw(drawables);
-            }
-            #pragma omp section
-            {
-                model->increment(bodies);
-            }
-        }
-
-        endTime = clock();
-        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
-        cout << calcTime << endl;*/
-
-
-    }
-
-    //recorder.completeVideo();
+    // Launching the program
+    auto controller = Controller(model, view, bodies, recorder);
+    controller.run();
 
 }
