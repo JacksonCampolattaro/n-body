@@ -116,8 +116,6 @@ void View::draw() {
         exit(EXIT_SUCCESS);
     }
 
-    // Otherwise, perform standard draw operations
-
     // Sets the background to black
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
