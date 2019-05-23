@@ -10,11 +10,13 @@
 #include "model/Model.h"
 #include "view/Recorder.h"
 #include "Controller.h"
+#include "Launcher/Launcher.h"
 
 #include <glm/glm.hpp>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <gtkmm/application.h>
 
 using std::cout;
 using std::endl;
@@ -184,7 +186,12 @@ void addBodies() {
 
 int main(int argc, char **argv) {
 
-    // Creating the default physics world
+    auto application = Gtk::Application::create(argc, argv, "org.gtkmm.n_body");
+    Launcher launcher;
+    application->run(launcher);
+
+/*
+    // Creating the default physicsContext world
     physics = new PhysicsContext();
     physics->setT(0.01)->setG(0.02)->setPower(2);
 
@@ -208,6 +215,6 @@ int main(int argc, char **argv) {
 
     // Launching the program
     auto controller = Controller(model, view, bodies, recorder);
-    controller.run();
+    controller.run();*/
 
 }

@@ -29,10 +29,10 @@ public:
 
 private:
 
-    /*Contains constants and equations used for physics calculations*/
+    /*Contains constants and equations used for physicsContext calculations*/
     PhysicsContext *physics;
 
-    /*Algorithms used to perform physics calculations*/
+    /*Algorithms used to perform physicsContext calculations*/
     Solver *solver;
 
 };
