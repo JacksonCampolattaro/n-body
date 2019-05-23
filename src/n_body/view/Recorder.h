@@ -7,6 +7,7 @@
 
 
 #include "View.h"
+#include <string>
 
 class Recorder {
 

@@ -6,7 +6,7 @@
 #define N_BODY_SOLVER_H
 
 #include "../Body.h" // The Solver contains bodies
-#include "../PhysicsContext.h" // The solver affects the bodies according to the physics context it's given
+#include "../PhysicsContext.h" // The solver affects the bodies according to the physicsContext context it's given
 
 #include <vector> // Used to handle the list of bodies in the Simulation
 

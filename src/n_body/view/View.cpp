@@ -113,7 +113,6 @@ void View::draw() {
 
         glfwDestroyWindow(window);
         glfwTerminate();
-        exit(EXIT_SUCCESS);
     }
 
     // Sets the background to black
