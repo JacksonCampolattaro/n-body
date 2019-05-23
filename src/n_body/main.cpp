@@ -8,11 +8,19 @@
 #include "model/calculation/Naive/NaiveSolver.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "model/Model.h"
+#include "view/Observer.h"
+#include "view/ViewPort.h"
 
 #include <glm/glm.hpp>
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
 
 /*#include <gtest/gtest.h>
 #include <omp.h>*/
+
+using std::cout;
+using std::endl;
 
 
 // Useful constants
@@ -20,6 +28,7 @@
 const glm::vec3 white = glm::vec3(1, 1, 1);
 const glm::vec3 yellow = glm::vec3(1, 1, 0);
 const glm::vec3 red = glm::vec3(1, 0, 0);
+const glm::vec3 orange = glm::vec3(1, 0.5, 0);
 const glm::vec3 green = glm::vec3(0, 1, 0);
 const glm::vec3 blue = glm::vec3(0, 0, 1);
 const glm::vec3 teal = glm::vec3(0, 1, 1);
@@ -30,6 +39,7 @@ float density = 40;
 
 // Objects used for the simulation
 View *view;
+Observer *output;
 Model *model;
 PhysicsContext *physics;
 std::vector<Body *> bodies;
@@ -76,6 +86,30 @@ void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3
 }
 
 
+void blender() {
+
+    physics->setT(0.005)->setG(0.01)->setPower(2);
+
+    // Massive fixed mass
+    auto superHeavy = new Body(glm::vec3(-60, 0, -500));
+    superHeavy->setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(glm::vec3(0, -90, 0));
+    bodies.push_back(superHeavy);
+
+    auto superHeavy2 = new Body(glm::vec3(60, 0, -500));
+    superHeavy2->setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(glm::vec3(0, 90, 0));
+    bodies.push_back(superHeavy2);
+
+    // Cubic Grid
+    glm::vec3 cornerPosition(-50, -100, -450);
+    glm::vec3 velocity(60.0f, 20.0f, 0.0f);
+    glm::vec3 size(6, 6, 80);
+    float spacing = 10.0f;
+    float mass = 5000.0f;
+
+    cubicGrid(cornerPosition, velocity, size, spacing, mass);
+}
+
+
 void bigDemo() {
 
     physics->setT(0.005)->setG(0.01)->setPower(2);
@@ -88,7 +122,7 @@ void bigDemo() {
     // Cubic Grid
     glm::vec3 cornerPosition(-50, -100, -450);
     glm::vec3 velocity(60.0f, 20.0f, 0.0f);
-    glm::vec3 size(6, 6, 40);
+    glm::vec3 size(6, 6, 80);
     float spacing = 10.0f;
     float mass = 5000.0f;
 
@@ -138,9 +172,11 @@ void addBodies() {
     addBody(moon);*/
 
     //bigDemo();
-    //density = 30; cubicGrid(glm::vec3(-5, -5, -100), glm::vec3(0, 0, -25), glm::vec3(2, 2, 2), 10, 5000);
-    cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -15), glm::vec3(20, 20, 10), 10, 5000);
+    blender();
     //threeBodyDemo();
+
+    //density = 30; cubicGrid(glm::vec3(-5, -5, -100), glm::vec3(0, 0, -25), glm::vec3(2, 2, 2), 10, 5000);
+    //cubicGrid(glm::vec3(-95, -95, -100), glm::vec3(0, 0, -15), glm::vec3(20, 20, 10), 10, 5000);
 
     //cubicGrid(glm::vec3(-50, -50, -500), glm::vec3(100, 0, 0), glm::vec3(10, 10, 10));
     //cubicGrid(glm::vec3(-50, 50, -500), glm::vec3(-100, 0, 0), glm::vec3(10, 10, 10));
@@ -150,8 +186,8 @@ int main(int argc, char **argv) {
 
     // Creating the default physics world
     physics = new PhysicsContext();
-    physics->setT(0.01)->setG(0.02)->setPower(2);
-    physics->enableForceSoftening()->setMinimumT(.0001);
+    physics->setT(0.005)->setG(0.02)->setPower(2);
+    physics->enableForceSoftening()->setMinimumT(physics->getT() / 100);
 
     // Adding bodies to the simulation
     addBodies();
@@ -162,24 +198,85 @@ int main(int argc, char **argv) {
     solver->setTheta(0.8);
 
     // Creating the view
-    view = new View();
-    view->setTitle("Jackson Campolattaro's n-body Simulator");
+    //view = new View();
+    //view->setTitle("Jackson Campolattaro's n-body Simulator");
+    output = new ViewPort();
+    output->setTitle("n_body")->setDimensions(glm::ivec2(3440, 1440));
 
-    // Adding bodies to the viewport
+    /*// Adding bodies to the viewport
     for (Body *b : bodies) {
-        view->registerDrawable(b);
-    }
+        //view->registerDrawable(b);
+    }*/
 
     // Creating the model
     model = new Model(physics, solver);
     model->preCalculate(bodies); // Enables leapfrog integration
 
-    // Incrementing the simulation
-    int frameLimit = 100000;
-    for (int i = 0; i < frameLimit; ++i) {
 
-        view->draw();
+    // Tracking
+    clock_t startTime, endTime;
+    double drawTime, calcTime;
+    cout << std::fixed << std::setprecision(3); // << std::setfill('0') << std::setw(2);
+
+    // Recording
+    const char* cmd = "ffmpeg -r 30 -f rawvideo -pix_fmt rgba -s 3440x1440 -i - "
+                      "-threads 0 -preset fast -y -pix_fmt yuv420p -crf 19 -vf vflip /home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4";
+    FILE *ffmpeg = popen(cmd, "w");
+
+    // Incrementing the simulation
+    for (int i = 0; i < 4000; ++i) {
+
+        startTime = clock();
+        output->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the renderer
+        endTime = clock();
+        drawTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+
+        startTime = clock();
         model->increment(bodies);
+        endTime = clock();
+        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+
+        cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
+        cout << "Calculation: " << calcTime << "s (" << 1 / calcTime << "hz)" << endl;
+        cout << "Total:       " << (drawTime + calcTime) << "s (" << 1 / (drawTime + calcTime) << "hz)" << endl;
+        for (int k = 0; k < drawTime * 100; ++k) {
+            cout << "o";
+        }
+        for (int j = 0; j < calcTime * 100; ++j) {
+            cout << "+";
+        }
+        cout << endl;
+
+
+        /*// FIXME This isn't actually being done in parallel!
+        startTime = clock();
+        std::vector<Drawable *> drawables = *(std::vector<Drawable *> *) &bodies;
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            {
+                // A copy of the list of bodies is passed to the renderer
+                output->draw(drawables);
+            }
+            #pragma omp section
+            {
+                model->increment(bodies);
+            }
+        }
+
+        endTime = clock();
+        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+        cout << calcTime << endl;*/
+
+
+        // TODO Rendering
+        int *buffer = new int[3440 * 1440];
+        glReadPixels(0, 0, 3440, 1440, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        fwrite(buffer, sizeof(int)*3440*1440, 1, ffmpeg);
+        delete buffer;
+
     }
+
+    pclose(ffmpeg);
 
 }
