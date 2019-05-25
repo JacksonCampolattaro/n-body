@@ -2,9 +2,9 @@
 // Created by jackcamp on 5/22/19.
 //
 
-#include "ViewportSettingsMenu.h"
+#include "ViewSettingsMenu.h"
 
-ViewportSettingsMenu::ViewportSettingsMenu() {
+ViewSettingsMenu::ViewSettingsMenu() {
 
     // The main box contains a vertical list of settings to change
     set_orientation(Gtk::ORIENTATION_VERTICAL);
@@ -14,7 +14,7 @@ ViewportSettingsMenu::ViewportSettingsMenu() {
 
     // Label for the width setting
     width_label.set_text("Width:");
-    width_label.set_padding(10, 0);
+    width_label.set_margin_right(10);
     resolutionBox.pack_start(width_label, Gtk::PACK_SHRINK);
 
     // Width spinButton
@@ -26,7 +26,8 @@ ViewportSettingsMenu::ViewportSettingsMenu() {
 
     // Label for the height setting
     height_label.set_text("Height:");
-    height_label.set_padding(10, 0);
+    height_label.set_margin_right(10);
+    height_label.set_margin_left(20);
     resolutionBox.pack_start(height_label, Gtk::PACK_SHRINK);
 
     // Height spinButton
@@ -39,24 +40,18 @@ ViewportSettingsMenu::ViewportSettingsMenu() {
     // Adding the box containing the spinButtons to the main box
     pack_start(resolutionBox, Gtk::PACK_SHRINK);
 
-    // TODO There might be more settings I should add as options for the view
-
     // Showing all the widgets
-    windowHeight_spinButton.show();
-    windowWidth_spinButton.show();
-    height_label.show();
-    width_label.show();
-    resolutionBox.show();
+    show_all_children();
 
 
 
 }
 
-ViewportSettingsMenu::~ViewportSettingsMenu() {
+ViewSettingsMenu::~ViewSettingsMenu() {
 
 }
 
-View *ViewportSettingsMenu::getView() {
+View *ViewSettingsMenu::getView() {
 
     auto dimensions = glm::ivec2(windowWidth_spinButton.get_value_as_int(), windowHeight_spinButton.get_value_as_int());
     const char *title = "n_body ViewPort";

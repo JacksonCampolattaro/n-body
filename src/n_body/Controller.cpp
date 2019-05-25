@@ -50,7 +50,7 @@ void Controller::run() {
     cout << std::fixed << std::setprecision(3);
 
     // Incrementing the simulation
-    int maxFrames = 36000;
+    int maxFrames = 100000;
     int cycle = 0;
     while (0 == maxFrames || maxFrames > cycle) {
         cycle++;
@@ -72,11 +72,12 @@ void Controller::run() {
         endTime = clock();
         calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
 
+
         cout << endl;
-        cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
+        /*cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
         cout << "Rendering:     " << renderTime << "s (" << 1 / renderTime << "hz)" << endl;
         cout << "Calculation: " << calcTime << "s (" << 1 / calcTime << "hz)" << endl;
-        cout << "Total:       " << (drawTime + calcTime + renderTime) << "s (" << 1 / (drawTime + calcTime + renderTime) << "hz)" << endl;
+        cout << "Total:       " << (drawTime + calcTime + renderTime) << "s (" << 1 / (drawTime + calcTime + renderTime) << "hz)" << endl;*/
         for (int k = 0; k < drawTime * 100; ++k) {
             cout << "o";
         }

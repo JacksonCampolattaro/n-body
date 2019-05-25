@@ -11,7 +11,9 @@
 
 #include "../view/View.h"
 #include "../model/Model.h"
-#include "ViewportSettingsMenu.h"
+#include "ViewSettingsMenu.h"
+#include "RecorderSettingsMenu.h"
+#include "PhysicsSettingsMenu.h"
 
 
 class Launcher : public Gtk::Window {
@@ -26,7 +28,10 @@ protected:
     void on_start();
 
     Gtk::Box mainBox;
-    ViewportSettingsMenu viewPortSettings;
+
+    PhysicsSettingsMenu physicsSettings;
+    ViewSettingsMenu viewSettings;
+    RecorderSettingsMenu recorderSettings;
     Gtk::Button start_button;
 
 
