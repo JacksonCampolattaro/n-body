@@ -17,24 +17,25 @@ Launcher::Launcher() {
     set_border_width(10);
 
     // Window starts with a default size
-    set_default_size(300, 200);
+    ///set_default_size(600, 300);
+
 
     // Configuraing the main box that partitions the interface
     mainBox.set_orientation(Gtk::ORIENTATION_VERTICAL);
     add(mainBox);
 
-    // Creating the button, linking it to the on_start function, and adding it to the window
+    // Creating the run_button, linking it to the on_start function, and adding it to the window
     start_button = Gtk::Button("Start");
     start_button.signal_clicked().connect(sigc::mem_fun(*this, &Launcher::on_start));
 
     // Adding items to the main box
-    mainBox.pack_start(viewPortSettings, false, false);
+    mainBox.pack_start(physicsSettings, Gtk::PACK_SHRINK);
+    mainBox.pack_start(viewSettings, Gtk::PACK_SHRINK);
+    mainBox.pack_start(recorderSettings, Gtk::PACK_SHRINK);
     mainBox.pack_start(start_button);
 
     // Showing everything
-    start_button.show();
-    viewPortSettings.show();
-    mainBox.show();
+    show_all_children();
 }
 
 Launcher::~Launcher() {
@@ -62,11 +63,12 @@ void Launcher::on_start() {
     model = new Model(physicsContext, solver);
 
     // Creating the view
-    view = viewPortSettings.getView();
-    //view->setTitle("Jackson Campolattaro's n-body Simulator")->setDimensions(glm::ivec2(1920, 1080));
+    view = viewSettings.getView();
+
 
     // Creating the recorder
-    auto recorder = new Recorder(view, "/home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4");
+    //auto recorder = new Recorder(view, "/home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4");
+    auto recorder = recorderSettings.getRecorder(view);
 
     // Launching the program
     auto controller = Controller(model, view, bodies, recorder);
