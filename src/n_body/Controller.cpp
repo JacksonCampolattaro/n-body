@@ -2,6 +2,7 @@
 // Created by jackcamp on 5/21/19.
 //
 
+#include <thread>
 #include "Controller.h"
 
 
@@ -44,73 +45,26 @@ void Controller::run() {
     // Preparation
     model->preCalculate(bodies); // Enables leapfrog integration
 
-    // Tracking
-    clock_t startTime, endTime;
-    double drawTime, renderTime, calcTime;
-    cout << std::fixed << std::setprecision(3);
-
     // Incrementing the simulation
     int maxFrames = 100000;
     int cycle = 0;
-    bool open = true;
-    while ((0 == maxFrames || maxFrames > cycle) && open) {
+    bool shouldContinue = true;
+    while ((0 == maxFrames || maxFrames > cycle) && shouldContinue) {
         cycle++;
 
-        startTime = clock();
-        open = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
-        endTime = clock();
-        drawTime = double(endTime - startTime) / CLOCKS_PER_SEC;
+        // Starting the process of calculating forces in a separate thread
+        std::thread t(&Model::increment, model, bodies);
 
-        startTime = clock();
-        if (nullptr != recorder) { // Only render if a recorder is attached
+        // The list of bodies is drawn, based on their previous position
+        shouldContinue = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
+
+        // Record the new drawing if a recorder is attached
+        if (nullptr != recorder) {
             recorder->renderFrame(); // This adds whatever is currently on the screen to the video
         }
-        endTime = clock();
-        renderTime = double(endTime - startTime) / CLOCKS_PER_SEC;
 
-        startTime = clock();
-        model->increment(bodies); // The Model calculates and updates the positions of all bodies
-        endTime = clock();
-        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
-
-
-        cout << endl;
-        /*cout << "Drawing:     " << drawTime << "s (" << 1 / drawTime << "hz)" << endl;
-        cout << "Rendering:     " << renderTime << "s (" << 1 / renderTime << "hz)" << endl;
-        cout << "Calculation: " << calcTime << "s (" << 1 / calcTime << "hz)" << endl;
-        cout << "Total:       " << (drawTime + calcTime + renderTime) << "s (" << 1 / (drawTime + calcTime + renderTime) << "hz)" << endl;*/
-        for (int k = 0; k < drawTime * 100; ++k) {
-            cout << "o";
-        }
-        for (int k = 0; k < renderTime * 100; ++k) {
-            cout << "0";
-        }
-        for (int j = 0; j < calcTime * 100; ++j) {
-            cout << "+";
-        }
-        cout << endl;
-
-
-        /*// FIXME This isn't actually being done in parallel!
-        startTime = clock();
-        std::vector<Drawable *> drawables = *(std::vector<Drawable *> *) &bodies;
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            {
-                // A copy of the list of bodies is passed to the renderer
-                output->draw(drawables);
-            }
-            #pragma omp section
-            {
-                model->increment(bodies);
-            }
-        }
-
-        endTime = clock();
-        calcTime = double(endTime - startTime) / CLOCKS_PER_SEC;
-        cout << calcTime << endl;*/
-
+        // Wait for calculation to stop before starting over
+        t.join();
 
     }
 
