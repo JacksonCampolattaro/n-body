@@ -22,6 +22,19 @@ public:
     explicit View();
 
 
+    // For external use
+
+    /*Draws a list of drawables to the screen, then updates the buffer*/
+    //void draw(std::vector<Drawable *> drawables);
+
+    /**
+     * Draws a list of drawables to the window
+     * @param drawables the items to draw
+     * @return false if the window is closed
+     */
+    bool draw(std::vector<Drawable *> drawables);
+
+
     // Setters (with support for chaining)
 
     /**
@@ -45,21 +58,6 @@ public:
     View *setTitle(const char *title);
 
 
-    // Setup tools
-
-    /**
-     * Adds a new item to the render to be drawn each cycle
-     * @param newDrawable The new drawable to be added
-     */
-    View *registerDrawable(Drawable *newDrawable);
-
-    /**
-     * Adds a list of items to the render to be drawn each cycle
-     * @param newDrawables The new drawable list to be added
-     */
-    View *registerDrawables(std::vector<Drawable *> newDrawables);
-
-
     // GLFW boilerplate
 
     /**
@@ -76,15 +74,6 @@ public:
      * @param height The new height of the window in pixels
      */
     static void handleResize(GLFWwindow *window, int width, int height);
-
-
-    // Helper methods
-
-    /*Draws all the drawables to the screen, then updates the buffer*/
-    void draw();
-
-    /*Draws a list of drawables to the screen, then updates the buffer*/
-    void draw(std::vector<Drawable *> drawables);
 
 
 private:

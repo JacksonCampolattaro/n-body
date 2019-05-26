@@ -2,8 +2,8 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#ifndef N_BODY_RECORDER_CREATOR_H
-#define N_BODY_RECORDER_CREATOR_H
+#ifndef N_BODY_RECORDERCREATOR_H
+#define N_BODY_RECORDERCREATOR_H
 
 
 #include <gtkmm/box.h>
@@ -13,11 +13,11 @@
 #include <gtkmm/frame.h>
 #include "../../../view/Recorder.h"
 
-class recorder_creator : public Gtk::Frame {
+class RecorderCreator : public Gtk::Frame {
 
 public:
 
-    recorder_creator();
+    RecorderCreator();
 
 
     Recorder *createRecorder(View *view);
@@ -51,4 +51,4 @@ protected:
 };
 
 
-#endif //N_BODY_RECORDER_CREATOR_H
+#endif //N_BODY_RECORDERCREATOR_H

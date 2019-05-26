@@ -2,12 +2,17 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#include "nbody_window.h"
-#include "../Launcher/Preset.h"
+#include "Window.h"
+#include "../Scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "../Controller.h"
 
-nbody_window::nbody_window() {
+Window::Window() {
+
+
+    Preset myPreset = Preset();
+    myPreset.blender();
+    bodies = myPreset.getBodies();
 
     add(mainBox);
 
@@ -15,12 +20,11 @@ nbody_window::nbody_window() {
     notebook.append_page(physicsPage, "Physics");
     notebook.append_page(viewPage, "View");
     viewPage.pack_start(recorderCreator, Gtk::PACK_SHRINK);
-
     mainBox.pack_start(notebook);
 
 
     run_button.set_halign(Gtk::ALIGN_END);
-    run_button.signal_clicked().connect(sigc::mem_fun(*this, &nbody_window::on_run_clicked));
+    run_button.signal_clicked().connect(sigc::mem_fun(*this, &Window::on_run_clicked));
     actionBar.pack_end(run_button);
     actionBar.set_size_request(200, 40);
     mainBox.pack_start(actionBar, Gtk::PACK_SHRINK);
@@ -28,7 +32,7 @@ nbody_window::nbody_window() {
     show_all_children();
 }
 
-void nbody_window::on_run_clicked() {
+void Window::on_run_clicked() {
 
     // Creating the default physics context
     auto physicsContext = new PhysicsContext();
@@ -37,8 +41,8 @@ void nbody_window::on_run_clicked() {
     // Loading a world from my collection of presets
     Preset myPreset = Preset();
     myPreset.blender();
+    bodies = myPreset.getBodies();
     physicsContext = myPreset.getPhysicsContext();
-    auto bodies = myPreset.getBodies();
 
     physicsContext = physicsPage.createPhysicsContext();
 
@@ -60,4 +64,7 @@ void nbody_window::on_run_clicked() {
     // Launching the program
     auto controller = Controller(model, view, bodies, recorder);
     controller.run();
+
+
+
 }

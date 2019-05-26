@@ -2,9 +2,9 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#include "physicsContext_creator.h"
+#include "PhysicsContextCreator.h"
 
-physicsContext_creator::physicsContext_creator() {
+PhysicsContextCreator::PhysicsContextCreator() {
 
     // Setting up the main box
 
@@ -101,7 +101,7 @@ physicsContext_creator::physicsContext_creator() {
 
 }
 
-PhysicsContext *physicsContext_creator::createPhysicsContext() {
+PhysicsContext *PhysicsContextCreator::createPhysicsContext() {
 
     auto physicsContext = new PhysicsContext;
     physicsContext->setG(G_spinButton.get_value())->setPower(P_spinButton.get_value())->setT(T_spinButton.get_value());

@@ -52,11 +52,12 @@ void Controller::run() {
     // Incrementing the simulation
     int maxFrames = 100000;
     int cycle = 0;
-    while (0 == maxFrames || maxFrames > cycle) {
+    bool open = true;
+    while ((0 == maxFrames || maxFrames > cycle) && open) {
         cycle++;
 
         startTime = clock();
-        view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
+        open = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
         endTime = clock();
         drawTime = double(endTime - startTime) / CLOCKS_PER_SEC;
 

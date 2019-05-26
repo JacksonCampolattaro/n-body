@@ -2,8 +2,8 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#ifndef N_BODY_VIEW_CREATOR_H
-#define N_BODY_VIEW_CREATOR_H
+#ifndef N_BODY_VIEWCREATOR_H
+#define N_BODY_VIEWCREATOR_H
 
 
 #include <gtkmm/box.h>
@@ -13,11 +13,11 @@
 #include <gtkmm/spinbutton.h>
 #include "../../../view/View.h"
 
-class view_creator : public Gtk::Box {
+class ViewCreator : public Gtk::Box {
 
 public:
 
-    view_creator();
+    ViewCreator();
 
     View *createView();
 
@@ -41,4 +41,4 @@ protected:
 };
 
 
-#endif //N_BODY_VIEW_CREATOR_H
+#endif //N_BODY_VIEWCREATOR_H

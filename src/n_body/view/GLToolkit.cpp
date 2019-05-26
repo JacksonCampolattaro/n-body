@@ -2,8 +2,8 @@
 // Created by jackcamp on 4/11/19.
 //
 
-#include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/gl.h>
 #include "GLToolkit.h"
 
 void GLToolkit::setColor(glm::vec3 color) {
