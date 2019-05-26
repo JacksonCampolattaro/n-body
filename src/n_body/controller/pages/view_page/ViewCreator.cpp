@@ -2,9 +2,9 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#include "view_creator.h"
+#include "ViewCreator.h"
 
-view_creator::view_creator() {
+ViewCreator::ViewCreator() {
 
     // Setting up the main box
 
@@ -77,7 +77,7 @@ view_creator::view_creator() {
 
 }
 
-View *view_creator::createView() {
+View *ViewCreator::createView() {
 
     auto dimensions = glm::ivec2(windowWidth_spinButton.get_value_as_int(), windowHeight_spinButton.get_value_as_int());
     const char *title = "n_body ViewPort";

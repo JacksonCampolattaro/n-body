@@ -3,16 +3,11 @@
 //
 
 #include <gtkmm/application.h>
-#include "Launcher/Launcher.h"
-#include "Gtkmm/nbody_application.h"
+#include "controller/Application.h"
 
 int main(int argc, char **argv) {
 
-    /*auto application = Gtk::Application::create(argc, argv, "org.gtkmm.n_body");
-    Launcher launcher;
-    application->run(launcher);*/
-
-    auto application = new nbody_application();
+    auto application = new Application();
 
     return application->run(argc, argv);
 

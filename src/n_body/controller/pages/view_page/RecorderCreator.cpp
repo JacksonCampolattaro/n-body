@@ -2,9 +2,9 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#include "recorder_creator.h"
+#include "RecorderCreator.h"
 
-recorder_creator::recorder_creator() : Gtk::Frame("Recording") {
+RecorderCreator::RecorderCreator() : Gtk::Frame("Recording") {
 
     // Configuring the main box
 
@@ -32,7 +32,7 @@ recorder_creator::recorder_creator() : Gtk::Frame("Recording") {
 
     // Setting up the enable-recording switch
 
-    enableRecording_switch.property_active().signal_changed().connect(sigc::mem_fun(*this, &recorder_creator::on_toggleRecording));
+    enableRecording_switch.property_active().signal_changed().connect(sigc::mem_fun(*this, &RecorderCreator::on_toggleRecording));
     enableRecording_switch.set_halign(Gtk::ALIGN_END);
 
 
@@ -65,7 +65,7 @@ recorder_creator::recorder_creator() : Gtk::Frame("Recording") {
     show_all_children();
 }
 
-Recorder *recorder_creator::createRecorder(View *view) {
+Recorder *RecorderCreator::createRecorder(View *view) {
 
     if (enableRecording_switch.get_active()) {
 
@@ -76,7 +76,7 @@ Recorder *recorder_creator::createRecorder(View *view) {
     return nullptr;
 }
 
-void recorder_creator::on_toggleRecording() {
+void RecorderCreator::on_toggleRecording() {
 
     folderChooser_button.set_sensitive(enableRecording_switch.get_active());
 }

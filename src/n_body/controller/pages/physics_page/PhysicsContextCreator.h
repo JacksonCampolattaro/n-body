@@ -2,8 +2,8 @@
 // Created by jackcamp on 5/24/19.
 //
 
-#ifndef N_BODY_PHYSICSCONTEXT_CREATOR_H
-#define N_BODY_PHYSICSCONTEXT_CREATOR_H
+#ifndef N_BODY_PHYSICSCONTEXTCREATOR_H
+#define N_BODY_PHYSICSCONTEXTCREATOR_H
 
 
 #include <gtkmm/box.h>
@@ -13,11 +13,11 @@
 #include <gtkmm/scrolledwindow.h>
 #include "../../../model/PhysicsContext.h"
 
-class physicsContext_creator : public Gtk::Box {
+class PhysicsContextCreator : public Gtk::Box {
 
 public:
 
-    physicsContext_creator();
+    PhysicsContextCreator();
 
     PhysicsContext *createPhysicsContext();
 
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif //N_BODY_PHYSICSCONTEXT_CREATOR_H
+#endif //N_BODY_PHYSICSCONTEXTCREATOR_H
