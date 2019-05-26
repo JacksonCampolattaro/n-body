@@ -9,6 +9,7 @@
 View::View() {
 
     // TODO Boilerplate code that creates the window could be improved
+    glfwMakeContextCurrent(window);
 
     // Initializing GLFW
     if (!glfwInit()) {
@@ -118,6 +119,7 @@ void View::handleError(int error, const char *description) {
 void View::handleResize(GLFWwindow *window, int width, int height) {
 
     // TODO Must be reworked before enabling camera movement
+    glfwMakeContextCurrent(window);
 
     // Getting the aspect ratio of the window
     float ratio = width / (float) height;

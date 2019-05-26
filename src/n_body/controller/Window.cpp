@@ -2,6 +2,7 @@
 // Created by jackcamp on 5/24/19.
 //
 
+#include <thread>
 #include "Window.h"
 #include "../Scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
@@ -63,8 +64,7 @@ void Window::on_run_clicked() {
 
     // Launching the program
     auto controller = Controller(model, view, bodies, recorder);
+
     controller.run();
-
-
 
 }
