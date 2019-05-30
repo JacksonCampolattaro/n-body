@@ -68,21 +68,24 @@ PhysicsContextCreator::PhysicsContextCreator() {
     // Adding spinButtons
 
     G_spinButton.set_range(-10, 10);
-    G_spinButton.set_digits(3);
+    G_spinButton.set_digits(4);
     G_spinButton.set_increments(0.01, 0.1);
     G_spinButton.set_value(1);
+    G_spinButton.set_snap_to_ticks(false);
     G_box.pack_start(G_spinButton);
 
     P_spinButton.set_range(-10, 10);
-    P_spinButton.set_digits(1);
+    P_spinButton.set_digits(2);
     P_spinButton.set_increments(0.1, 1);
     P_spinButton.set_value(2);
+    G_spinButton.set_snap_to_ticks(false);
     P_box.pack_start(P_spinButton, Gtk::PACK_EXPAND_WIDGET);
 
     T_spinButton.set_range(0, 100);
     T_spinButton.set_digits(3);
     T_spinButton.set_increments(0.001, 0.01);
     T_spinButton.set_value(0.01);
+    G_spinButton.set_snap_to_ticks(false);
     T_box.pack_start(T_spinButton, Gtk::PACK_EXPAND_WIDGET);
 
 
