@@ -63,8 +63,12 @@ void Window::on_run_clicked() {
     auto recorder = recorderCreator.createRecorder(view);
 
     // Launching the program
-    auto controller = Controller(model, view, bodies, recorder);
+    auto controller = POCController(model, view, bodies, recorder);
 
     controller.run();
-
+/*
+    auto process = new ProcessManager(view, physicsContext, solver, bodies);
+    actionBar.pack_start(*process);
+    process->show();
+    process->run();*/
 }

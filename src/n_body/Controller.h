@@ -2,7 +2,7 @@
 // Created by jackcamp on 5/21/19.
 //
 
-#ifndef N_BODY_CONTROLLER_H
+#ifndef N_BODY_POCCONTROLLER_H
 #define N_BODY_CONTROLLER_H
 
 
@@ -18,11 +18,11 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-class Controller {
+class POCController {
 
 public:
 
-    Controller(Model *model, View *view, vector<Body *> bodies, Recorder *recorder = nullptr);
+    POCController(Model *model, View *view, vector<Body *> bodies, Recorder *recorder = nullptr);
 
     void run();
 
@@ -40,4 +40,4 @@ private:
 };
 
 
-#endif //N_BODY_CONTROLLER_H
+#endif //N_BODY_POCCONTROLLER_H

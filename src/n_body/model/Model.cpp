@@ -12,7 +12,6 @@ Model::Model(PhysicsContext *physics, Solver *solver) {
 
 void Model::preCalculate(std::vector<Body *> bodies) {
 
-    // TODO Test this
     physics->setT(physics->getT() / 2.0f);
     solver->solve(bodies, physics);
     physics->setT(physics->getT() * 2.0f);

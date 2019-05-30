@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(Model *model, View *view, vector<Body *> bodies, Recorder *recorder) {
+POCController::POCController(Model *model, View *view, vector<Body *> bodies, Recorder *recorder) {
 
     this->model = model;
     this->view = view;
@@ -40,13 +40,13 @@ Controller::Controller(Model *model, View *view, vector<Body *> bodies, Recorder
 
 }
 
-void Controller::run() {
+void POCController::run() {
 
     // Preparation
     model->preCalculate(bodies); // Enables leapfrog integration
 
     // Incrementing the simulation
-    int maxFrames = 100000;
+    int maxFrames = 0;
     int cycle = 0;
     bool shouldContinue = true;
     while ((0 == maxFrames || maxFrames > cycle) && shouldContinue) {
