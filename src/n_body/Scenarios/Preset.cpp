@@ -81,7 +81,7 @@ void Preset::bigDemo() {
     // Cubic Grid
     glm::vec3 cornerPosition(-50, -150, -400);
     glm::vec3 velocity(60.0f, 20.0f, 0.0f);
-    glm::vec3 size(10, 10, 90);
+    glm::vec3 size(10, 10, 20);
     float spacing = 10.0f;
     float mass = 5000.0f;
 

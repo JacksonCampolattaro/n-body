@@ -35,13 +35,13 @@ Window::Window() {
 
 void Window::on_run_clicked() {
 
-    // Creating the default physics context
+    // Creating the default physicsContext context
     auto physicsContext = new PhysicsContext();
     ///physicsContext->setT(0.01)->setG(0.02)->setPower(2);
 
     // Loading a world from my collection of presets
     Preset myPreset = Preset();
-    myPreset.blender();
+    myPreset.cubicGrid(glm::vec3(-45, -45, -100), glm::vec3(0, 0, -100), glm::vec3(10, 10, 10));
     bodies = myPreset.getBodies();
     physicsContext = myPreset.getPhysicsContext();
 

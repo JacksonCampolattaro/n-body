@@ -66,6 +66,14 @@ void POCController::run() {
         // Wait for calculation to stop before starting over
         t.join();
 
+        // Updating positions
+        #pragma omp parallel for
+        for (int b = 0; b < bodies.size(); ++b) {
+
+            bodies[b]->shiftBuffers();
+        }
+
+
     }
 
     if (nullptr != recorder) {

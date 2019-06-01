@@ -2,32 +2,56 @@
 // Created by jackcamp on 4/10/19.
 //
 
+#include <iostream>
 #include "Model.h"
+#include "refactoredCalculation/refactoredBarnesHut/refactoredBarnesHutSolver.h"
+#include "refactoredCalculation/refactoredNaive/refactoredNaiveSolver.h"
 
 Model::Model(PhysicsContext *physics, Solver *solver) {
 
-    this->physics = physics;
+    this->physicsContext = physics;
+
     this->solver = solver;
+
+    /*auto BHSolver = new refactoredBarnesHutSolver;
+    BHSolver->setTheta(0.9);
+    this->rSolver = BHSolver;*/
 }
 
 void Model::preCalculate(std::vector<Body *> bodies) {
 
-    physics->setT(physics->getT() / 2.0f);
-    solver->solve(bodies, physics);
-    physics->setT(physics->getT() * 2.0f);
+    physicsContext->setT(physicsContext->getT() / 2.0f);
+    solver->solve(bodies, physicsContext);
+    physicsContext->setT(physicsContext->getT() * 2.0f);
 
 }
 
 void Model::increment(std::vector<Body *> bodies) {
 
-    solver->solve(bodies, physics);
+    solver->solve(bodies, physicsContext);
 
-    // Updating velocities and positions
+    // Updating velocities
     #pragma omp parallel for
     for (int b = 0; b < bodies.size(); ++b) {
 
-        bodies[b]->drift(physics->getT());
-        bodies[b]->shiftBuffers();
+        bodies[b]->drift(physicsContext->getT());
     }
+
+    /*// Preparing the solver
+    rSolver->build(bodies, physicsContext);
+
+    // Acting on each body
+    #pragma omp parallel for
+    for (int b = 0; b < bodies.size(); ++b) {
+
+        rSolver->kick(bodies[b]);
+    }
+
+    // Moving each body
+    #pragma omp parallel for
+    for (int b = 0; b < bodies.size(); ++b) {
+
+        bodies[b]->drift(physicsContext->getT());
+    }*/
 
 }

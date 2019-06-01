@@ -8,6 +8,7 @@
 #include "PhysicsContext.h"
 #include "calculation/Solver.h"
 #include "Body.h"
+#include "refactoredCalculation/refactoredSolver.h"
 
 
 class Model {
@@ -30,10 +31,11 @@ public:
 private:
 
     /*Contains constants and equations used for physicsContext calculations*/
-    PhysicsContext *physics;
+    PhysicsContext *physicsContext;
 
     /*Algorithms used to perform physicsContext calculations*/
     Solver *solver;
+    refactoredSolver *rSolver;
 
 };
 
