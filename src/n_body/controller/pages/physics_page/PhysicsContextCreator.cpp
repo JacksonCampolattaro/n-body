@@ -70,7 +70,7 @@ PhysicsContextCreator::PhysicsContextCreator() {
     G_spinButton.set_range(-10, 10);
     G_spinButton.set_digits(4);
     G_spinButton.set_increments(0.01, 0.1);
-    G_spinButton.set_value(1);
+    G_spinButton.set_value(0.01);
     G_spinButton.set_snap_to_ticks(false);
     G_box.pack_start(G_spinButton);
 

@@ -26,7 +26,7 @@ private:
 
     Gtk::Label
             header_label = Gtk::Label("<b>Physics Properties</b>"),
-            description_label = Gtk::Label("<i>Set values here to affect how the world's physics will act.</i>");
+            description_label = Gtk::Label("<i>Set values here to affect how the world's physicsContext will act.</i>");
 
     Gtk::Box
             G_box = Gtk::Box(Gtk::ORIENTATION_HORIZONTAL),

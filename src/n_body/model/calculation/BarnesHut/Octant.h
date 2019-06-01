@@ -119,7 +119,7 @@ private:
     std::atomic_bool validAveragePosition = {true};
 
     /*Total number of bodies contained by the Octant or its children*/
-    int numBodies;
+    int numBodies = 0;
 
 
     // Helper methods

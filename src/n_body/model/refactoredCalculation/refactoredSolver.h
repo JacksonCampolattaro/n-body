@@ -19,9 +19,9 @@ public:
      * Prepares the solver to apply forces to bodies
      * In a Barnes-Hut solver, this entails building the tree
      * @param bodies The list of bodies involved in the calculation
-     * @param phys The physics context used by the simulation
+     * @param physicsContext The physics context used by the simulation
      */
-    virtual void build(std::vector<Body *> bodies, PhysicsContext *phys) = 0;
+    virtual void build(std::vector<Body *> bodies, PhysicsContext *physicsContext);
 
 
     /**
@@ -39,9 +39,6 @@ public:
     refactoredSolver *enableThreading(bool enabled = true);
 
 
-    refactoredSolver *setPhysicsContext(PhysicsContext *physicsContext);
-
-
 protected:
 
     /*Flag enabling multithreading of workloads*/
@@ -50,6 +47,10 @@ protected:
 
     /*PhysicsContext used by the simulation*/
     PhysicsContext *physicsContext = new PhysicsContext;
+
+
+    /*List of bodies capable of applying force to other bodies*/
+    std::vector<Body *> activeBodies;
 };
 
 
