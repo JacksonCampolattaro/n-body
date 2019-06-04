@@ -4,8 +4,6 @@
 
 #include <iostream>
 #include "Model.h"
-#include "refactoredCalculation/refactoredBarnesHut/refactoredBarnesHutSolver.h"
-#include "refactoredCalculation/refactoredNaive/refactoredNaiveSolver.h"
 
 Model::Model(PhysicsContext *physics, Solver *solver) {
 
