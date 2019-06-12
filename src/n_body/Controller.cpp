@@ -9,38 +9,16 @@
 using std::cout;
 using std::endl;
 
-POCController::POCController(Model *model, View *view, vector<Body *> bodies, Recorder *recorder) {
+Controller::Controller(Model *model, View *view, vector<Body *> bodies, Recorder *recorder) {
 
     this->model = model;
     this->view = view;
     this->bodies = bodies;
     this->recorder = recorder;
 
-    /*// Setting the rules of the universe
-    physicsContext = new PhysicsContext();
-    physicsContext->setT(0.01)->setG(0.02)->setPower(2);
-
-    // Setting the parameters of the solving algorithm
-    auto *solver = new BarnesHutSolver();
-    solver->enableThreading();
-    solver->setTheta(0.8);
-
-    // Preparing the view
-    view = new View();
-    view->setTitle("Jackson Campolattaro's n-body Simulator")->setDimensions(glm::ivec2(1920, 1080));
-
-    // Preparing the recorder
-    Recorder *recorder = new Recorder(view, "/home/jackcamp/CLionProjects/n_body/src/n_body/staging/output.mp4");
-
-    // Registering the bodies
-    this->bodies = bodies;
-
-    // Creating the model
-    model = new Model(physicsContext, solver);*/
-
 }
 
-void POCController::run() {
+void Controller::run() {
 
     // Preparation
     model->preCalculate(bodies); // Enables leapfrog integration
@@ -53,7 +31,7 @@ void POCController::run() {
         cycle++;
 
         // Starting the process of calculating forces in a separate thread
-        std::thread t(&Model::increment, model, bodies);
+        std::thread calcThread(&Model::increment, model, bodies);
 
         // The list of bodies is drawn, based on their previous position
         shouldContinue = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
@@ -64,7 +42,7 @@ void POCController::run() {
         }
 
         // Wait for calculation to stop before starting over
-        t.join();
+        calcThread.join();
 
         // Updating positions
         #pragma omp parallel for
@@ -73,10 +51,16 @@ void POCController::run() {
             bodies[b]->shiftBuffers();
         }
 
+        m_signal_completed_frame.emit(cycle);
+
 
     }
 
     if (nullptr != recorder) {
         recorder->completeVideo();
     }
+}
+
+Controller::type_signal_completed_frame Controller::signal_completed_frame() {
+    return m_signal_completed_frame;
 }

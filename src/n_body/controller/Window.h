@@ -10,6 +10,7 @@
 #include "pages/physics_page/PhysicsContextCreator.h"
 #include "pages/view_page/ViewCreator.h"
 #include "pages/view_page/RecorderCreator.h"
+#include "pages/run_page/RunViewer.h"
 
 
 class Window : public Gtk::ApplicationWindow {
@@ -31,6 +32,7 @@ protected:
     PhysicsContextCreator physicsPage;
     ViewCreator viewPage;
     RecorderCreator recorderCreator;
+    RunViewer runPage;
 
     Gtk::ActionBar actionBar;
 
