@@ -20,7 +20,6 @@ Window::Window() {
     notebook.set_can_focus(false);
     notebook.append_page(physicsPage, "Physics");
     notebook.append_page(viewPage, "View");
-    notebook.append_page(runPage, "Run");
     viewPage.pack_start(recorderCreator, Gtk::PACK_SHRINK);
     mainBox.pack_start(notebook);
 
@@ -65,7 +64,6 @@ void Window::on_run_clicked() {
 
     // Launching the program
     auto controller = Controller(model, view, bodies, recorder);
-    controller.signal_completed_frame().connect(sigc::mem_fun(runPage, &RunViewer::on_completed_frame));
 
     controller.run();
 }

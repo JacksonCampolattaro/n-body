@@ -27,11 +27,6 @@ public:
 
     void run();
 
-
-    //signal accessor:
-    typedef sigc::signal<void, int> type_signal_completed_frame;
-    type_signal_completed_frame signal_completed_frame();
-
 private:
 
     Model *model;
@@ -42,11 +37,6 @@ private:
 
     // Recording is optional
     Recorder *recorder = nullptr;
-
-
-protected:
-
-    type_signal_completed_frame m_signal_completed_frame;
 
 };
 

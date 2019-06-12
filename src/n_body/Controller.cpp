@@ -51,16 +51,10 @@ void Controller::run() {
             bodies[b]->shiftBuffers();
         }
 
-        m_signal_completed_frame.emit(cycle);
-
 
     }
 
     if (nullptr != recorder) {
         recorder->completeVideo();
     }
-}
-
-Controller::type_signal_completed_frame Controller::signal_completed_frame() {
-    return m_signal_completed_frame;
 }
