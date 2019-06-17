@@ -21,6 +21,7 @@ Window::Window() {
     notebook.append_page(physicsPage, "Physics");
     notebook.append_page(viewPage, "View");
     viewPage.pack_start(recorderCreator, Gtk::PACK_SHRINK);
+    notebook.append_page(solverCreator, "Solver");
     mainBox.pack_start(notebook);
 
 
