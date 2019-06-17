@@ -49,9 +49,7 @@ void Window::on_run_clicked() {
     physicsContext = physicsPage.createPhysicsContext();
 
     // Configuring the solving tool
-    auto *solver = new BarnesHutSolver();
-    solver->enableThreading();
-    solver->setTheta(0.8);
+    auto *solver = solverCreator.createSolver();
 
     // Creating the model
     auto model = new Model(physicsContext, solver);
