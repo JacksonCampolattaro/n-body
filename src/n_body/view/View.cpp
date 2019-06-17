@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <GL/glu.h>
+#include <iostream>
 #include "View.h"
 
 View::View() {
@@ -52,6 +53,7 @@ View::View() {
 
 bool View::draw(std::vector<Drawable *> drawables) {
 
+
     // TODO might be necessary for rendering in a separate thread
     glfwMakeContextCurrent(window);
 
@@ -76,6 +78,7 @@ bool View::draw(std::vector<Drawable *> drawables) {
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_BLEND);
     glLoadIdentity();
+
 
     // Calls the draw function of every registered Drawable
     // TODO There might be advantages to multithreading this, it depends on if the GPU is the limiting factor

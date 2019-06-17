@@ -39,7 +39,7 @@ void Preset::cubicGrid(glm::vec3 cornerPosition, glm::vec3 velocity,
 
 
                 auto newBody = new Body(position);
-                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(whiteToBlueToRed);
+                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(blueToGreen);
                 bodies.push_back(newBody);
             }
         }

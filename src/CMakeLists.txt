@@ -20,5 +20,5 @@ add_executable(${CMAKE_PROJECT_NAME} n_body/main.cpp n_body/view/GLToolkit.cpp n
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx ${OpenMP_CXX_FLAGS}")
 
 # Addls OpenGL and tbb libraries to compilation path
-target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_LIBRARIES} ${GTKMM_LIBRARIES} glfw tbb)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${OPENGL_LIBRARIES} ${GTKMM_LIBRARIES} glfw)
 

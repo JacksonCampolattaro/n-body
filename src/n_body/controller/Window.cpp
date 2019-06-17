@@ -33,12 +33,27 @@ Window::Window() {
 
     // Loading a world from my collection of presets
     Preset myPreset = Preset();
-    myPreset.blender();
+    myPreset.bigDemo();
+
 
     // The physics settings page should match the preset
-
     physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
+
+    // Saving bodies from a preset to an XML file
     bodies = myPreset.getBodies();
+    std::vector<Body> dereferencedBodies;
+    dereferencedBodies.reserve(bodies.size());
+    std::transform(std::begin(bodies), std::end(bodies),
+                   std::back_inserter(dereferencedBodies),[](Body *item){return *item;});
+    ScenarioStream::saveBodies(dereferencedBodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
+
+    // Loading bodies from an XML file
+    /*auto dereferencedBodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/threeBody.xml");
+    for (int i = 0; i < dereferencedBodies.size(); ++i) {
+        bodies.push_back(&dereferencedBodies[i]);
+        std::cout << bodies[i]->toString() << endl;
+    }*/
+
 
     /*
     bodies = myPreset.getBodies();
