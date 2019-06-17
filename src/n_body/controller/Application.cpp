@@ -10,7 +10,7 @@ Application::Application() : Gtk::Application("org.gtkmm.nbody") {
 
 void Application::on_activate() {
 
-    auto window = new Window();
+    window = new Window();
 
     add_window(*window);
 

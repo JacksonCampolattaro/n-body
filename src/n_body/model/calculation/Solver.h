@@ -27,6 +27,8 @@ public:
      */
     virtual void solve(std::vector<Body *> bodies, PhysicsContext *phys) = 0;
 
+    bool isThreadingEnabled() const;
+
 protected:
 
     /*Flag enabling multithreading of workloads*/

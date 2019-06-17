@@ -22,6 +22,8 @@ public:
      */
     BarnesHutSolver *setTheta(float theta);
 
+    float getTheta() const;
+
 private:
 
     /*Constant determining the accuracy of the traversal*/

@@ -90,7 +90,7 @@ void Preset::bigDemo() {
 
 void Preset::threeBodyDemo() {
 
-    physicsContext->setPower(1)->setG(.2);
+    physicsContext->setPower(1)->setG(.2)->setT(0.01);
     float density = 40;
 
     auto redBody = new Body(glm::vec3(20.0, 50.0, -300));

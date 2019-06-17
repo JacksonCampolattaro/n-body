@@ -23,7 +23,8 @@ public:
 
 protected:
 
-    Gtk::Button run_button = Gtk::Button("Run Simulation");
+    Gtk::Button run_button = Gtk::Button("Run Simulation \u2B9E");
+    /// ⮞ ▶ → ⟶
 
     Gtk::Box mainBox = Gtk::Box(Gtk::ORIENTATION_VERTICAL);
 

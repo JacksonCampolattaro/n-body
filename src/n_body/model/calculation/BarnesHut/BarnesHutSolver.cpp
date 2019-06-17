@@ -36,3 +36,7 @@ BarnesHutSolver *BarnesHutSolver::setTheta(float theta) {
     return this;
 }
 
+float BarnesHutSolver::getTheta() const {
+    return theta;
+}
+

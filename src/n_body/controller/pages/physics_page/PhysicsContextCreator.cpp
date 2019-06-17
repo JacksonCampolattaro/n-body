@@ -82,7 +82,7 @@ PhysicsContextCreator::PhysicsContextCreator() {
     P_box.pack_start(P_spinButton, Gtk::PACK_EXPAND_WIDGET);
 
     T_spinButton.set_range(0, 100);
-    T_spinButton.set_digits(3);
+    T_spinButton.set_digits(4);
     T_spinButton.set_increments(0.001, 0.01);
     T_spinButton.set_value(0.01);
     G_spinButton.set_snap_to_ticks(false);
@@ -109,4 +109,12 @@ PhysicsContext *PhysicsContextCreator::createPhysicsContext() {
     auto physicsContext = new PhysicsContext;
     physicsContext->setG(G_spinButton.get_value())->setPower(P_spinButton.get_value())->setT(T_spinButton.get_value());
     return physicsContext;
+}
+
+void PhysicsContextCreator::loadPhysicsContext(PhysicsContext *physicsContext) {
+
+    G_spinButton.set_value(physicsContext->getG());
+    P_spinButton.set_value(physicsContext->getExponent());
+    T_spinButton.set_value(physicsContext->getT());
+
 }

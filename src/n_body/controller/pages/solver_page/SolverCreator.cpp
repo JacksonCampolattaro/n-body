@@ -121,3 +121,17 @@ void SolverCreator::on_combo_changed() {
     }
 
 }
+
+void SolverCreator::loadSolver(Solver *solver) {
+
+    threading_switch.set_active(solver->isThreadingEnabled());
+
+    if (auto *BHSolver = dynamic_cast<BarnesHutSolver*>(solver)) {
+        solver_comboBox.set_active(0);
+        theta_spinButton.set_value(BHSolver->getTheta());
+    } else {
+        solver_comboBox.set_active(1);
+    }
+
+
+}

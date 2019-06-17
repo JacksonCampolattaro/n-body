@@ -20,7 +20,7 @@ private:
 
     void on_activate();
 
-    Window window;
+    Window *window;
 };
 
 
