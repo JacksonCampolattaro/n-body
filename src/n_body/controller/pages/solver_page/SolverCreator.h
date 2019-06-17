@@ -21,6 +21,8 @@ public:
 
     Solver *createSolver();
 
+    void loadSolver(Solver *solver);
+
 private:
 
     Gtk::Label
@@ -33,14 +35,11 @@ private:
     Gtk::Box
             theta_box = Gtk::Box(Gtk::ORIENTATION_HORIZONTAL),
             threading_box = Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
-
     Gtk::Label
             theta_label = Gtk::Label("Theta"),
             threading_label = Gtk::Label("Threading");
-
     Gtk::SpinButton
             theta_spinButton;
-
     Gtk::Switch
             threading_switch;
 

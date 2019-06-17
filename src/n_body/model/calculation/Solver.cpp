@@ -10,3 +10,7 @@ Solver *Solver::enableThreading(bool enabled) {
 
     return this;
 }
+
+bool Solver::isThreadingEnabled() const {
+    return threadingEnabled;
+}

@@ -8,6 +8,7 @@
 
 #include <string> // Used by the toString method
 #include <glm/vec3.hpp> // Used for holding 3d vectors
+#include <cereal/archives/xml.hpp>
 
 #include "../view/Drawable.h" // Body extends Drawable
 #include "../view/GLToolkit.h"
@@ -25,7 +26,7 @@ public:
      * The constructor only takes in the position, all other values start at their defaults.
      * @param position The starting location of the body (as a three dimensional vector)
      */
-    explicit Body(glm::vec3 position);
+    explicit Body(glm::vec3 position = glm::vec3(0, 0, 0));
 
 
     // Setters (to be used as named parameters)
@@ -155,6 +156,18 @@ public:
      * @return a string describing the body
      */
     std::string toString();
+
+    template<class Archive>
+    void serialize(Archive & ar)
+    {
+        ar(
+                CEREAL_NVP(position.x), CEREAL_NVP(position.y), CEREAL_NVP(position.z),
+                CEREAL_NVP(velocity.x), CEREAL_NVP(velocity.y), CEREAL_NVP(velocity.z),
+                CEREAL_NVP(mass), CEREAL_NVP(fixed), CEREAL_NVP(passive),
+                CEREAL_NVP(color.x), CEREAL_NVP(color.y), CEREAL_NVP(color.z),
+                CEREAL_NVP(radius), CEREAL_NVP(density)
+                );
+    }
 
 private:
 

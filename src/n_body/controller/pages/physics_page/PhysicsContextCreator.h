@@ -21,6 +21,8 @@ public:
 
     PhysicsContext *createPhysicsContext();
 
+    void loadPhysicsContext(PhysicsContext *physicsContext);
+
 
 private:
 
