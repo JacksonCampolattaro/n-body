@@ -14,7 +14,7 @@ class ScenarioStream {
 
 public:
 
-    static void saveBodies(std::vector<Body> bodies, std::string filePath);
+    static void saveBodies(std::vector<Body> bodyList, std::string filePath);
     static std::vector<Body> loadBodies(std::string filePath);
 
 
