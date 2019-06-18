@@ -32,57 +32,22 @@ Window::Window() {
 
 
     // Loading a world from my collection of presets
-    Preset myPreset = Preset();
-    myPreset.bigDemo();
+    auto myPreset = Preset();
+    myPreset.threeBodyDemo();
 
 
     // The physics settings page should match the preset
     physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
 
     // Saving bodies from a preset to an XML file
-    bodies = myPreset.getBodies();
-    std::vector<Body> dereferencedBodies;
-    dereferencedBodies.reserve(bodies.size());
-    std::transform(std::begin(bodies), std::end(bodies),
-                   std::back_inserter(dereferencedBodies),[](Body *item){return *item;});
-    ScenarioStream::saveBodies(dereferencedBodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
+    /*auto presetBodies = myPreset.getBodies();
+    for (int i = 0; i < presetBodies.size(); ++i) {
+        bodies.push_back(*presetBodies[i]);
+    }
+    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");*/
 
     // Loading bodies from an XML file
-    /*auto dereferencedBodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/threeBody.xml");
-    for (int i = 0; i < dereferencedBodies.size(); ++i) {
-        bodies.push_back(&dereferencedBodies[i]);
-        std::cout << bodies[i]->toString() << endl;
-    }*/
-
-
-    /*
-    bodies = myPreset.getBodies();
-    bodies.clear();
-
-    std::vector<Body> bodyList;
-
-    *//*
-    for (int i = 0; i < bodies.size(); ++i) {
-        bodyList.push_back(*bodies[i]);
-    }
-
-    ScenarioStream::saveBodies(bodyList, "/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");*//*
-
-    bodyList = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/threeBody.xml");
-    std::vector<Body *> newList;
-    for (int j = 0; j < bodyList.size(); ++j) {
-        newList.push_back(&bodyList[j]);
-        std::cout << j << newList[j]->toString();
-    }
-    std::cout << newList.size();
-    bodies = newList;
-*/
-
-    /*auto bodyList = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/threeBody.xml");
-    for (int j = 0; j < bodyList.size(); ++j) {
-        bodies.push_back(&bodyList[j]);
-        std::cout << "Adding " << bodies[j]->toString() << endl;
-    }*/
+    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
 
 
 }
@@ -105,7 +70,6 @@ void Window::on_run_clicked() {
     auto recorder = recorderCreator.createRecorder(view);
 
     // Launching the program
-    auto controller = Controller(model, view, bodies, recorder);
-
+    auto controller = Controller(model, view, &bodies, recorder);
     controller.run();
 }

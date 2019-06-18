@@ -25,6 +25,7 @@ public:
      * Calculates the next time step of the simulation, by calculating forces on all bodies.
      */
     void increment(std::vector<Body *> bodies);
+    void increment(std::vector<Body> *bodies);
 
 
 private:

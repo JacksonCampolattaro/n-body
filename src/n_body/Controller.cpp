@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(Model *model, View *view, vector<Body *> bodies, Recorder *recorder) {
+Controller::Controller(Model *model, View *view, vector<Body> *bodies, Recorder *recorder) {
 
     this->model = model;
     this->view = view;
@@ -21,7 +21,8 @@ Controller::Controller(Model *model, View *view, vector<Body *> bodies, Recorder
 void Controller::run() {
 
     // Preparation
-    model->preCalculate(bodies); // Enables leapfrog integration
+    // TODO I need to reimplement this
+    //model->preCalculate(bodies); // Enables leapfrog integration
 
     // Incrementing the simulation
     int maxFrames = 0;
@@ -31,10 +32,17 @@ void Controller::run() {
         cycle++;
 
         // Starting the process of calculating forces in a separate thread
-        std::thread calcThread(&Model::increment, model, bodies);
+        model->increment(bodies);
+        ///std::thread calcThread(&Model::increment, model, bodies);
 
         // The list of bodies is drawn, based on their previous position
-        shouldContinue = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
+        vector<Drawable *> drawables;
+        for (int i = 0; i < bodies->size(); ++i) {
+            drawables.push_back(&(*bodies)[i]);
+        }
+        shouldContinue = view->draw(drawables);
+        ///shouldContinue = view->draw(*(std::vector<Drawable*> *)&bodies); // A copy of the list of bodies is passed to the view
+
 
         // Record the new drawing if a recorder is attached
         if (nullptr != recorder) {
@@ -42,13 +50,13 @@ void Controller::run() {
         }
 
         // Wait for calculation to stop before starting over
-        calcThread.join();
+        ///calcThread.join();
 
         // Updating positions
         #pragma omp parallel for
-        for (int b = 0; b < bodies.size(); ++b) {
+        for (int b = 0; b < bodies->size(); ++b) {
 
-            bodies[b]->shiftBuffers();
+            (*bodies)[b].shiftBuffers();
         }
 
 

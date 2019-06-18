@@ -53,3 +53,16 @@ void Model::increment(std::vector<Body *> bodies) {
     }*/
 
 }
+
+void Model::increment(std::vector<Body> *bodies) {
+
+    // Updating velocities ("kick")
+    solver->solve(bodies, physicsContext);
+
+    // Updating positions ("drift")
+    #pragma omp parallel for
+    for (int b = 0; b < bodies->size(); ++b) {
+
+        (*bodies)[b].drift(physicsContext->getT());
+    }
+}

@@ -23,7 +23,7 @@ class Controller {
 
 public:
 
-    Controller(Model *model, View *view, vector<Body *> bodies, Recorder *recorder = nullptr);
+    Controller(Model *model, View *view, vector<Body> *bodies, Recorder *recorder = nullptr);
 
     void run();
 
@@ -33,7 +33,7 @@ private:
 
     View *view;
 
-    vector<Body *> bodies;
+    vector<Body> *bodies;
 
     // Recording is optional
     Recorder *recorder = nullptr;
