@@ -24,8 +24,10 @@ public:
     /**
      * Calculates forces between bodies and applies them to each body
      * @param bodies the list of bodies to perform calculations on
+     * @param phys the physics rules used by the simulation
      */
     virtual void solve(std::vector<Body *> bodies, PhysicsContext *phys) = 0;
+    virtual void solve(std::vector<Body> *bodies, PhysicsContext *phys) = 0;
 
     bool isThreadingEnabled() const;
 

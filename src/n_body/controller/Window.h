@@ -37,7 +37,7 @@ protected:
 
     Gtk::ActionBar actionBar;
 
-    std::vector<Body *> bodies;
+    std::vector<Body> bodies;
 };
 
 
