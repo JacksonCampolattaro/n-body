@@ -14,6 +14,7 @@ Body::Body(glm::vec3 position) {
 
 Body *Body::setVelocity(glm::vec3 velocity) {
 
+    this->velocity = velocity;
     this->nextVelocity = velocity;
 
     return this;

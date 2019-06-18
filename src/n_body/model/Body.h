@@ -167,6 +167,8 @@ public:
                 CEREAL_NVP(color.x), CEREAL_NVP(color.y), CEREAL_NVP(color.z),
                 CEREAL_NVP(radius), CEREAL_NVP(density)
                 );
+
+        this->nextVelocity = this->velocity;
     }
 
 private:
