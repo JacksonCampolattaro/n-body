@@ -29,8 +29,7 @@ private:
 
     // Used for drawing
 
-    float density = 40;
-    Drawable
+    Drawable *drawable;
 
 };
 
