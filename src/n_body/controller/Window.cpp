@@ -33,7 +33,7 @@ Window::Window() {
 
     // Loading a world from my collection of presets
     auto myPreset = Preset();
-    myPreset.threeBodyDemo();
+    myPreset.blender();
 
 
     // The physics settings page should match the preset
