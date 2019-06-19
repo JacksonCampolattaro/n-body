@@ -10,6 +10,9 @@
 
 class Color : public glm::vec3 {
 
+    Color(float r, float g, float b) : glm::vec3(r, g, b){};
+    Color(glm::vec3 vector) : glm::vec3(vector){};
+
     template<class Archive>
     void serialize(Archive & ar);
 };
