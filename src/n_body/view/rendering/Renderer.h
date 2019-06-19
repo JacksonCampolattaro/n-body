@@ -18,6 +18,10 @@ public:
      */
     virtual void draw() = 0;
 
+    void setPosition(Position position);
+
+    void setColor(Color color);
+
 private:
 
     Position position;
