@@ -6,6 +6,10 @@
 #include "Velocity.h"
 
 
+std::string Velocity::toString() {
+    return "<" + std::to_string(this->x) + ", " + std::to_string(this->y) + ", " + std::to_string(this->z) + ">";
+}
+
 template<class Archive>
 void Velocity::serialize(Archive & ar)
 {
