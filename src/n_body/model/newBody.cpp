@@ -11,59 +11,85 @@ newBody::newBody() {
 }
 
 newBody *newBody::setPosition(Position position) {
-    return nullptr;
+    this->position = position;
+    return this;
 }
 
 newBody *newBody::setVelocity(Velocity velocity) {
-    return nullptr;
+    this->velocity = velocity;
+    return this;
 }
 
 newBody *newBody::setMass(float mass) {
-    return nullptr;
+    this->mass = mass;
+    return this;
 }
 
 newBody *newBody::makeFixed(bool fixed) {
-    return nullptr;
+    this->fixed = fixed;
+    return this;
 }
 
 newBody *newBody::makePassive(bool passive) {
-    return nullptr;
+    this->passive = passive;
+    return this;
 }
 
 newBody *newBody::setRenderer(Renderer renderer) {
-    return nullptr;
+    this->renderer = renderer;
+    return this;
 }
 
 Position newBody::getPosition() {
-    return Position(0, 0, 0);
+    return this->position;
 }
 
 Velocity newBody::getVelocity() {
-    return Velocity(0, 0, 0);
+    return this->velocity;
 }
 
 float newBody::getMass() {
-    return 0;
+    return mass;
 }
 
 bool newBody::isFixed() {
-    return false;
+    return fixed;
 }
 
 bool newBody::isPassive() {
-    return false;
+    return passive;
 }
 
 void newBody::shiftBuffers() {
 
+    // Updating position and velocity
+    this->position = this->nextPosition;
+    this->velocity = this->nextVelocity;
 }
 
 Renderer newBody::getRenderer() {
-    return Renderer();
+    // TODO the renderer's position value will be updated before returning it
+    return renderer;
 }
 
 std::string newBody::toString() {
-    return std::__cxx11::string();
+
+    std::string s =
+            "Body : Position = " + position.toString() +
+            " Velocity = " + velocity.toString() +
+            " Mass = " + std::to_string(mass);
+
+    if (fixed) {
+        s += " [Fixed]";
+    }
+
+    if (passive) {
+        s += " [Passive]";
+    }
+
+    s += "\n";
+
+    return s;
 }
 
 template<class Archive>
