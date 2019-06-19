@@ -5,6 +5,10 @@
 #include <cereal/cereal.hpp>
 #include "Position.h"
 
+std::string Position::toString() {
+    return "(" + std::to_string(this->x) + ", " + std::to_string(this->y) + ", " + std::to_string(this->z) + ")";
+}
+
 template<class Archive>
 void Position::serialize(Archive & ar)
 {
