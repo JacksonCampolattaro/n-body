@@ -9,9 +9,10 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(Model *model, vector<Body> *bodies, View *view, Recorder *recorder) {
+Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view, Recorder *recorder) {
 
-    this->model = model;
+    //solver->signal_complete().connect(sigc::mem_fun(*this, &Controller::on_solver_complete));
+    this->model = new Model(physics, solver);
     this->bodies = bodies;
     this->view = view;
     this->recorder = recorder;
@@ -20,6 +21,7 @@ Controller::Controller(Model *model, vector<Body> *bodies, View *view, Recorder 
 
 void Controller::run() {
 
+    cout << "Linking signals" << endl;
     cout << "Starting simulation" << endl;
     cout << "Calculating " << numFrames << " frames" << endl;
     cout << "'.' Represents the controller running in the background." << endl;
@@ -28,7 +30,7 @@ void Controller::run() {
     std::thread t(&Controller::increment, this);
 
     for (int i = 0; i < 2048; ++i) {
-        usleep(1000);
+        usleep(2000);
         cout << "." << endl;
     }
 
@@ -38,10 +40,15 @@ void Controller::run() {
 void Controller::increment() {
 
     cout << "Preparing to calculate frame " << frameNum << "/" << numFrames << endl;
-    ///usleep(1);
 
     model->increment(bodies);
     finishFrame();
+}
+
+void Controller::on_solver_complete() {
+
+    cout << "Preparing to calculate frame " << frameNum << "/" << numFrames << endl;
+
 }
 
 void Controller::finishFrame() {

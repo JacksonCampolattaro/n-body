@@ -23,11 +23,13 @@ class Controller {
 
 public:
 
-    Controller(Model *model, vector<Body> *bodies, View *view = nullptr, Recorder *recorder = nullptr);
+    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr, Recorder *recorder = nullptr);
 
     void run();
 
     void increment();
+
+    void on_solver_complete();
 
     void finishFrame();
 

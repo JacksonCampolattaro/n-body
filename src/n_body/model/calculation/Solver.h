@@ -9,6 +9,7 @@
 #include "../PhysicsContext.h" // The solver affects the bodies according to the physicsContext context it's given
 
 #include <vector> // Used to handle the list of bodies in the Simulation
+#include <gtkmm.h>
 
 class Solver {
 
@@ -31,7 +32,15 @@ public:
 
     bool isThreadingEnabled() const;
 
+    /**
+     * Signal for the completion of calculations
+     */
+    typedef sigc::signal<bool> type_signal_complete;
+    type_signal_complete signal_complete(); // Accessor for the signal
+
 protected:
+
+    type_signal_complete m_signal_complete;
 
     /*Flag enabling multithreading of workloads*/
     bool threadingEnabled = false;
