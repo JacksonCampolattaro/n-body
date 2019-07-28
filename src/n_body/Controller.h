@@ -23,20 +23,25 @@ class Controller {
 
 public:
 
-    Controller(Model *model, View *view, vector<Body> *bodies, Recorder *recorder = nullptr);
+    Controller(Model *model, vector<Body> *bodies, View *view = nullptr, Recorder *recorder = nullptr);
 
     void run();
+
+    void increment();
+
+    void finishFrame();
 
 private:
 
     Model *model;
-
     View *view;
-
     vector<Body> *bodies;
-
     // Recording is optional
     Recorder *recorder = nullptr;
+
+
+    int numFrames = 255;
+    int frameNum = 0;
 
 };
 

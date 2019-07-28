@@ -9,16 +9,59 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(Model *model, View *view, vector<Body> *bodies, Recorder *recorder) {
+Controller::Controller(Model *model, vector<Body> *bodies, View *view, Recorder *recorder) {
 
     this->model = model;
-    this->view = view;
     this->bodies = bodies;
+    this->view = view;
     this->recorder = recorder;
 
 }
 
 void Controller::run() {
+
+    cout << "Starting simulation" << endl;
+    cout << "Calculating " << numFrames << " frames" << endl;
+    cout << "'.' Represents the controller running in the background." << endl;
+    cout << "Signals sent from inside the simulation will be printed here." << endl;
+
+    std::thread t(&Controller::increment, this);
+
+    for (int i = 0; i < 2048; ++i) {
+        usleep(1000);
+        cout << "." << endl;
+    }
+
+    t.join();
+}
+
+void Controller::increment() {
+
+    cout << "Preparing to calculate frame " << frameNum << "/" << numFrames << endl;
+    ///usleep(1);
+
+    model->increment(bodies);
+    finishFrame();
+}
+
+void Controller::finishFrame() {
+
+    cout << "Finished calculating frame " << frameNum << "/" << numFrames << endl;
+
+    frameNum++;
+
+    if (frameNum <= numFrames) {
+        increment();
+    }
+}
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*void Controller::run() {
 
     // Preparation
     // TODO I need to reimplement this
@@ -65,4 +108,6 @@ void Controller::run() {
     if (nullptr != recorder) {
         recorder->completeVideo();
     }
-}
+}*/
+
+
