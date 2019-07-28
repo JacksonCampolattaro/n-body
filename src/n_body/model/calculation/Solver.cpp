@@ -14,3 +14,7 @@ Solver *Solver::enableThreading(bool enabled) {
 bool Solver::isThreadingEnabled() const {
     return threadingEnabled;
 }
+
+Solver::type_signal_complete Solver::signal_complete() {
+    return m_signal_complete;
+}
