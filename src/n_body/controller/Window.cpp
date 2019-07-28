@@ -70,6 +70,6 @@ void Window::on_run_clicked() {
     auto recorder = recorderCreator.createRecorder(view);
 
     // Launching the program
-    auto controller = Controller(model, view, &bodies, recorder);
-    controller.run();
+    ///auto controller = Controller(model, view, &bodies, recorder);
+    ///controller.run();
 }
