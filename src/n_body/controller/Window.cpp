@@ -60,9 +60,6 @@ void Window::on_run_clicked() {
     // Configuring the solving tool
     auto solver = solverCreator.createSolver();
 
-    // Creating the model
-    auto model = new Model(physicsContext, solver);
-
     // Creating the view
     auto view = viewPage.createView();
 

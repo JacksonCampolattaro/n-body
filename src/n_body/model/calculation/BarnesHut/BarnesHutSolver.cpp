@@ -19,6 +19,8 @@ void BarnesHutSolver::solve(std::vector<Body *> bodies, PhysicsContext *phys) {
         }
     }
 
+    signal_preparing_solver().emit();
+
     // Getting the center of mass and the ideal location for the next tree
     octree->getCenterOfMass();
     idealTreeCenterLocation = octree->getAveragePosition();
@@ -28,6 +30,8 @@ void BarnesHutSolver::solve(std::vector<Body *> bodies, PhysicsContext *phys) {
     for (int b = 0; b < bodies.size(); ++b) {
         octree->applyPhysicsToBody(bodies[b], phys, theta);
     }
+
+    signal_complete().emit();
 }
 
 BarnesHutSolver *BarnesHutSolver::setTheta(float theta) {
@@ -41,6 +45,9 @@ float BarnesHutSolver::getTheta() const {
 }
 
 void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
+
+
+    signal_preparing_solver().emit();
 
     // Creating the tree
     std::unique_ptr<Octant> octree (std::make_unique<Octant>(idealTreeCenterLocation, sideLength));
@@ -58,10 +65,23 @@ void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
     octree->getCenterOfMass();
     idealTreeCenterLocation = octree->getAveragePosition();
 
-    // Doing gravitational calculations
+    signal_solving().emit();
+
+    // Doing gravitational calculations ("kick")
     #pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies->size(); ++b) {
         octree->applyPhysicsToBody(&(*bodies)[b], phys, theta);
     }
+
+    signal_shifting_buffers().emit();
+
+    // Updating positions ("drift")
+    #pragma omp parallel for
+    for (int b = 0; b < bodies->size(); ++b) {
+
+        (*bodies)[b].drift(phys->getT());
+    }
+
+    signal_complete().emit();
 }
 
