@@ -6,9 +6,9 @@
 #define N_BODY_CONTROLLER_H
 
 
-#include "model/Model.h"
 #include "view/View.h"
 #include "view/Recorder.h"
+#include "model/calculation/Solver.h"
 
 #include <gtkmm.h>
 #include <glm/glm.hpp>
@@ -29,13 +29,18 @@ public:
 
     void increment();
 
-    void on_solver_complete();
+    void on_preparing_solver();
 
-    void finishFrame();
+    void on_solving();
+
+    void on_shifting_buffers();
+
+    void on_solver_complete();
 
 private:
 
-    Model *model;
+    Solver *solver;
+    PhysicsContext *physics;
     View *view;
     vector<Body> *bodies;
     // Recording is optional

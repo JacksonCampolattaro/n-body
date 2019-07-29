@@ -11,8 +11,13 @@ using std::endl;
 
 Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view, Recorder *recorder) {
 
-    //solver->signal_complete().connect(sigc::mem_fun(*this, &Controller::on_solver_complete));
-    this->model = new Model(physics, solver);
+    solver->signal_preparing_solver().connect(sigc::mem_fun(*this, &Controller::on_preparing_solver));
+    solver->signal_solving().connect(sigc::mem_fun(*this, &Controller::on_solving));
+    solver->signal_shifting_buffers().connect(sigc::mem_fun(*this, &Controller::on_shifting_buffers));
+    solver->signal_complete().connect(sigc::mem_fun(*this, &Controller::on_solver_complete));
+    
+    this->solver = solver;
+    this->physics = physics;
     this->bodies = bodies;
     this->view = view;
     this->recorder = recorder;
@@ -29,8 +34,8 @@ void Controller::run() {
 
     std::thread t(&Controller::increment, this);
 
-    for (int i = 0; i < 2048; ++i) {
-        usleep(2000);
+    for (int i = 0; i < 4000; ++i) {
+        usleep(1000);
         cout << "." << endl;
     }
 
@@ -39,19 +44,29 @@ void Controller::run() {
 
 void Controller::increment() {
 
-    cout << "Preparing to calculate frame " << frameNum << "/" << numFrames << endl;
+    cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
 
-    model->increment(bodies);
-    finishFrame();
+    solver->solve(bodies, physics);
+}
+
+
+
+void Controller::on_preparing_solver() {
+
+    cout << "Preparing Solver" << endl;
+}
+
+void Controller::on_solving() {
+
+    cout << "Solving forces" << endl;
+}
+
+void Controller::on_shifting_buffers() {
+
+    cout << "Shifting buffers" << endl;
 }
 
 void Controller::on_solver_complete() {
-
-    cout << "Preparing to calculate frame " << frameNum << "/" << numFrames << endl;
-
-}
-
-void Controller::finishFrame() {
 
     cout << "Finished calculating frame " << frameNum << "/" << numFrames << endl;
 

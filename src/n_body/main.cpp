@@ -18,10 +18,16 @@ int main(int argc, char **argv) {
 
     Solver *s = new BarnesHutSolver();
 
+    /*auto view = new View();
+    view->setDimensions(glm::ivec2(1000, 1000))->setTitle("Test");*/
+
     ///std::vector<Body> b;
     auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
 
     /*Controller controller = Controller(new Model(p, s), &b);
     controller.run();*/
+
+    Controller c = Controller(&b, p, s);
+    c.run();
 
 }

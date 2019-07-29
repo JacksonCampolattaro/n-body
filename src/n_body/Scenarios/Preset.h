@@ -7,7 +7,7 @@
 
 
 #include "../view/View.h"
-#include "../model/Model.h"
+#include "../model/PhysicsContext.h"
 
 
 // Useful constants
