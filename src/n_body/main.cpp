@@ -6,7 +6,7 @@
 #include "controller/Application.h"
 #include "Controller.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "Scenarios/ScenarioStream.h"
+#include "scenarios/ScenarioStream.h"
 
 int main(int argc, char **argv) {
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     view->setDimensions(glm::ivec2(1000, 1000))->setTitle("Test");*/
 
     ///std::vector<Body> b;
-    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
+    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
 
     Controller c = Controller(&b, p, s);
     c.run();

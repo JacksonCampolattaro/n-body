@@ -4,8 +4,6 @@
 
 #include "Body.h"
 
-#include "../view/View.h" // Viewport must be included in here to avoid cyclical dependencies
-
 Body::Body(glm::vec3 position) {
 
     this->position = position;
@@ -123,11 +121,6 @@ void Body::shiftBuffers() {
 }
 
 void Body::draw() {
-
-    GLToolkit::setColor(color);
-
-    //GLToolkit::drawCircle(position, radius);
-    GLToolkit::drawSphere(position, radius);
 
 }
 

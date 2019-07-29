@@ -4,10 +4,10 @@
 
 #include <thread>
 #include "Window.h"
-#include "../Scenarios/Preset.h"
+#include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "../Controller.h"
-#include "../Scenarios/ScenarioStream.h"
+#include "../scenarios/ScenarioStream.h"
 
 Window::Window() {
 
@@ -44,10 +44,10 @@ Window::Window() {
     for (int i = 0; i < presetBodies.size(); ++i) {
         bodies.push_back(*presetBodies[i]);
     }
-    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");*/
+    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");*/
 
     // Loading bodies from an XML file
-    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
+    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
 
 
 }
