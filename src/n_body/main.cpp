@@ -24,9 +24,6 @@ int main(int argc, char **argv) {
     ///std::vector<Body> b;
     auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/Scenarios/test.xml");
 
-    /*Controller controller = Controller(new Model(p, s), &b);
-    controller.run();*/
-
     Controller c = Controller(&b, p, s);
     c.run();
 
