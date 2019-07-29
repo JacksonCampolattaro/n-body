@@ -11,7 +11,6 @@
 #include <cereal/archives/xml.hpp>
 
 #include "../view/Drawable.h" // Body extends Drawable
-#include "../view/GLToolkit.h"
 
 /**
  * Intended to streamline the functionality of the old body

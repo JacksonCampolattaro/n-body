@@ -11,6 +11,3 @@ pkg_check_modules(GTKMM gtkmm-3.0)
 
 # Adds the main subdirectory
 add_subdirectory(src)
-
-# Adds the testing directory
-add_subdirectory(tests)

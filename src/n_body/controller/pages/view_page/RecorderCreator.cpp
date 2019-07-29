@@ -69,8 +69,8 @@ Recorder *RecorderCreator::createRecorder(View *view) {
 
     if (enableRecording_switch.get_active()) {
 
-        Recorder *recorder = new Recorder(view, folderChooser_button.get_filename() + "/output.mp4");
-        return recorder;
+        /*Recorder *recorder = new Recorder(view, folderChooser_button.get_filename() + "/output.mp4");
+        return recorder;*/
     }
 
     return nullptr;
