@@ -18,8 +18,7 @@ View::View(int width, int height, const char *title) {
 void View::createWindow() {
 
     // Setting configuration options
-    SetConfigFlags(FLAG_MSAA_4X_HINT);
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
 
     // Creating the window
     InitWindow(width, height, title);
@@ -42,7 +41,7 @@ void View::createWindow() {
 void View::loop() {
 
 
-    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody.xml");
 
     while (!WindowShouldClose()) {
 
@@ -51,7 +50,8 @@ void View::loop() {
         BeginDrawing();
         {
 
-            ClearBackground(RAYWHITE);
+            //ClearBackground(RAYWHITE);
+            ClearBackground(BLACK);
 
             BeginMode3D(camera);
             {
@@ -59,9 +59,6 @@ void View::loop() {
                 // 3d Mode
 
                 draw(&b);
-                DrawGrid(1, 1);
-
-                std::cout << camera.target.x << camera.target.y << camera.target.z << std::endl;
 
             }
             EndMode3D();
