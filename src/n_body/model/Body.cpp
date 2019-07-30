@@ -3,6 +3,7 @@
 //
 
 #include "Body.h"
+#include <raylib.h>
 
 Body::Body(glm::vec3 position) {
 
@@ -122,6 +123,7 @@ void Body::shiftBuffers() {
 
 void Body::draw() {
 
+    DrawSphereEx(Vector3{position.x, position.y, position.z}, radius, 10, 10, BLUE);
 }
 
 std::string Body::toString() {
