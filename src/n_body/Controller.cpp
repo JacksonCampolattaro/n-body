@@ -32,14 +32,23 @@ void Controller::run() {
     cout << "'.' Represents the controller running in the background." << endl;
     cout << "Signals sent from inside the simulation will be printed here." << endl;
 
-    std::thread t(&Controller::increment, this);
+    auto spawnWindow = []() {
+
+        auto v = new View(1000, 1000, "title");
+        v->createWindow();
+        v->loop();
+    };
+
+    std::thread rendering_thread(spawnWindow);
+    std::thread calculation_thread(&Controller::increment, this);
 
     for (int i = 0; i < 4000; ++i) {
         usleep(1000);
         cout << "." << endl;
     }
 
-    t.join();
+    rendering_thread.join();
+    calculation_thread.join();
 }
 
 void Controller::increment() {
