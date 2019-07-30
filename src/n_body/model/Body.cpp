@@ -123,7 +123,12 @@ void Body::shiftBuffers() {
 
 void Body::draw() {
 
-    DrawSphereEx(Vector3{position.x, position.y, position.z}, radius, 10, 10, BLUE);
+    DrawSphereEx(Vector3{position.x, position.y, position.z},
+                 radius,
+                 15, 15,
+                 Color{(unsigned char) (color.x * 255),
+                       (unsigned char) (color.y * 255),
+                       (unsigned char) (color.z * 255), 255});
 }
 
 std::string Body::toString() {
