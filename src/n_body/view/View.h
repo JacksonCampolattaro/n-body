@@ -8,6 +8,7 @@
 #include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
 #include <vector> // Allows me to keep a list of things to draw
 #include "Drawable.h"
+#include "../model/Body.h"
 
 #include <raylib.h>
 
@@ -20,7 +21,7 @@ public:
 
     void loop();
 
-    void draw(std::vector<Drawable> drawables);
+    void draw(std::vector<Body> *drawables);
 
 private:
 

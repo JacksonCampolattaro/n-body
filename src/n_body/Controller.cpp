@@ -15,7 +15,7 @@ Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *so
     solver->signal_solving().connect(sigc::mem_fun(*this, &Controller::on_solving));
     solver->signal_shifting_buffers().connect(sigc::mem_fun(*this, &Controller::on_shifting_buffers));
     solver->signal_complete().connect(sigc::mem_fun(*this, &Controller::on_solver_complete));
-    
+
     this->solver = solver;
     this->physics = physics;
     this->bodies = bodies;
@@ -38,9 +38,9 @@ void Controller::run() {
         v->createWindow();
         v->loop();
     };
-
     std::thread rendering_thread(spawnWindow);
     std::thread calculation_thread(&Controller::increment, this);
+
 
     for (int i = 0; i < 4000; ++i) {
         usleep(1000);
