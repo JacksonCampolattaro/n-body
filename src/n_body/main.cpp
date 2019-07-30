@@ -3,6 +3,7 @@
 //
 
 #include <gtkmm/application.h>
+#include <thread>
 #include "controller/Application.h"
 #include "Controller.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
@@ -14,17 +15,15 @@ int main(int argc, char **argv) {
 
     return application->run(argc, argv);*/
 
-    auto p = new PhysicsContext();
-
-    Solver *s = new BarnesHutSolver();
-
-    /*auto view = new View();
-    view->setDimensions(glm::ivec2(1000, 1000))->setTitle("Test");*/
-
-    ///std::vector<Body> b;
     auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
 
-    Controller c = Controller(&b, p, s);
+    auto p = new PhysicsContext();
+
+    auto s = new BarnesHutSolver();
+
+    auto v = new View(1000, 1000, "title");
+
+    Controller c = Controller(&b, p, s, v);
     c.run();
 
 }

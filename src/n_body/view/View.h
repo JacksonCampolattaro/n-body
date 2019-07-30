@@ -9,11 +9,26 @@
 #include <vector> // Allows me to keep a list of things to draw
 #include "Drawable.h"
 
+#include <raylib.h>
+
 class View {
 public:
 
+    View(int width, int height, const char *title);
+
+    void createWindow();
+
+    void loop();
+
+    void draw(std::vector<Drawable> drawables);
 
 private:
+
+    int width;
+    int height;
+    const char *title;
+
+    Camera camera = { 0 };
 
 };
 

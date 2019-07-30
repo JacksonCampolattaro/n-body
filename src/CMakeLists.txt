@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
+#find_package(raylib 2.0 QUIET)
 
 # Confirms that controller libraries are present and installed properly
 link_directories(${GTKMM_LIBRARY_DIRS})
@@ -16,5 +17,5 @@ add_executable(${CMAKE_PROJECT_NAME} n_body/main.cpp n_body/view/Drawable.cpp n_
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og ${OpenMP_CXX_FLAGS}")
 
 # Adds libraries to compilation path
-target_link_libraries(${CMAKE_PROJECT_NAME} ${GTKMM_LIBRARIES})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${GTKMM_LIBRARIES} raylib)
 
