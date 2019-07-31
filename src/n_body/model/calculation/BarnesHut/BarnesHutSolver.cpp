@@ -53,6 +53,13 @@ void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
         (*bodies)[b].drift(phys->getT());
     }
 
+    // Shifting buffers
+    #pragma omp parallel for
+    for (int b = 0; b < bodies->size(); ++b) {
+
+        (*bodies)[b].shiftBuffers();
+    }
+
     signal_complete().emit();
 }
 

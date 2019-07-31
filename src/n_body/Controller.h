@@ -47,7 +47,7 @@ private:
     Recorder *recorder = nullptr;
 
 
-    int numFrames = 255;
+    int numFrames = 255000;
     int frameNum = 0;
 
 };
