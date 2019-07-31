@@ -15,11 +15,10 @@ int main(int argc, char **argv) {
 
     return application->run(argc, argv);*/
 
-    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody.xml");
 
     auto p = new PhysicsContext();
-    p->setG(10);
-    p->setT(1);
+    p->setPower(1)->setG(.2)->setT(0.0001);
 
     auto s = new BarnesHutSolver();
 

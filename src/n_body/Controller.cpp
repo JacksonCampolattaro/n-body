@@ -47,30 +47,17 @@ void Controller::run() {
 
     rendering_thread.join();
     calculation_thread.join();
-
-/*
-    auto spawnWindow = []() {
-
-        //v->createWindow();
-    };
-
-    std::thread rendering_thread(spawnWindow);
-    std::thread calculation_thread(&Controller::increment, this);
-
-
-    for (int i = 0; i < 4000; ++i) {
-        usleep(1000);
-        cout << "." << endl;
-    }
-
-    calculation_thread.join();*/
 }
 
 void Controller::increment() {
 
     cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
 
-    solver->solve(bodies, physics);
+    while (frameNum < numFrames) {
+        frameNum++;
+        solver->solve(bodies, physics);
+    }
+
 }
 
 
@@ -93,13 +80,7 @@ void Controller::on_shifting_buffers() {
 void Controller::on_solver_complete() {
 
     cout << "Finished calculating frame " << frameNum << "/" << numFrames << endl;
-    cout << bodies->at(1).toString() << endl;
 
-    frameNum++;
-
-    if (frameNum <= numFrames) {
-        increment();
-    }
 }
 
 

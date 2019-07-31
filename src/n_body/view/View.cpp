@@ -27,15 +27,15 @@ void View::createWindow() {
     SetWindowMinSize(320, 240);
 
     // Defining the camera
-    camera.position = (Vector3) {4.0f, 0.0f, 0.0f};
-    camera.target = (Vector3) {0.0f, -4.0f, -20.0f};
+    camera.position = (Vector3) {0.0f, 1.0f, 0.0f};
+    camera.target = (Vector3) {0.0f, 10.0f, -1.0f};
     camera.up = (Vector3) {0.0f, 1.0f, 0.0f};
     camera.fovy = 60.0f;
     camera.type = CAMERA_PERSPECTIVE;
-    SetCameraMode(camera, CAMERA_FIRST_PERSON); // Set a first person camera mode
+    SetCameraMode(camera, CAMERA_FIRST_PERSON);
 
     // TODO is this meaningful if I'm not using raylib's loop?
-    SetTargetFPS(60);
+    //SetTargetFPS(60);
 }
 
 void View::loop() {
@@ -52,6 +52,8 @@ void View::loop() {
 
             BeginMode3D(camera);
             {
+
+                DrawGrid(10, 1.0f);
 
                 // 3d Mode
                 for (Body b : *drawables) {
