@@ -20,23 +20,19 @@ Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *so
     this->physics = physics;
     this->bodies = bodies;
     this->view = view;
+    view->setDrawables(bodies);
+    view->createWindow();
     this->recorder = recorder;
 
 }
 
 void Controller::run() {
 
-    cout << "Linking signals" << endl;
-    cout << "Starting simulation" << endl;
-    cout << "Calculating " << numFrames << " frames" << endl;
-    cout << "'.' Represents the controller running in the background." << endl;
-    cout << "Signals sent from inside the simulation will be printed here." << endl;
 
+    /*auto v = new View(1000, 1000, "title");
+    v->setDrawables(bodies);*/
 
-    auto v = new View(1000, 1000, "title");
-    v->setDrawables(bodies);
-
-    auto spawnWindow = [](View *v) {
+    /*auto spawnWindow = [](View *v) {
 
         v->createWindow();
         v->loop();
@@ -46,17 +42,26 @@ void Controller::run() {
     std::thread calculation_thread(&Controller::increment, this);
 
     rendering_thread.join();
-    calculation_thread.join();
+    calculation_thread.join();*/
+
+    increment();
 }
 
 void Controller::increment() {
 
-    cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
+    while (!WindowShouldClose()) {
 
-    while (frameNum < numFrames) {
+        cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
         frameNum++;
-        solver->solve(bodies, physics);
+
+        std::thread solving_thread(&Solver::solve, solver, bodies, physics);
+
+        view->update();
+
+        solving_thread.join();
     }
+
+    view->closeWindow();
 
 }
 

@@ -138,7 +138,7 @@ void Body::draw() {
 
     DrawSphereEx(Vector3{position.x, position.y, position.z},
                  radius,
-                 50, 50,
+                 5, 5,
                  Color{(unsigned char) (color.x * 255),
                        (unsigned char) (color.y * 255),
                        (unsigned char) (color.z * 255), 255});
