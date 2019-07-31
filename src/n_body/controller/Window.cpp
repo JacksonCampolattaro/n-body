@@ -44,10 +44,10 @@ Window::Window() {
     for (int i = 0; i < presetBodies.size(); ++i) {
         bodies.push_back(*presetBodies[i]);
     }
-    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");*/
+    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");*/
 
     // Loading bodies from an XML file
-    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
 
 
 }

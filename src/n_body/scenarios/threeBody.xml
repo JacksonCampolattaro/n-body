@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cereal>
+	<bodyList size="dynamic">
+		<value0>
+			<position.x>20</position.x>
+			<position.y>50</position.y>
+			<position.z>-300</position.z>
+			<velocity.x>0</velocity.x>
+			<velocity.y>0</velocity.y>
+			<velocity.z>0</velocity.z>
+			<mass>500000</mass>
+			<fixed>false</fixed>
+			<passive>false</passive>
+			<color.x>1</color.x>
+			<color.y>0</color.y>
+			<color.z>0</color.z>
+			<radius>14.397060394287109</radius>
+			<density>40</density>
+		</value0>
+		<value1>
+			<position.x>0</position.x>
+			<position.y>-50</position.y>
+			<position.z>-400</position.z>
+			<velocity.x>0</velocity.x>
+			<velocity.y>0</velocity.y>
+			<velocity.z>0</velocity.z>
+			<mass>500000</mass>
+			<fixed>false</fixed>
+			<passive>false</passive>
+			<color.x>1</color.x>
+			<color.y>1</color.y>
+			<color.z>1</color.z>
+			<radius>14.397060394287109</radius>
+			<density>40</density>
+		</value1>
+		<value2>
+			<position.x>-20</position.x>
+			<position.y>0</position.y>
+			<position.z>-700</position.z>
+			<velocity.x>0</velocity.x>
+			<velocity.y>0</velocity.y>
+			<velocity.z>0</velocity.z>
+			<mass>500000</mass>
+			<fixed>false</fixed>
+			<passive>false</passive>
+			<color.x>1</color.x>
+			<color.y>1</color.y>
+			<color.z>0</color.z>
+			<radius>14.397060394287109</radius>
+			<density>40</density>
+		</value2>
+	</bodyList>
+</cereal>
+

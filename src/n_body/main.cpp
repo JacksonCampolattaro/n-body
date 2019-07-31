@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 
     return application->run(argc, argv);*/
 
-    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
 
     auto p = new PhysicsContext();
     p->setPower(2)->setG(.02)->setT(0.001);
