@@ -32,12 +32,28 @@ void Controller::run() {
     cout << "'.' Represents the controller running in the background." << endl;
     cout << "Signals sent from inside the simulation will be printed here." << endl;
 
-    auto spawnWindow = []() {
 
-        auto v = new View(1000, 1000, "title");
+    auto v = new View(1000, 1000, "title");
+    v->setDrawables(bodies);
+
+    auto spawnWindow = [](View *v) {
+
         v->createWindow();
         v->loop();
     };
+
+    std::thread rendering_thread(spawnWindow, v);
+    std::thread calculation_thread(&Controller::increment, this);
+
+    rendering_thread.join();
+    calculation_thread.join();
+
+/*
+    auto spawnWindow = []() {
+
+        //v->createWindow();
+    };
+
     std::thread rendering_thread(spawnWindow);
     std::thread calculation_thread(&Controller::increment, this);
 
@@ -47,8 +63,7 @@ void Controller::run() {
         cout << "." << endl;
     }
 
-    rendering_thread.join();
-    calculation_thread.join();
+    calculation_thread.join();*/
 }
 
 void Controller::increment() {
@@ -78,6 +93,7 @@ void Controller::on_shifting_buffers() {
 void Controller::on_solver_complete() {
 
     cout << "Finished calculating frame " << frameNum << "/" << numFrames << endl;
+    cout << bodies->at(1).toString() << endl;
 
     frameNum++;
 
