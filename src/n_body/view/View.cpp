@@ -24,7 +24,7 @@ void View::createWindow() {
     InitWindow(width, height, title);
 
     // Configuration for the window
-    SetWindowMinSize(320, 240);
+    SetWindowMinSize(100, 100);
 
     // Defining the camera
     camera.position = (Vector3) {0.0f, 1.0f, 0.0f};
@@ -67,6 +67,40 @@ void View::loop() {
         }
         EndDrawing();
     }
+
+    CloseWindow();
+}
+
+void View::update() {
+
+    UpdateCamera(&camera);
+
+    BeginDrawing();
+    {
+
+        ///ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
+
+        BeginMode3D(camera);
+        {
+
+            DrawGrid(10, 1.0f);
+
+            // 3d Mode
+            for (Body b : *drawables) {
+                b.draw();
+            }
+
+        }
+        EndMode3D();
+
+        DrawFPS(10, 10);
+    }
+    EndDrawing();
+
+}
+
+void View::closeWindow() {
 
     CloseWindow();
 }

@@ -21,6 +21,10 @@ public:
 
     void loop();
 
+    void update();
+
+    void closeWindow();
+
     void setDrawables(std::vector<Body> *drawables);
 
 private:
