@@ -18,6 +18,8 @@ int main(int argc, char **argv) {
     auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
 
     auto p = new PhysicsContext();
+    p->setG(10);
+    p->setT(1);
 
     auto s = new BarnesHutSolver();
 

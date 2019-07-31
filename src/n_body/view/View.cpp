@@ -27,7 +27,7 @@ void View::createWindow() {
     SetWindowMinSize(320, 240);
 
     // Defining the camera
-    camera.position = (Vector3) {4.0f, 2.0f, 4.0f};
+    camera.position = (Vector3) {4.0f, 0.0f, 0.0f};
     camera.target = (Vector3) {0.0f, -4.0f, -20.0f};
     camera.up = (Vector3) {0.0f, 1.0f, 0.0f};
     camera.fovy = 60.0f;
@@ -40,9 +40,6 @@ void View::createWindow() {
 
 void View::loop() {
 
-
-    auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody.xml");
-
     while (!WindowShouldClose()) {
 
         UpdateCamera(&camera);
@@ -50,15 +47,16 @@ void View::loop() {
         BeginDrawing();
         {
 
-            //ClearBackground(RAYWHITE);
+            ///ClearBackground(RAYWHITE);
             ClearBackground(BLACK);
 
             BeginMode3D(camera);
             {
 
                 // 3d Mode
-
-                draw(&b);
+                for (Body b : *drawables) {
+                    b.draw();
+                }
 
             }
             EndMode3D();
@@ -71,10 +69,7 @@ void View::loop() {
     CloseWindow();
 }
 
-void View::draw(std::vector<Body> *drawables) {
+void View::setDrawables(std::vector<Body> *drawables) {
 
-    for (Body b : *drawables) {
-        b.draw();
-    }
-
+    this->drawables = drawables;
 }

@@ -21,7 +21,7 @@ public:
 
     void loop();
 
-    void draw(std::vector<Body> *drawables);
+    void setDrawables(std::vector<Body> *drawables);
 
 private:
 
@@ -30,6 +30,8 @@ private:
     const char *title;
 
     Camera camera = { 0 };
+
+    std::vector<Body> *drawables;
 
 };
 

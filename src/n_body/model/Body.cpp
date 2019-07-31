@@ -116,8 +116,21 @@ void Body::drift(float deltaT) {
 void Body::shiftBuffers() {
 
     // Updating position and velocity
-    this->position = this->nextPosition;
-    this->velocity = this->nextVelocity;
+    /*Atomic write is used so that the renderer can access position values safely*/
+
+    #pragma omp atomic write
+    position.x = nextPosition.x;
+    #pragma omp atomic write
+    position.y = nextPosition.y;
+    #pragma omp atomic write
+    position.z = nextPosition.z;
+
+    #pragma omp atomic write
+    velocity.x = nextVelocity.x;
+    #pragma omp atomic write
+    velocity.y = nextVelocity.y;
+    #pragma omp atomic write
+    velocity.z = nextVelocity.z;
 
 }
 
