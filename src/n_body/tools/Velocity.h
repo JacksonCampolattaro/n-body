@@ -18,7 +18,12 @@ public:
     std::string toString();
 
     template<class Archive>
-    void serialize(Archive & ar);
+    void serialize(Archive & ar)
+    {
+        ar(
+                cereal::make_nvp("Δx", this->x), cereal::make_nvp("Δy", this->y), cereal::make_nvp("Δz", this->z)
+        );
+    }
 };
 
 

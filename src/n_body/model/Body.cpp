@@ -5,13 +5,9 @@
 #include "Body.h"
 #include <raylib.h>
 
-Body::Body(glm::vec3 position) {
+Body::Body(Position position) : position(position), nextPosition(position) {}
 
-    this->position = position;
-    this->nextPosition = position;
-}
-
-Body *Body::setVelocity(glm::vec3 velocity) {
+Body *Body::setVelocity(Velocity velocity) {
 
     this->velocity = velocity;
     this->nextVelocity = velocity;
@@ -51,7 +47,7 @@ Body *Body::makePassive() {
     return this;
 }
 
-Body *Body::setColor(glm::vec3 color) {
+Body *Body::setColor(rgbaColor color) {
 
     this->color = color;
 
@@ -110,7 +106,7 @@ void Body::kick(glm::vec3 deltaV) {
 
 void Body::drift(float deltaT) {
 
-    this->nextPosition = this->position + (this->velocity * deltaT);
+    this->nextPosition = Position(this->position + (this->velocity * deltaT));
 }
 
 void Body::shiftBuffers() {
@@ -118,18 +114,18 @@ void Body::shiftBuffers() {
     // Updating position and velocity
     /*Atomic write is used so that the renderer can access position values safely*/
 
-    #pragma omp atomic write
+#pragma omp atomic write
     position.x = nextPosition.x;
-    #pragma omp atomic write
+#pragma omp atomic write
     position.y = nextPosition.y;
-    #pragma omp atomic write
+#pragma omp atomic write
     position.z = nextPosition.z;
 
-    #pragma omp atomic write
+#pragma omp atomic write
     velocity.x = nextVelocity.x;
-    #pragma omp atomic write
+#pragma omp atomic write
     velocity.y = nextVelocity.y;
-    #pragma omp atomic write
+#pragma omp atomic write
     velocity.z = nextVelocity.z;
 
 }
@@ -138,10 +134,11 @@ void Body::draw() {
 
     DrawSphereEx(Vector3{position.x, position.y, position.z},
                  radius,
-                 5, 5,
-                 Color{(unsigned char) (color.x * 255),
-                       (unsigned char) (color.y * 255),
-                       (unsigned char) (color.z * 255), 255});
+                 10, 10,
+                 Color{(unsigned char) (color.r * 255),
+                       (unsigned char) (color.g * 255),
+                       (unsigned char) (color.b * 255),
+                       (unsigned char) (color.a * 255),});
 }
 
 std::string Body::toString() {
