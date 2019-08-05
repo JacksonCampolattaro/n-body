@@ -11,6 +11,9 @@
 #include <cereal/archives/xml.hpp>
 
 #include "../view/Drawable.h" // Body extends Drawable
+#include "../tools/Position.h"
+#include "../tools/Velocity.h"
+#include "../tools/rgbaColor.h"
 
 /**
  * Intended to streamline the functionality of the old body
@@ -25,7 +28,7 @@ public:
      * The constructor only takes in the position, all other values start at their defaults.
      * @param position The starting location of the body (as a three dimensional vector)
      */
-    explicit Body(glm::vec3 position = glm::vec3(0, 0, 0));
+    explicit Body(Position position = Position(0, 0, 0));
 
 
     // Setters (to be used as named parameters)
@@ -35,7 +38,7 @@ public:
      * @param velocity The velocity to set
      * @return This body, for use in chaining named parameters.
      */
-    Body *setVelocity(glm::vec3 velocity);
+    Body *setVelocity(Velocity velocity);
 
     /**
      * Sets the mass of the body to something other than 100
@@ -68,7 +71,7 @@ public:
      * @param color the color to set
      * @return This body, for use in chaining named parameters.
      */
-    Body *setColor(glm::vec3 color);
+    Body *setColor(rgbaColor color);
 
     /**
      * Forces the body to be drawn with a specific radius, regardless of its density
@@ -160,10 +163,10 @@ public:
     void serialize(Archive & ar)
     {
         ar(
-                CEREAL_NVP(position.x), CEREAL_NVP(position.y), CEREAL_NVP(position.z),
-                CEREAL_NVP(velocity.x), CEREAL_NVP(velocity.y), CEREAL_NVP(velocity.z),
+                CEREAL_NVP(position),
+                CEREAL_NVP(velocity),
                 CEREAL_NVP(mass), CEREAL_NVP(fixed), CEREAL_NVP(passive),
-                CEREAL_NVP(color.x), CEREAL_NVP(color.y), CEREAL_NVP(color.z),
+                CEREAL_NVP(color),
                 CEREAL_NVP(radius), CEREAL_NVP(density)
                 );
 
@@ -175,13 +178,13 @@ private:
     // Core properties
 
     /*Core properties of the Body*/
-    glm::vec3 position;
-    glm::vec3 velocity = glm::vec3(0, 0, 0);
+    Position position;
+    Velocity velocity = glm::vec3(0, 0, 0);
     float mass = 100.0;
 
     /*By updating these instead of original values, order of operations doesn't affect results*/
-    glm::vec3 nextPosition;
-    glm::vec3 nextVelocity;
+    Position nextPosition;
+    Velocity nextVelocity = glm::vec3(0, 0, 0);
 
 
     // Simulation properties
@@ -195,8 +198,8 @@ private:
 
     // Aesthetic properties
 
-    /*Color is stored as a vector of floats, in the format <r, g, b>, white by default*/
-    glm::vec3 color = glm::vec3(1, 1, 1);
+    /*rgbaColor is stored as a vector of floats, in the format <r, g, b, a>, white by default*/
+    rgbaColor color = rgbaColor(1, 1, 1, 1);
 
     /*The radius of the circle representing the Body*/
     float radius = 10.0;
