@@ -5,18 +5,17 @@
 #include <gtkmm/application.h>
 #include <thread>
 #include "controller/Application.h"
-#include "Controller.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "scenarios/ScenarioStream.h"
 #include "scenarios/Preset.h"
 
 int main(int argc, char **argv) {
 
-    /*auto application = new Application();
+    auto application = new Application();
 
-    return application->run(argc, argv);*/
+    return application->run(argc, argv);
 
-    //auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
+    /*//auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
     auto preset = Preset();
     preset.blender();
     vector<Body> b;
@@ -37,6 +36,6 @@ int main(int argc, char **argv) {
     auto v = new View(4000, 2000, "title");
 
     Controller c = Controller(&b, p, s, v);
-    c.run();
+    c.run();*/
 
 }
