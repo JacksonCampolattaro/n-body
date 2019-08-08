@@ -6,7 +6,6 @@
 #include "Window.h"
 #include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "../Controller.h"
 #include "../scenarios/ScenarioStream.h"
 
 Window::Window() {
@@ -16,7 +15,6 @@ Window::Window() {
     notebook.set_can_focus(false);
     notebook.append_page(physicsPage, "Physics");
     notebook.append_page(viewPage, "View");
-    viewPage.pack_start(recorderCreator, Gtk::PACK_SHRINK);
     notebook.append_page(solverCreator, "Solver");
     mainBox.pack_start(notebook);
 
@@ -36,7 +34,7 @@ Window::Window() {
     myPreset.blender();
 
 
-    // The physics settings page should match the preset
+    // The physics settings page should match the preset by default
     physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
 
     // Saving bodies from a preset to an XML file
@@ -47,7 +45,7 @@ Window::Window() {
     ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");*/
 
     // Loading bodies from an XML file
-    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
+    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
 
 
 }
@@ -63,10 +61,7 @@ void Window::on_run_clicked() {
     // Creating the view
     auto view = viewPage.createView();
 
-    // Creating the recorder
-    auto recorder = recorderCreator.createRecorder(view);
-
     // Launching the program
-    ///auto controller = Controller(model, view, &bodies, recorder);
-    ///controller.run();
+    Controller controller = Controller(&bodies, physicsContext, solver, view);
+    controller.run();
 }

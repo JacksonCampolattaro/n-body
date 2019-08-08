@@ -7,7 +7,6 @@
 
 
 #include "view/View.h"
-#include "view/Recorder.h"
 #include "model/calculation/Solver.h"
 
 #include <gtkmm.h>
@@ -23,7 +22,7 @@ class Controller {
 
 public:
 
-    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr, Recorder *recorder = nullptr);
+    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
 
     void run();
 
@@ -43,8 +42,6 @@ private:
     PhysicsContext *physics;
     View *view;
     vector<Body> *bodies;
-    // Recording is optional
-    Recorder *recorder = nullptr;
 
 
     int numFrames = 255000;
