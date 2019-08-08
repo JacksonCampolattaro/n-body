@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view, Recorder *recorder) {
+Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view) {
 
     solver->signal_preparing_solver().connect(sigc::mem_fun(*this, &Controller::on_preparing_solver));
     solver->signal_solving().connect(sigc::mem_fun(*this, &Controller::on_solving));
@@ -22,7 +22,6 @@ Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *so
     this->view = view;
     view->setDrawables(bodies);
     view->createWindow();
-    this->recorder = recorder;
 
 }
 
