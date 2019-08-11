@@ -7,9 +7,9 @@
 
 
 #include <gtkmm.h>
+#include "../Controller.h"
 #include "pages/physics_page/PhysicsContextCreator.h"
 #include "pages/view_page/ViewCreator.h"
-#include "pages/view_page/RecorderCreator.h"
 #include "pages/solver_page/SolverCreator.h"
 
 
@@ -32,7 +32,6 @@ protected:
 
     PhysicsContextCreator physicsPage;
     ViewCreator viewPage;
-    RecorderCreator recorderCreator;
     SolverCreator solverCreator;
 
     Gtk::ActionBar actionBar;

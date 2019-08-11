@@ -6,9 +6,8 @@
 #define N_BODY_CONTROLLER_H
 
 
-#include "model/Model.h"
 #include "view/View.h"
-#include "view/Recorder.h"
+#include "model/calculation/Solver.h"
 
 #include <gtkmm.h>
 #include <glm/glm.hpp>
@@ -23,26 +22,29 @@ class Controller {
 
 public:
 
-    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr, Recorder *recorder = nullptr);
+    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
 
     void run();
 
     void increment();
 
-    void on_solver_complete();
+    void on_preparing_solver();
 
-    void finishFrame();
+    void on_solving();
+
+    void on_shifting_buffers();
+
+    void on_solver_complete();
 
 private:
 
-    Model *model;
+    Solver *solver;
+    PhysicsContext *physics;
     View *view;
     vector<Body> *bodies;
-    // Recording is optional
-    Recorder *recorder = nullptr;
 
 
-    int numFrames = 255;
+    int numFrames = 255000;
     int frameNum = 0;
 
 };

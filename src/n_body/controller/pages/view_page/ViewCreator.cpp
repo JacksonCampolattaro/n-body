@@ -81,7 +81,6 @@ View *ViewCreator::createView() {
 
     auto dimensions = glm::ivec2(windowWidth_spinButton.get_value_as_int(), windowHeight_spinButton.get_value_as_int());
     const char *title = "n_body ViewPort";
-    auto view = new View();
-    view->setDimensions(dimensions)->setTitle(title);
+    auto view = new View(dimensions.x, dimensions.y, title);
     return view;
 }
