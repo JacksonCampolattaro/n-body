@@ -5,102 +5,37 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
-
-#include <GLFW/glfw3.h> // GLFW makes OpenGL simpler to use
 #include <glm/glm.hpp> // Include all of glm, because I'm handling many different types of vectors
 #include <vector> // Allows me to keep a list of things to draw
 #include "Drawable.h"
+#include "../model/Body.h"
+
+#include <raylib.h>
 
 class View {
 public:
 
-    // Constructor
+    View(int width, int height, const char *title);
 
-    /**
-     * Creates the viewport with default parameters
-     */
-    explicit View();
+    void createWindow();
 
+    void loop();
 
-    // For external use
+    void update();
 
-    /*Draws a list of drawables to the screen, then updates the buffer*/
-    //void draw(std::vector<Drawable *> drawables);
+    void closeWindow();
 
-    /**
-     * Draws a list of drawables to the window
-     * @param drawables the items to draw
-     * @return false if the window is closed
-     */
-    bool draw(std::vector<Drawable *> drawables);
-
-
-    // Setters (with support for chaining)
-
-    /**
-     * Configures the shape of the window
-     * @param dimensions Vector representing the <X, Y> dimensions of the window
-     * @return This viewport, for use in chaining named parameters.
-     */
-    View *setDimensions(glm::ivec2 dimensions);
-
-    /**
-     * Getter for the shape of the window
-     * @return Dimensions of the window as an integer vector
-     */
-    const glm::ivec2 &getDimensions() const;
-
-    /**
-     * Sets the title of the window
-     * @param title The new title
-     * @return This viewport, for use in chaining named parameters.
-     */
-    View *setTitle(const char *title);
-
-
-    // GLFW boilerplate
-
-    /**
-     * GLFW's method for reporting errors
-     * @param error The error to be passed
-     * @param description The description of the error
-     */
-    static void handleError(int error, const char *description);
-
-    /**
-     * GLFW method for responding to a change in the window's size
-     * @param window The window that was resized
-     * @param width The new width of the window in pixels
-     * @param height The new height of the window in pixels
-     */
-    static void handleResize(GLFWwindow *window, int width, int height);
-
+    void setDrawables(std::vector<Body> *drawables);
 
 private:
 
-    // Parameters defining the window
+    int width;
+    int height;
+    const char *title;
 
-    /*A reference to the window itself*/
-    GLFWwindow *window = nullptr;
+    Camera camera = { 0 };
 
-    /*Vector representing the <X, Y> dimensions of the window*/
-    glm::ivec2 dimensions = glm::ivec2(1920, 1080);
-
-    /*The label of the window*/
-    const char *title = "GLFW Viewport";
-
-
-    // Parameters affecting image quality
-
-    /*Multisampling prevents jagged, pixellated edges on diagonal lines and curves*/
-    bool multisamplingEnabled = true;
-    unsigned int samplingRatio = 8;
-
-
-    // References to items to be drawn
-
-    /*The list of drawables that will be put on the screen each time it's updated*/
-    std::vector<Drawable *> drawables;
+    std::vector<Body> *drawables;
 
 };
 

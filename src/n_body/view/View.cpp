@@ -2,139 +2,112 @@
 // Created by jackcamp on 4/10/19.
 //
 
-#include <cstdio>
-#include <GL/glu.h>
 #include <iostream>
+#include <zconf.h>
 #include "View.h"
+#include "../scenarios/ScenarioStream.h"
 
-View::View() {
 
-    // TODO Boilerplate code that creates the window could be improved
-    glfwMakeContextCurrent(window);
+View::View(int width, int height, const char *title) {
 
-    // Initializing GLFW
-    if (!glfwInit()) {
-        // Exits if GLFW Fails to load
-        exit(EXIT_FAILURE);
-    }
+    this->width = width;
+    this->height = height;
+    this->title = title;
+}
 
-    // Setting the function for handling errors
-    glfwSetErrorCallback(handleError);
+void View::createWindow() {
 
-    if (multisamplingEnabled) {
-        // Enabling antialiasing
-        glEnable(GL_MULTISAMPLE);
-        glfwWindowHint(GLFW_SAMPLES, samplingRatio);
-    }
+    // Setting configuration options
+    SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE);
 
     // Creating the window
-    window = glfwCreateWindow(dimensions.x, dimensions.y, title, nullptr, nullptr);
-    if (!window) {
-        // Kills the program if the window fails to load
-        glfwTerminate();
-        exit(EXIT_FAILURE);
+    InitWindow(width, height, title);
+
+    // Configuration for the window
+    SetWindowMinSize(100, 100);
+
+    // Defining the camera
+    camera.position = (Vector3) {0.0f, 1.0f, 0.0f};
+    camera.target = (Vector3) {0.0f, 10.0f, -10.0f};
+    camera.up = (Vector3) {0.0f, 1.0f, 0.0f};
+    camera.fovy = 60.0f;
+    camera.type = CAMERA_PERSPECTIVE;
+    SetCameraMode(camera, CAMERA_FIRST_PERSON);
+
+    // TODO is this meaningful if I'm not using raylib's loop?
+    //SetTargetFPS(60);
+}
+
+void View::loop() {
+
+    while (!WindowShouldClose()) {
+
+        UpdateCamera(&camera);
+
+        BeginDrawing();
+        {
+
+            ///ClearBackground(RAYWHITE);
+            ClearBackground(BLACK);
+
+            BeginMode3D(camera);
+            {
+
+                DrawGrid(10, 1.0f);
+
+                // 3d Mode
+                for (Body b : *drawables) {
+                    b.draw();
+                }
+
+            }
+            EndMode3D();
+
+            DrawFPS(10, 10);
+        }
+        EndDrawing();
     }
 
-    // Setting the function for handling window resizing
-    glfwSetWindowSizeCallback(window, handleResize);
-
-    // Setting the window's minimum size
-    glfwSetWindowSizeLimits(window, 200, 200, GLFW_DONT_CARE, GLFW_DONT_CARE);
-
-    // Sets the window as the current OpenGL context
-    glfwMakeContextCurrent(window);
-
-    // Sets the number of frames between buffer swaps
-    glfwSwapInterval(1);
-
-    // Sets the perspective before beginning the loop
-    handleResize(window, dimensions.x, dimensions.y);
+    CloseWindow();
 }
 
-bool View::draw(std::vector<Drawable *> drawables) {
+void View::update() {
 
+    UpdateCamera(&camera);
 
-    // TODO might be necessary for rendering in a separate thread
-    glfwMakeContextCurrent(window);
+    std::cout << camera.position.x << camera.position.y << camera.position.z << std::endl;
 
-    // Closing the Viewport when the program is closed
-    if (glfwWindowShouldClose(window)) {
+    BeginDrawing();
+    {
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return false;
-        //exit(EXIT_SUCCESS);
+        ///ClearBackground(RAYWHITE);
+        ClearBackground(BLACK);
+
+        BeginMode3D(camera);
+        {
+
+            DrawGrid(10, 1.0f);
+
+            // 3d Mode
+            for (Body b : *drawables) {
+                b.draw();
+            }
+
+        }
+        EndMode3D();
+
+        DrawFPS(10, 10);
     }
+    EndDrawing();
 
-    // Otherwise, perform standard draw operations
-
-    // Sets the background to black
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-    // Clear information and sets up the 3d Model world
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_SMOOTH);
-    glEnable(GL_BLEND);
-    glLoadIdentity();
-
-
-    // Calls the draw function of every registered Drawable
-    // TODO There might be advantages to multithreading this, it depends on if the GPU is the limiting factor
-    for (int d = 0; d < drawables.size(); ++d) {
-        drawables[d]->draw();
-    }
-
-    // Swapping the frame buffers
-    glfwSwapBuffers(window);
-
-    // Responding to input
-    glfwPollEvents();
-
-    return true;
 }
 
-View *View::setDimensions(glm::ivec2 dimensions) {
+void View::closeWindow() {
 
-    this->dimensions = dimensions;
-    glfwSetWindowSize(window, dimensions.x, dimensions.y);
-
-    return this;
+    CloseWindow();
 }
 
-const glm::ivec2 &View::getDimensions() const {
-    return dimensions;
-}
+void View::setDrawables(std::vector<Body> *drawables) {
 
-View *View::setTitle(const char *title) {
-
-    glfwSetWindowTitle(window, title);
-
-    return this;
-}
-
-void View::handleError(int error, const char *description) {
-
-    fprintf(stderr, "Error: %s\n", description);
-}
-
-void View::handleResize(GLFWwindow *window, int width, int height) {
-
-    // TODO Must be reworked before enabling camera movement
-    glfwMakeContextCurrent(window);
-
-    // Getting the aspect ratio of the window
-    float ratio = width / (float) height;
-
-    // Setting the window to the right size
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Setting the camera perspective to match the window aspect ratio
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity(); // Resets the camera
-
-    // Resetting the camera perspective
-    gluPerspective(60, ratio, 0.01, 10000);
+    this->drawables = drawables;
 }

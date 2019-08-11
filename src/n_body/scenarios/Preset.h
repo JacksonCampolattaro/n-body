@@ -7,19 +7,19 @@
 
 
 #include "../view/View.h"
-#include "../model/Model.h"
+#include "../model/PhysicsContext.h"
 
 
 // Useful constants
 
-const glm::vec3 white = glm::vec3(1, 1, 1);
-const glm::vec3 yellow = glm::vec3(1, 1, 0);
-const glm::vec3 red = glm::vec3(1, 0, 0);
-const glm::vec3 orange = glm::vec3(1, 0.5, 0);
-const glm::vec3 green = glm::vec3(0, 1, 0);
-const glm::vec3 blue = glm::vec3(0, 0, 1);
-const glm::vec3 teal = glm::vec3(0, 1, 1);
-const glm::vec3 grey = glm::vec3(.5, .5, .5);
+const auto white = rgbaColor(1, 1, 1, 1);
+const auto yellow = rgbaColor(1, 1, 0, 1);
+const auto red = rgbaColor(1, 0, 0, 1);
+const auto orange = rgbaColor(1, 0.5, 0, 1);
+const auto green = rgbaColor(0, 1, 0, 1);
+const auto blue = rgbaColor(0, 0, 1, 1);
+const auto teal = rgbaColor(0, 1, 1, 1);
+const auto grey = rgbaColor(.5, .5, .5, 1);
 
 class Preset {
 
@@ -27,7 +27,8 @@ public:
 
     // Tools
 
-    void cubicGrid(glm::vec3 cornerPosition = glm::vec3(-100, -100, -200), glm::vec3 velocity = glm::vec3(0.0f, 0.0f, -100.0f),
+    void cubicGrid(Position cornerPosition = Position(-100, -100, -200), Velocity velocity = glm::vec3(0.0f, 0.0f,
+                                                                                                       -100.0f),
                    glm::vec3 size = glm::vec3(20, 20, 20), float spacing = 10.0f, float mass = 10000.0f);
 
 // Example configurations
