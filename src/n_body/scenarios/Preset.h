@@ -6,7 +6,6 @@
 #define N_BODY_PRESET_H
 
 
-#include "../view/View.h"
 #include "../model/PhysicsContext.h"
 
 

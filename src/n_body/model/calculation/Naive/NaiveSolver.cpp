@@ -29,5 +29,5 @@ void NaiveSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
         }
     }
 
-    signal_complete().emit();
+    ///signal_complete().emit();
 }

@@ -6,10 +6,8 @@
 #define N_BODY_CONTROLLER_H
 
 
-#include "view/View.h"
 #include "model/calculation/Solver.h"
 
-#include <gtkmm.h>
 #include <glm/glm.hpp>
 #include <iostream>
 #include <iomanip>
@@ -22,7 +20,7 @@ class Controller {
 
 public:
 
-    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
+    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver);
 
     void run();
 
@@ -40,7 +38,6 @@ private:
 
     Solver *solver;
     PhysicsContext *physics;
-    View *view;
     vector<Body> *bodies;
 
 
