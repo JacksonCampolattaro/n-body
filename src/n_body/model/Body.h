@@ -10,16 +10,11 @@
 #include <glm/vec3.hpp> // Used for holding 3d vectors
 #include <cereal/archives/xml.hpp>
 
-#include "../view/Drawable.h" // Body extends Drawable
 #include "../tools/Position.h"
 #include "../tools/Velocity.h"
 #include "../tools/rgbaColor.h"
 
-/**
- * Intended to streamline the functionality of the old body
- * The goal is to retain all the same features, while reducing the number of methods.
- */
-class Body : public Drawable {
+class Body {
 public:
 
     // Constructor
@@ -151,7 +146,7 @@ public:
     /**
      * Draws a circle at the location of the body
      */
-    void draw() override;
+    void draw();
 
     /**
      * Converts the body to a string
