@@ -41,7 +41,7 @@ private:
     vector<Body> *bodies;
 
 
-    int numFrames = 255000;
+    int numFrames = 1000;
     int frameNum = 0;
 
 };
