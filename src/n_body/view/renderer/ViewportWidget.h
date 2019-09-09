@@ -10,23 +10,17 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DCore/Qt3DCore>
 
-class ViewportWidget : public QWidget {
+class ViewportWidget : public Qt3DExtras::Qt3DWindow {
 
 public:
 
     ViewportWidget();
 
+    ViewportWidget(Qt3DCore::QEntity *rootEntity);
 
 private:
 
-    // View
-    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
 
-    // Root entity
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-
-    // Camera
-    Qt3DRender::QCamera *cameraEntity = view->camera();
 };
 
 

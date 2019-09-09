@@ -9,6 +9,7 @@
 #include <string> // Used by the toString method
 #include <glm/vec3.hpp> // Used for holding 3d vectors
 #include <cereal/archives/xml.hpp>
+#include <Qt3DCore/QEntity>
 
 #include "../tools/Position.h"
 #include "../tools/Velocity.h"
@@ -201,6 +202,8 @@ private:
 
     /*Used only to generate the radius based on the mass*/
     float density = 1.0;
+
+    Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity();
 
 
     // Helper methods

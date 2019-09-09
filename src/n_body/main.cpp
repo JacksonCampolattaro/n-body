@@ -13,6 +13,8 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QCheckBox>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
 
 int main(int argc, char **argv) {
 
@@ -37,17 +39,11 @@ int main(int argc, char **argv) {
 
     QApplication app(argc, argv);
 
+    auto viewPort = new ViewportWidget;
+    viewPort->setMinimumSize(QSize(200, 100));
+    viewPort->setTitle("Test");
 
-    auto view = new ViewportWidget;
-    view->setMinimumSize(QSize(200, 100));
-
-    auto widget = new QWidget;
-    auto hLayout = new QHBoxLayout(widget);
-    hLayout->addWidget(view, 1);
-    auto test = new QCheckBox();
-    hLayout->addWidget(test);
-
-
-    widget->show();
+    viewPort->show();
+    viewPort->resize(480, 360);
     return app.exec();
 }
