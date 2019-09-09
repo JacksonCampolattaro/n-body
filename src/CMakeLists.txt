@@ -29,8 +29,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         n_body/model/calculation/BarnesHut/BarnesHutSolver.cpp
         n_body/model/calculation/BarnesHut/BarnesHutSolver.h
 
-        n_body/view/renderer/Drawable.cpp
-        n_body/view/renderer/Drawable.h
+        n_body/view/Drawable.cpp
+        n_body/view/Drawable.h
 
         n_body/Controller.cpp
         n_body/Controller.h
@@ -45,7 +45,12 @@ add_executable(${CMAKE_PROJECT_NAME}
         n_body/tools/Velocity.cpp
         n_body/tools/Velocity.h
         n_body/tools/rgbaColor.cpp
-        n_body/tools/rgbaColor.h n_body/view/renderer/Drawable.cpp n_body/view/renderer/Drawable.h n_body/view/renderer/ViewportWidget.cpp n_body/view/renderer/ViewportWidget.h)
+        n_body/tools/rgbaColor.h
+
+        n_body/view/Drawable.cpp
+        n_body/view/Drawable.h
+        n_body/view/ViewportWidget.cpp
+        n_body/view/ViewportWidget.h)
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 ${OpenMP_CXX_FLAGS}")

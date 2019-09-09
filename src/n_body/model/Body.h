@@ -9,6 +9,10 @@
 #include <string> // Used by the toString method
 #include <glm/vec3.hpp> // Used for holding 3d vectors
 #include <cereal/archives/xml.hpp>
+
+#include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DCore/QEntity>
 
 #include "../tools/Position.h"
@@ -203,6 +207,10 @@ private:
     /*Used only to generate the radius based on the mass*/
     float density = 1.0;
 
+
+    Qt3DExtras::QSphereMesh *mesh = new Qt3DExtras::QSphereMesh();
+    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity();
 
 

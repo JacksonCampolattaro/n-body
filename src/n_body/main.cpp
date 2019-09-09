@@ -9,12 +9,9 @@
 #include "scenarios/Preset.h"
 
 
-#include <n_body/view/renderer/ViewportWidget.h>
+#include <n_body/view/ViewportWidget.h>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QCheckBox>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSphereMesh>
 
 int main(int argc, char **argv) {
 
@@ -39,8 +36,10 @@ int main(int argc, char **argv) {
 
     QApplication app(argc, argv);
 
+    auto b = new Body(Position(0, 1, 2));
+
     auto viewPort = new ViewportWidget;
-    viewPort->setMinimumSize(QSize(200, 100));
+    viewPort->setMinimumSize(QSize(1920, 1080));
     viewPort->setTitle("Test");
 
     viewPort->show();

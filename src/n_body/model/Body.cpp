@@ -2,10 +2,31 @@
 // Created by jackcamp on 2/25/19.
 //
 
-#include "Body.h"
-#include <raylib.h>
 
-Body::Body(Position position) : position(position), nextPosition(position) {}
+#include "Body.h"
+
+Body::Body(Position position) : position(position), nextPosition(position) {
+
+    // Setting properties of the drawable
+
+    /*Sphere shape data*/
+    mesh->setRings(20);
+    mesh->setSlices(20);
+    mesh->setRadius(radius);
+
+    /*Sphere color data*/
+    material->setDiffuse(QColor(QRgb(0xa69929)));
+    material->setAmbient(QColor(QRgb(0xa69929)));
+    material->setSpecular(QColor(QRgb(0xa69929)));
+    material->setShininess(0);
+
+    /*Sphere position data*/
+    transform->setTranslation(QVector3D(position.x, position.y, position.z));
+
+    sphereEntity->addComponent(mesh);
+    sphereEntity->addComponent(material);
+    sphereEntity->addComponent(transform);
+}
 
 Body *Body::setVelocity(Velocity velocity) {
 
