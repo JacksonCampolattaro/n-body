@@ -15,9 +15,9 @@ Body::Body(Position position) : position(position), nextPosition(position) {
     mesh->setRadius(radius);
 
     /*Sphere color data*/
-    material->setDiffuse(QColor(QRgb(0xa69929)));
-    material->setAmbient(QColor(QRgb(0xa69929)));
-    material->setSpecular(QColor(QRgb(0xa69929)));
+    material->setDiffuse(QColor(QRgb(0xffffff)));
+    material->setAmbient(QColor(QRgb(0xaffffff)));
+    material->setSpecular(QColor(QRgb(0xaffffff)));
     material->setShininess(0);
 
     /*Sphere position data*/
@@ -72,12 +72,17 @@ Body *Body::setColor(rgbaColor color) {
 
     this->color = color;
 
+    material->setDiffuse(QColor(QRgb(0xffffff)));
+    material->setAmbient(QColor(QRgb(0xaffffff)));
+    material->setSpecular(QColor(QRgb(0xaffffff)));
+
     return this;
 }
 
 Body *Body::setRadius(float radius) {
 
     this->radius = radius;
+    mesh->setRadius(radius);
 
     return this;
 }
@@ -148,6 +153,8 @@ void Body::shiftBuffers() {
     velocity.y = nextVelocity.y;
 #pragma omp atomic write
     velocity.z = nextVelocity.z;
+
+    transform->setTranslation(QVector3D(position.x, position.y, position.z));
 
 }
 

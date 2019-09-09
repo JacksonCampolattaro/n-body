@@ -59,9 +59,11 @@ ViewportWidget::ViewportWidget() {
     sphereTransform->setTranslation(QVector3D(0.0f, 0.0f, -10.0f));
     /*Sphere material*/
     Qt3DExtras::QPhongMaterial *sphereMaterial = new Qt3DExtras::QPhongMaterial();
-    sphereMaterial->setDiffuse(QColor(QRgb(0xa69929)));
-    sphereMaterial->setAmbient(QColor(QRgb(0xa69929)));
-    sphereMaterial->setSpecular(QColor(QRgb(0xa69929)));
+    QColor c;
+    c.setRgbF(0.7, 0.6, 0.1     );
+    sphereMaterial->setDiffuse(c);
+    sphereMaterial->setAmbient(c);
+    sphereMaterial->setSpecular(c);
     sphereMaterial->setShininess(0);
     /*Assembling the sphere*/
      auto sphereEntity = new Qt3DCore::QEntity(rootEntity);
