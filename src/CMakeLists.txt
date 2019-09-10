@@ -6,7 +6,16 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(OpenMP REQUIRED)
 
 # Handling Qt5, including its own project management system
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets 3DCore 3DExtras 3DRender 3DInput)
+find_package(Qt5 REQUIRED COMPONENTS
+        Core
+        Gui
+        Widgets
+        3DCore
+        3DExtras
+        3DRender
+        3DInput
+        )
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -58,5 +67,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         Qt5::3DCore
         Qt5::3DExtras
         Qt5::3DRender
-        Qt5::3DInput)
+        Qt5::3DInput
+        )
 

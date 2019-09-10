@@ -28,6 +28,8 @@ private:
     Solver *solver;
     PhysicsContext *physics;
     vector<Body> *bodies;
+
+    Controller *controller;
 };
 
 

@@ -17,7 +17,6 @@ float BarnesHutSolver::getTheta() const {
 
 void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
 
-
     ///signal_preparing_solver().emit();
 
     // Creating the tree

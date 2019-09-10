@@ -213,7 +213,9 @@ private:
     Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity();
+
 public:
+
     Qt3DCore::QEntity *getSphereEntity() const;
 
 private:

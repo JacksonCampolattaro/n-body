@@ -155,7 +155,11 @@ void Body::shiftBuffers() {
 #pragma omp atomic write
     velocity.z = nextVelocity.z;
 
-    transform->setTranslation(QVector3D(position.x, position.y, position.z));
+    if (transform) {
+        transform->setTranslation(QVector3D(position.x, position.y, position.z));
+    }
+
+
 
 }
 

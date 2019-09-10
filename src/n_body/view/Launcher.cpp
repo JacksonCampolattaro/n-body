@@ -25,10 +25,12 @@ Launcher::Launcher() {
     hbox->addWidget(startButton);
     connect(startButton, &QPushButton::clicked, this, &Launcher::start);
 
-    auto stopButton = new QPushButton("Next", this);
-    hbox->addWidget(stopButton);
+    auto nextButton = new QPushButton("Next", this);
+    hbox->addWidget(nextButton);
+    connect(nextButton, &QPushButton::clicked, this, &Launcher::next);
 
     viewport->show();
+    resize(2000, 1000);
 
 }
 
@@ -43,7 +45,7 @@ void Launcher::start() {
         viewport->addEntity(b[i].getSphereEntity());
     }
     auto p = new PhysicsContext();
-    p->setPower(2)->setG(.02)->setT(0.001);
+    p->setPower(2)->setG(.02)->setT(0.1);
 
     auto s = new BarnesHutSolver();
     s->setTheta(0.9);
@@ -51,12 +53,16 @@ void Launcher::start() {
     solver = s;
     physics = p;
     bodies = &b;
+
+    controller = new Controller(&b, p, s);
 }
 
 void Launcher::next() {
 
-    for (int i = 0; i < 1000; ++i) {
+    /*for (int i = 0; i < 1; ++i) {
 
         solver->solve(bodies, physics);
-    }
+    }*/
+    (*bodies)[0].drift(1);
+    (*bodies)[0].shiftBuffers();
 }
