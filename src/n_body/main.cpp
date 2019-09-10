@@ -12,6 +12,7 @@
 #include <n_body/view/ViewportWidget.h>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
+#include <n_body/view/Launcher.h>
 
 int main(int argc, char **argv) {
 
@@ -36,13 +37,21 @@ int main(int argc, char **argv) {
 
     QApplication app(argc, argv);
 
-    auto b = new Body(Position(0, 1, 2));
+    /*auto b = new Body(Position(5, 50, -200));
 
     auto viewPort = new ViewportWidget;
     viewPort->setMinimumSize(QSize(1920, 1080));
     viewPort->setTitle("Test");
+    viewPort->addEntity(b->getSphereEntity());
 
     viewPort->show();
     viewPort->resize(480, 360);
+    b->setColor(rgbaColor(0, 0.5, 0, 1));
+    b->setVelocity(Velocity(1, -2, 0));
+    b->drift(10);
+    b->shiftBuffers();*/
+
+    auto launcher = new Launcher();
+    launcher->show();
     return app.exec();
 }

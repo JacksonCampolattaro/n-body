@@ -93,13 +93,13 @@ void Preset::threeBodyDemo() {
     physicsContext->setPower(1)->setG(.2)->setT(0.01);
     float density = 40;
 
-    auto redBody = new Body(Position(20.0, 50.0, -300));
+    auto redBody = new Body(Position(20.0, 50.0, -100));
     redBody->setVelocity(Velocity(30, -50, 0))->setMass(500000)->setDensity(density)->setColor(red);
     bodies.push_back(redBody);
-    auto whiteBody = new Body(Position(0.0, -50, -400));
+    auto whiteBody = new Body(Position(0.0, -50, -200));
     whiteBody->setVelocity(Velocity(-30, 0, 0))->setMass(500000)->setDensity(density)->setColor(white);
     bodies.push_back(whiteBody);
-    auto yellowBody = new Body(Position(-20, 0, -700));
+    auto yellowBody = new Body(Position(-20, 0, -500));
     yellowBody->setVelocity(Velocity(0, 50, 0))->setMass(500000)->setDensity(density)->setColor(yellow);
     bodies.push_back(yellowBody);
 }

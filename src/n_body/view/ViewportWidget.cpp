@@ -22,7 +22,7 @@ ViewportWidget::ViewportWidget() {
     defaultFrameGraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
 
     // Root entity
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+    rootEntity = new Qt3DCore::QEntity();
     setRootEntity(rootEntity);
 
     // Camera
@@ -47,17 +47,19 @@ ViewportWidget::ViewportWidget() {
     lightTransform->setTranslation(cameraEntity->position());
     lightEntity->addComponent(lightTransform);
 
+    /*
+
     // Sphere
-    /*Sphere shape data*/
+    *//*Sphere shape data*//*
     Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
     sphereMesh->setRings(20);
     sphereMesh->setSlices(20);
     sphereMesh->setRadius(2);
-    /*Sphere mesh transform*/
+    *//*Sphere mesh transform*//*
     Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform();
     sphereTransform->setScale(1.3f);
     sphereTransform->setTranslation(QVector3D(0.0f, 0.0f, -10.0f));
-    /*Sphere material*/
+    *//*Sphere material*//*
     Qt3DExtras::QPhongMaterial *sphereMaterial = new Qt3DExtras::QPhongMaterial();
     QColor c;
     c.setRgbF(0.7, 0.6, 0.1     );
@@ -65,20 +67,25 @@ ViewportWidget::ViewportWidget() {
     sphereMaterial->setAmbient(c);
     sphereMaterial->setSpecular(c);
     sphereMaterial->setShininess(0);
-    /*Assembling the sphere*/
+    *//*Assembling the sphere*//*
      auto sphereEntity = new Qt3DCore::QEntity(rootEntity);
     sphereEntity->addComponent(sphereMesh);
     sphereEntity->addComponent(sphereMaterial);
     sphereEntity->addComponent(sphereTransform);
 
     // Second Sphere
-    /*Sphere 2 mesh transform*/
+    *//*Sphere 2 mesh transform*//*
     Qt3DCore::QTransform *sphere2Transform = new Qt3DCore::QTransform();
     sphere2Transform->setScale(1.3f);
     sphere2Transform->setTranslation(QVector3D(1.0f, 0.0f, 0.0f));
-    /*Assembling the sphere*/
+    *//*Assembling the sphere*//*
     auto sphere2Entity = new Qt3DCore::QEntity(rootEntity);
     sphere2Entity->addComponent(sphereMesh);
     sphere2Entity->addComponent(sphereMaterial);
-    sphere2Entity->addComponent(sphere2Transform);
+    sphere2Entity->addComponent(sphere2Transform);*/
+}
+
+void ViewportWidget::addEntity(Qt3DCore::QEntity *entity) {
+
+    entity->setParent(rootEntity);
 }

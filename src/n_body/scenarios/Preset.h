@@ -11,13 +11,13 @@
 
 // Useful constants
 
-const auto white = rgbaColor(1, 1, 1, 1);
-const auto yellow = rgbaColor(1, 1, 0, 1);
-const auto red = rgbaColor(1, 0, 0, 1);
-const auto orange = rgbaColor(1, 0.5, 0, 1);
-const auto green = rgbaColor(0, 1, 0, 1);
-const auto blue = rgbaColor(0, 0, 1, 1);
-const auto teal = rgbaColor(0, 1, 1, 1);
+const auto white = rgbaColor(0.5, 0.5, 0.5, 0.5);
+const auto yellow = rgbaColor(0.5, 0.5, 0, 0.5);
+const auto red = rgbaColor(0.5, 0, 0, 0.5);
+const auto orange = rgbaColor(0.5, 0.5, 0, 0.5);
+const auto green = rgbaColor(0, 0.5, 0, 0.5);
+const auto blue = rgbaColor(0, 0, 0.5, 0.5);
+const auto teal = rgbaColor(0, 0.5, 0.5, 0.5);
 const auto grey = rgbaColor(.5, .5, .5, 1);
 
 class Preset {

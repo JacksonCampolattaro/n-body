@@ -170,7 +170,8 @@ public:
                 CEREAL_NVP(radius), CEREAL_NVP(density)
                 );
 
-        this->nextVelocity = this->velocity;
+        setColor(color);
+        setRadius(radius);
     }
 
 private:
@@ -212,6 +213,10 @@ private:
     Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity();
+public:
+    Qt3DCore::QEntity *getSphereEntity() const;
+
+private:
 
 
     // Helper methods

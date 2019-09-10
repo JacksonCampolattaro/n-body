@@ -12,7 +12,7 @@ Body::Body(Position position) : position(position), nextPosition(position) {
     /*Sphere shape data*/
     mesh->setRings(20);
     mesh->setSlices(20);
-    mesh->setRadius(radius);
+    setRadius(radius);
 
     /*Sphere color data*/
     material->setDiffuse(QColor(QRgb(0xffffff)));
@@ -71,10 +71,10 @@ Body *Body::makePassive() {
 Body *Body::setColor(rgbaColor color) {
 
     this->color = color;
-
-    material->setDiffuse(QColor(QRgb(0xffffff)));
-    material->setAmbient(QColor(QRgb(0xaffffff)));
-    material->setSpecular(QColor(QRgb(0xaffffff)));
+    QColor c = QColor::fromRgbF(color.r, color.g, color.b, color.a);
+    material->setDiffuse(c);
+    material->setAmbient(c);
+    material->setSpecular(c);
 
     return this;
 }
@@ -82,7 +82,8 @@ Body *Body::setColor(rgbaColor color) {
 Body *Body::setRadius(float radius) {
 
     this->radius = radius;
-    mesh->setRadius(radius);
+    float scaleFactor = 1;
+    mesh->setRadius(radius * scaleFactor);
 
     return this;
 }
@@ -195,4 +196,8 @@ void Body::calculateRadius() {
     float volume = this->mass / this->density;
 
     this->radius = (float) pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
+}
+
+Qt3DCore::QEntity *Body::getSphereEntity() const {
+    return sphereEntity;
 }

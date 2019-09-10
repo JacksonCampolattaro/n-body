@@ -16,11 +16,11 @@ public:
 
     ViewportWidget();
 
-    ViewportWidget(Qt3DCore::QEntity *rootEntity);
+    void addEntity(Qt3DCore::QEntity *entity);
 
 private:
 
-
+    Qt3DCore::QEntity *rootEntity;
 };
 
 
