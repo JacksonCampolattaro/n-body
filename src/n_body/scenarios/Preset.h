@@ -41,7 +41,7 @@ public:
     void threeBodyDemo();
 
 
-    PhysicsContext *getPhysicsContext() const {
+    PhysicsContext getPhysicsContext() const {
         return physicsContext;
     }
 
@@ -51,7 +51,7 @@ public:
 
 private:
 
-    PhysicsContext *physicsContext = new PhysicsContext;
+    PhysicsContext physicsContext = PhysicsContext();
 
     BodyList bodies;
 };

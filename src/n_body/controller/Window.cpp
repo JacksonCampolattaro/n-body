@@ -3,6 +3,7 @@
 //
 
 #include <thread>
+#include <fstream>
 #include "Window.h"
 #include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
@@ -32,15 +33,18 @@ Window::Window() {
     auto myPreset = Preset();
     myPreset.blender();
 
-
-    // The physics settings page should match the preset by default
-    physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
-
-    // Saving bodies from a preset to an XML file
+    // Saving bodies to an XML file
     bodies = myPreset.getBodies();
-    std::ofstream out("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
-    cereal::XMLOutputArchive outputArchive(out);
-    outputArchive(bodies);
+    std::ofstream bodyOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender/blender.bod");
+    cereal::XMLOutputArchive bodyOutputArchive(bodyOut);
+    bodyOutputArchive(bodies);
+
+    // Saving physics to an XML file
+    auto physics = myPreset.getPhysicsContext();
+    physicsPage.loadPhysicsContext(&physics);
+    std::ofstream physOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender/blender.phys");
+    cereal::XMLOutputArchive physOutputArchive(physOut);
+    physOutputArchive(physics);
 
     // Loading bodies from an XML file
     /*std::ifstream in("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");

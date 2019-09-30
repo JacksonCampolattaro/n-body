@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <zconf.h>
 #include "View.h"
 
 
