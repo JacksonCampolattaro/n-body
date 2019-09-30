@@ -97,6 +97,15 @@ public:
      */
     void orbit(Body *sunBody, Body *satelliteBody);
 
+    template<class Archive>
+    void serialize(Archive & ar) {
+        ar(
+                CEREAL_NVP(G),
+                CEREAL_NVP(Exponent),
+                CEREAL_NVP(T)
+        );
+    }
+
 private:
 
 

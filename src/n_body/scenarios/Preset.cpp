@@ -48,7 +48,7 @@ void Preset::cubicGrid(Position cornerPosition, Velocity velocity,
 
 void Preset::blender() {
 
-    physicsContext->setT(0.005)->setG(0.01)->setPower(2);
+    physicsContext.setT(0.005)->setG(0.01)->setPower(2);
 
     // Massive fixed mass
     auto superHeavy = Body(Position(-60, 0, -500));
@@ -71,7 +71,7 @@ void Preset::blender() {
 
 void Preset::bigDemo() {
 
-    physicsContext->setT(0.001)->setG(0.01)->setPower(2);
+    physicsContext.setT(0.001)->setG(0.01)->setPower(2);
 
     // Massive fixed mass
     auto superHeavy = Body(Position(0, 0, -500));
@@ -90,7 +90,7 @@ void Preset::bigDemo() {
 
 void Preset::threeBodyDemo() {
 
-    physicsContext->setPower(1)->setG(.2)->setT(0.01);
+    physicsContext.setPower(1)->setG(.2)->setT(0.01);
     float density = 40;
 
     auto redBody = Body(Position(20.0, 50.0, -300));
