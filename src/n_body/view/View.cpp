@@ -5,7 +5,6 @@
 #include <iostream>
 #include <zconf.h>
 #include "View.h"
-#include "../scenarios/ScenarioStream.h"
 
 
 View::View(int width, int height, const char *title) {

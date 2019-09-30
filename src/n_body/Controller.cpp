@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view) {
+Controller::Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver, View *view) {
 
     solver->signal_preparing_solver().connect(sigc::mem_fun(*this, &Controller::on_preparing_solver));
     solver->signal_solving().connect(sigc::mem_fun(*this, &Controller::on_solving));

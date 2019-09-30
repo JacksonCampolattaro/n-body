@@ -38,8 +38,8 @@ void Preset::cubicGrid(Position cornerPosition, Velocity velocity,
                 glm::vec3 rainbow(coordinate.y / size.y, coordinate.x / size.x, 1 - coordinate.y / size.y);
 
                 glm::vec3 color = blueToGreen;
-                auto newBody = new Body(position);
-                newBody->setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(rgbaColor(color.r, color.g, color.b, 1.0));
+                auto newBody = Body(position);
+                newBody.setVelocity(velocity)->setMass(mass)->setDensity(40)->setColor(rgbaColor(color.r, color.g, color.b, 1.0));
                 bodies.push_back(newBody);
             }
         }
@@ -51,12 +51,12 @@ void Preset::blender() {
     physicsContext->setT(0.005)->setG(0.01)->setPower(2);
 
     // Massive fixed mass
-    auto superHeavy = new Body(Position(-60, 0, -500));
-    superHeavy->setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(Velocity(0, -90, 0));
+    auto superHeavy = Body(Position(-60, 0, -500));
+    superHeavy.setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(Velocity(0, -90, 0));
     bodies.push_back(superHeavy);
 
-    auto superHeavy2 = new Body(Position(60, 0, -500));
-    superHeavy2->setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(Velocity(0, 90, 0));
+    auto superHeavy2 = Body(Position(60, 0, -500));
+    superHeavy2.setMass(180000000)->setColor(orange)->setDensity(10000)->setVelocity(Velocity(0, 90, 0));
     bodies.push_back(superHeavy2);
 
     // Cubic Grid
@@ -74,8 +74,8 @@ void Preset::bigDemo() {
     physicsContext->setT(0.001)->setG(0.01)->setPower(2);
 
     // Massive fixed mass
-    auto superHeavy = new Body(Position(0, 0, -500));
-    superHeavy->setMass(190000000)->setColor(white)->setDensity(10000)->makeFixed();
+    auto superHeavy = Body(Position(0, 0, -500));
+    superHeavy.setMass(190000000)->setColor(white)->setDensity(10000)->makeFixed();
     bodies.push_back(superHeavy);
 
     // Cubic Grid
@@ -93,13 +93,13 @@ void Preset::threeBodyDemo() {
     physicsContext->setPower(1)->setG(.2)->setT(0.01);
     float density = 40;
 
-    auto redBody = new Body(Position(20.0, 50.0, -300));
-    redBody->setVelocity(Velocity(30, -50, 0))->setMass(500000)->setDensity(density)->setColor(red);
+    auto redBody = Body(Position(20.0, 50.0, -300));
+    redBody.setVelocity(Velocity(30, -50, 0))->setMass(500000)->setDensity(density)->setColor(red);
     bodies.push_back(redBody);
-    auto whiteBody = new Body(Position(0.0, -50, -400));
-    whiteBody->setVelocity(Velocity(-30, 0, 0))->setMass(500000)->setDensity(density)->setColor(white);
+    auto whiteBody = Body(Position(0.0, -50, -400));
+    whiteBody.setVelocity(Velocity(-30, 0, 0))->setMass(500000)->setDensity(density)->setColor(white);
     bodies.push_back(whiteBody);
-    auto yellowBody = new Body(Position(-20, 0, -700));
-    yellowBody->setVelocity(Velocity(0, 50, 0))->setMass(500000)->setDensity(density)->setColor(yellow);
+    auto yellowBody = Body(Position(-20, 0, -700));
+    yellowBody.setVelocity(Velocity(0, 50, 0))->setMass(500000)->setDensity(density)->setColor(yellow);
     bodies.push_back(yellowBody);
 }

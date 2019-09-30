@@ -8,6 +8,7 @@
 
 #include "../view/View.h"
 #include "../model/PhysicsContext.h"
+#include "../model/BodyList.h"
 
 
 // Useful constants
@@ -44,7 +45,7 @@ public:
         return physicsContext;
     }
 
-    const std::vector<Body *> &getBodies() const {
+    BodyList getBodies() const {
         return bodies;
     }
 
@@ -52,7 +53,7 @@ private:
 
     PhysicsContext *physicsContext = new PhysicsContext;
 
-    std::vector<Body *> bodies;
+    BodyList bodies;
 };
 
 
