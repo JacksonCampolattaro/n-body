@@ -8,6 +8,7 @@
 
 #include "view/View.h"
 #include "model/calculation/Solver.h"
+#include "model/BodyList.h"
 
 #include <gtkmm.h>
 #include <glm/glm.hpp>
@@ -22,7 +23,7 @@ class Controller {
 
 public:
 
-    Controller(vector<Body> *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
+    Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
 
     void run();
 
@@ -41,7 +42,7 @@ private:
     Solver *solver;
     PhysicsContext *physics;
     View *view;
-    vector<Body> *bodies;
+    BodyList *bodies;
 
 
     int numFrames = 255000;

@@ -6,7 +6,6 @@
 #include "Window.h"
 #include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "../scenarios/ScenarioStream.h"
 
 Window::Window() {
 
@@ -38,14 +37,15 @@ Window::Window() {
     physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
 
     // Saving bodies from a preset to an XML file
-    /*auto presetBodies = myPreset.getBodies();
-    for (int i = 0; i < presetBodies.size(); ++i) {
-        bodies.push_back(*presetBodies[i]);
-    }
-    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");*/
+    bodies = myPreset.getBodies();
+    std::ofstream out("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
+    cereal::XMLOutputArchive outputArchive(out);
+    outputArchive(bodies);
 
     // Loading bodies from an XML file
-    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    /*std::ifstream in("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    cereal::XMLInputArchive inputArchive(in);
+    inputArchive(bodies);*/
 
 
 }
