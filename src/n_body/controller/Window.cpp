@@ -5,8 +5,8 @@
 #include <thread>
 #include <fstream>
 #include "Window.h"
-#include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
+#include "../../../scenarios/Preset.h"
 
 Window::Window() {
 
@@ -31,18 +31,18 @@ Window::Window() {
 
     // Loading a world from my collection of presets
     auto myPreset = Preset();
-    myPreset.blender();
+    myPreset.threeBodyDemo();
 
     // Saving bodies to an XML file
     bodies = myPreset.getBodies();
-    std::ofstream bodyOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender/blender.bod");
+    std::ofstream bodyOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody/threeBody.bod");
     cereal::XMLOutputArchive bodyOutputArchive(bodyOut);
     bodyOutputArchive(bodies);
 
     // Saving physics to an XML file
     auto physics = myPreset.getPhysicsContext();
     physicsPage.loadPhysicsContext(&physics);
-    std::ofstream physOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender/blender.phys");
+    std::ofstream physOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody/threeBody.phys");
     cereal::XMLOutputArchive physOutputArchive(physOut);
     physOutputArchive(physics);
 

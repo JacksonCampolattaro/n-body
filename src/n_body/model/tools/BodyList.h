@@ -9,7 +9,7 @@
 #include <vector>
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
-#include "Body.h"
+#include "../Body.h"
 
 class BodyList : public std::vector<Body> {
 

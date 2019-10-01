@@ -8,7 +8,7 @@
 
 #include "view/View.h"
 #include "model/calculation/Solver.h"
-#include "model/BodyList.h"
+#include "model/tools/BodyList.h"
 
 #include <gtkmm.h>
 #include <glm/glm.hpp>

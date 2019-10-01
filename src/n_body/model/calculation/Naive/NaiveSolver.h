@@ -7,7 +7,7 @@
 
 
 #include "../Solver.h"
-#include "../../BodyList.h"
+#include "../../tools/BodyList.h"
 
 
 class NaiveSolver : public Solver {
