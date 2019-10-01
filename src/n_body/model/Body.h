@@ -11,9 +11,9 @@
 #include <cereal/archives/xml.hpp>
 
 #include "../view/Drawable.h" // Body extends Drawable
-#include "../tools/Position.h"
-#include "../tools/Velocity.h"
-#include "../tools/rgbaColor.h"
+#include "../model/tools/Position.h"
+#include "../model/tools/Velocity.h"
+#include "../model/tools/rgbaColor.h"
 
 /**
  * Intended to streamline the functionality of the old body

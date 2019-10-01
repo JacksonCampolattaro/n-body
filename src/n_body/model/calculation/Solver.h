@@ -7,7 +7,7 @@
 
 #include "../Body.h" // The Solver contains bodies
 #include "../PhysicsContext.h" // The solver affects the bodies according to the physicsContext context it's given
-#include "../BodyList.h"
+#include "../tools/BodyList.h"
 
 #include <vector> // Used to handle the list of bodies in the Simulation
 #include <csignal>
