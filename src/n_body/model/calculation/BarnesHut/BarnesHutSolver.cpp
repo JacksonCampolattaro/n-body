@@ -5,7 +5,20 @@
 #include "BarnesHutSolver.h"
 #include "Octant.h"
 
-void BarnesHutSolver::solve(std::vector<Body *> bodies, PhysicsContext *phys) {
+BarnesHutSolver *BarnesHutSolver::setTheta(float theta) {
+    this->theta = theta;
+
+    return this;
+}
+
+float BarnesHutSolver::getTheta() const {
+    return theta;
+}
+
+void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
+
+
+    signal_preparing_solver().emit();
 
     // Creating the tree
     std::unique_ptr<Octant> octree (std::make_unique<Octant>(idealTreeCenterLocation, sideLength));
@@ -13,24 +26,40 @@ void BarnesHutSolver::solve(std::vector<Body *> bodies, PhysicsContext *phys) {
     // Populating the tree
     // TODO Once the Octant is threadsafe, this will be possible to do in parallel
     //#pragma omp parallel for if(threadingEnabled)
-    for (int b = 0; b < bodies.size(); ++b) {
-        octree->addBody(bodies[b]->getPosition(), bodies[b]->getMass());
+    for (int b = 0; b < bodies->size(); ++b) {
+        if (!(*bodies)[b].isPassive()) {
+            octree->addBody((*bodies)[b].getPosition(), (*bodies)[b].getMass());
+        }
     }
 
     // Getting the center of mass and the ideal location for the next tree
     octree->getCenterOfMass();
     idealTreeCenterLocation = octree->getAveragePosition();
 
-    // Doing gravitational calculations
+    signal_solving().emit();
+
+    // Doing gravitational calculations ("kick")
     #pragma omp parallel for if(threadingEnabled)
-    for (int b = 0; b < bodies.size(); ++b) {
-        octree->applyPhysicsToBody(bodies[b], phys, theta);
+    for (int b = 0; b < bodies->size(); ++b) {
+        octree->applyPhysicsToBody(&(*bodies)[b], phys, theta);
     }
-}
 
-BarnesHutSolver *BarnesHutSolver::setTheta(float theta) {
-    this->theta = theta;
+    signal_shifting_buffers().emit();
 
-    return this;
+    // Updating positions ("drift")
+    #pragma omp parallel for
+    for (int b = 0; b < bodies->size(); ++b) {
+
+        (*bodies)[b].drift(phys->getT());
+    }
+
+    // Shifting buffers
+    #pragma omp parallel for
+    for (int b = 0; b < bodies->size(); ++b) {
+
+        (*bodies)[b].shiftBuffers();
+    }
+
+    signal_complete().emit();
 }
 

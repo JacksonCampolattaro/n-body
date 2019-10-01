@@ -14,7 +14,7 @@ public:
 
     NaiveSolver() = default;
 
-    void solve(std::vector<Body *> bodies, PhysicsContext *phys) override;
+    void solve(std::vector<Body> *bodies, PhysicsContext *phys) override;
 
 };
 
