@@ -13,7 +13,7 @@ class BarnesHutSolver : public Solver {
 
 public:
 
-    void solve(std::vector<Body *> bodies, PhysicsContext *phys) override;
+    void solve(std::vector<Body> *bodies, PhysicsContext *phys) override;
 
     /**
      * Sets the accuracy of the calculation (lower is more accurate, 0 degenerates to naive)
@@ -21,6 +21,8 @@ public:
      * @return This solver, for use in chaining named parameters.
      */
     BarnesHutSolver *setTheta(float theta);
+
+    float getTheta() const;
 
 private:
 

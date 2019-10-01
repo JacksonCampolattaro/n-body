@@ -3,17 +3,13 @@
 //
 
 #include "Body.h"
+#include <raylib.h>
 
-#include "../view/View.h" // Viewport must be included in here to avoid cyclical dependencies
+Body::Body(Position position) : position(position), nextPosition(position) {}
 
-Body::Body(glm::vec3 position) {
+Body *Body::setVelocity(Velocity velocity) {
 
-    this->position = position;
-    this->nextPosition = position;
-}
-
-Body *Body::setVelocity(glm::vec3 velocity) {
-
+    this->velocity = velocity;
     this->nextVelocity = velocity;
 
     return this;
@@ -51,7 +47,7 @@ Body *Body::makePassive() {
     return this;
 }
 
-Body *Body::setColor(glm::vec3 color) {
+Body *Body::setColor(rgbaColor color) {
 
     this->color = color;
 
@@ -110,24 +106,39 @@ void Body::kick(glm::vec3 deltaV) {
 
 void Body::drift(float deltaT) {
 
-    this->nextPosition = this->position + (this->velocity * deltaT);
+    this->nextPosition = Position(this->position + (this->velocity * deltaT));
 }
 
 void Body::shiftBuffers() {
 
     // Updating position and velocity
-    this->position = this->nextPosition;
-    this->velocity = this->nextVelocity;
+    /*Atomic write is used so that the renderer can access position values safely*/
+
+#pragma omp atomic write
+    position.x = nextPosition.x;
+#pragma omp atomic write
+    position.y = nextPosition.y;
+#pragma omp atomic write
+    position.z = nextPosition.z;
+
+#pragma omp atomic write
+    velocity.x = nextVelocity.x;
+#pragma omp atomic write
+    velocity.y = nextVelocity.y;
+#pragma omp atomic write
+    velocity.z = nextVelocity.z;
 
 }
 
 void Body::draw() {
 
-    GLToolkit::setColor(color);
-
-    //GLToolkit::drawCircle(position, radius);
-    GLToolkit::drawSphere(position, radius);
-
+    DrawSphereEx(Vector3{position.x, position.y, position.z},
+                 radius,
+                 10, 10,
+                 Color{(unsigned char) (color.r * 255),
+                       (unsigned char) (color.g * 255),
+                       (unsigned char) (color.b * 255),
+                       (unsigned char) (color.a * 255),});
 }
 
 std::string Body::toString() {
