@@ -3,10 +3,10 @@
 //
 
 #include <thread>
+#include <fstream>
 #include "Window.h"
-#include "../scenarios/Preset.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "../scenarios/ScenarioStream.h"
+#include "../../../scenarios/Preset.h"
 
 Window::Window() {
 
@@ -31,21 +31,25 @@ Window::Window() {
 
     // Loading a world from my collection of presets
     auto myPreset = Preset();
-    myPreset.blender();
+    myPreset.threeBodyDemo();
 
+    // Saving bodies to an XML file
+    bodies = myPreset.getBodies();
+    std::ofstream bodyOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody/threeBody.bod");
+    cereal::XMLOutputArchive bodyOutputArchive(bodyOut);
+    bodyOutputArchive(bodies);
 
-    // The physics settings page should match the preset by default
-    physicsPage.loadPhysicsContext(myPreset.getPhysicsContext());
-
-    // Saving bodies from a preset to an XML file
-    /*auto presetBodies = myPreset.getBodies();
-    for (int i = 0; i < presetBodies.size(); ++i) {
-        bodies.push_back(*presetBodies[i]);
-    }
-    ScenarioStream::saveBodies(bodies, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");*/
+    // Saving physics to an XML file
+    auto physics = myPreset.getPhysicsContext();
+    physicsPage.loadPhysicsContext(&physics);
+    std::ofstream physOut("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/threeBody/threeBody.phys");
+    cereal::XMLOutputArchive physOutputArchive(physOut);
+    physOutputArchive(physics);
 
     // Loading bodies from an XML file
-    bodies = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    /*std::ifstream in("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    cereal::XMLInputArchive inputArchive(in);
+    inputArchive(bodies);*/
 
 
 }

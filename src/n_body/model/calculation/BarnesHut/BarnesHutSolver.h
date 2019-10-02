@@ -7,13 +7,14 @@
 
 
 #include "../Solver.h"
+#include "../../tools/BodyList.h"
 
 
 class BarnesHutSolver : public Solver {
 
 public:
 
-    void solve(std::vector<Body> *bodies, PhysicsContext *phys) override;
+    void solve(BodyList *bodies, PhysicsContext *phys) override;
 
     /**
      * Sets the accuracy of the calculation (lower is more accurate, 0 degenerates to naive)

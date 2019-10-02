@@ -6,8 +6,9 @@
 #define N_BODY_PRESET_H
 
 
-#include "../view/View.h"
-#include "../model/PhysicsContext.h"
+#include "../src/n_body/view/View.h"
+#include "../src/n_body/model/PhysicsContext.h"
+#include "../src/n_body/model/tools/BodyList.h"
 
 
 // Useful constants
@@ -40,19 +41,19 @@ public:
     void threeBodyDemo();
 
 
-    PhysicsContext *getPhysicsContext() const {
+    PhysicsContext getPhysicsContext() const {
         return physicsContext;
     }
 
-    const std::vector<Body *> &getBodies() const {
+    BodyList getBodies() const {
         return bodies;
     }
 
 private:
 
-    PhysicsContext *physicsContext = new PhysicsContext;
+    PhysicsContext physicsContext = PhysicsContext();
 
-    std::vector<Body *> bodies;
+    BodyList bodies;
 };
 
 
