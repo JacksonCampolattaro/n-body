@@ -7,6 +7,7 @@
 
 #include "../Body.h" // The Solver contains bodies
 #include "../PhysicsContext.h" // The solver affects the bodies according to the physicsContext context it's given
+#include "../tools/BodyList.h"
 
 #include <vector> // Used to handle the list of bodies in the Simulation
 #include <csignal>
@@ -28,7 +29,7 @@ public:
      * @param bodies the list of bodies to perform calculations on
      * @param phys the physics rules used by the simulation
      */
-    virtual void solve(std::vector<Body> *bodies, PhysicsContext *phys) = 0;
+    virtual void solve(BodyList *bodies, PhysicsContext *phys) = 0;
 
     bool isThreadingEnabled() const;
 

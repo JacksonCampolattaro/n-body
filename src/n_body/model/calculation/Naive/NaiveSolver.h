@@ -7,6 +7,7 @@
 
 
 #include "../Solver.h"
+#include "../../tools/BodyList.h"
 
 
 class NaiveSolver : public Solver {
@@ -14,7 +15,7 @@ public:
 
     NaiveSolver() = default;
 
-    void solve(std::vector<Body> *bodies, PhysicsContext *phys) override;
+    void solve(BodyList *bodies, PhysicsContext *phys) override;
 
 };
 

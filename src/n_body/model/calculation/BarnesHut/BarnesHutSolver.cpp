@@ -15,7 +15,7 @@ float BarnesHutSolver::getTheta() const {
     return theta;
 }
 
-void BarnesHutSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
+void BarnesHutSolver::solve(BodyList *bodies, PhysicsContext *phys) {
 
 
     signal_preparing_solver().emit();

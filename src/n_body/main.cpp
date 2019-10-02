@@ -6,8 +6,7 @@
 #include <thread>
 #include "controller/Application.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "scenarios/ScenarioStream.h"
-#include "scenarios/Preset.h"
+#include "../../scenarios/Preset.h"
 
 int main(int argc, char **argv) {
 

@@ -5,7 +5,7 @@
 #include "NaiveSolver.h"
 #include "../../PhysicsContext.h"
 
-void NaiveSolver::solve(std::vector<Body> *bodies, PhysicsContext *phys) {
+void NaiveSolver::solve(BodyList *bodies, PhysicsContext *phys) {
 
     // Iterating through each combination of bodies
     #pragma omp parallel for if(threadingEnabled)
