@@ -13,7 +13,7 @@ class Position : public glm::vec3 {
 public:
 
     Position(float x, float y, float z) : glm::vec3(x, y, z){};
-    explicit Position(glm::vec3 vector) : glm::vec3(vector){};
+    Position(glm::vec3 vector) : glm::vec3(vector){};
 
     std::string toString();
 
