@@ -87,8 +87,8 @@ private:
     // Values used for gravity calculations
 
     /*Position and mass of the Body or bodies contained by the node*/
-    glm::vec3 centerOfMass;
-    float totalMass;
+    glm::vec3 centerOfMass{};
+    float totalMass{};
 
     /*By keeping track of this, center of mass doesn't have to be recalculated every time a Body is added*/
     std::atomic_bool validCenterOfMass = {true}; /*The COM will naturally be valid when this is a leaf*/
@@ -111,7 +111,7 @@ private:
 
     /*Size of the node and position of its center*/
     float sideLength;
-    glm::vec3 octantLocation;
+    glm::vec3 octantLocation{};
 
     /*Useful data for determining the ideal position of the next iteration's octree*/
     glm::vec3 averagePosition = glm::vec3(0, 0,

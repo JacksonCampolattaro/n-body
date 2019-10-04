@@ -106,7 +106,7 @@ void PhysicsContext::orbit(Body *sunBody, Body *satelliteBody) {
 
     // Setting the velocity
     // TODO ...in a direction perpendicular to the radial distance line?
-    satelliteBody->setVelocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity()));
+    satelliteBody->setVelocity(Velocity(orbitalVelocity * glm::normalize(satelliteBody->getVelocity())));
 }
 
 
