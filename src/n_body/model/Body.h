@@ -87,43 +87,43 @@ public:
      * Getter for the location of the body
      * @return the position of the body as a vector
      */
-    glm::vec3 getPosition();
+    glm::vec3 getPosition() const;
 
     /**
      * Getter for the next location of the body
      * @return the (future) position of the body as a vector
      */
-    glm::vec3 getNextPosition();
+    glm::vec3 getNextPosition() const;
 
     /**
      * Getter for the velocity of the body
      * @return the velocity of the body as a vector
      */
-    glm::vec3 getVelocity();
+    glm::vec3 getVelocity() const;
 
     /**
      * Getter for the next velocity of the body
      * @return the (future) velocity of the body as a vector
      */
-    glm::vec3 getNextVelocity();
+    glm::vec3 getNextVelocity() const;
 
     /**
      * Getter for the mass of the body
      * @return the mass as a float
      */
-    float getMass();
+    float getMass() const;
 
     /**
      * Getter for the value of the fixed flag
      * @return Whether the body is fixed in place or not
      */
-    bool isFixed();
+    bool isFixed() const;
 
     /**
      * Getter for the value of the passive flag
      * @return Whether the body can affect others or not
      */
-    bool isPassive();
+    bool isPassive() const;
 
 
     // Physics operators
@@ -157,7 +157,7 @@ public:
      * Converts the body to a string
      * @return a string describing the body
      */
-    std::string toString();
+    std::string toString() const;
 
     template<class Archive>
     void serialize(Archive & ar)
