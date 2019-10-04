@@ -6,7 +6,7 @@
 
 #include "Recorder.h"
 
-Recorder::Recorder(View *view, std::string outputPath) {
+Recorder::Recorder(View *view, const std::string& outputPath) {
 }
 
 void Recorder::renderFrame() {
