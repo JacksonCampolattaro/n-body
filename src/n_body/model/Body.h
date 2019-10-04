@@ -179,12 +179,12 @@ private:
 
     /*Core properties of the Body*/
     Position position;
-    Velocity velocity = glm::vec3(0, 0, 0);
+    Velocity velocity = Velocity(glm::vec3(0, 0, 0));
     float mass = 100.0;
 
     /*By updating these instead of original values, order of operations doesn't affect results*/
     Position nextPosition;
-    Velocity nextVelocity = glm::vec3(0, 0, 0);
+    Velocity nextVelocity = Velocity(glm::vec3(0, 0, 0));
 
 
     // Simulation properties

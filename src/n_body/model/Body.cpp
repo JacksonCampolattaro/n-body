@@ -5,6 +5,8 @@
 #include "Body.h"
 #include <raylib.h>
 
+#include <cmath>
+
 Body::Body(Position position) : position(position), nextPosition(position) {}
 
 Body *Body::setVelocity(Velocity velocity) {
@@ -166,5 +168,5 @@ void Body::calculateRadius() {
 
     float volume = this->mass / this->density;
 
-    this->radius = (float) pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
+    this->radius = std::pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
 }

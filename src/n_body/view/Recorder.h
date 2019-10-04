@@ -18,12 +18,12 @@ public:
      * @param view The viewport to be recorded
      * @param outputPath The location of the output file
      */
-    Recorder(View *view, std::string outputPath);
+    Recorder(View *view, const std::string& outputPath);
 
     /**
      * Renders the most recently drawn frame and adds it to the output
      */
-    void renderFrame();
+    static void renderFrame();
 
     /**
      * Closes the encoder, completing the video
@@ -32,8 +32,8 @@ public:
 
 private:
 
-    glm::ivec2 dimensions;
-    FILE *ffmpeg;
+    glm::ivec2 dimensions{};
+    FILE *ffmpeg{};
 
 
 
