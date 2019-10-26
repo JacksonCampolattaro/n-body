@@ -5,6 +5,8 @@
 #include "Body.h"
 #include <raylib.h>
 
+#include <cmath>
+
 Body::Body(Position position) : position(position), nextPosition(position) {}
 
 Body *Body::setVelocity(Velocity velocity) {
@@ -61,37 +63,37 @@ Body *Body::setRadius(float radius) {
     return this;
 }
 
-glm::vec3 Body::getPosition() {
+glm::vec3 Body::getPosition() const {
 
     return this->position;
 }
 
-glm::vec3 Body::getNextPosition() {
+glm::vec3 Body::getNextPosition() const {
 
     return this->nextPosition;
 }
 
-glm::vec3 Body::getVelocity() {
+glm::vec3 Body::getVelocity() const {
 
     return this->velocity;
 }
 
-glm::vec3 Body::getNextVelocity() {
+glm::vec3 Body::getNextVelocity() const {
 
     return this->nextVelocity;
 }
 
-float Body::getMass() {
+float Body::getMass() const {
 
     return this->mass;
 }
 
-bool Body::isFixed() {
+bool Body::isFixed() const {
 
     return this->fixed;
 }
 
-bool Body::isPassive() {
+bool Body::isPassive() const {
 
     return this->passive;
 }
@@ -141,7 +143,7 @@ void Body::draw() {
                        (unsigned char) (color.a * 255),});
 }
 
-std::string Body::toString() {
+std::string Body::toString() const {
 
     std::string
             theString = "Body : Position = (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", " +
@@ -166,5 +168,5 @@ void Body::calculateRadius() {
 
     float volume = this->mass / this->density;
 
-    this->radius = (float) pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
+    this->radius = std::pow((volume / float(M_PI)) * (3.0f / 4.0f), (1.0f / 3.0f));
 }
