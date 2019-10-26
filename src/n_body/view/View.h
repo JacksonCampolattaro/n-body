@@ -23,7 +23,7 @@ public:
 
     void update();
 
-    void closeWindow();
+    static void closeWindow();
 
     void setDrawables(std::vector<Body> *drawables);
 
@@ -35,7 +35,7 @@ private:
 
     Camera camera = { 0 };
 
-    std::vector<Body> *drawables;
+    std::vector<Body> *drawables{};
 
 };
 
