@@ -6,7 +6,7 @@
 #include <fstream>
 #include "Window.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "../../../scenarios/Preset.h"
+#include "../../scenarios/Preset.h"
 
 Window::Window() {
 
