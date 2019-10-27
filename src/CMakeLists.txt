@@ -12,49 +12,49 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 
 # Adds my files to compilation path
 add_executable(${CMAKE_PROJECT_NAME}
-        n_body/main.cpp
+        main.cpp
 
-        n_body/model/calculation/BarnesHut/Octant.cpp
-        n_body/model/calculation/BarnesHut/Octant.h
-        n_body/model/Body.cpp
-        n_body/model/Body.h
-        n_body/model/calculation/Solver.cpp
-        n_body/model/calculation/Solver.h
-        n_body/model/calculation/Naive/NaiveSolver.cpp
-        n_body/model/calculation/Naive/NaiveSolver.h
-        n_body/model/PhysicsContext.cpp
-        n_body/model/PhysicsContext.h
-        n_body/model/calculation/BarnesHut/BarnesHutSolver.cpp
-        n_body/model/calculation/BarnesHut/BarnesHutSolver.h
+        model/calculation/BarnesHut/Octant.cpp
+        model/calculation/BarnesHut/Octant.h
+        model/Body.cpp
+        model/Body.h
+        model/calculation/Solver.cpp
+        model/calculation/Solver.h
+        model/calculation/Naive/NaiveSolver.cpp
+        model/calculation/Naive/NaiveSolver.h
+        model/PhysicsContext.cpp
+        model/PhysicsContext.h
+        model/calculation/BarnesHut/BarnesHutSolver.cpp
+        model/calculation/BarnesHut/BarnesHutSolver.h
 
-        n_body/view/Drawable.cpp
-        n_body/view/Drawable.h
-        n_body/view/View.cpp
-        n_body/view/View.h
-        n_body/view/Recorder.cpp
-        n_body/view/Recorder.h
+        view/Drawable.cpp
+        view/Drawable.h
+        view/View.cpp
+        view/View.h
+        view/Recorder.cpp
+        view/Recorder.h
 
-        n_body/Controller.cpp
-        n_body/Controller.h
-        n_body/controller/Application.cpp
-        n_body/controller/Application.h
-        n_body/controller/Window.cpp
-        n_body/controller/Window.h
-        n_body/controller/pages/physics_page/PhysicsContextCreator.cpp
-        n_body/controller/pages/physics_page/PhysicsContextCreator.h
-        n_body/controller/pages/view_page/ViewCreator.cpp
-        n_body/controller/pages/view_page/ViewCreator.h
-        n_body/controller/pages/solver_page/SolverCreator.cpp
-        n_body/controller/pages/solver_page/SolverCreator.h
+        Controller.cpp
+        Controller.h
+        controller/Application.cpp
+        controller/Application.h
+        controller/Window.cpp
+        controller/Window.h
+        controller/pages/physics_page/PhysicsContextCreator.cpp
+        controller/pages/physics_page/PhysicsContextCreator.h
+        controller/pages/view_page/ViewCreator.cpp
+        controller/pages/view_page/ViewCreator.h
+        controller/pages/solver_page/SolverCreator.cpp
+        controller/pages/solver_page/SolverCreator.h
 
-        n_body/model/tools/Position.cpp
-        n_body/model/tools/Position.h
-        n_body/model/tools/Velocity.cpp
-        n_body/model/tools/Velocity.h
-        n_body/model/tools/rgbaColor.cpp
-        n_body/model/tools/rgbaColor.h
-        n_body/model/tools/BodyList.cpp
-        n_body/model/tools/BodyList.h
+        model/tools/Position.cpp
+        model/tools/Position.h
+        model/tools/Velocity.cpp
+        model/tools/Velocity.h
+        model/tools/rgbaColor.cpp
+        model/tools/rgbaColor.h
+        model/tools/BodyList.cpp
+        model/tools/BodyList.h
 
         ../scenarios/Preset.cpp
         ../scenarios/Preset.h )
