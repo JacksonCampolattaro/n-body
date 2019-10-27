@@ -6,9 +6,9 @@
 #define N_BODY_PRESET_H
 
 
-#include "../src/n_body/view/View.h"
-#include "../src/n_body/model/PhysicsContext.h"
-#include "../src/n_body/model/tools/BodyList.h"
+#include "../src/view/View.h"
+#include "../src/model/PhysicsContext.h"
+#include "../src/model/tools/BodyList.h"
 
 
 // Useful constants
