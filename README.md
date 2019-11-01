@@ -55,7 +55,10 @@ As things are now, the interface, solver, and renderer all run asynchronously on
 
 ### Serialization
 
+I'm using [Cereal](https://uscilab.github.io/cereal/) for serialization. I'll admit that I originally chose it over Boost's solution because I think their branding is hilarious, but it's ended up integrating very neatly into the project! 
+
 ## Next Steps
+TODO
 
 ## Potential Research
 TODO
