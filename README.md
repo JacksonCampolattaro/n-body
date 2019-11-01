@@ -31,13 +31,13 @@ In the future I'm hoping to explore offloading some of the work to the GPU; this
 
 Throughout this project, graphics have consistently been a source of frustration. When I built my proof of concept, I used freeGLUT because there were so many tutorials and examples available for it. GLUT was a great graphics library for beginners... in 1999. 
 
-GLUT quickly became limiting, especially because of the way it takes control of the main loop. I soon switched to GLFW, but I used the legacy settings, because I wasn't prepared to write my own shaders.
+GLUT quickly became limiting, especially because of the way it takes control of the main loop. I soon switched to GLFW, but I used the legacy settings, because I'm scared of Vertex Buffer Objects and the general lower level of modern OpenGL.
 
 Eventually, even that became an issue, and the pre-2.0 OpenGL became a major performance bottleneck. I've since replaced it with [Raylib](https://www.raylib.com/). The main thing that led me to choose raylib over other options is their robust documentation, especially when it comes to cmake. I'm still not entirely happy with Raylib for several reasons, and I'm experimenting with other solutions, including [Magnum](https://magnum.graphics/), [Ogre](https://www.ogre3d.org/), and even [Qt 3d](https://doc.qt.io/qt-5/qt3d-index.html).
 
-### Interface design
+### Interface
 
-I've built a simple interface for controlling the program using [Gtkmm](https://www.gtkmm.org/en/), the C++ interface for Gtk+. I've been very happy with Gtkmm because it's very lightweight and looks native on my operating system (Fedora linux). I also considered Qt, which worked nicely but felt way too heavy for my purposes, and WxWidgets, which is just a bit too messy for me.
+I've built a simple interface for controlling the program using [Gtkmm](https://www.gtkmm.org/en/), the C++ interface for Gtk+. I've been very happy with Gtkmm because it's very lightweight and looks native on my operating system (Fedora linux). I also considered [Qt](https://www.qt.io/), which worked nicely but felt way too heavy for my purposes, and [WxWidgets](https://www.wxwidgets.org/), which is just a bit too messy for me.
 
 The interface was a lot of fun to put together, and it was very satisfying being able to get the tangible results of actual buttons and dropdowns appearing. Right now, I can use the interface to choose between a couple of solvers, configure the rules my physics will follow, and customize how the results are displayed.
 
@@ -45,6 +45,13 @@ An interface isn't entirely necessary, and in the end the best way of using the 
 
 ### Signals & Synchronicity
 
+The biggest change Gtkmm brought with it was the switch to an event-driven flow. When I first added the interface, the entire program would freeze as soon as the simulation started, and didn't become responsive again until it finished. The solution was to run the simulation in its own thread, so that it wouldn't interfere with Gtkmm's own loop! 
+
+Communication is done with the [libsigc++](https://github.com/libsigcplusplus/libsigcplusplus) signals library, which should eventually allow me to incorporate features like progress bars and status indicators. I really like libsigc's flexibility, and to me it feels even more intuitive than Qt's macro-based solution, despite being slightly lower level.
+
+Eventually I even made the graphics system event based, too. The renderer is notified whenever buffers have been shifted, and updates the screen accordingly. This allows me to do all my rendering in a seperate thread, which came with massive performance improvements for reasons I won't get into here.
+
+As things are now, the interface, solver, and renderer all run asynchronously on different threads. I normally keep the renderer locked to the solver's loop because it looks smoother, but I can choose not to synchronize it easily, and even render at a different framerate than I do my calculations!
 
 ### Serialization
 
