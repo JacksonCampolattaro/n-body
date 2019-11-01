@@ -33,14 +33,22 @@ Throughout this project, graphics have consistently been a source of frustration
 
 GLUT quickly became limiting, especially because of the way it takes control of the main loop. I soon switched to GLFW, but I used the legacy settings, because I wasn't prepared to write my own shaders.
 
-Eventually, even that became an issue, and the pre-2.0 OpenGL became a major performance bottleneck. I've since replaced it with [Raylib](https://www.raylib.com/).
+Eventually, even that became an issue, and the pre-2.0 OpenGL became a major performance bottleneck. I've since replaced it with [Raylib](https://www.raylib.com/). The main thing that led me to choose raylib over other options is their robust documentation, especially when it comes to cmake. I'm still not entirely happy with Raylib for several reasons, and I'm experimenting with other solutions, including [Magnum](https://magnum.graphics/), [Ogre](https://www.ogre3d.org/), and even [Qt 3d](https://doc.qt.io/qt-5/qt3d-index.html).
 
 ### Interface design
 
+I've built a simple interface for controlling the program using [Gtkmm](https://www.gtkmm.org/en/), the C++ interface for Gtk+. I've been very happy with Gtkmm because it's very lightweight and looks native on my operating system (Fedora linux). I also considered Qt, which worked nicely but felt way too heavy for my purposes, and WxWidgets, which is just a bit too messy for me.
+
+The interface was a lot of fun to put together, and it was very satisfying being able to get the tangible results of actual buttons and dropdowns appearing. Right now, I can use the interface to choose between a couple of solvers, configure the rules my physics will follow, and customize how the results are displayed.
+
+An interface isn't entirely necessary, and in the end the best way of using the program should probably be by the command line, but that's not what this is about. Integrating something like this into my project was a great learning experience, and helped me improve even seemingly unrelated parts. Adding each feature required making changes to how my project was structured. For example, in order to have easily customizable physics I split the physical rules into their own object, which is passed to the solver. This was a more robust paradigm that made future changes like logging and serialization significantly easier.
+
 ### Signals & Synchronicity
+
 
 ### Serialization
 
+## Next Steps
 
 ## Potential Research
 TODO
