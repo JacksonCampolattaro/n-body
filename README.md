@@ -29,6 +29,12 @@ In the future I'm hoping to explore offloading some of the work to the GPU; this
 
 ### Graphics
 
+Throughout this project, graphics have consistently been a source of frustration. When I built my proof of concept, I used freeGLUT because there were so many tutorials and examples available for it. GLUT was a great graphics library for beginners... in 1999. 
+
+GLUT quickly became limiting, especially because of the way it takes control of the main loop. I soon switched to GLFW, but I used the legacy settings, because I wasn't prepared to write my own shaders.
+
+Eventually, even that became an issue, and the pre-2.0 OpenGL became a major performance bottleneck. I've since replaced it with [Raylib](https://www.raylib.com/).
+
 ### Interface design
 
 ### Signals & Synchronicity
