@@ -59,8 +59,19 @@ I'm using [Cereal](https://uscilab.github.io/cereal/) for serialization. I'll ad
 
 Once all of these functions were present, it only took one line to save or load XML files! Because this is in flux, I still have a 'scenarios' object, which uses C++ to generate objects. This allows me to define complex simulations with large numbers of bodies using loops, without having to spend a lot of time editing the XML files directly. Eventually, I plan to create a better way to build large simulations with the interface, but for now, I genuinely believe that writing short script-like snippets was the easiest way.
 
-## Next Steps
-TODO
-
 ## Potential Research
-TODO
+
+I believe that research is a natural next step for this project. Re-applying things taught in my classes continues to be a great opportunity to build a deeper understanding, and I think that an individual project would make this an even more powerful mechanism for learning. 
+
+The nature of the topic makes it very open to research, at many levels of depth. The algorithms I use here have already been studied plenty, but their implementation remains an interesting topic. 
+
+### Requirements / Prerequisites
+
+Even in the most limited form, I believe that a research project centered around this work would be a fantastic learning opportunity. Doing research on the relative performance of different algorithms would require the following preparation:
+
+- Creating a method for measuring the accuracy of different algorithms (e.g mean distance of each physical body from its position as calculated by the naive algorithm).
+- Using this method to calibrate the accuracy for each algorithm/implementation to be tested (e.g finding a range for theta in the Barnes-Hut algorithm that gives an error < 4%)
+- Assembling an automated testing framework that will measure the performance of each algorithm, among other things (perhaps using catch2's benchmarking functionality, or Python if that isn't adequate)Adding a headless mode to my program that would allow the testing framework to run it without the extra graphics overhead (this would also let me run it overnight on the rLogin cluster, if need be)
+- Naturally, generating plenty of plots and writing an actual paper on the results. There are so many easily measurable aspects that I'm sure I won't have any shortage of things to write about.
+
+### Concepts
