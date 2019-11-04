@@ -9,7 +9,7 @@ The project is an [N-Body newtonian physics simulation](https://en.wikipedia.org
 
 ## Progress
 
-I've learned a lot while working on this project. It's been an opportunity to become familiar with project management toosls, several powerful open-source libraries, and important techniques and paradigms.
+I've learned a lot while working on this project. It's been an opportunity to become familiar with project management tools, several powerful open-source libraries, and important techniques and paradigms.
 
 ### Algorithms
 
