@@ -55,7 +55,9 @@ As things are now, the interface, solver, and renderer all run asynchronously on
 
 ### Serialization
 
-I'm using [Cereal](https://uscilab.github.io/cereal/) for serialization. I'll admit that I originally chose it over Boost's solution because I think their branding is hilarious, but it's ended up integrating very neatly into the project! 
+I'm using [Cereal](https://uscilab.github.io/cereal/) for serialization. I'll admit that I originally chose it over Boost's solution because I think their branding is really clever, but it's ended up integrating very neatly into the project! For objects like individual Bodies and the Physics rule, it was as simple as adding a special function that contains a list of the variables to be serialized. In order to serialize the list of bodies, and the vectors containing colors, velocities, and positions, I subclassed the libraries I was using. This allowed me to give the values nice and readable names in the serialized structure.
+
+Once all of these functions were present, it only took one line to save or load XML files! Because this is in flux, I still have a 'scenarios' object, which uses C++ to generate objects. This allows me to define complex simulations with large numbers of bodies using loops, without having to spend a lot of time editing the XML files directly. Eventually, I plan to create a better way to build large simulations with the interface, but for now, I genuinely believe that writing short script-like snippets was the easiest way.
 
 ## Next Steps
 TODO
