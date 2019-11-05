@@ -72,6 +72,14 @@ Even in the most limited form, I believe that a research project centered around
 - Creating a method for measuring the accuracy of different algorithms (e.g mean distance of each physical body from its position as calculated by the naive algorithm).
 - Using this method to calibrate the accuracy for each algorithm/implementation to be tested (e.g finding a range for theta in the Barnes-Hut algorithm that gives an error < 4%)
 - Assembling an automated testing framework that will measure the performance of each algorithm, among other things (perhaps using catch2's benchmarking functionality, or Python if that isn't adequate)Adding a headless mode to my program that would allow the testing framework to run it without the extra graphics overhead (this would also let me run it overnight on the rLogin cluster, if need be)
-- Naturally, generating plenty of plots and writing an actual paper on the results. There are so many easily measurable aspects that I'm sure I won't have any shortage of things to write about.
+- Naturally, generating plenty of plots and writing an actual paper on the results. 
 
-### Concepts
+### Topics
+
+There are so many easily variable and measurable aspects to this project that I have no shortage of topics I could choose to center my research around. Here's a collection of example 'central questions' that my research might explore, roughly in order of complexity:
+
+- How does the performance of the naive algorithm and the Barnes-Hut algorithm scale with the number of bodies in the simulation? At what point does the Barnes-Hut algorithm become more more efficient?
+- How does the performance of the Barnes-Hut algorithm scale as the approximation ratio, Theta, is changed?
+- How does the accuracy of the Barnes-Hut algorithm change as Theta is varied? How does the accuracy of the naive algorithm change as the time precision is decreased?
+- How do the performances of different algorithms scale, when the accuracy is held to a specific value (relative to some base solution) by manual calibration of constants like Theta?
+
