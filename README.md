@@ -78,8 +78,13 @@ Even in the most limited form, I believe that a research project centered around
 
 There are so many easily variable and measurable aspects to this project that I have no shortage of topics I could choose to center my research around. Here's a collection of example 'central questions' that my research might explore, roughly in order of complexity:
 
-- How does the performance of the naive algorithm and the Barnes-Hut algorithm scale with the number of bodies in the simulation? At what point does the Barnes-Hut algorithm become more more efficient?
+- How does the performance of the naive algorithm and a Barnes-Hut algorithm scale with the number of bodies in the simulation? At what point does the Barnes-Hut algorithm become more more efficient?
 - How does the performance of the Barnes-Hut algorithm scale as the approximation ratio, Theta, is changed?
 - How does the accuracy of the Barnes-Hut algorithm change as Theta is varied? How does the accuracy of the naive algorithm change as the time precision is decreased?
 - How do the performances of different algorithms scale, when the accuracy is held to a specific value (relative to some base solution) by manual calibration of constants like Theta?
-
+- How does the performance of the canonical Barnes-Hut algorithm scale for different arrangements of bodies (e.g close together/spread out, symmetric/all on one side)? How can the algorithm be improved to make it scale more better in less-than-ideal scenarios, and how do these changes affect performance?
+- How do different algorithms scale in performance as I increase or decrease the number of threads available?
+- How does the naive algorithm run on the GPU compare to a more elaborate algorithm run on the CPU?
+- How does the naive algorithm run on the GPU scale with the number of stream processors enabled.
+- How does a paartially accelerated Barnes-Hut algorithm scale with the number of bodies? (e.g tree is built on the CPU, and actual force application is done on the GPU)
+- How can a tree-based (Barnes-Hut) algorithm be run entirely on the GPU? How do the memory acess limitations of the specialized hardware affect the performance of the more elaborate algorithm?
