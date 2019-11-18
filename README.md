@@ -29,6 +29,8 @@ In the future I'm hoping to explore offloading some of the work to the GPU; this
 
 ### Graphics
 
+![Running Simulation](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/running-simulation.png)
+
 Throughout this project, graphics have consistently been a source of frustration. When I built my proof of concept, I used freeGLUT because there were so many tutorials and examples available for it. GLUT was a great graphics library for beginners... in 1999. 
 
 GLUT quickly became limiting, especially because of the way it takes control of the main loop. I soon switched to GLFW, but I used the legacy settings, because I'm scared of Vertex Buffer Objects and the general lower level of modern OpenGL.
@@ -36,6 +38,10 @@ GLUT quickly became limiting, especially because of the way it takes control of 
 Eventually, even that became an issue, and the pre-2.0 OpenGL became a major performance bottleneck. I've since replaced it with [Raylib](https://www.raylib.com/). The main thing that led me to choose raylib over other options is their robust documentation, especially when it comes to cmake. I'm still not entirely happy with Raylib for several reasons, and I'm experimenting with other solutions, including [Magnum](https://magnum.graphics/), [Ogre](https://www.ogre3d.org/), and even [Qt 3d](https://doc.qt.io/qt-5/qt3d-index.html).
 
 ### Interface
+
+![Physics panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/physics.png) 
+![View panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/view.png) 
+![Solver panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/solver.png)
 
 I've built a simple interface for controlling the program using [Gtkmm](https://www.gtkmm.org/en/), the C++ interface for Gtk+. I've been very happy with Gtkmm because it's very lightweight and looks native on my operating system (Fedora linux). I also considered [Qt](https://www.qt.io/), which worked nicely but felt way too heavy for my purposes, and [WxWidgets](https://www.wxwidgets.org/), which is just a bit too messy for me.
 
