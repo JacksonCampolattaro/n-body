@@ -98,3 +98,6 @@ There are so many easily variable and measurable aspects to this project that I 
 - How does the naive algorithm run on the GPU scale with the number of stream processors enabled.
 - How does a paartially accelerated Barnes-Hut algorithm scale with the number of bodies? (e.g tree is built on the CPU, and actual force application is done on the GPU)
 - How can a tree-based (Barnes-Hut) algorithm be run entirely on the GPU? How do the memory acess limitations of the specialized hardware affect the performance of the more elaborate algorithm?
+
+
+![Logo](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/logo.svg)
