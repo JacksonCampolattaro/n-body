@@ -92,7 +92,7 @@ There are so many easily variable and measurable aspects to this project that I 
 - How does the performance of the Barnes-Hut algorithm scale as the approximation ratio, Theta, is varied?
 - How does the accuracy of the Barnes-Hut algorithm change as Theta is varied? How does the accuracy of the naive algorithm change as the time granularity is decreased?
 - How do the performances of different algorithms scale, when the accuracy is held to a specific value (relative to some base solution) by manual calibration of constants like Theta?
-- How does the performance of the canonical Barnes-Hut algorithm scale for different arrangements of bodies (e.g close together/spread out, symmetric/all on one side)? How can the algorithm be improved to make it scale more better in less-than-ideal scenarios, and how do these changes affect performance?
+- How does the performance of the canonical Barnes-Hut algorithm scale for different arrangements of bodies (e.g close together/spread out, symmetric/all on one side)? How can the algorithm be improved to make it scale better in less-than-ideal scenarios, and how do these changes affect performance?
 - How do different algorithms scale in performance as I increase or decrease the number of threads available?
 - How does the naive algorithm run on the GPU compare to a more elaborate algorithm run on the CPU?
 - How does the naive algorithm run on the GPU scale with the number of stream processors enabled.
