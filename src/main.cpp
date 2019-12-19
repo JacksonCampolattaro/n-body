@@ -9,6 +9,7 @@
 #include "model/calculation/Naive/NaiveSolver.h"
 
 #include <fstream>
+#include <chrono>
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
 
@@ -41,17 +42,32 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Creating the solver, and configuring it
-    Solver *solver = new NaiveSolver();
+    Solver *solver = new BarnesHutSolver();
     solver->enableThreading();
 
-    // Looping to run the simulation for many cycles
-    for (int i = 0; i < 10000; ++i) {
-        cout << "Solving moment " << i << endl;
-        solver->solve(&bodies, &physics);
-    }
 
     // Running the simulation for a number of cycles
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Start the timer
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    // Looping to run the simulation for many cycles
+    int cycles = 100;
+    for (int i = 0; i < cycles; ++i) {
+        cout << "Starting cycle " << i << endl;
+        solver->solve(&bodies, &physics);
+    }
+
+    // End the timer
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    // Output the elapsed time
+    std::cout << "Completed " << cycles << " cycles in "
+              << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << " seconds" << std::endl;
+    std::cout << "( " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+              << " µs )" << std::endl;
+
 
     // Saving the result to an xml file
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
