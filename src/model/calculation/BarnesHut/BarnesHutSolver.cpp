@@ -28,6 +28,9 @@ void BarnesHutSolver::solve(BodyList *bodies, PhysicsContext *phys) {
     //#pragma omp parallel for if(threadingEnabled)
     for (int b = 0; b < bodies->size(); ++b) {
         if (!(*bodies)[b].isPassive()) {
+
+            // TODO Add safety checks that make sure the body is in the bounds of the tree
+
             octree->addBody((*bodies)[b].getPosition(), (*bodies)[b].getMass());
         }
     }
@@ -39,7 +42,7 @@ void BarnesHutSolver::solve(BodyList *bodies, PhysicsContext *phys) {
     signal_solving().emit();
 
     // Doing gravitational calculations ("kick")
-    #pragma omp parallel for if(threadingEnabled)
+    #pragma omp parallel for default(none) shared(bodies, octree, phys) if(threadingEnabled)
     for (int b = 0; b < bodies->size(); ++b) {
         octree->applyPhysicsToBody(&(*bodies)[b], phys, theta);
     }
@@ -47,14 +50,14 @@ void BarnesHutSolver::solve(BodyList *bodies, PhysicsContext *phys) {
     signal_shifting_buffers().emit();
 
     // Updating positions ("drift")
-    #pragma omp parallel for
+    #pragma omp parallel for default(none) shared(bodies, octree, phys)
     for (int b = 0; b < bodies->size(); ++b) {
 
         (*bodies)[b].drift(phys->getT());
     }
 
     // Shifting buffers
-    #pragma omp parallel for
+    #pragma omp parallel for default(none) shared(bodies, octree, phys)
     for (int b = 0; b < bodies->size(); ++b) {
 
         (*bodies)[b].shiftBuffers();

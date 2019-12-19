@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Loading Bodies
-    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod");
+    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.bod");
     if (!bodiesInputStream.is_open())
         return 1;
     cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
@@ -30,13 +30,15 @@ int main(int argc, char **argv) {
     bodiesInputArchive(bodies);
 
     // Loading Physics
-    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys");
+    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.phys");
     if (!bodiesInputStream.is_open())
         return 2;
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     auto physics = PhysicsContext();
     physicsInputArchive(physics);
 
+    // Tweaks to physics for testing
+    physics.setT(1);
 
     // Creating a simulation from the loaded data
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +55,7 @@ int main(int argc, char **argv) {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Looping to run the simulation for many cycles
-    int cycles = 100;
+    int cycles = 100000;
     for (int i = 0; i < cycles; ++i) {
         cout << "Starting cycle " << i << endl;
         solver->solve(&bodies, &physics);
