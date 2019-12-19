@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-Controller::Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver, View *view) {
+Controller::Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver) {
 
     solver->signal_preparing_solver().connect(sigc::mem_fun(*this, &Controller::on_preparing_solver));
     solver->signal_solving().connect(sigc::mem_fun(*this, &Controller::on_solving));
@@ -19,9 +19,6 @@ Controller::Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver
     this->solver = solver;
     this->physics = physics;
     this->bodies = bodies;
-    this->view = view;
-    view->setDrawables(bodies);
-    view->createWindow();
 
 }
 
@@ -48,19 +45,13 @@ void Controller::run() {
 
 void Controller::increment() {
 
-    while (!WindowShouldClose()) {
 
-        cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
-        frameNum++;
+    cout << "Calculating frame " << frameNum << "/" << numFrames << endl;
+    frameNum++;
 
-        std::thread solving_thread(&Solver::solve, solver, bodies, physics);
+    std::thread solving_thread(&Solver::solve, solver, bodies, physics);
 
-        view->update();
-
-        solving_thread.join();
-    }
-
-    view->closeWindow();
+    solving_thread.join();
 
 }
 
