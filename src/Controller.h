@@ -6,7 +6,6 @@
 #define N_BODY_CONTROLLER_H
 
 
-#include "view/View.h"
 #include "model/calculation/Solver.h"
 #include "model/tools/BodyList.h"
 
@@ -23,7 +22,7 @@ class Controller {
 
 public:
 
-    Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver, View *view = nullptr);
+    Controller(BodyList *bodies, PhysicsContext *physics, Solver *solver);
 
     void run();
 
@@ -41,7 +40,6 @@ private:
 
     Solver *solver;
     PhysicsContext *physics;
-    View *view;
     BodyList *bodies;
 
 

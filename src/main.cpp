@@ -2,39 +2,47 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include <gtkmm/application.h>
-#include <thread>
-#include "controller/Application.h"
-#include "model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "../scenarios/Preset.h"
+#include "model/tools/BodyList.h"
+#include "model/PhysicsContext.h"
+
+#include <fstream>
+#include <cereal/archives/xml.hpp>
+#include <cereal/types/vector.hpp>
 
 int main(int argc, char **argv) {
 
-    auto application = new Application();
+    // Loading from an xml file
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    return application->run(argc, argv);
+    // Loading Bodies
+    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.bod");
+    if (!bodiesInputStream.is_open())
+        return 1;
+    cereal::XMLInputArchive bodyArchive(bodiesInputStream);
+    auto bodies = BodyList();
+    bodyArchive(bodies);
 
-    /*//auto b = ScenarioStream::loadBodies("/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/blender.xml");
-    auto preset = Preset();
-    preset.blender();
-    vector<Body> b;
-    auto presetBodies = preset.getBodies();
-    for (int i = 0; i < presetBodies.size(); ++i) {
-        b.push_back(*presetBodies[i]);
-    }
-    ScenarioStream::saveBodies(b, "/home/jackcamp/CLionProjects/n_body/src/n_body/scenarios/test.xml");
+    // Loading Physics
+    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.phys");
+    if (!bodiesInputStream.is_open())
+        return 2;
+    cereal::XMLInputArchive physicsArchive(physicsInputStream);
+    auto physics = PhysicsContext();
+    physicsArchive(physics);
 
 
+    // Creating a simulation from the loaded data
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    auto p = new PhysicsContext();
-    p->setPower(2)->setG(.02)->setT(0.001);
+    // Running the simulation for a number of cycles
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    auto s = new BarnesHutSolver();
-    s->setTheta(0.9);
+    // Saving the result to an xml file
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    auto v = new View(4000, 2000, "title");
+    // Saving Physics
 
-    Controller c = Controller(&b, p, s, v);
-    c.run();*/
+    // Saving Bodies
+
 
 }
