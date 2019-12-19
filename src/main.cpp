@@ -4,10 +4,16 @@
 
 #include "model/tools/BodyList.h"
 #include "model/PhysicsContext.h"
+#include "model/calculation/Solver.h"
+#include "model/calculation/BarnesHut/BarnesHutSolver.h"
+#include "model/calculation/Naive/NaiveSolver.h"
 
 #include <fstream>
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
+
+using std::cout;
+using std::endl;
 
 int main(int argc, char **argv) {
 
@@ -15,7 +21,7 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Loading Bodies
-    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.bod");
+    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod");
     if (!bodiesInputStream.is_open())
         return 1;
     cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
@@ -23,7 +29,7 @@ int main(int argc, char **argv) {
     bodiesInputArchive(bodies);
 
     // Loading Physics
-    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.phys");
+    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys");
     if (!bodiesInputStream.is_open())
         return 2;
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
@@ -34,6 +40,16 @@ int main(int argc, char **argv) {
     // Creating a simulation from the loaded data
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Creating the solver, and configuring it
+    Solver *solver = new NaiveSolver();
+    solver->enableThreading();
+
+    // Looping to run the simulation for many cycles
+    for (int i = 0; i < 10000; ++i) {
+        cout << "Solving moment " << i << endl;
+        solver->solve(&bodies, &physics);
+    }
+
     // Running the simulation for a number of cycles
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +57,7 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Saving Physics
-    std::ofstream bodiesOutputStream("test.bod");
+    std::ofstream bodiesOutputStream("result.bod");
     cereal::XMLOutputArchive bodiesOutputArchive(bodiesOutputStream);
     bodiesOutputArchive(bodies);
 
