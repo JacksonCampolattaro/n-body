@@ -18,17 +18,17 @@ int main(int argc, char **argv) {
     std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.bod");
     if (!bodiesInputStream.is_open())
         return 1;
-    cereal::XMLInputArchive bodyArchive(bodiesInputStream);
+    cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
     auto bodies = BodyList();
-    bodyArchive(bodies);
+    bodiesInputArchive(bodies);
 
     // Loading Physics
     std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/test/threeBody.phys");
     if (!bodiesInputStream.is_open())
         return 2;
-    cereal::XMLInputArchive physicsArchive(physicsInputStream);
+    cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     auto physics = PhysicsContext();
-    physicsArchive(physics);
+    physicsInputArchive(physics);
 
 
     // Creating a simulation from the loaded data
@@ -41,8 +41,14 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Saving Physics
+    std::ofstream bodiesOutputStream("test.bod");
+    cereal::XMLOutputArchive bodiesOutputArchive(bodiesOutputStream);
+    bodiesOutputArchive(bodies);
 
     // Saving Bodies
+    std::ofstream physicsOutputStream("test.phys");
+    cereal::XMLOutputArchive physicsOutputArchive(physicsOutputStream);
+    physicsOutputArchive(physics);
 
 
 }
