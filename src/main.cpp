@@ -64,8 +64,8 @@ int main(int argc, char **argv) {
 
     // Output the elapsed time
     std::cout << "Completed " << cycles << " cycles in "
-              << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << " seconds" << std::endl;
-    std::cout << "( " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f << " s "
+              << "( " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
               << " µs )" << std::endl;
 
 
