@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Loading Bodies
-    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.bod");
+    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod");
     if (!bodiesInputStream.is_open())
         return 1;
     cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
@@ -30,21 +30,18 @@ int main(int argc, char **argv) {
     bodiesInputArchive(bodies);
 
     // Loading Physics
-    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.phys");
+    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys");
     if (!bodiesInputStream.is_open())
         return 2;
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     auto physics = PhysicsContext();
     physicsInputArchive(physics);
 
-    // Tweaks to physics for testing
-    physics.setT(1);
-
     // Creating a simulation from the loaded data
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Creating the solver, and configuring it
-    Solver *solver = new BarnesHutSolver();
+    Solver *solver = new NaiveSolver();
     solver->enableThreading();
 
 
@@ -69,6 +66,10 @@ int main(int argc, char **argv) {
               << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f << " s "
               << "( " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
               << " µs )" << std::endl;
+    std::cout << "Averaged "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / (float) cycles
+              << " µs per cycle"
+              << std::endl;
 
 
     // Saving the result to an xml file
