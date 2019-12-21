@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Creating the solver, and configuring it
-    Solver *solver = new NaiveSolver();
+    Solver *solver = new BarnesHutSolver();
     solver->enableThreading();
 
 
