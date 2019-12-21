@@ -12,11 +12,50 @@
 #include <chrono>
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
+#include <cli11/CLI11.hpp>
 
 using std::cout;
 using std::endl;
+using std::string;
 
 int main(int argc, char **argv) {
+
+
+    // Configuring CLI Input
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Setting the name and description
+    CLI::App CLIApplication("Modular Integrator for N-body Interaction");
+
+    // Getting the headless option
+    bool headless = false;
+    CLIApplication.add_flag("--headless",
+                              headless,
+                              "Runs the program without an interface or graphics"
+                              );
+
+    // Setting the body archive, with default value
+    string bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod";
+    CLIApplication.add_option("-b,--bodies",
+                              bodyArchivePath,
+                              "Sets the file path to read bodies from",
+                              true
+            )
+            ->check(CLI::ExistingFile);
+
+    // Setting the physics archive, with default value
+    string physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys";
+    CLIApplication.add_option("-p,--physics",
+                              physicsArchivePath,
+                              "Sets the file path to read physics from",
+                              true
+            )
+            ->check(CLI::ExistingFile);
+
+    CLI11_PARSE(CLIApplication, argc, argv);
+
+    if (!headless)
+        return 0;
 
     // Loading from an xml file
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
