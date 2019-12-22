@@ -39,33 +39,31 @@ int main(int argc, char **argv) {
                               );
 
     // Setting the body archive, with default value
-    string bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod";
+    string bodyArchivePath = "../../scenarios/blender/blender.bod";
     CLIApplication.add_option("-b,--bodies",
                               bodyArchivePath,
                               "Sets the file path to read bodies from",
                               true
-            )
-            ->check(CLI::ExistingFile);
+            )->check(CLI::ExistingFile);
 
     // Setting the physics archive, with default value
-    string physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys";
+    string physicsArchivePath = "../../scenarios/blender/blender.phys";
     CLIApplication.add_option("-p,--physics",
                               physicsArchivePath,
                               "Sets the file path to read physics from",
                               true
-            )
-            ->check(CLI::ExistingFile);
+            )->check(CLI::ExistingFile);
 
     CLI11_PARSE(CLIApplication, argc, argv);
 
     if (!headless)
         return 0;
 
-    // Loading from an xml file
+    // Loading from XML files
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Loading Bodies
-    std::ifstream bodiesInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod");
+    std::ifstream bodiesInputStream(bodyArchivePath);
     if (!bodiesInputStream.is_open())
         return 1;
     cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
@@ -73,7 +71,7 @@ int main(int argc, char **argv) {
     bodiesInputArchive(bodies);
 
     // Loading Physics
-    std::ifstream physicsInputStream("/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys");
+    std::ifstream physicsInputStream(physicsArchivePath);
     if (!bodiesInputStream.is_open())
         return 2;
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
