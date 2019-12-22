@@ -16,13 +16,31 @@
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
 
-#include <cli11/CLI11.hpp>
+#include <CLI/CLI.hpp>
+
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/dist_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
 using std::cout;
 using std::endl;
 using std::string;
+using std::make_shared;
 
 int main(int argc, char **argv) {
+
+    // Create the log distributor, which will pass output to different sinks
+    auto logDistributor = make_shared<spdlog::sinks::dist_sink_st>();
+
+    // Create a logger using the distributor as the sink
+    auto logger = make_shared<spdlog::logger>("log", logDistributor);
+    spdlog::register_logger(logger);
+    logger->set_level(spdlog::level::debug);
+
+    // Attach stdout to logger
+    logDistributor->add_sink(make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    logger->log(spdlog::level::debug, "Sink console:stdout attached to logger");
 
 
     // Configuring CLI Input
@@ -38,7 +56,17 @@ int main(int argc, char **argv) {
                             "Runs the program without an interface or graphics"
     );
 
-    // Setting the body archive, with default value
+    // Getting the logfile path, with a default value
+    string logPath = "../../logs/log.log";
+    CLIApplication.add_option("-l,--logfile",
+                              logPath,
+                              "Sets the path to write log files to",
+                              true
+    );
+
+    //
+
+    // Getting the body archive path, with a default value
     string bodyArchivePath = "../../scenarios/blender/blender.bod";
     CLIApplication.add_option("-b,--bodies",
                               bodyArchivePath,
@@ -46,7 +74,7 @@ int main(int argc, char **argv) {
                               true
     )->check(CLI::ExistingFile);
 
-    // Setting the physics archive, with default value
+    // Getting the physics archive path, with a default value
     string physicsArchivePath = "../../scenarios/blender/blender.phys";
     CLIApplication.add_option("-p,--physics",
                               physicsArchivePath,
@@ -65,8 +93,21 @@ int main(int argc, char **argv) {
     // Interpreting the input using the CLI macro
     CLI11_PARSE(CLIApplication, argc, argv);
 
+    // Attaching the file sink
+    logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
+
+    logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
+
+    // Running with an interface
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     if (!headless)
         return 1;
+
+    // Setting logfile
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //logDistributor->add_sink(make_shared<spdlog::sinks::(logPath)>());
 
     // Loading from XML files
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
