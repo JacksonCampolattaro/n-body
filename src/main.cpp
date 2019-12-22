@@ -36,6 +36,8 @@ int main(int argc, char **argv) {
     // Create a logger using the distributor as the sink
     auto logger = make_shared<spdlog::logger>("log", logDistributor);
     spdlog::register_logger(logger);
+
+    // Set the default level of the logger to debug
     logger->set_level(spdlog::level::debug);
 
     // Attach stdout to logger
@@ -56,6 +58,13 @@ int main(int argc, char **argv) {
                             "Runs the program without an interface or graphics"
     );
 
+    // Getting the verbose option
+    bool verbose = false;
+    CLIApplication.add_flag("-v,--verbose",
+                            verbose,
+                            "Enables more thorough logging, at the cost of performance"
+    );
+
     // Getting the logfile path, with a default value
     string logPath = "../../logs/log.log";
     CLIApplication.add_option("-l,--logfile",
@@ -63,8 +72,6 @@ int main(int argc, char **argv) {
                               "Sets the path to write log files to",
                               true
     );
-
-    //
 
     // Getting the body archive path, with a default value
     string bodyArchivePath = "../../scenarios/blender/blender.bod";
@@ -93,9 +100,15 @@ int main(int argc, char **argv) {
     // Interpreting the input using the CLI macro
     CLI11_PARSE(CLIApplication, argc, argv);
 
-    // Attaching the file sink
-    logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
+    // Parsing options
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Enabling more verbosity
+    if (verbose)
+        logger->set_level(spdlog::level::trace);
+
+    // Attaching the logfile as another sink
+    logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
     logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
 
     // Running with an interface
@@ -144,7 +157,9 @@ int main(int argc, char **argv) {
 
     // Looping to run the simulation for many cycles
     for (int i = 0; i < cycles; ++i) {
-        cout << "Starting cycle " << i << endl;
+        spdlog::get("log")->trace("Starting cycle {} ({}% Complete)",
+                                  i,
+                                  100.0f * (float) i / (float) cycles);
         solver->solve(&bodies, &physics);
     }
 
@@ -152,14 +167,14 @@ int main(int argc, char **argv) {
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Output the elapsed time
-    std::cout << "Completed " << cycles << " cycles in "
-              << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f << " s "
-              << "( " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()
-              << " µs )" << std::endl;
-    std::cout << "Averaged "
-              << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / (float) cycles
-              << " µs per cycle"
-              << std::endl;
+    spdlog::get("log")->debug("Completed {} cycles in {} s",
+                              cycles,
+                              std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f
+    );
+    spdlog::get("log")->debug("Averaged {} µs per cycle",
+                              std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() /
+                              (float) cycles
+    );
 
 
     // Saving the result to an xml file
