@@ -40,10 +40,6 @@ int main(int argc, char **argv) {
     // Set the default level of the logger to debug
     logger->set_level(spdlog::level::debug);
 
-    // Attach stdout to logger
-    logDistributor->add_sink(make_shared<spdlog::sinks::stdout_color_sink_mt>());
-    logger->log(spdlog::level::debug, "Sink console:stdout attached to logger");
-
 
     // Configuring CLI Input
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,8 +61,15 @@ int main(int argc, char **argv) {
                             "Enables more thorough logging, at the cost of performance"
     );
 
+    // Getting the quiet option
+    bool quiet = false;
+    CLIApplication.add_flag("-q,--quiet",
+                            quiet,
+                            "Disables printing debug information to the console"
+    );
+
     // Getting the logfile path, with a default value
-    string logPath = "../../logs/log.log";
+    string logPath = "";
     CLIApplication.add_option("-l,--logfile",
                               logPath,
                               "Sets the path to write log files to",
@@ -107,20 +110,23 @@ int main(int argc, char **argv) {
     if (verbose)
         logger->set_level(spdlog::level::trace);
 
+    // Attaching the console as a sink
+    if (!quiet) {
+        logDistributor->add_sink(make_shared<spdlog::sinks::stdout_color_sink_mt>());
+        logger->log(spdlog::level::debug, "Sink console:stdout attached to logger");
+    }
+
     // Attaching the logfile as another sink
-    logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
-    logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
+    if (!logPath.empty()) {
+        logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
+        logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
+    }
 
     // Running with an interface
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!headless)
         return 1;
-
-    // Setting logfile
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //logDistributor->add_sink(make_shared<spdlog::sinks::(logPath)>());
 
     // Loading from XML files
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
