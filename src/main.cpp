@@ -3,15 +3,19 @@
 //
 
 #include "model/tools/BodyList.h"
+
 #include "model/PhysicsContext.h"
+
 #include "model/calculation/Solver.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "model/calculation/Naive/NaiveSolver.h"
 
 #include <fstream>
 #include <chrono>
+
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>
+
 #include <cli11/CLI11.hpp>
 
 using std::cout;
