@@ -13,9 +13,6 @@ find_package(PkgConfig REQUIRED)
 # Libraries
 ########################################################################################################################
 
-# Header-only
-include_directories(libs)
-
 # GTKMM
 pkg_check_modules(GTKMM gtkmm-3.0)
 
