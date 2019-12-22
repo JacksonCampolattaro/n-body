@@ -68,6 +68,13 @@ int main(int argc, char **argv) {
                             "Disables printing debug information to the console"
     );
 
+    // Getting the quiet option
+    bool silent = false;
+    CLIApplication.add_flag("-s,--silent",
+                            quiet,
+                            "Disables printing any information to the console"
+    );
+
     // Getting the logfile path, with a default value
     string logPath = "";
     CLIApplication.add_option("-l,--logfile",
@@ -110,8 +117,11 @@ int main(int argc, char **argv) {
     if (verbose)
         logger->set_level(spdlog::level::trace);
 
+    if (quiet)
+        logger->set_level(spdlog::level::warn);
+
     // Attaching the console as a sink
-    if (!quiet) {
+    if (!silent) {
         logDistributor->add_sink(make_shared<spdlog::sinks::stdout_color_sink_mt>());
         logger->log(spdlog::level::debug, "Sink console:stdout attached to logger");
     }
