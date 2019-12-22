@@ -34,9 +34,9 @@ int main(int argc, char **argv) {
     // Getting the headless option
     bool headless = false;
     CLIApplication.add_flag("--headless",
-                              headless,
-                              "Runs the program without an interface or graphics"
-                              );
+                            headless,
+                            "Runs the program without an interface or graphics"
+    );
 
     // Setting the body archive, with default value
     string bodyArchivePath = "../../scenarios/blender/blender.bod";
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
                               bodyArchivePath,
                               "Sets the file path to read bodies from",
                               true
-            )->check(CLI::ExistingFile);
+    )->check(CLI::ExistingFile);
 
     // Setting the physics archive, with default value
     string physicsArchivePath = "../../scenarios/blender/blender.phys";
@@ -52,12 +52,21 @@ int main(int argc, char **argv) {
                               physicsArchivePath,
                               "Sets the file path to read physics from",
                               true
-            )->check(CLI::ExistingFile);
+    )->check(CLI::ExistingFile);
 
+    // Setting the number of cycles to calculate
+    unsigned int cycles = 100;
+    CLIApplication.add_option("-c,--cycles",
+                              cycles,
+                              "Sets the number of calculation cycles to perform",
+                              true
+    );
+
+    // Interpreting the input using the CLI macro
     CLI11_PARSE(CLIApplication, argc, argv);
 
     if (!headless)
-        return 0;
+        return 1;
 
     // Loading from XML files
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +102,6 @@ int main(int argc, char **argv) {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Looping to run the simulation for many cycles
-    int cycles = 100000;
     for (int i = 0; i < cycles; ++i) {
         cout << "Starting cycle " << i << endl;
         solver->solve(&bodies, &physics);
