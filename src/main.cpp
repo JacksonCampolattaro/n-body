@@ -30,16 +30,6 @@ using std::make_shared;
 
 int main(int argc, char **argv) {
 
-    // Create the log distributor, which will pass output to different sinks
-    auto logDistributor = make_shared<spdlog::sinks::dist_sink_st>();
-
-    // Create a logger using the distributor as the sink
-    auto logger = make_shared<spdlog::logger>("log", logDistributor);
-    spdlog::register_logger(logger);
-
-    // Set the default level of the logger to debug
-    logger->set_level(spdlog::level::debug);
-
 
     // Configuring CLI Input
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +49,13 @@ int main(int argc, char **argv) {
     CLIApplication.add_flag("-v,--verbose",
                             verbose,
                             "Enables more thorough logging, at the cost of performance"
+    );
+
+    // Getting the debug option
+    bool debug = false;
+    CLIApplication.add_flag("-d,--debug",
+                            debug,
+                            "Enables logging of information that minimally impacts performance"
     );
 
     // Getting the quiet option
@@ -110,13 +107,24 @@ int main(int argc, char **argv) {
     // Interpreting the input using the CLI macro
     CLI11_PARSE(CLIApplication, argc, argv);
 
-    // Parsing options
+    // Configuring logging
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Enabling more verbosity
+    // Create the log distributor, which will pass output to different sinks
+    auto logDistributor = make_shared<spdlog::sinks::dist_sink_st>();
+
+    // Create a logger using the distributor as the sink
+    auto logger = make_shared<spdlog::logger>("log", logDistributor);
+    spdlog::register_logger(logger);
+
+    // Set the default level of the logger to debug
+    logger->set_level(spdlog::level::info);
+
+    // Setting verbosity level
+    if (debug)
+        logger->set_level(spdlog::level::debug);
     if (verbose)
         logger->set_level(spdlog::level::trace);
-
     if (quiet)
         logger->set_level(spdlog::level::warn);
 
@@ -128,7 +136,7 @@ int main(int argc, char **argv) {
 
     // Attaching the logfile as another sink
     if (!logPath.empty()) {
-        logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_st>(logPath));
+        logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_mt>(logPath));
         logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
     }
 
@@ -172,8 +180,9 @@ int main(int argc, char **argv) {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     // Looping to run the simulation for many cycles
+    spdlog::get("log")->info("Starting simulation with {} cycles", cycles);
     for (int i = 0; i < cycles; ++i) {
-        spdlog::get("log")->trace("Starting cycle {} ({}% Complete)",
+        spdlog::get("log")->debug("Starting cycle {} ({}% Complete)",
                                   i,
                                   100.0f * (float) i / (float) cycles);
         solver->solve(&bodies, &physics);
@@ -183,11 +192,11 @@ int main(int argc, char **argv) {
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Output the elapsed time
-    spdlog::get("log")->debug("Completed {} cycles in {} s",
+    spdlog::get("log")->info("Completed {} cycles in {} s",
                               cycles,
                               std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f
     );
-    spdlog::get("log")->debug("Averaged {} µs per cycle",
+    spdlog::get("log")->info("Averaged {} µs per cycle",
                               std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() /
                               (float) cycles
     );
