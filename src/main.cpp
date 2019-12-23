@@ -9,6 +9,7 @@
 #include "model/calculation/Solver.h"
 #include "model/calculation/BarnesHut/BarnesHutSolver.h"
 #include "model/calculation/Naive/NaiveSolver.h"
+#include "runner.h"
 
 #include <fstream>
 #include <chrono>
@@ -165,41 +166,11 @@ int main(int argc, char **argv) {
     auto physics = PhysicsContext();
     physicsInputArchive(physics);
 
-    // Creating a simulation from the loaded data
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Creating the solver, and configuring it
-    Solver *solver = new BarnesHutSolver();
-    solver->enableThreading();
-
 
     // Running the simulation for a number of cycles
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Start the timer
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    // Looping to run the simulation for many cycles
-    spdlog::get("log")->info("Starting simulation with {} cycles", cycles);
-    for (int i = 0; i < cycles; ++i) {
-        spdlog::get("log")->debug("Starting cycle {} ({}% Complete)",
-                                  i,
-                                  100.0f * (float) i / (float) cycles);
-        solver->solve(&bodies, &physics);
-    }
-
-    // End the timer
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-    // Output the elapsed time
-    spdlog::get("log")->info("Completed {} cycles in {} s",
-                              cycles,
-                              std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() / 1000000.0f
-    );
-    spdlog::get("log")->info("Averaged {} µs per cycle",
-                              std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() /
-                              (float) cycles
-    );
+    runner::headless(bodies, physics, cycles);
 
 
     // Saving the result to an xml file

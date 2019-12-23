@@ -37,7 +37,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         ../scenarios/Preset.cpp
         ../scenarios/Preset.h
-        )
+        runner.cpp runner.h)
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 ${OpenMP_CXX_FLAGS}")
