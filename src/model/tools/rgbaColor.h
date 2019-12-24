@@ -6,6 +6,7 @@
 #define N_BODY_RGBACOLOR_H
 
 
+#include <cereal/cereal.hpp>
 #include <glm/vec4.hpp>
 
 class rgbaColor : public glm::vec4 {

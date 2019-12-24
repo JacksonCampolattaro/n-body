@@ -6,13 +6,14 @@
 #define N_BODY_BETTER_BODY_H
 
 
-#include <string> // Used by the toString method
-#include <glm/vec3.hpp> // Used for holding 3d vectors
-#include <cereal/archives/xml.hpp>
-
 #include "tools/Position.h"
 #include "tools/Velocity.h"
 #include "tools/rgbaColor.h"
+
+#include <cereal/cereal.hpp>
+#include <string> // Used by the toString method
+#include <glm/vec3.hpp> // Used for holding 3d vectors
+#include <cmath>
 
 /**
  * Intended to streamline the functionality of the old body

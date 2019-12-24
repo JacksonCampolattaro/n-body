@@ -4,8 +4,6 @@
 
 #include "Body.h"
 
-#include <cmath>
-
 Body::Body(Position position) : position(position), nextPosition(position) {}
 
 Body *Body::setVelocity(Velocity velocity) {
