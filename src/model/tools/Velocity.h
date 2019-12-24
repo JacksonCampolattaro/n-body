@@ -7,6 +7,7 @@
 
 
 #include <glm/vec3.hpp>
+#include <cereal/cereal.hpp>
 
 class Velocity : public glm::vec3 {
 

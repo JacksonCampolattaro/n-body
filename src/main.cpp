@@ -2,17 +2,10 @@
 // Created by jackcamp on 10/25/18.
 //
 
-#include "model/tools/BodyList.h"
-
-#include "model/PhysicsContext.h"
-
-#include "model/calculation/Solver.h"
-#include "model/calculation/BarnesHut/BarnesHutSolver.h"
-#include "model/calculation/Naive/NaiveSolver.h"
 #include "runner.h"
 
+
 #include <fstream>
-#include <chrono>
 
 #include <cereal/archives/xml.hpp>
 #include <cereal/types/vector.hpp>

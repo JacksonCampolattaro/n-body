@@ -5,6 +5,8 @@
 #ifndef N_BODY_POSITION_H
 #define N_BODY_POSITION_H
 
+
+#include <cereal/cereal.hpp>
 #include <string>
 #include <glm/vec3.hpp>
 

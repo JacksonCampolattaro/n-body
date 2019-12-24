@@ -3,7 +3,6 @@
 //
 
 #include "runner.h"
-#include "model/calculation/BarnesHut/BarnesHutSolver.h"
 
 int runner::headless(BodyList bodies, PhysicsContext physicsContext, unsigned int cycles) {
 
