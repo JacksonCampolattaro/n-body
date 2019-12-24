@@ -1,0 +1,6 @@
+[submodule "libs/corrade"]
+	path = libs/corrade
+	url = https://github.com/mosra/corrade.git
+[submodule "libs/magnum"]
+	path = libs/magnum
+	url = https://github.com/mosra/magnum.git
