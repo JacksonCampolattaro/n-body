@@ -9,9 +9,18 @@ project(n_body)
 
 find_package(PkgConfig REQUIRED)
 
+# Enable adding modules
+set(CMAKE_MODULE_PATH "libs/${PROJECT_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 
 # Libraries
 ########################################################################################################################
+
+# Add Corrade as a subproject
+add_subdirectory(libs/corrade EXCLUDE_FROM_ALL)
+
+# Add Magnum as a subproject, enable Sdl2Application
+set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
+add_subdirectory(libs/magnum EXCLUDE_FROM_ALL)
 
 # GTKMM
 pkg_check_modules(GTKMM gtkmm-3.0)

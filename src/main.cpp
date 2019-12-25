@@ -4,7 +4,6 @@
 
 #include "runner.h"
 
-
 #include <fstream>
 
 #include <cereal/archives/xml.hpp>
@@ -145,16 +144,20 @@ int main(int argc, char **argv) {
 
     // Loading Bodies
     std::ifstream bodiesInputStream(bodyArchivePath);
-    if (!bodiesInputStream.is_open())
+    if (!bodiesInputStream.is_open()) {
+        logger->error("Failed to load body file at path \"{}\"", bodyArchivePath);
         return 1;
+    }
     cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
     auto bodies = BodyList();
     bodiesInputArchive(bodies);
 
     // Loading Physics
     std::ifstream physicsInputStream(physicsArchivePath);
-    if (!bodiesInputStream.is_open())
-        return 2;
+    if (!bodiesInputStream.is_open()) {
+        logger->error("Failed to load physics file at path \"{}\"", physicsArchivePath);
+        return 1;
+    }
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     auto physics = PhysicsContext();
     physicsInputArchive(physics);
