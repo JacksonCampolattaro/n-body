@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     );
 
     // Getting the body archive path, with a default value
-    string bodyArchivePath = "../../scenarios/blender/blender.bod";
+    string bodyArchivePath = "../../../scenarios/blender/blender.bod";
     CLIApplication.add_option("-b,--bodies",
                               bodyArchivePath,
                               "Sets the file path to read bodies from",
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     )->check(CLI::ExistingFile);
 
     // Getting the physics archive path, with a default value
-    string physicsArchivePath = "../../scenarios/blender/blender.phys";
+    string physicsArchivePath = "../../../scenarios/blender/blender.phys";
     CLIApplication.add_option("-p,--physics",
                               physicsArchivePath,
                               "Sets the file path to read physics from",

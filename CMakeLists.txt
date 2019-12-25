@@ -10,7 +10,7 @@ project(n_body)
 find_package(PkgConfig REQUIRED)
 
 # Enable adding modules
-set(CMAKE_MODULE_PATH "libs/${PROJECT_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 
 # Libraries
 ########################################################################################################################
