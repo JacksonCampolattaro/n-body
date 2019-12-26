@@ -8,16 +8,16 @@
 
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/Platform/GLContext.h>
+#include <Magnum/Platform/Sdl2Application.h>
 
 #include "../model/tools/BodyList.h"
 
-class Viewport {
-
+class Viewport : public Magnum::Platform::Application {
 public:
+    explicit Viewport(const Arguments &arguments);
 
-    Viewport(BodyList *bodies);
-
-    void refresh();
+private:
+    void drawEvent() override;
 };
 
 

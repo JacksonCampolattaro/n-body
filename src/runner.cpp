@@ -46,7 +46,7 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
     solver->enableThreading();
 
     // Creating the viewport
-    Viewport viewport(&bodies);
+    // TODO
 
     // Start the timer
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -58,8 +58,6 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
                                   i,
                                   100.0f * (float) i / (float) cycles);
         solver->solve(&bodies, &physicsContext);
-
-        viewport.refresh();
     }
 
     // End the timer
