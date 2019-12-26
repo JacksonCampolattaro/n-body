@@ -4,3 +4,6 @@
 [submodule "libs/magnum"]
 	path = libs/magnum
 	url = https://github.com/mosra/magnum.git
+[submodule "libs/glfw"]
+	path = libs/glfw
+	url = https://github.com/glfw/glfw
