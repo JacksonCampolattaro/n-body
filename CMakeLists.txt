@@ -21,8 +21,22 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 # Libraries
 ########################################################################################################################
 
+# Corrade
+hunter_add_package(corrade)
+find_package(Corrade CONFIG REQUIRED COMPONENTS
+        Containers
+        Interconnect
+        PluginManager
+        TestSuite
+        Utility
+        )
+
 # Magnum
-hunter_add_package(Magnum REQUIRED GL GlfwApplication)
+hunter_add_package(magnum)
+find_package(Magnum CONFIG REQUIRED COMPONENTS
+        GL
+        Sdl2Application
+        )
 
 # GTKMM
 pkg_check_modules(GTKMM gtkmm-3.0)
