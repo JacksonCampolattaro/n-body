@@ -46,6 +46,10 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
     solver->enableThreading();
 
     // Creating the viewport
+    int argc = 1;
+    char **argv = (char **) "test";
+    Viewport viewport({argc, argv});
+    //return viewport.exec();
     // TODO
 
     // Start the timer
@@ -58,6 +62,9 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
                                   i,
                                   100.0f * (float) i / (float) cycles);
         solver->solve(&bodies, &physicsContext);
+
+        // Update the viewport
+        viewport.mainLoopIteration();
     }
 
     // End the timer
@@ -73,9 +80,8 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
                              (float) cycles
     );
 
-    return 0;
-}
+    // Close the viewport
+    viewport.exit();
 
-int runner::gui() {
     return 0;
 }

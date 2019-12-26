@@ -24,7 +24,7 @@ class Viewport : public Magnum::Platform::Application {
 
 public:
 
-    explicit Viewport(BodyList *bodies);
+    explicit Viewport(const Arguments& arguments);
 
 private:
 
