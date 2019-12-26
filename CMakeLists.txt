@@ -9,8 +9,8 @@ find_package(PkgConfig REQUIRED)
 # Add Hunter to more easily add Magnum
 include("cmake/HunterGate.cmake")
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.16.15.tar.gz"
-        SHA1 "6974c2150fc0d3b09de3ad1efcbf15d360647ffa"
+        URL "https://github.com/ruslo/hunter/archive/v0.23.214.tar.gz"
+        SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
 )
 
 # Sets project name
@@ -26,7 +26,6 @@ hunter_add_package(SDL2)
 find_package(SDL2 CONFIG REQUIRED)
 
 # Corrade
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 hunter_add_package(corrade)
 find_package(Corrade CONFIG REQUIRED COMPONENTS
         Containers
@@ -35,10 +34,11 @@ find_package(Corrade CONFIG REQUIRED COMPONENTS
         TestSuite
         Utility
         )
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 
 # Magnum
 hunter_add_package(magnum)
-find_package(Magnum CONFIG REQUIRED COMPONENTS
+find_package(Magnum CONFIG REQUIRED
         GL
         MeshTools
         Primitives
