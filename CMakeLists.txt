@@ -1,7 +1,7 @@
 
 
 # Sets minimum CMake version
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.4)
 
 # Add pkgConfig to more easily add GTKMM
 find_package(PkgConfig REQUIRED)
@@ -26,6 +26,7 @@ hunter_add_package(SDL2)
 find_package(SDL2 CONFIG REQUIRED)
 
 # Corrade
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 hunter_add_package(corrade)
 find_package(Corrade CONFIG REQUIRED COMPONENTS
         Containers
@@ -42,7 +43,7 @@ find_package(Magnum CONFIG REQUIRED COMPONENTS
         MeshTools
         Primitives
         Shaders
-        Sdl2Application
+        GlfwApplication
         )
 
 # GTKMM
