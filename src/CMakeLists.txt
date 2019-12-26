@@ -37,7 +37,13 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         ../scenarios/Preset.cpp
         ../scenarios/Preset.h
-        runner.cpp runner.h view/Viewport.cpp view/Viewport.h)
+
+        runner.cpp
+        runner.h
+
+        view/Viewport.cpp
+        view/Viewport.h
+        )
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 ${OpenMP_CXX_FLAGS}")
@@ -45,5 +51,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 ${OpenMP_CXX_FLAGS}")
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME}
         ${GTKMM_LIBRARIES}
+        Corrade::Main
+        Magnum::GL
+        Magnum::Magnum
+        Magnum::MeshTools
+        Magnum::Primitives
+        Magnum::Shaders
         )
 

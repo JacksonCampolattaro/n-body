@@ -21,6 +21,10 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/" ${CMAKE_MODULE_PATH})
 # Libraries
 ########################################################################################################################
 
+# SDL2
+hunter_add_package(SDL2)
+find_package(SDL2 CONFIG REQUIRED)
+
 # Corrade
 hunter_add_package(corrade)
 find_package(Corrade CONFIG REQUIRED COMPONENTS
@@ -35,6 +39,9 @@ find_package(Corrade CONFIG REQUIRED COMPONENTS
 hunter_add_package(magnum)
 find_package(Magnum CONFIG REQUIRED COMPONENTS
         GL
+        MeshTools
+        Primitives
+        Shaders
         Sdl2Application
         )
 
