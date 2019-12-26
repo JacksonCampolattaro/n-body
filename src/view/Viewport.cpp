@@ -15,21 +15,21 @@ Viewport::Viewport(const Arguments &arguments) :
     Magnum::GL::Renderer::enable(Magnum::GL::Renderer::Feature::DepthTest);
     Magnum::GL::Renderer::enable(Magnum::GL::Renderer::Feature::FaceCulling);
 
-    const Magnum::Trade::MeshData3D cube = Magnum::Primitives::cubeSolid();
+    const Magnum::Trade::MeshData3D sphere = Magnum::Primitives::uvSphereSolid(50, 50);
 
     Magnum::GL::Buffer vertices;
-    vertices.setData(Magnum::MeshTools::interleave(cube.positions(0), cube.normals(0)));
+    vertices.setData(Magnum::MeshTools::interleave(sphere.positions(0), sphere.normals(0)));
 
     Magnum::Containers::Array<char> indexData;
     Magnum::MeshIndexType indexType;
     Magnum::UnsignedInt indexStart, indexEnd;
     std::tie(indexData, indexType, indexStart, indexEnd) =
-            Magnum::MeshTools::compressIndices(cube.indices());
+            Magnum::MeshTools::compressIndices(sphere.indices());
     Magnum::GL::Buffer indices;
     indices.setData(indexData);
 
-    _mesh.setPrimitive(cube.primitive())
-            .setCount(cube.indices().size())
+    _mesh.setPrimitive(sphere.primitive())
+            .setCount(sphere.indices().size())
             .addVertexBuffer(std::move(vertices), 0, Magnum::Shaders::Phong::Position{},
                              Magnum::Shaders::Phong::Normal{})
             .setIndexBuffer(std::move(indices), 0, indexType, indexStart, indexEnd);
