@@ -11,6 +11,8 @@
 #include "model/tools/BodyList.h"
 #include "model/PhysicsContext.h"
 
+#include "view/Viewport.h"
+
 #include <spdlog/spdlog.h>
 
 namespace runner {
@@ -19,7 +21,7 @@ namespace runner {
 
     // TODO
     int gui();
-    int video();
+    int video(BodyList bodies, PhysicsContext physicsContext, unsigned int cycles);
 };
 
 

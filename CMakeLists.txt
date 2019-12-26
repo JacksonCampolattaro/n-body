@@ -43,7 +43,7 @@ find_package(Magnum CONFIG REQUIRED COMPONENTS
         MeshTools
         Primitives
         Shaders
-        GlfwApplication
+        Sdl2Application
         )
 
 # GTKMM

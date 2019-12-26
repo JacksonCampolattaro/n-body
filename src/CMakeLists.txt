@@ -57,5 +57,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+        Magnum::Application
         )
 
