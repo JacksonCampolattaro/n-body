@@ -75,3 +75,7 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
 
     return 0;
 }
+
+int runner::gui() {
+    return 0;
+}
