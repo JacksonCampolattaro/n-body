@@ -9,8 +9,8 @@ find_package(PkgConfig REQUIRED)
 # Add Hunter to more easily add Magnum
 include("cmake/HunterGate.cmake")
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.16.15.tar.gz"
-        SHA1 "6974c2150fc0d3b09de3ad1efcbf15d360647ffa"
+        URL "https://github.com/ruslo/hunter/archive/v0.23.214.tar.gz"
+        SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
 )
 
 # Sets project name
