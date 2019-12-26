@@ -26,7 +26,6 @@ hunter_add_package(SDL2)
 find_package(SDL2 CONFIG REQUIRED)
 
 # Corrade
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 hunter_add_package(corrade)
 find_package(Corrade CONFIG REQUIRED COMPONENTS
         Containers
@@ -35,10 +34,11 @@ find_package(Corrade CONFIG REQUIRED COMPONENTS
         TestSuite
         Utility
         )
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 
 # Magnum
 hunter_add_package(magnum)
-find_package(Magnum CONFIG REQUIRED COMPONENTS
+find_package(Magnum CONFIG REQUIRED
         GL
         MeshTools
         Primitives
