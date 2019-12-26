@@ -23,6 +23,9 @@ using std::make_shared;
 
 int main(int argc, char **argv) {
 
+    Viewport viewport({argc, argv});
+    return viewport.exec();
+
 
     // Configuring CLI Input
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
