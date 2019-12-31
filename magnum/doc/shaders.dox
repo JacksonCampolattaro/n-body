@@ -79,7 +79,7 @@ Many shaders share the same vertex attribute definitions, such as positions,
 normals, texture coordinates etc. It's thus possible to configure the mesh
 for a *generic* shader and then render it with any compatible shader.
 Definition of all generic attributes is available in the @ref Shaders::Generic
-class. Configuration of the above mesh using generic attributes could then look
+class. Config of the above mesh using generic attributes could then look
 like this:
 
 @snippet MagnumShaders.cpp shaders-generic

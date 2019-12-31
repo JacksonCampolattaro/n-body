@@ -352,7 +352,7 @@ Released 2019-10-24, tagged as
 -   @ref Utility::format() now prints @cpp enum @ce values implicitly
     convertible to integers as integers without requiring the user to do an
     explicit cast first
--   @ref Utility::Configuration internals were rewritten to not use exceptions
+-   @ref Utility::Config internals were rewritten to not use exceptions
     anymore
 -   The @ref CORRADE_AUTOMATIC_INITIALIZER() and
     @ref CORRADE_AUTOMATIC_FINALIZER() macros can now be overriden for testing
@@ -1082,7 +1082,7 @@ a high-level overview.
 -   @ref Utility::Arguments::value() now takes
     @ref Utility::ConfigurationValueFlags for easier parsing of hexadecimal
     and other values
--   @ref Utility::Configuration is now able to properly load and save
+-   @ref Utility::Config is now able to properly load and save
     configuration files from UTF-8 encoded filenames also on Windows
 -   Simpler implementation of @ref Utility::Debug operators, they now take the
     class by reference instead of by value

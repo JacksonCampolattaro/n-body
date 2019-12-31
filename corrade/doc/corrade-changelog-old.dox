@@ -213,7 +213,7 @@ No dependency changes in this release.
 -   Fixed compilation issues with Clang and libc++
 -   Fixed various compilation issues under MSVC (and worked around a much
     larger amount of compiler bugs)
--   Adapted @ref Utility::Configuration test to work under MinGW (see [mosra/corrade#7](https://github.com/mosra/corrade/pull/7))
+-   Adapted @ref Utility::Config test to work under MinGW (see [mosra/corrade#7](https://github.com/mosra/corrade/pull/7))
 
 @subsection corrade-changelog-2014-01-deprecated Deprecated APIs
 

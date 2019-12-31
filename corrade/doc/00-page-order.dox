@@ -47,7 +47,7 @@ namespace Corrade {
 
 See also @ref corrade-configurationvalues and @ref corrade-tweakableliterals.
 
-@page corrade-configurationvalues Configuration value parsers and writers for custom types
+@page corrade-configurationvalues Config value parsers and writers for custom types
 
 See also @ref corrade-debugoperators and @ref corrade-tweakableliterals.
 

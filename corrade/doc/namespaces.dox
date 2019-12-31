@@ -78,7 +78,7 @@ Parts of this library are additionally available in a form of
 
 This library contains utility classes used by all other Corrade parts, like
 debug and error output (class @ref Debug), access to configuration files (class
-@ref Configuration) or compiling data files into the executable (class
+@ref Config) or compiling data files into the executable (class
 @ref Resource, see also @ref resource-management "tutorial").
 
 This library is built if `WITH_UTILITY` is enabled when building Corrade. To

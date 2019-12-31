@@ -235,7 +235,7 @@ ALIASES                = \
     "debugoperatorenum{1}=@brief Debug output operator @xrefitem corrade-debugoperators \"Debug output operator\" \"Debug output operators for custom types\" Allows printing @ref \1 with @ref Corrade::Utility::Debug and friends." \
     "debugoperatorclassenum{2}=@relates \1 @brief Debug output operator @xrefitem corrade-debugoperators \"Debug output operator\" \"Debug output operators for custom types\" Allows printing @ref \2 with @ref Corrade::Utility::Debug and friends." \
     "configurationvalueref{1}=@see @ref corrade-configurationvalues \"Corrade::Utility::ConfigurationValue<\1>\"" \
-    "configurationvalue{1}=@brief Configuration value parser and writer @xrefitem corrade-configurationvalues \"Configuration value parser and writer\" \"Configuration value parsers and writers for custom types\" Allows parsing and writing @ref \1 from and to @ref Corrade::Utility::Configuration and use it with @ref Corrade::Utility::Arguments." \
+    "configurationvalue{1}=@brief Config value parser and writer @xrefitem corrade-configurationvalues \"Config value parser and writer\" \"Config value parsers and writers for custom types\" Allows parsing and writing @ref \1 from and to @ref Corrade::Utility::Config and use it with @ref Corrade::Utility::Arguments." \
     "tweakableliteral{1}=@brief Tweakable literal parser @xrefitem corrade-tweakableliterals \"Tweakable literal parser\" \"Tweakable literal parsers\" Allows using @ref \1 with @ref Corrade::Utility::Tweakable." \
     "partialsupport=@xrefitem corrade-partialsupport \"Partially supported\" \"List of partially supported features\"" \
     "thirdparty=@xrefitem credits-third-party \"Third-party components\" \"Third-party components\"" \
@@ -716,7 +716,7 @@ LAYOUT_FILE            =
 CITE_BIB_FILES         =
 
 #---------------------------------------------------------------------------
-# Configuration options related to warning and progress messages
+# Config options related to warning and progress messages
 #---------------------------------------------------------------------------
 
 # The QUIET tag can be used to turn on/off the messages that are generated to
@@ -775,7 +775,7 @@ WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           =
 
 #---------------------------------------------------------------------------
-# Configuration options related to the input files
+# Config options related to the input files
 #---------------------------------------------------------------------------
 
 # The INPUT tag is used to specify the files and/or directories that contain
@@ -933,7 +933,7 @@ FILTER_SOURCE_PATTERNS =
 USE_MDFILE_AS_MAINPAGE =
 
 #---------------------------------------------------------------------------
-# Configuration options related to source browsing
+# Config options related to source browsing
 #---------------------------------------------------------------------------
 
 # If the SOURCE_BROWSER tag is set to YES then a list of source files will be
@@ -1019,7 +1019,7 @@ USE_HTAGS              = NO
 VERBATIM_HEADERS       = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to the alphabetical class index
+# Config options related to the alphabetical class index
 #---------------------------------------------------------------------------
 
 # If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index of all
@@ -1045,7 +1045,7 @@ COLS_IN_ALPHA_INDEX    = 3
 IGNORE_PREFIX          =
 
 #---------------------------------------------------------------------------
-# Configuration options related to the HTML output
+# Config options related to the HTML output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_HTML tag is set to YES doxygen will generate HTML output
@@ -1586,7 +1586,7 @@ EXTERNAL_SEARCH_ID     =
 EXTRA_SEARCH_MAPPINGS  =
 
 #---------------------------------------------------------------------------
-# Configuration options related to the LaTeX output
+# Config options related to the LaTeX output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_LATEX tag is set to YES doxygen will generate LaTeX output.
@@ -1731,7 +1731,7 @@ LATEX_SOURCE_CODE      = NO
 LATEX_BIB_STYLE        = plain
 
 #---------------------------------------------------------------------------
-# Configuration options related to the RTF output
+# Config options related to the RTF output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_RTF tag is set to YES doxygen will generate RTF output. The
@@ -1787,7 +1787,7 @@ RTF_STYLESHEET_FILE    =
 RTF_EXTENSIONS_FILE    =
 
 #---------------------------------------------------------------------------
-# Configuration options related to the man page output
+# Config options related to the man page output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_MAN tag is set to YES doxygen will generate man pages for
@@ -1831,7 +1831,7 @@ MAN_SUBDIR             =
 MAN_LINKS              = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to the XML output
+# Config options related to the XML output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_XML tag is set to YES doxygen will generate an XML file that
@@ -1858,7 +1858,7 @@ XML_OUTPUT             = xml
 XML_PROGRAMLISTING     = YES
 
 #---------------------------------------------------------------------------
-# Configuration options related to the DOCBOOK output
+# Config options related to the DOCBOOK output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_DOCBOOK tag is set to YES doxygen will generate Docbook files
@@ -1876,7 +1876,7 @@ GENERATE_DOCBOOK       = NO
 DOCBOOK_OUTPUT         = docbook
 
 #---------------------------------------------------------------------------
-# Configuration options for the AutoGen Definitions output
+# Config options for the AutoGen Definitions output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_AUTOGEN_DEF tag is set to YES doxygen will generate an AutoGen
@@ -1888,7 +1888,7 @@ DOCBOOK_OUTPUT         = docbook
 GENERATE_AUTOGEN_DEF   = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to the Perl module output
+# Config options related to the Perl module output
 #---------------------------------------------------------------------------
 
 # If the GENERATE_PERLMOD tag is set to YES doxygen will generate a Perl module
@@ -1926,7 +1926,7 @@ PERLMOD_PRETTY         = YES
 PERLMOD_MAKEVAR_PREFIX =
 
 #---------------------------------------------------------------------------
-# Configuration options related to the preprocessor
+# Config options related to the preprocessor
 #---------------------------------------------------------------------------
 
 # If the ENABLE_PREPROCESSING tag is set to YES doxygen will evaluate all
@@ -2009,7 +2009,7 @@ EXPAND_AS_DEFINED      =
 SKIP_FUNCTION_MACROS   = YES
 
 #---------------------------------------------------------------------------
-# Configuration options related to external references
+# Config options related to external references
 #---------------------------------------------------------------------------
 
 # The TAGFILES tag can be used to specify one or more tag files. For each tag
@@ -2060,7 +2060,7 @@ EXTERNAL_PAGES         = YES
 PERL_PATH              = /usr/bin/perl
 
 #---------------------------------------------------------------------------
-# Configuration options related to the dot tool
+# Config options related to the dot tool
 #---------------------------------------------------------------------------
 
 # If the CLASS_DIAGRAMS tag is set to YES doxygen will generate a class diagram

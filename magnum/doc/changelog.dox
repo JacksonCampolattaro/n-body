@@ -103,7 +103,7 @@ See also:
 @subsection changelog-latest-changes Changes and improvements
 
 -   The @ref PixelFormat and @ref CompressedPixelFormat enums can now be saved
-    and retrieved from @ref Corrade::Utility::Configuration /
+    and retrieved from @ref Corrade::Utility::Config /
     @ref Corrade::Utility::Arguments
 -   @ref Platform::GlfwApplication now gracefully handles monitor sizes of zero
     when calculating DPI scaling (see [mosra/magnum#388](https://github.com/mosra/magnum/pull/388))
@@ -163,7 +163,7 @@ See also:
 -   The @ref Primitives::cylinderSolid() and @ref Primitives::coneSolid()
     primitives were missing a face when both caps and texture coordinates were
     enabled (see [mosra/magnum#386](https://github.com/mosra/magnum/issues/386))
--   @ref Platform::Sdl2Application::Configuration::WindowFlag::Vulkan was
+-   @ref Platform::Sdl2Application::Config::WindowFlag::Vulkan was
     enabled conditionally only for SDL >= 2.0.6, but the version defines were
     never included so it was always disabled
 -   Fixed missing handling of
@@ -175,12 +175,12 @@ See also:
 
 @subsection changelog-latest-deprecated Deprecated APIs
 
--   @cpp Platform::GlfwApplication::Configuration::setCursorMode() @ce and
+-   @cpp Platform::GlfwApplication::Config::setCursorMode() @ce and
     related enum & getter are deprecated in favor of the new extended and more
     flexible @ref Platform::GlfwApplication::setCursor(). The setting didn't
     allow changing the cursor later, which made it pretty useless.
--   @cpp Platform::Sdl2Application::Configuration::setMouseLocked() @ce and
-    @cpp Platform::Sdl2Application::Configuration::isMouseLocked() @ce is
+-   @cpp Platform::Sdl2Application::Config::setMouseLocked() @ce and
+    @cpp Platform::Sdl2Application::Config::isMouseLocked() @ce is
     deprecated in favor of the new @ref Platform::Sdl2Application::setCursor()
     together with @ref Platform::Sdl2Application::Cursor::HiddenLocked
 
@@ -488,9 +488,9 @@ Released 2019-10-24, tagged as
     in @ref Platform::GlfwApplication and @ref Platform::EmscriptenApplication)
     for changing window title at runtime as opposed to setting them on
     application startup
--   Added @ref Platform::Sdl2Application::Configuration::WindowFlag::OpenGL and
-    @ref Platform::Sdl2Application::Configuration::WindowFlag::Vulkan "WindowFlag::Vulkan",
-    meant to be used together with @ref Platform::Sdl2Application::Configuration::WindowFlag::Contextless for
+-   Added @ref Platform::Sdl2Application::Config::WindowFlag::OpenGL and
+    @ref Platform::Sdl2Application::Config::WindowFlag::Vulkan "WindowFlag::Vulkan",
+    meant to be used together with @ref Platform::Sdl2Application::Config::WindowFlag::Contextless for
     manual creation of OpenGL contexts and Vulkan instances
 -   @ref Platform::WindowlessEglApplication now uses the
     @m_class{m-doc-external} [EGL_EXT_device_enumeration](https://www.khronos.org/registry/EGL/extensions/EXT/EGL_EXT_device_enumeration.txt),
@@ -980,10 +980,10 @@ Released 2019-10-24, tagged as
 
 @subsection changelog-2019-10-compatibility Potential compatibility breakages, removed APIs
 
--   Configuration value parsers and writers for @ref Math types were moved to
+-   Config value parsers and writers for @ref Math types were moved to
     a dedicated @ref Magnum/Math/ConfigurationValue.h header in order to speed
     up compile times. Backwards compatibility is not provided, when using
-    @ref Math types with @ref Corrade::Utility::Configuration or
+    @ref Math types with @ref Corrade::Utility::Config or
     @ref Corrade::Utility::Arguments you have to include the header explicitly
 -   @ref Audio::Extension::extensions() and @ref GL::Extension::extensions()
     now return a @ref Corrade::Containers::ArrayView instead of a reference to
@@ -1273,8 +1273,8 @@ Released 2019-02-04, tagged as
     since June 2016. Use the dedicated
     @ref Platform::Sdl2Application::mouseScrollEvent() "mouseScrollEvent()"
     API instead.
--   Removed @cpp Platform::GlfwApplication::Configuration::WindowFlag::Resizeable @ce,
-    deprecated since February 2017. Use @ref Platform::GlfwApplication::Configuration::WindowFlag::Resizable
+-   Removed @cpp Platform::GlfwApplication::Config::WindowFlag::Resizeable @ce,
+    deprecated since February 2017. Use @ref Platform::GlfwApplication::Config::WindowFlag::Resizable
     instead.
 -   Removed `MAGNUM_*_LIBRARIES` and `MAGNUM_*_INCLUDE_DIRS` CMake variables,
     which were deprecated in favor of `Magnum::*` imported targets in
@@ -1377,7 +1377,7 @@ Released 2018-10-23, tagged as
     scalar
 -   Ability to use @ref Math::Complex, @ref Math::DualComplex,
     @ref Math::Quaternion, @ref Math::DualQuaternion with
-    @ref Corrade::Utility::Configuration and @ref Corrade::Utility::Arguments
+    @ref Corrade::Utility::Config and @ref Corrade::Utility::Arguments
 -   Added @ref Math::Complex::data(), @ref Math::Quaternion::data(),
     @ref Math::DualComplex::data(), @ref Math::DualQuaternion::data(),
     @ref Math::Bezier::data() and @ref Math::CubicHermite::data() for simple
@@ -1413,12 +1413,12 @@ Released 2018-10-23, tagged as
     added @ref Platform::Sdl2Application::GLConfiguration::addFlags() "GLConfiguration::addFlags()"
     and @ref Platform::Sdl2Application::GLConfiguration::clearFlags() "GLConfiguration::clearFlags()"
     for easier flag handling
--   Exposed enabled-by-default @ref Platform::WindowlessEglApplication::Configuration::Flag::ForwardCompatible "Configuration::Flag::ForwardCompatible"
+-   Exposed enabled-by-default @ref Platform::WindowlessEglApplication::Config::Flag::ForwardCompatible "Config::Flag::ForwardCompatible"
     flag in @ref Platform::WindowlessEglApplication,
     @ref Platform::WindowlessGlxApplication and
     @ref Platform::WindowlessWglApplication,
-    added @ref Platform::WindowlessEglApplication::Configuration::addFlags() "Configuration::addFlags()"
-    and @ref Platform::WindowlessEglApplication::Configuration::clearFlags() "Configuration::clearFlags()"
+    added @ref Platform::WindowlessEglApplication::Config::addFlags() "Config::addFlags()"
+    and @ref Platform::WindowlessEglApplication::Config::clearFlags() "Config::clearFlags()"
     for easier flag handling
 
 @subsubsection changelog-2018-10-new-primitives Primitives library
@@ -1570,7 +1570,7 @@ Released 2018-10-23, tagged as
 -   @ref Platform::Sdl2Application now defaults to the actual canvas size
     on @ref CORRADE_TARGET_EMSCRIPTEN "Emscripten", instead of hardcoded
     @cpp {640, 480} @ce
--   @ref Platform::Sdl2Application::Configuration::WindowFlags values that make
+-   @ref Platform::Sdl2Application::Config::WindowFlags values that make
     no sense on Emscripten are not available there anymore
 -   When using SDL 2.0.8 and newer, @ref Platform::Sdl2Application no longer
     attempts to disable compositing on Linux. See @ref Platform-Sdl2Application-usage-linux
@@ -1740,7 +1740,7 @@ Released 2018-10-23, tagged as
     because it doesn't provide all information needed for DPI-aware rendering.
     Override the @ref Platform::Sdl2Application::viewportEvent(ViewportEvent&) "viewportEvent(ViewportEvent&)"
     function instead.
--   `Platform::Sdl2Application::Configuration::WindowFlags::AllowHighDpi` is
+-   `Platform::Sdl2Application::Config::WindowFlags::AllowHighDpi` is
     deprecated and has no effect as it is now passed implicitly on platforms
     that need it
 -   `Math::Geometry`, `Math::Geometry::Distance` and
@@ -1899,7 +1899,7 @@ Released 2018-05-01, tagged as
 
 -   Ability to create @ref Platform::Sdl2Application and
     @ref Platform::GlfwApplication classes without implicitly created OpenGL
-    context by passing @ref Platform::Sdl2Application::Configuration::WindowFlag::Contextless "Configuration::WindowFlag::Contextless"
+    context by passing @ref Platform::Sdl2Application::Config::WindowFlag::Contextless "Config::WindowFlag::Contextless"
     to them. These two can be now also built completely without the GL library.
 -   Added @ref Platform::AndroidApplication::windowSize()
 -   Added @ref Platform::AndroidApplication::nativeActivity() to access
@@ -1948,8 +1948,8 @@ Released 2018-05-01, tagged as
 
 @subsubsection changelog-2018-04-changes-platform Platform libraries
 
--   Separated @ref Platform::Sdl2Application::Configuration "Platform::*Application::Configuration"
-    into @ref Platform::Sdl2Application::Configuration "Configuration" and
+-   Separated @ref Platform::Sdl2Application::Config "Platform::*Application::Config"
+    into @ref Platform::Sdl2Application::Config "Config" and
     @ref Platform::Sdl2Application::GLConfiguration "GLConfiguration" to allow
     creation of non-GL application instances in the future
 
@@ -2170,7 +2170,7 @@ Released 2018-05-01, tagged as
     @ref Magnum::MeshPrimitive may break. IN all other cases,
     @ref Trade::MeshData2D::primitive() "Trade::MeshData*D::primitive()" etc.
     returns @ref Magnum::MeshPrimitive.
--   Configuration value reader/writers are now for only
+-   Config value reader/writers are now for only
     @ref Magnum::MeshPrimitive and @ref Magnum::MeshIndexType, not for
     @ref GL::MeshPrimitive or @ref GL::MeshIndexType
 -   @ref DebugTools::CompareImage no longer accepts GL-specific pixel formats,
@@ -2445,7 +2445,7 @@ a high-level overview.
 -   New namespace @ref Audio::Extensions for OpenAL extensions, similar to
     @ref GL::Extensions "Extensions" for OpenGL (see
     [mosra/magnum#111](https://github.com/mosra/magnum/pull/111))
--   HRTF support through @ref Audio::Context::Configuration::setHrtf(),
+-   HRTF support through @ref Audio::Context::Config::setHrtf(),
     @ref Audio::Context::isHrtfEnabled(), @ref Audio::Context::hrtfStatus()
     (see [mosra/magnum#121](https://github.com/mosra/magnum/pull/121))
 -   Floating-point audio support in @ref Audio::Buffer
@@ -2519,7 +2519,7 @@ a high-level overview.
 -   Ability to access @ref Math::Dual members via reference
 -   Ability to construct @ref Math::DualQuaternion from dual vector and scalar
 -   Ability to save and restore @ref Deg and @ref Rad from
-    @ref Corrade::Utility::Configuration
+    @ref Corrade::Utility::Config
 -   Explicit bool conversion for @ref Math::BoolVector (see
     [mosra/magnum#182](https://github.com/mosra/magnum/issues/182))
 -   Component-wise comparison for @ref Math::RectangularMatrix
@@ -2562,12 +2562,12 @@ a high-level overview.
     which allows the context to be destructed and created again in case the
     version is not what the application wants (as opposed to just aborting the
     application) (see [mosra/magnum#105](https://github.com/mosra/magnum/issues/105))
--   Added @cpp Platform::Sdl2Application::Configuration::setSRGBCapable() @ce
--   Added @ref Platform::Sdl2Application::Configuration::WindowFlag::Borderless
-    and `Platform::Sdl2Application::Configuration::WindowFlag::AllowHighDpi`
+-   Added @cpp Platform::Sdl2Application::Config::setSRGBCapable() @ce
+-   Added @ref Platform::Sdl2Application::Config::WindowFlag::Borderless
+    and `Platform::Sdl2Application::Config::WindowFlag::AllowHighDpi`
     for iOS and macOS
--   Added @ref Platform::WindowlessGlxApplication::Configuration::setFlags() "Platform::Windowless*Application::Configuration::setFlags()" with
-    @ref Platform::WindowlessGlxApplication::Configuration::Flag::Debug "Flag::Debug"
+-   Added @ref Platform::WindowlessGlxApplication::Config::setFlags() "Platform::Windowless*Application::Config::setFlags()" with
+    @ref Platform::WindowlessGlxApplication::Config::Flag::Debug "Flag::Debug"
 -   @ref magnum-gl-info "magnum-info" now accepts `--short` and
     `--extension-strings` options
 -   Added @ref Platform::Sdl2Application::windowSize(),
@@ -2813,7 +2813,7 @@ a high-level overview.
     `Primitives::Circle::solid()` (see [mosra/magnum#197](https://github.com/mosra/magnum/pull/197),
     [mosra/magnum#220](https://github.com/mosra/magnum/pull/220))
 -   Fixed a possible OOB access when reading @ref Math::Vector /
-    @ref Math::RectangularMatrix from @ref Corrade::Utility::Configuration
+    @ref Math::RectangularMatrix from @ref Corrade::Utility::Config
 -   Fixed unfortunate interaction of VAOs and index buffers on platforms
     without direct state access
 -   Fixed resetting a bit in @ref Math::BoolVector::set() (see

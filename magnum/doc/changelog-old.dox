@@ -311,7 +311,7 @@ for a high-level overview.
 -   @ref Math::Range::data() function, useful when querying range values from
     GL
 -   Support for specifying context flags using
-    @cpp Platform::*Application::Configuration::setFlags() @ce, they are now
+    @cpp Platform::*Application::Config::setFlags() @ce, they are now
     also shown in @ref magnum-gl-info "magnum-info"
 -   More robust support for driver detection and driver bug workarounds. Driver
     can be detected using @cpp Context::detectedDriver() @ce, problematic
@@ -346,7 +346,7 @@ for a high-level overview.
 -   Added @ref std::vector overload of @ref MeshTools::combineIndexArrays()
     for greater runtime-usage flexibility
 -   @ref Platform::Sdl2Application now defaults to non-resizable window, you
-    can change the behavior using @ref Platform::Sdl2Application::Configuration::setWindowFlags()
+    can change the behavior using @ref Platform::Sdl2Application::Config::setWindowFlags()
 -   It's now possible to import objects without materials
 -   More robust OpenGL version checks when creating context
 -   Thorough documentation review, fixes and improvements
@@ -430,7 +430,7 @@ for a high-level overview.
         enum values, use @ref Platform::Sdl2Application::MouseMoveEvent::buttons() "Platform::*Application::*Event::buttons()"
         function and @ref Platform::Sdl2Application::MouseMoveEvent::Button "Platform::*Application::*Event::Button"
         enum instead
-    -   @cpp Platform::Sdl2Application::Configuration::Flag @ce enum and related
+    -   @cpp Platform::Sdl2Application::Config::Flag @ce enum and related
         functions were replaced with WindowFlag, as the name would now conflict
         with context flags
 
@@ -500,7 +500,7 @@ No dependency changes in this release.
     @ref Platform::Sdl2Application "Platform::*Application" classes
 -   Mouse wheel support in @cpp Platform::NaClApplication::MouseEvent @ce
 -   No-op `Platform::GlutApplication::keyReleaseEvent()` and
-    @cpp Platform::NaClApplication::Configuration::setTitle() @ce functions to
+    @cpp Platform::NaClApplication::Config::setTitle() @ce functions to
     preserve source compatibility with other application classes.
 -   @ref SceneGraph::Drawable::drawables() function as a non-ambiguous
     alternative to @cpp group() @ce
@@ -586,8 +586,8 @@ No dependency changes in this release.
 -   @cpp Magnum::Geometry::Rectangle @ce class (and @cpp Rectangle* @ce typedefs)
     is deprecated, use more generic and feature-rich @ref Math::Range
     instead.
--   @cpp Platform::Sdl2Application::Configuration::setFlags() @ce function and
-    related enum is deprecated to avoid naming conflict in the future, use @ref Platform::Sdl2Application::Configuration::setWindowFlags() instead
+-   @cpp Platform::Sdl2Application::Config::setFlags() @ce function and
+    related enum is deprecated to avoid naming conflict in the future, use @ref Platform::Sdl2Application::Config::setWindowFlags() instead
 -   @cpp SceneGraph::Animable::group() @ce is deprecated, use non-ambiguous
     @ref SceneGraph::Animable::animables() instead
 -   `Magnum/Shaders/magnumShadersResourceImport.hpp` header is deprecated in

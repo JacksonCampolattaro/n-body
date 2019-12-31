@@ -242,7 +242,7 @@ declarations:
 
 @code{.cpp}
 namespace Corrade { namespace Utility {
-    class Configuration;
+    class Config;
 }}
 @endcode
 
@@ -963,9 +963,9 @@ Debug operator for non-class enum will appear in documentation of surrounding
 namespace, debug operator for class enum will appear as related function in
 documentation of given class.
 
-@subsubsection corrade-coding-style-documentation-commands-configurationvalue Configuration value parsers and writers
+@subsubsection corrade-coding-style-documentation-commands-configurationvalue Config value parsers and writers
 
-Helper classes for parsing and writing @ref Utility::Configuration values
+Helper classes for parsing and writing @ref Utility::Config values
 should be marked with @c \@configurationvalue, and referenced from the class
 using @c \@configurationvalueref e.g.:
 

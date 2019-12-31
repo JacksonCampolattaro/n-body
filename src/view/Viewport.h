@@ -7,6 +7,7 @@
 
 #include "../model/tools/BodyList.h"
 #include "../model/PhysicsContext.h"
+#include "../Config.h"
 
 #include <fstream>
 
