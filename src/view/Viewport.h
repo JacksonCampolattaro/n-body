@@ -38,6 +38,8 @@ using std::endl;
 using std::string;
 using std::make_shared;
 
+using namespace Magnum;
+
 class Viewport : public Magnum::Platform::Application {
 
 public:
@@ -48,11 +50,11 @@ private:
 
     void drawEvent() override;
 
-    Magnum::GL::Mesh _mesh;
-    Magnum::Shaders::Phong _shader;
+    GL::Mesh _mesh;
+    Shaders::Phong _shader;
 
-    Magnum::Matrix4 _transformation, _projection;
-    Magnum::Color3 _color;
+    Matrix4 _transformation, _projection;
+    Color3 _color;
 };
 
 

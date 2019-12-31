@@ -8,7 +8,7 @@
 using namespace Magnum;
 
 Viewport::Viewport(const Arguments &arguments) :
-        Magnum::Platform::Application(
+        Platform::Application(
                 arguments,
                 Configuration{}.setTitle("MINI 2020")
         ) {
@@ -150,38 +150,38 @@ Viewport::Viewport(const Arguments &arguments) :
     // Adding a sphere to the view
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Magnum::GL::Renderer::enable(Magnum::GL::Renderer::Feature::DepthTest);
-    Magnum::GL::Renderer::enable(Magnum::GL::Renderer::Feature::FaceCulling);
+    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
+    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
-    const Magnum::Trade::MeshData3D sphere = Magnum::Primitives::uvSphereSolid(50, 50);
+    const Trade::MeshData3D sphere = Primitives::uvSphereSolid(50, 50);
 
-    Magnum::GL::Buffer vertices;
-    vertices.setData(Magnum::MeshTools::interleave(sphere.positions(0), sphere.normals(0)));
+    GL::Buffer vertices;
+    vertices.setData(MeshTools::interleave(sphere.positions(0), sphere.normals(0)));
 
-    Magnum::Containers::Array<char> indexData;
-    Magnum::MeshIndexType indexType;
-    Magnum::UnsignedInt indexStart, indexEnd;
+    Containers::Array<char> indexData;
+    MeshIndexType indexType;
+    UnsignedInt indexStart, indexEnd;
     std::tie(indexData, indexType, indexStart, indexEnd) =
-            Magnum::MeshTools::compressIndices(sphere.indices());
-    Magnum::GL::Buffer indices;
+            MeshTools::compressIndices(sphere.indices());
+    GL::Buffer indices;
     indices.setData(indexData);
 
     _mesh.setPrimitive(sphere.primitive())
             .setCount(sphere.indices().size())
-            .addVertexBuffer(std::move(vertices), 0, Magnum::Shaders::Phong::Position{},
-                             Magnum::Shaders::Phong::Normal{})
+            .addVertexBuffer(std::move(vertices), 0, Shaders::Phong::Position{},
+                             Shaders::Phong::Normal{})
             .setIndexBuffer(std::move(indices), 0, indexType, indexStart, indexEnd);
 
     _transformation =
-            Magnum::Matrix4::rotationX(Magnum::Math::Deg<float>(30.0)) *
-            Magnum::Matrix4::rotationY(Magnum::Math::Deg<float>(40.0));
+            Matrix4::rotationX(Math::Deg<float>(30.0)) *
+            Matrix4::rotationY(Math::Deg<float>(40.0));
 
     _projection =
-            Magnum::Matrix4::perspectiveProjection(
-                    Magnum::Math::Deg<float>(35.0), Magnum::Vector2{windowSize()}.aspectRatio(), 0.01f, 100.0f) *
-            Magnum::Matrix4::translation(Magnum::Vector3::zAxis(-10.0f));
+            Matrix4::perspectiveProjection(
+                    Math::Deg<float>(35.0), Vector2{windowSize()}.aspectRatio(), 0.01f, 100.0f) *
+            Matrix4::translation(Vector3::zAxis(-10.0f));
 
-    _color = Magnum::Color3::fromHsv({Magnum::Math::Deg<float>(35.0), 1.0f, 1.0f});
+    _color = Color3::fromHsv({Math::Deg<float>(35.0), 1.0f, 1.0f});
 }
 
 void Viewport::drawEvent() {
