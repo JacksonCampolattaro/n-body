@@ -2,10 +2,14 @@
 // Created by jackcamp on 12/31/19.
 //
 
+#include <cereal/archives/xml.hpp>
 #include "Config.h"
 
 Config::Config(int argc, char **argv)  {
 
+
+    // Configuring CLI Input
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Setting the name and description
     CLI::App CLIApplication("Modular Integrator for N-body Interaction");
@@ -81,6 +85,8 @@ Config::Config(int argc, char **argv)  {
     CLIApplication.parse(argc, argv);
 
 
+    // Configuring logging
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Create the log distributor, which will pass output to different sinks
     auto logDistributor = make_shared<spdlog::sinks::dist_sink_st>();
@@ -112,4 +118,25 @@ Config::Config(int argc, char **argv)  {
         logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
     }
 
+
+    // Loading from XML files
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Loading Bodies
+    std::ifstream bodiesInputStream(bodyArchivePath);
+    if (!bodiesInputStream.is_open()) {
+        logger->error("Failed to load body file at path \"{}\"", bodyArchivePath);
+    }
+    cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
+    bodies = BodyList();
+    bodiesInputArchive(bodies);
+
+    // Loading Physics
+    std::ifstream physicsInputStream(physicsArchivePath);
+    if (!bodiesInputStream.is_open()) {
+        logger->error("Failed to load physics file at path \"{}\"", physicsArchivePath);
+    }
+    cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
+    physics = PhysicsContext();
+    physicsInputArchive(physics);
 }

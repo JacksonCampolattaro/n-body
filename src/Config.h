@@ -13,6 +13,8 @@
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
+#include "model/tools/BodyList.h"
+#include "model/PhysicsContext.h"
 
 using std::string;
 using std::shared_ptr;
@@ -29,6 +31,8 @@ public:
     bool headless, verbose, debug, quiet, silent;
     string logPath, bodyArchivePath, physicsArchivePath;
     shared_ptr<spdlog::logger> logger;
+    BodyList bodies;
+    PhysicsContext physics;
 
 };
 

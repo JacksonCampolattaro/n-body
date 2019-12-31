@@ -14,37 +14,8 @@ Viewport::Viewport(const Arguments &arguments) :
 
 
     // Configuring CLI Input
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    Config config(arguments.argc, arguments.argv);
-
-
-    // Configuring logging
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    auto config = Config(arguments.argc, arguments.argv);
     auto logger = config.logger;
-
-
-    // Loading from XML files
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Loading Bodies
-    std::ifstream bodiesInputStream(config.bodyArchivePath);
-    if (!bodiesInputStream.is_open()) {
-        logger->error("Failed to load body file at path \"{}\"", config.bodyArchivePath);
-    }
-    cereal::XMLInputArchive bodiesInputArchive(bodiesInputStream);
-    auto bodies = BodyList();
-    bodiesInputArchive(bodies);
-
-    // Loading Physics
-    std::ifstream physicsInputStream(config.physicsArchivePath);
-    if (!bodiesInputStream.is_open()) {
-        logger->error("Failed to load physics file at path \"{}\"", config.physicsArchivePath);
-    }
-    cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
-    auto physics = PhysicsContext();
-    physicsInputArchive(physics);
 
 
     // Building a scene
