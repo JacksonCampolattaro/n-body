@@ -6,6 +6,7 @@
 #define N_BODY_VIEWPORT_H
 
 #include "../model/tools/BodyList.h"
+#include "../model/PhysicsContext.h"
 
 #include <fstream>
 
@@ -33,12 +34,20 @@
 #include <Magnum/Shaders/Phong.h>
 #include <Magnum/Trade/MeshData3D.h>
 
+#include <Magnum/SceneGraph/Camera.h>
+#include <Magnum/SceneGraph/Drawable.h>
+#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/Scene.h>
+
 using std::cout;
 using std::endl;
 using std::string;
 using std::make_shared;
 
 using namespace Magnum;
+
+typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
+typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
 
 class Viewport : public Magnum::Platform::Application {
 
@@ -50,11 +59,18 @@ private:
 
     void drawEvent() override;
 
+
     GL::Mesh _mesh;
     Shaders::Phong _shader;
 
     Matrix4 _transformation, _projection;
     Color3 _color;
+
+
+    // Switching to a SceneGraph solution
+    Scene3D _scene;
+    Object3D _manipulator, _cameraObject;
+    SceneGraph::Camera3D* _camera;
 };
 
 

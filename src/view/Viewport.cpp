@@ -3,7 +3,6 @@
 //
 
 #include "Viewport.h"
-#include "../model/PhysicsContext.h"
 
 using namespace Magnum;
 

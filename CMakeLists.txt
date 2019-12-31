@@ -44,6 +44,7 @@ find_package(Magnum CONFIG REQUIRED
         Primitives
         Shaders
         Sdl2Application
+        SceneGraph
         )
 
 # GTKMM

@@ -57,5 +57,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         Magnum::Primitives
         Magnum::Shaders
         Magnum::Application
+        Magnum::SceneGraph
         )
 
