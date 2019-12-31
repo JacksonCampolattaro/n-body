@@ -7,6 +7,18 @@
 
 #include "../model/tools/BodyList.h"
 
+#include <fstream>
+
+#include <cereal/archives/xml.hpp>
+#include <cereal/types/vector.hpp>
+
+#include <CLI/CLI.hpp>
+
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/dist_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
 #include <Magnum/GL/Buffer.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Mesh.h>
@@ -20,6 +32,11 @@
 #include <Magnum/Primitives/UVSphere.h>
 #include <Magnum/Shaders/Phong.h>
 #include <Magnum/Trade/MeshData3D.h>
+
+using std::cout;
+using std::endl;
+using std::string;
+using std::make_shared;
 
 class Viewport : public Magnum::Platform::Application {
 
