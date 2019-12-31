@@ -25,12 +25,10 @@ public:
 
     Config(int argc, char **argv);
 
-    shared_ptr<spdlog::logger> logger();
-
     unsigned int cycles;
     bool headless, verbose, debug, quiet, silent;
     string logPath, bodyArchivePath, physicsArchivePath;
-
+    shared_ptr<spdlog::logger> logger;
 
 };
 

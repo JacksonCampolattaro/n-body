@@ -46,6 +46,7 @@ using std::string;
 using std::make_shared;
 
 using namespace Magnum;
+using namespace Math::Literals;
 
 typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
 typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
@@ -69,9 +70,9 @@ private:
 
 
     // Switching to a SceneGraph solution
-    Scene3D _scene;
-    Object3D _manipulator, _cameraObject;
-    SceneGraph::Camera3D* _camera;
+    Scene3D scene;
+    Object3D manipulator, cameraObject;
+    SceneGraph::Camera3D* camera;
 };
 
 

@@ -22,7 +22,8 @@ Viewport::Viewport(const Arguments &arguments) :
     // Configuring logging
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    auto logger = config.logger();
+    auto logger = config.logger;
+
 
     // Loading from XML files
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +47,22 @@ Viewport::Viewport(const Arguments &arguments) :
     physicsInputArchive(physics);
 
 
+    // Building a scene
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Adding a sphere to the view
+    // Camera
+    cameraObject
+            .setParent(&scene)
+            .translate(Vector3::zAxis(5.0f));
+    camera = new SceneGraph::Camera3D(cameraObject);
+    (*camera)
+            .setAspectRatioPolicy(SceneGraph::AspectRatioPolicy::Extend)
+            .setProjectionMatrix(Matrix4::perspectiveProjection(35.0_degf, 1.0f, 0.01f, 1000.0f))
+            .setViewport(GL::defaultFramebuffer.viewport().size());
+
+    // Root Object
+
+    // Adding a sphere
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);

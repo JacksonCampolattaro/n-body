@@ -81,16 +81,12 @@ Config::Config(int argc, char **argv)  {
     CLIApplication.parse(argc, argv);
 
 
-}
-
-shared_ptr<spdlog::logger> Config::logger() {
-
 
     // Create the log distributor, which will pass output to different sinks
     auto logDistributor = make_shared<spdlog::sinks::dist_sink_st>();
 
     // Create a logger using the distributor as the sink
-    auto logger = make_shared<spdlog::logger>("log", logDistributor);
+    logger = make_shared<spdlog::logger>("log", logDistributor);
     spdlog::register_logger(logger);
 
     // Set the default level of the logger to debug
@@ -115,6 +111,5 @@ shared_ptr<spdlog::logger> Config::logger() {
         logDistributor->add_sink(make_shared<spdlog::sinks::basic_file_sink_mt>(logPath));
         logger->log(spdlog::level::debug, "Sink file:\"{}\" attached to logger", logPath);
     }
-    
-    return logger;
+
 }
