@@ -2,7 +2,6 @@
 // Created by jackcamp on 12/31/19.
 //
 
-#include <cereal/archives/xml.hpp>
 #include "Config.h"
 
 Config::Config(int argc, char **argv)  {

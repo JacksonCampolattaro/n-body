@@ -32,12 +32,40 @@ Viewport::Viewport(const Arguments &arguments) :
             .setViewport(GL::defaultFramebuffer.viewport().size());
 
     // Root Object
+    manipulator.setParent(&scene);
+
+
+    // Configuring Universal Shader properties
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Enables occlusion based on distance
+    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
+
+    // Improves performance by not drawing faces which aren't visible
+    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+
+    // Setting shader
+    Shaders::Phong shader;
+    shader
+            .setAmbientColor(0x111111_rgbf)
+            .setSpecularColor(0xffffff_rgbf)
+            .setShininess(80.0f);
 
     // Adding a sphere
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
-    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+    GL::Mesh sphereMesh;
+    sphereMesh = MeshTools::compile(Primitives::uvSphereSolid(50, 50));
+
+    Matrix4 sphereTransformation;
+    sphereTransformation =
+            Matrix4::translation(Vector3::zAxis(-10.0f));
+
+    auto sphereObject = new Object3D(&manipulator);
+    sphereObject->setTransformation(sphereTransformation);
+
+
+    /*
 
     const Trade::MeshData3D sphere = Primitives::uvSphereSolid(50, 50);
 
@@ -68,9 +96,13 @@ Viewport::Viewport(const Arguments &arguments) :
             Matrix4::translation(Vector3::zAxis(-10.0f));
 
     _color = Color3::fromHsv({Math::Deg<float>(35.0), 1.0f, 1.0f});
+
+     */
 }
 
 void Viewport::drawEvent() {
+
+    /*
 
     GL::defaultFramebuffer.clear(
             GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
@@ -86,4 +118,6 @@ void Viewport::drawEvent() {
     _mesh.draw(_shader);
 
     swapBuffers();
+
+     */
 }
