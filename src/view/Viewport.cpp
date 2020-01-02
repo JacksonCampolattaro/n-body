@@ -25,6 +25,8 @@ Viewport::Viewport(const Arguments &arguments) :
     sphereMesh = MeshTools::compile(Primitives::uvSphereSolid(16, 32));
 
     shader = Shaders::Phong{};
+    shader
+            .setLightPosition({00.0f, 0.0f, -400.0f});
 
 
     // Building a scene
@@ -68,11 +70,11 @@ Viewport::Viewport(const Arguments &arguments) :
         auto sphereObject = new Object3D(&manipulator);
         sphereObject->setTransformation(transformation);
 
-        auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s);
+        auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s / 2);
 
-        auto scaler = Matrix4::scaling( {10, 10, 10} );
+        auto scaling = Matrix4::scaling({10, 10, 10});
 
-        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaler};
+        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};
     }
 
 
