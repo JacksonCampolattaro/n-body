@@ -40,17 +40,8 @@ typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
 class ColoredDrawable : public SceneGraph::Drawable3D {
 public:
 
-    explicit ColoredDrawable(
-            Object3D &object,
-            Shaders::Phong &shader,
-            GL::Mesh &mesh,
-            const Color4 &color,
-            SceneGraph::DrawableGroup3D &group) :
-
-            SceneGraph::Drawable3D{object, &group},
-            _shader(shader),
-            _mesh(mesh),
-            _color{color} {}
+    explicit ColoredDrawable(Object3D &object, SceneGraph::DrawableGroup3D &group, GL::Mesh &mesh, const Color4 &color,
+                             Shaders::Phong &shader);
 
 private:
 

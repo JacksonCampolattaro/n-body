@@ -66,7 +66,7 @@ private:
     GL::Mesh _mesh;
 
     Matrix4 _transformation, _projection;
-    Color3 _color;
+    Color3 defaultColor;
 
     Shaders::Phong shader{NoCreate}; // Unified shader for all spheres?
     GL::Mesh sphereMesh{NoCreate}; // Perhaps they can share a Mesh too?
