@@ -24,8 +24,6 @@ Viewport::Viewport(const Arguments &arguments) :
 
     sphereMesh = MeshTools::compile(Primitives::uvSphereSolid(16, 32));
 
-    defaultColor = Color3::fromHsv({Math::Deg<float>(35.0), 1.0f, 1.0f});
-
     shader = Shaders::Phong{};
 
 
@@ -65,7 +63,7 @@ Viewport::Viewport(const Arguments &arguments) :
     auto sphereObject = new Object3D(&manipulator);
     sphereObject->setTransformation(sphereTransformation);
 
-    new ColoredDrawable{*sphereObject, drawables, sphereMesh, defaultColor, shader};
+    new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};
 
 }
 

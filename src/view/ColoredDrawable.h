@@ -37,19 +37,26 @@ using namespace Magnum;
 typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
 typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
 
+static Color4 DEFAULT_COLOR = Color3::fromHsv({Math::Deg<float>(35.0), 1.0f, 1.0f});
+static Matrix4 DEFAULT_MODIFIER = {};
+
+
 class ColoredDrawable : public SceneGraph::Drawable3D {
 public:
 
-    explicit ColoredDrawable(Object3D &object, SceneGraph::DrawableGroup3D &group, GL::Mesh &mesh, const Color4 &color,
-                             Shaders::Phong &shader);
+    explicit ColoredDrawable(Object3D &object, SceneGraph::DrawableGroup3D &group, GL::Mesh &mesh,
+                             Shaders::Phong &shader,
+                             const Color4 &color = DEFAULT_COLOR, const Matrix4 &modifier = DEFAULT_MODIFIER);
 
 private:
 
     void draw(const Matrix4 &transformation, SceneGraph::Camera3D &camera) override;
 
-    Shaders::Phong &_shader;
-    GL::Mesh &_mesh;
-    Color4 _color;
+    Shaders::Phong &shader;
+    GL::Mesh &mesh;
+    Color4 color;
+    Matrix4 modifier;
+
 };
 
 
