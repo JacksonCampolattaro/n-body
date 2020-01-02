@@ -69,7 +69,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
         auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s / 2);
 
-        auto scaling = Matrix4::scaling({10, 10, 10});
+        auto scaling = Matrix4::scaling(Vector3(b.getRadius()));
 
         new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};
     }
