@@ -68,7 +68,11 @@ Viewport::Viewport(const Arguments &arguments) :
         auto sphereObject = new Object3D(&manipulator);
         sphereObject->setTransformation(transformation);
 
-        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};
+        auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s);
+
+        auto scaler = Matrix4::scaling( {10, 10, 10} );
+
+        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaler};
     }
 
 
