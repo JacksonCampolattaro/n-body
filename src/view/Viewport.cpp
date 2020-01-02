@@ -26,7 +26,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
     shader = Shaders::Phong{};
     shader
-            .setLightPosition({00.0f, 0.0f, -400.0f});
+            .setLightPosition({00.0f, 0.0f, -250.0f});
 
 
     // Building a scene
@@ -62,10 +62,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
     for (Body b : config.bodies) {
 
-        Matrix4 transformation =
-                Matrix4::translation(Vector3::xAxis(b.getPosition().x)) *
-                Matrix4::translation(Vector3::yAxis(b.getPosition().y)) *
-                Matrix4::translation(Vector3::zAxis(b.getPosition().z));
+        Matrix4 transformation = Matrix4::translation({b.getPosition().x, b.getPosition().y, b.getPosition().z});
 
         auto sphereObject = new Object3D(&manipulator);
         sphereObject->setTransformation(transformation);
