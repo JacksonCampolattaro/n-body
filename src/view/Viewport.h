@@ -63,11 +63,12 @@ private:
     void drawEvent() override;
 
 
-    Shaders::Phong shader{NoCreate}; // Unified shader for all spheres?
-    GL::Mesh sphereMesh{NoCreate}; // Perhaps they can share a Mesh too?
+    // Most objects will share a shader and a mesh for improved performance
+    Shaders::Phong shader{NoCreate};
+    GL::Mesh sphereMesh{NoCreate};
 
 
-    // Switching to a SceneGraph solution
+    // Objects used to construct the sceneGraph
     Scene3D scene;
     SceneGraph::Camera3D* camera;
     SceneGraph::DrawableGroup3D drawables;

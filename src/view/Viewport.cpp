@@ -53,17 +53,36 @@ Viewport::Viewport(const Arguments &arguments) :
     // Improves performance by not drawing faces which aren't visible
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
+
+
+    // Adding the bodies
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    for (Body b : config.bodies) {
+
+        Matrix4 transformation =
+                Matrix4::translation(Vector3::xAxis(b.getPosition().x)) *
+                Matrix4::translation(Vector3::yAxis(b.getPosition().y)) *
+                Matrix4::translation(Vector3::zAxis(b.getPosition().z));
+
+        auto sphereObject = new Object3D(&manipulator);
+        sphereObject->setTransformation(transformation);
+
+        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};
+    }
+
+
     // Adding a sphere
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Matrix4 sphereTransformation;
+    /*Matrix4 sphereTransformation;
     sphereTransformation =
             Matrix4::translation(Vector3::zAxis(-10.0f));
 
     auto sphereObject = new Object3D(&manipulator);
     sphereObject->setTransformation(sphereTransformation);
 
-    new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};
+    new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};*/
 
 }
 
