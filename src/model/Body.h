@@ -131,6 +131,12 @@ public:
      */
     rgbaColor getColor();
 
+    /**
+     * Getter for the radius of the body
+     * @return The radius of the body in floating point format
+     */
+    float getRadius();
+
 
     // Physics operators
 

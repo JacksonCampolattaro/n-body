@@ -74,19 +74,6 @@ Viewport::Viewport(const Arguments &arguments) :
         new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};
     }
 
-
-    // Adding a sphere
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /*Matrix4 sphereTransformation;
-    sphereTransformation =
-            Matrix4::translation(Vector3::zAxis(-10.0f));
-
-    auto sphereObject = new Object3D(&manipulator);
-    sphereObject->setTransformation(sphereTransformation);
-
-    new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader};*/
-
 }
 
 void Viewport::drawEvent() {

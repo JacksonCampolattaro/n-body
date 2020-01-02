@@ -99,6 +99,10 @@ rgbaColor Body::getColor() {
     return color;
 }
 
+float Body::getRadius() {
+    return radius;
+}
+
 void Body::kick(glm::vec3 deltaV) {
 
     if (!fixed) {
