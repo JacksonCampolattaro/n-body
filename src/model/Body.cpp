@@ -95,6 +95,10 @@ bool Body::isPassive() const {
     return this->passive;
 }
 
+rgbaColor Body::getColor() {
+    return color;
+}
+
 void Body::kick(glm::vec3 deltaV) {
 
     if (!fixed) {

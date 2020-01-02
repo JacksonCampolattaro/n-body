@@ -125,6 +125,12 @@ public:
      */
     bool isPassive() const;
 
+    /**
+     * Getter for the color of the body
+     * @return The color of the body in RGBA vector format
+     */
+    rgbaColor getColor();
+
 
     // Physics operators
 
