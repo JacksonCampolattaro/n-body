@@ -46,7 +46,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         view/Viewport.cpp view/Viewport.h Config.cpp Config.h view/ColoredDrawable.cpp view/ColoredDrawable.h)
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og ${OpenMP_CXX_FLAGS}")
 
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME}

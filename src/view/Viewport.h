@@ -64,16 +64,20 @@ private:
 
 
     GL::Mesh _mesh;
-    Shaders::Phong _shader;
 
     Matrix4 _transformation, _projection;
     Color3 _color;
 
+    Shaders::Phong shader{NoCreate}; // Unified shader for all spheres?
+    GL::Mesh sphereMesh{NoCreate}; // Perhaps they can share a Mesh too?
+
 
     // Switching to a SceneGraph solution
     Scene3D scene;
-    Object3D manipulator, cameraObject;
     SceneGraph::Camera3D* camera;
+    SceneGraph::DrawableGroup3D drawables;
+
+    Object3D manipulator, cameraObject;
 };
 
 

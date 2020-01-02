@@ -3,6 +3,7 @@
 //
 
 #include "Viewport.h"
+#include "ColoredDrawable.h"
 
 using namespace Magnum;
 
@@ -16,6 +17,19 @@ Viewport::Viewport(const Arguments &arguments) :
     // Configuring CLI Input
     auto config = Config(arguments.argc, arguments.argv);
     auto logger = config.logger;
+
+
+
+    // Creating shared Meshes and Shaders
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sphereMesh = MeshTools::compile(Primitives::uvSphereSolid(16, 32));
+
+    shader = Shaders::Phong{};
+    shader
+            .setAmbientColor(0x111111_rgbf)
+            .setSpecularColor(0x330000_rgbf)
+            .setLightPosition({10.0f, 15.0f, 5.0f});
 
 
     // Building a scene
@@ -45,17 +59,19 @@ Viewport::Viewport(const Arguments &arguments) :
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
     // Setting shader
-    Shaders::Phong shader;
-    shader
+    /*shader
             .setAmbientColor(0x111111_rgbf)
             .setSpecularColor(0xffffff_rgbf)
-            .setShininess(80.0f);
+            .setShininess(80.0f);*/
+    /*shader.setLightPosition({7.0f, 5.0f, 2.5f})
+            .setLightColor(Color3{1.0f})
+            .setAmbientColor(0x111111_rgbf)
+            .setSpecularColor(0xffffff_rgbf)
+            .setNormalMatrix(_transformation.rotationNormalized())
+            .setShininess(80.0f);*/
 
     // Adding a sphere
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    GL::Mesh sphereMesh;
-    sphereMesh = MeshTools::compile(Primitives::uvSphereSolid(50, 50));
 
     Matrix4 sphereTransformation;
     sphereTransformation =
@@ -63,6 +79,8 @@ Viewport::Viewport(const Arguments &arguments) :
 
     auto sphereObject = new Object3D(&manipulator);
     sphereObject->setTransformation(sphereTransformation);
+
+    new ColoredDrawable{*sphereObject, shader, sphereMesh, 0x111111_rgbf, drawables};
 
 
     /*
@@ -102,10 +120,14 @@ Viewport::Viewport(const Arguments &arguments) :
 
 void Viewport::drawEvent() {
 
-    /*
-
     GL::defaultFramebuffer.clear(
             GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
+    camera->draw(drawables);
+
+    swapBuffers();
+
+    /*
 
     _shader.setLightPosition({7.0f, 5.0f, 2.5f})
             .setLightColor(Color3{1.0f})
@@ -116,8 +138,6 @@ void Viewport::drawEvent() {
             .setProjectionMatrix(_projection);
 
     _mesh.draw(_shader);
-
-    swapBuffers();
 
      */
 }
