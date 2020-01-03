@@ -26,7 +26,8 @@ Viewport::Viewport(const Arguments &arguments) :
 
     shader = Shaders::Phong{};
     shader
-            .setLightPosition({00.0f, 0.0f, -250.0f});
+            .setShininess(50)
+            .setLightPosition({0.0f, 0.0f, -50.0f});
 
 
     // Building a scene
