@@ -57,7 +57,7 @@ Config::Config(int argc, char **argv)  {
     );
 
     // Getting the body archive path, with a default value
-    bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.bod";
+    bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod";
     CLIApplication.add_option("-b,--bodies",
                               bodyArchivePath,
                               "Sets the file path to read bodies from",
@@ -65,7 +65,7 @@ Config::Config(int argc, char **argv)  {
     )->check(CLI::ExistingFile);
 
     // Getting the physics archive path, with a default value
-    physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.phys";
+    physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys";
     CLIApplication.add_option("-p,--physics",
                               physicsArchivePath,
                               "Sets the file path to read physics from",
