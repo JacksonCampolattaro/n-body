@@ -1,6 +1,5 @@
 
 
-
 # Sets CMake standard
 set(CMAKE_CXX_STANDARD 17)
 
@@ -13,8 +12,7 @@ find_package(Magnum REQUIRED
         Primitives
         Shaders
         )
-
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
+#set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
