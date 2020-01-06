@@ -1,9 +1,6 @@
-[submodule "libs/corrade"]
-	path = libs/corrade
+[submodule "corrade"]
+	path = corrade
 	url = https://github.com/mosra/corrade.git
-[submodule "libs/magnum"]
-	path = libs/magnum
+[submodule "magnum"]
+	path = magnum
 	url = https://github.com/mosra/magnum.git
-[submodule "libs/glfw"]
-	path = libs/glfw
-	url = https://github.com/glfw/glfw

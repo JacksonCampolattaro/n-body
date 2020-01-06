@@ -2,5 +2,12 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/corrade" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libs/corrade" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libs/corrade/toolchains" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libs/glfw" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libs/magnum" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libs/magnum/toolchains" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/magnum" vcs="Git" />
   </component>
 </project>
