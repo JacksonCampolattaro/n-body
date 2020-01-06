@@ -18,8 +18,8 @@ ColoredDrawable::ColoredDrawable(Object3D &object, SceneGraph::DrawableGroup3D &
 void ColoredDrawable::draw(const Matrix4 &transformation, SceneGraph::Camera3D &camera) {
     shader
             .setDiffuseColor(color)
-            .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
-            ///.setAmbientColor(color / 2)
+            ///.setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
+            .setAmbientColor(color / 3)
             .setTransformationMatrix(transformation * modifier)
             .setProjectionMatrix(camera.projectionMatrix())
             .setNormalMatrix(transformation.rotationNormalized());
