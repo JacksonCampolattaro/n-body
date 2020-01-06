@@ -7,9 +7,9 @@ cmake_minimum_required(VERSION 3.4)
 project(n_body)
 
 # Magnum
-add_subdirectory(corrade EXCLUDE_FROM_ALL)
+add_subdirectory(external/corrade EXCLUDE_FROM_ALL)
 set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
-add_subdirectory(magnum EXCLUDE_FROM_ALL)
+add_subdirectory(external/magnum EXCLUDE_FROM_ALL)
 
 # GTKMM
 find_package(PkgConfig REQUIRED)
