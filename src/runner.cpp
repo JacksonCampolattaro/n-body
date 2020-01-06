@@ -16,10 +16,9 @@ int runner::headless(BodyList bodies, PhysicsContext physicsContext, unsigned in
 
     // Looping to run the simulation for many cycles
     spdlog::get("log")->info("Starting simulation with {} cycles", cycles);
-    for (int i = 0; i < cycles; ++i) {
-        spdlog::get("log")->debug("Starting cycle {} ({}% Complete)",
-                                  i,
-                                  100.0f * (float) i / (float) cycles);
+    for (unsigned int i = 0; i < cycles; ++i) {
+        spdlog::get("log")->debug("Starting cycle {}",
+                                  i);
         solver->solve(&bodies, &physicsContext);
     }
 
@@ -33,13 +32,14 @@ int runner::headless(BodyList bodies, PhysicsContext physicsContext, unsigned in
     );
     spdlog::get("log")->info("Averaged {} µs per cycle",
                              std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() /
-                             (float) cycles
+                             cycles
     );
 
     return 0;
 }
 
 int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int cycles) {
+/*
 
     // Creating the solver, and configuring it
     Solver *solver = new BarnesHutSolver();
@@ -47,7 +47,7 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
 
     // Creating the viewport
     int argc = 1;
-    char **argv = (char **) "test";
+    char **argv = "test";
     Viewport viewport({argc, argv});
     //return viewport.exec();
     // TODO
@@ -57,10 +57,9 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
 
     // Looping to run the simulation for many cycles
     spdlog::get("log")->info("Starting simulation with {} cycles", cycles);
-    for (int i = 0; i < cycles; ++i) {
-        spdlog::get("log")->debug("Starting cycle {} ({}% Complete)",
-                                  i,
-                                  100.0f * (float) i / (float) cycles);
+    for (unsigned int i = 0; i < cycles; ++i) {
+        spdlog::get("log")->debug("Starting cycle {}",
+                                  i);
         solver->solve(&bodies, &physicsContext);
 
         // Update the viewport
@@ -82,6 +81,7 @@ int runner::video(BodyList bodies, PhysicsContext physicsContext, unsigned int c
 
     // Close the viewport
     viewport.exit();
+*/
 
     return 0;
 }

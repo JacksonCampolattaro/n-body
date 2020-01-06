@@ -22,7 +22,7 @@ namespace runner {
     // TODO
     int gui();
     int video(BodyList bodies, PhysicsContext physicsContext, unsigned int cycles);
-};
+}
 
 
 #endif //N_BODY_RUNNER_H

@@ -2,7 +2,7 @@
 
 
 # Sets CMake standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 # Confirms that Magnum is present and installed properly
 find_package(Magnum REQUIRED
