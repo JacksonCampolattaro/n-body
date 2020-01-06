@@ -25,8 +25,6 @@ using std::string;
 using std::make_shared;
 
 
-
-
 int main(int argc, char **argv) {
 
     Viewport viewport({argc, argv});

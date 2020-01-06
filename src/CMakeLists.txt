@@ -2,7 +2,7 @@
 
 
 # Sets CMake standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 # Confirms that Magnum is present and installed properly
 find_package(Magnum REQUIRED
@@ -17,11 +17,10 @@ find_package(Magnum REQUIRED
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does this do?
 
 # Confirms that OpenMP is present and installed properly
-#find_package(OpenMP REQUIRED)
+find_package(OpenMP REQUIRED)
 
 # Confirms that controller libraries are present and installed properly
-link_directories(${GTKMM_LIBRARY_DIRS})
-include_directories(${GTKMM_INCLUDE_DIRS})
+include_directories(${SIGC_INCLUDE_DIRS})
 
 # Adds my files to compilation path
 add_executable(${CMAKE_PROJECT_NAME}
@@ -61,7 +60,6 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-        ${GTKMM_LIBRARIES}
         Magnum::Application
         Magnum::GL
         Magnum::Magnum
@@ -69,6 +67,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+
+        ${SIGC_LIBRARIES}
         )
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions

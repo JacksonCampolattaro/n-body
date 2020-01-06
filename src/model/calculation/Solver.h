@@ -11,7 +11,7 @@
 
 #include <vector> // Used to handle the list of bodies in the Simulation
 #include <csignal>
-#include <gtkmm.h>
+#include <sigc++/sigc++.h>
 
 class Solver {
 
