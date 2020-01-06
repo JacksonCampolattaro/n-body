@@ -2,7 +2,7 @@
 
 
 # Sets CMake standard
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 # Confirms that Magnum is present and installed properly
 find_package(Magnum REQUIRED
@@ -20,7 +20,7 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON) # What does t
 find_package(OpenMP REQUIRED)
 
 # Confirms that controller libraries are present and installed properly
-include_directories(${SIGC_INCLUDE_DIRS})
+include_directories(${GTKMM_INCLUDE_DIRS})
 
 # Adds my files to compilation path
 add_executable(${CMAKE_PROJECT_NAME}
@@ -68,7 +68,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::Primitives
         Magnum::Shaders
 
-        ${SIGC_LIBRARIES}
+        ${GTKMM_LIBRARIES}
         )
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
