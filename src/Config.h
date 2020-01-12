@@ -7,6 +7,7 @@
 
 #include "model/tools/BodyList.h"
 #include "model/PhysicsContext.h"
+#include "model/calculation/Solver.h"
 
 #include <string>
 
@@ -37,6 +38,7 @@ public:
     shared_ptr<spdlog::logger> logger;
     BodyList bodies;
     PhysicsContext physics;
+    Solver *solver;
 
 };
 

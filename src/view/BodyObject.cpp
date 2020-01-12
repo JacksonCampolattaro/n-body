@@ -10,10 +10,9 @@ BodyObject::BodyObject(Object3D *parent, Body *body) :
 
 void BodyObject::update() {
 
-    Matrix4 transformation = Matrix4::translation(
+    /*Matrix4 translation = Matrix4::translation(
             {body->getPosition().x, body->getPosition().y, body->getPosition().z}
-    );
+    );*/
 
-    setTransformation(transformation);
-    ///setDirty();
+    translate({body->getPosition().x, body->getPosition().y, body->getPosition().z});
 }

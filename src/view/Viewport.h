@@ -8,6 +8,8 @@
 #include "../model/tools/BodyList.h"
 #include "../model/PhysicsContext.h"
 #include "../Config.h"
+#include "ColoredDrawable.h"
+#include "BodyObject.h"
 
 #include <fstream>
 
@@ -60,6 +62,8 @@ private:
     void drawEvent() override;
 
 
+    Config *config;
+
     // Most objects will share a shader and a mesh for improved performance
     Shaders::Phong shader{NoCreate};
     GL::Mesh sphereMesh{NoCreate};
@@ -70,7 +74,9 @@ private:
     SceneGraph::Camera3D* camera;
     SceneGraph::DrawableGroup3D drawables;
 
+    // Objects that will be in the sceneGraph
     Object3D manipulator, cameraObject;
+    std::vector<BodyObject *> bodyObjectList;
 };
 
 

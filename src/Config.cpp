@@ -3,6 +3,8 @@
 //
 
 #include "Config.h"
+#include "model/calculation/BarnesHut/BarnesHutSolver.h"
+#include "model/calculation/Naive/NaiveSolver.h"
 
 Config::Config(int argc, char **argv)  {
 
@@ -138,4 +140,9 @@ Config::Config(int argc, char **argv)  {
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     physics = PhysicsContext();
     physicsInputArchive(physics);
+
+
+    // Setting the solver
+    solver = new NaiveSolver();
+
 }
