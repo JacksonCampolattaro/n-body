@@ -2,13 +2,13 @@
 // Created by jackcamp on 1/8/20.
 //
 
-#include "BodyDrawableObject.h"
+#include "BodyObject.h"
 
-BodyDrawableObject::BodyDrawableObject(Object3D *parent, Body *body) :
+BodyObject::BodyObject(Object3D *parent, Body *body) :
         Object3D{parent},
         body(body) {}
 
-void BodyDrawableObject::update() {
+void BodyObject::update() {
 
     Matrix4 transformation = Matrix4::translation(
             {body->getPosition().x, body->getPosition().y, body->getPosition().z}

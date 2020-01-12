@@ -2,8 +2,8 @@
 // Created by jackcamp on 1/8/20.
 //
 
-#ifndef N_BODY_BODYDRAWABLEOBJECT_H
-#define N_BODY_BODYDRAWABLEOBJECT_H
+#ifndef N_BODY_BODYOBJECT_H
+#define N_BODY_BODYOBJECT_H
 
 #include "../model/Body.h"
 #include "ColoredDrawable.h"
@@ -22,7 +22,7 @@ using namespace Math::Literals;
 
 typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
 
-class BodyDrawableObject : public Object3D {
+class BodyObject : public Object3D {
 
 private:
 
@@ -30,11 +30,11 @@ private:
 
 public:
 
-    BodyDrawableObject(Object3D *parent, Body *body);
+    BodyObject(Object3D *parent, Body *body);
 
     void update();
 
 };
 
 
-#endif //N_BODY_BODYDRAWABLEOBJECT_H
+#endif //N_BODY_BODYOBJECT_H
