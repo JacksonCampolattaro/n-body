@@ -5,6 +5,8 @@
 #ifndef N_BODY_BODYDRAWABLEOBJECT_H
 #define N_BODY_BODYDRAWABLEOBJECT_H
 
+#include "../model/Body.h"
+#include "ColoredDrawable.h"
 
 #include <Magnum/Trade/MeshData3D.h>
 #include <Magnum/MeshTools/Compile.h>
@@ -21,6 +23,16 @@ using namespace Math::Literals;
 typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
 
 class BodyDrawableObject : public Object3D {
+
+private:
+
+    Body *body;
+
+public:
+
+    BodyDrawableObject(Object3D *parent, Body *body);
+
+    void update();
 
 };
 

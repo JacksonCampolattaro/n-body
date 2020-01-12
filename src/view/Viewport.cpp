@@ -4,6 +4,7 @@
 
 #include "Viewport.h"
 #include "ColoredDrawable.h"
+#include "BodyDrawableObject.h"
 
 using namespace Magnum;
 
@@ -63,7 +64,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
     for (Body b : config.bodies) {
 
-        Matrix4 transformation = Matrix4::translation({b.getPosition().x, b.getPosition().y, b.getPosition().z});
+        /*Matrix4 transformation = Matrix4::translation({b.getPosition().x, b.getPosition().y, b.getPosition().z});
 
         auto sphereObject = new Object3D(&manipulator);
         sphereObject->setTransformation(transformation);
@@ -72,7 +73,15 @@ Viewport::Viewport(const Arguments &arguments) :
 
         auto scaling = Matrix4::scaling(Vector3(b.getRadius()));
 
-        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};
+        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};*/
+
+        auto bodyObject = new BodyDrawableObject(&manipulator, &b);
+
+        auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s / 2);
+        auto scaling = Matrix4::scaling(Vector3(b.getRadius()));
+        new ColoredDrawable{*bodyObject, drawables, sphereMesh, shader, color, scaling};
+
+        bodyObject->update();
     }
 
 }
