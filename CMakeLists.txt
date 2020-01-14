@@ -10,6 +10,8 @@ project(n_body)
 add_subdirectory(external/corrade EXCLUDE_FROM_ALL)
 set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
 add_subdirectory(external/magnum EXCLUDE_FROM_ALL)
+set(WITH_GLM ON CACHE BOOL "" FORCE)
+add_subdirectory(external/magnum-integration EXCLUDE_FROM_ALL)
 
 # GTKMM
 find_package(PkgConfig REQUIRED)

@@ -143,6 +143,7 @@ Config::Config(int argc, char **argv)  {
 
 
     // Setting the solver
-    solver = new NaiveSolver();
+    solver = new BarnesHutSolver();
+    solver->enableThreading();
 
 }

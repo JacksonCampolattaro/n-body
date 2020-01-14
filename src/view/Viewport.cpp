@@ -81,6 +81,11 @@ void Viewport::drawEvent() {
     GL::defaultFramebuffer.clear(
             GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
+    for (auto b : bodyObjectList) {
+        ///b->update();
+    }
+    config->logger->info("Finished Updating buffers");
+
     camera->draw(drawables);
     config->logger->info("Finished Drawing");
 
@@ -91,12 +96,7 @@ void Viewport::drawEvent() {
     config->solver->solve(&config->bodies, &config->physics);
     config->logger->info("Finished calculations");
 
-    for (auto b : bodyObjectList) {
-        b->update();
-    }
-    config->logger->info("Finished Updating buffers");
-
-    ///manipulator.setDirty();
+    manipulator.setDirty();
 
     redraw();
 }
