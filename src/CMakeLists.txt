@@ -14,6 +14,9 @@ find_package(Magnum REQUIRED
         )
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
+# Confirms that magnum-integration is present and installed properly
+find_package(MagnumIntegration REQUIRED Glm)
+
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
 
@@ -58,6 +61,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+
         Magnum::Application
         Magnum::GL
         Magnum::Magnum
@@ -65,6 +69,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+
+        MagnumIntegration::Glm
 
         ${GTKMM_LIBRARIES}
         )

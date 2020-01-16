@@ -4,3 +4,6 @@
 [submodule "magnum"]
 	path = magnum
 	url = https://github.com/mosra/magnum.git
+[submodule "magnum-integration"]
+	path = magnum-integration
+	url = https://github.com/mosra/magnum-integration.git
