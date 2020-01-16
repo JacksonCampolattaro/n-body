@@ -16,6 +16,8 @@
 
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
 
+#include <Magnum/GlmIntegration/Integration.h>
+
 
 using namespace Magnum;
 using namespace Math::Literals;

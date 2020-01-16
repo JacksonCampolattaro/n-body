@@ -73,7 +73,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         MagnumIntegration::Glm
 
         ${GTKMM_LIBRARIES}
+
+        OpenMP::OpenMP_CXX
         )
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og")
