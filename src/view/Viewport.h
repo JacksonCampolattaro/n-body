@@ -38,6 +38,7 @@
 #include <Magnum/SceneGraph/Camera.h>
 #include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/SceneGraph/Scene.h>
 
 using std::cout;
@@ -48,8 +49,11 @@ using std::make_shared;
 using namespace Magnum;
 using namespace Math::Literals;
 
-typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
-typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
+//typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
+//typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
+
+typedef SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D> Object3D;
+typedef SceneGraph::Scene<SceneGraph::TranslationRotationScalingTransformation3D> Scene3D;
 
 class Viewport : public Magnum::Platform::Application {
 

@@ -14,7 +14,7 @@
 
 #include <Magnum/Shaders/Phong.h>
 
-#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 
 #include <Magnum/GlmIntegration/Integration.h>
 
@@ -22,7 +22,8 @@
 using namespace Magnum;
 using namespace Math::Literals;
 
-typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
+//typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
+typedef SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D> Object3D;
 
 class BodyObject : public Object3D {
 

@@ -14,6 +14,6 @@ BodyObject::BodyObject(Object3D *parent, Body *body) :
 
 void BodyObject::update() {
 
-    resetTransformation();
-    translate(Vector3(body->getPosition()));
+    //resetTransformation().translate(Vector3(body.getPosition()));
+    setTranslation(Vector3(body->getPosition()));
 }
