@@ -9,9 +9,11 @@ BodyObject::BodyObject(Object3D *parent, Body *body) :
         Object3D{parent},
         body(body) {
 
+
 }
 
 void BodyObject::update() {
 
+    resetTransformation();
     translate(Vector3(body->getPosition()));
 }

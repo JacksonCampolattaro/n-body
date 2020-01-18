@@ -5,6 +5,7 @@
 #include "Viewport.h"
 #include "../model/calculation/Solver.h"
 #include "../model/calculation/BarnesHut/BarnesHutSolver.h"
+#include <Magnum/GlmIntegration/Integration.h>
 
 using namespace Magnum;
 
@@ -36,11 +37,12 @@ Viewport::Viewport(const Arguments &arguments) :
     // Camera
     cameraObject
             .setParent(&scene)
-            .translate(Vector3::zAxis(500.0f));
+            .translate(Vector3::zAxis(50.0f))
+            .rotateX(0.0_degf);
     camera = new SceneGraph::Camera3D(cameraObject);
     (*camera)
             .setAspectRatioPolicy(SceneGraph::AspectRatioPolicy::Extend)
-            .setProjectionMatrix(Matrix4::perspectiveProjection(35.0_degf, 1.0f, 0.01f, 1000.0f))
+            .setProjectionMatrix(Matrix4::perspectiveProjection(35.0_degf, 1.0f, 0.01f, 10000.0f))
             .setViewport(GL::defaultFramebuffer.viewport().size());
 
     // Root Object
@@ -72,7 +74,6 @@ Viewport::Viewport(const Arguments &arguments) :
         bodyObjectList.push_back(bodyObject);
         bodyObject->update();
     }
-
 }
 
 void Viewport::drawEvent() {
@@ -82,7 +83,7 @@ void Viewport::drawEvent() {
             GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
     for (auto b : bodyObjectList) {
-        ///b->update();
+        //b->update();
     }
     config->logger->info("Finished Updating buffers");
 
