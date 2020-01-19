@@ -9,7 +9,7 @@
 #include "../model/PhysicsContext.h"
 #include "../Config.h"
 #include "ColoredDrawable.h"
-#include "BodyObject.h"
+#include "BodyAnimableObject.h"
 
 #include <fstream>
 
@@ -40,6 +40,7 @@
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
 #include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/SceneGraph/Scene.h>
+#include <Magnum/SceneGraph/AnimableGroup.h>
 
 using std::cout;
 using std::endl;
@@ -72,7 +73,6 @@ private:
     Shaders::Phong shader{NoCreate};
     GL::Mesh sphereMesh{NoCreate};
 
-
     // Objects used to construct the sceneGraph
     Scene3D scene;
     SceneGraph::Camera3D* camera;
@@ -80,7 +80,8 @@ private:
 
     // Objects that will be in the sceneGraph
     Object3D manipulator, cameraObject;
-    std::vector<BodyObject *> bodyObjectList;
+    SceneGraph::AnimableGroup3D animables;
+    std::vector<BodyAnimableObject *> bodyObjectList;
 };
 
 

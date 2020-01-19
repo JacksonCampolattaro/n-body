@@ -2,8 +2,8 @@
 // Created by jackcamp on 1/8/20.
 //
 
-#ifndef N_BODY_BODYOBJECT_H
-#define N_BODY_BODYOBJECT_H
+#ifndef N_BODY_BODYANIMABLEOBJECT_H
+#define N_BODY_BODYANIMABLEOBJECT_H
 
 #include "../model/Body.h"
 #include "ColoredDrawable.h"
@@ -15,6 +15,7 @@
 #include <Magnum/Shaders/Phong.h>
 
 #include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
+#include <Magnum/SceneGraph/Animable.h>
 
 #include <Magnum/GlmIntegration/Integration.h>
 
@@ -25,7 +26,7 @@ using namespace Math::Literals;
 //typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
 typedef SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D> Object3D;
 
-class BodyObject : public Object3D {
+class BodyAnimableObject : public Object3D, public SceneGraph::Animable3D {
 
 private:
 
@@ -33,11 +34,13 @@ private:
 
 public:
 
-    BodyObject(Object3D *parent, Body *body);
+    BodyAnimableObject(Object3D *parent, SceneGraph::AnimableGroup3D* group, Body *body);
+
+    void animationStep(Float, Float delta) override;
 
     void update();
 
 };
 
 
-#endif //N_BODY_BODYOBJECT_H
+#endif //N_BODY_BODYANIMABLEOBJECT_H

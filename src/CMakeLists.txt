@@ -57,7 +57,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         view/Viewport.cpp
         view/Viewport.h
-        view/Viewport.cpp view/Viewport.h Config.cpp Config.h view/ColoredDrawable.cpp view/ColoredDrawable.h view/BodyObject.cpp view/BodyObject.h)
+        view/Viewport.cpp view/Viewport.h Config.cpp Config.h view/ColoredDrawable.cpp view/ColoredDrawable.h view/BodyAnimableObject.cpp view/BodyAnimableObject.h)
 
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE

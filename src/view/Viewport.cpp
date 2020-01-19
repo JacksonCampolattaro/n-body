@@ -65,7 +65,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
     for (Body b : config->bodies) {
 
-        auto bodyObject = new BodyObject(&manipulator, &b);
+        auto bodyObject = new BodyAnimableObject(&manipulator, &b);
 
         auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s / 2);
         auto scaling = Matrix4::scaling(Vector3(b.getRadius()));
