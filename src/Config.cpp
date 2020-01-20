@@ -3,6 +3,8 @@
 //
 
 #include "Config.h"
+#include "model/calculation/BarnesHut/BarnesHutSolver.h"
+#include "model/calculation/Naive/NaiveSolver.h"
 
 Config::Config(int argc, char **argv)  {
 
@@ -57,7 +59,7 @@ Config::Config(int argc, char **argv)  {
     );
 
     // Getting the body archive path, with a default value
-    bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.bod";
+    bodyArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.bod";
     CLIApplication.add_option("-b,--bodies",
                               bodyArchivePath,
                               "Sets the file path to read bodies from",
@@ -65,7 +67,7 @@ Config::Config(int argc, char **argv)  {
     )->check(CLI::ExistingFile);
 
     // Getting the physics archive path, with a default value
-    physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/blender/blender.phys";
+    physicsArchivePath = "/home/jackcamp/CLionProjects/n_body/scenarios/threeBody/threeBody.phys";
     CLIApplication.add_option("-p,--physics",
                               physicsArchivePath,
                               "Sets the file path to read physics from",
@@ -138,4 +140,10 @@ Config::Config(int argc, char **argv)  {
     cereal::XMLInputArchive physicsInputArchive(physicsInputStream);
     physics = PhysicsContext();
     physicsInputArchive(physics);
+
+
+    // Setting the solver
+    solver = new BarnesHutSolver();
+    solver->enableThreading();
+
 }

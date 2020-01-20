@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
     return viewport.exec();
 
 
+    /*
     // Configuring CLI Input
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -187,5 +188,6 @@ int main(int argc, char **argv) {
     cereal::XMLOutputArchive physicsOutputArchive(physicsOutputStream);
     physicsOutputArchive(physics);
 
+     */
 
 }

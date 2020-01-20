@@ -3,7 +3,9 @@
 //
 
 #include "Viewport.h"
-#include "ColoredDrawable.h"
+#include "../model/calculation/Solver.h"
+#include "../model/calculation/BarnesHut/BarnesHutSolver.h"
+#include <Magnum/GlmIntegration/Integration.h>
 
 using namespace Magnum;
 
@@ -15,8 +17,7 @@ Viewport::Viewport(const Arguments &arguments) :
 
 
     // Configuring CLI Input
-    auto config = Config(arguments.argc, arguments.argv);
-    auto logger = config.logger;
+    config = new Config(arguments.argc, arguments.argv);
 
 
     // Creating shared Meshes and Shaders
@@ -36,11 +37,12 @@ Viewport::Viewport(const Arguments &arguments) :
     // Camera
     cameraObject
             .setParent(&scene)
-            .translate(Vector3::zAxis(5.0f));
+            .translate(Vector3::zAxis(50.0f))
+            .rotateX(0.0_degf);
     camera = new SceneGraph::Camera3D(cameraObject);
     (*camera)
             .setAspectRatioPolicy(SceneGraph::AspectRatioPolicy::Extend)
-            .setProjectionMatrix(Matrix4::perspectiveProjection(35.0_degf, 1.0f, 0.01f, 1000.0f))
+            .setProjectionMatrix(Matrix4::perspectiveProjection(35.0_degf, 1.0f, 0.01f, 10000.0f))
             .setViewport(GL::defaultFramebuffer.viewport().size());
 
     // Root Object
@@ -61,28 +63,38 @@ Viewport::Viewport(const Arguments &arguments) :
     // Adding the bodies
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    for (Body b : config.bodies) {
+    for (Body b : config->bodies) {
 
-        Matrix4 transformation = Matrix4::translation({b.getPosition().x, b.getPosition().y, b.getPosition().z});
-
-        auto sphereObject = new Object3D(&manipulator);
-        sphereObject->setTransformation(transformation);
+        auto bodyObject = new BodyAnimableObject(&manipulator, &b);
 
         auto color = Color4::fromSrgb(Vector3(b.getColor().r, b.getColor().g, b.getColor().b), b.getColor().s / 2);
-
         auto scaling = Matrix4::scaling(Vector3(b.getRadius()));
+        new ColoredDrawable{*bodyObject, drawables, sphereMesh, shader, color, scaling};
 
-        new ColoredDrawable{*sphereObject, drawables, sphereMesh, shader, color, scaling};
+        bodyObjectList.push_back(bodyObject);
+        bodyObject->update();
     }
-
 }
 
 void Viewport::drawEvent() {
+    config->logger->info("DrawEvent Triggered");
 
     GL::defaultFramebuffer.clear(
             GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
+    config->logger->info("Finished Updating buffers");
+
     camera->draw(drawables);
+    config->logger->info("Finished Drawing");
 
     swapBuffers();
+    config->logger->info("Swapped Buffers");
+
+
+    //config->solver->solve(&config->bodies, &config->physics);
+    config->logger->info("Finished calculations");
+
+    manipulator.setDirty();
+
+    redraw();
 }

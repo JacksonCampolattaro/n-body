@@ -14,6 +14,9 @@ find_package(Magnum REQUIRED
         )
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
+# Confirms that magnum-integration is present and installed properly
+find_package(MagnumIntegration REQUIRED Glm)
+
 # Confirms that OpenMP is present and installed properly
 find_package(OpenMP REQUIRED)
 
@@ -54,10 +57,11 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         view/Viewport.cpp
         view/Viewport.h
-        view/Viewport.cpp view/Viewport.h Config.cpp Config.h view/ColoredDrawable.cpp view/ColoredDrawable.h)
+        view/Viewport.cpp view/Viewport.h Config.cpp Config.h view/ColoredDrawable.cpp view/ColoredDrawable.h view/BodyAnimableObject.cpp view/BodyAnimableObject.h)
 
 # Adds libraries to compilation path
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+
         Magnum::Application
         Magnum::GL
         Magnum::Magnum
@@ -66,8 +70,12 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::Primitives
         Magnum::Shaders
 
+        MagnumIntegration::Glm
+
         ${GTKMM_LIBRARIES}
+
+        OpenMP::OpenMP_CXX
         )
 
 # Sets OpenMP compilation flags to allow for multithreaded performance -mavx allows avx instructions
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -Og")

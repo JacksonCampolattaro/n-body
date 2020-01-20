@@ -8,6 +8,8 @@
 #include "../model/tools/BodyList.h"
 #include "../model/PhysicsContext.h"
 #include "../Config.h"
+#include "ColoredDrawable.h"
+#include "BodyAnimableObject.h"
 
 #include <fstream>
 
@@ -26,8 +28,6 @@
 #include <Magnum/GL/Renderer.h>
 #include <Magnum/Math/Color.h>
 #include <Magnum/Math/Matrix4.h>
-#include <Magnum/MeshTools/Interleave.h>
-#include <Magnum/MeshTools/CompressIndices.h>
 #include <Magnum/MeshTools/Compile.h>
 #include <Magnum/Platform/Sdl2Application.h>
 #include <Magnum/Primitives/Cube.h>
@@ -38,7 +38,9 @@
 #include <Magnum/SceneGraph/Camera.h>
 #include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/SceneGraph/Scene.h>
+#include <Magnum/SceneGraph/AnimableGroup.h>
 
 using std::cout;
 using std::endl;
@@ -48,8 +50,11 @@ using std::make_shared;
 using namespace Magnum;
 using namespace Math::Literals;
 
-typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
-typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
+//typedef SceneGraph::Object<SceneGraph::MatrixTransformation3D> Object3D;
+//typedef SceneGraph::Scene<SceneGraph::MatrixTransformation3D> Scene3D;
+
+typedef SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D> Object3D;
+typedef SceneGraph::Scene<SceneGraph::TranslationRotationScalingTransformation3D> Scene3D;
 
 class Viewport : public Magnum::Platform::Application {
 
@@ -62,17 +67,21 @@ private:
     void drawEvent() override;
 
 
+    Config *config;
+
     // Most objects will share a shader and a mesh for improved performance
     Shaders::Phong shader{NoCreate};
     GL::Mesh sphereMesh{NoCreate};
-
 
     // Objects used to construct the sceneGraph
     Scene3D scene;
     SceneGraph::Camera3D* camera;
     SceneGraph::DrawableGroup3D drawables;
 
+    // Objects that will be in the sceneGraph
     Object3D manipulator, cameraObject;
+    SceneGraph::AnimableGroup3D animables;
+    std::vector<BodyAnimableObject *> bodyObjectList;
 };
 
 
