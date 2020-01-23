@@ -1,16 +1,25 @@
 
-#include "View/Application.h"
 
 #include <gtkmm/application.h>
-#include <gtkmm/window.h>
+#include <iostream>
 
+int onCommandLine(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line,
+                  Glib::RefPtr<Gtk::Application> &app) {
+
+    std::cout << "onCommandLine" << std::endl;
+
+    app->activate();
+    return EXIT_SUCCESS;
+}
 
 int main(int argc, char *argv[]) {
 
-    auto app = View::Application::create("com.github.JacksonCampolattaro.nbody");
+    auto application = Gtk
+            ::Application::create(
+            "com.github.JacksonCampolattaro.nbody",
+            Gio::APPLICATION_HANDLES_COMMAND_LINE);
 
-    Gtk::Window window;
-    window.set_default_size(200, 200);
+    application->signal_command_line().connect(sigc::bind(sigc::ptr_fun(&onCommandLine), application), false);
 
-    return app->run(window, argc, argv);
+    return application->run(argc, argv);
 }
