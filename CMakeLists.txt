@@ -1,23 +1,10 @@
 
 
-# Sets minimum CMake version
+# Set minimum CMake version
 cmake_minimum_required(VERSION 3.12)
 
-
-# Sets project name
+# Set project name
 project(n_body)
 
-find_package(PkgConfig REQUIRED)
-
-
-# Libraries
-########################################################################################################################
-
-# GTKMM
-pkg_check_modules(GTKMM gtkmm-3.0)
-
-########################################################################################################################
-
-
-# Adds the main subdirectory
+# Add main subdirectory
 add_subdirectory(src)
