@@ -7,8 +7,26 @@
 
 Controller::Config::Config() {
 
+    // The program's mode can be set to the following keywords
+    std::map<std::string, Mode> modeMap{
+            {"headless",    Mode::HEADLESS},
+            {"viewer",      Mode::VIEWER},
+            {"interactive", Mode::INTERACTIVE}
+    };
     _commandParser.add_option("-m,--mode", _mode, "Set the graphics mode of the program")
-            ->transform(CLI::CheckedTransformer {ModeNameMap, CLI::ignore_case});
+            ->transform(CLI::CheckedTransformer{modeMap, CLI::ignore_case});
+
+    // The verbosity of the program can be set to the following keywords
+    std::map<std::string, spdlog::level::level_enum> logLevelMap{
+            {"trace",    spdlog::level::trace},
+            {"debug",    spdlog::level::debug},
+            {"info",     spdlog::level::info},
+            {"warn",     spdlog::level::warn},
+            {"error",    spdlog::level::err},
+            {"critical", spdlog::level::critical}
+    };
+    _commandParser.add_option("-v,--verbosity", _logLevel, "Set the graphics mode of the program")
+            ->transform(CLI::CheckedTransformer{logLevelMap, CLI::ignore_case});
 
     // @todo Bind more commands to the parser
 }
@@ -28,8 +46,7 @@ int Controller::Config::run(int argc, char **argv) {
 
 int Controller::Config::run() {
 
-    // The logger is constant to all modes
-    // it must be prepared just before running (after parsing)
+    // Preparing the logger
     Logger::prepare(_logSilent, _logLevel, _logFile);
 
     // Run the program in the appropriate mode
@@ -41,6 +58,7 @@ int Controller::Config::run() {
         case Mode::INTERACTIVE :
             return runInteractive();
         default:
+            spdlog::warn("Unrecognized mode");
             return runHeadless();
     }
 }

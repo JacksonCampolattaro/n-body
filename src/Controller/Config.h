@@ -57,11 +57,6 @@ namespace Controller {
             VIEWER,
             INTERACTIVE
         };
-        std::map<std::string, Mode> ModeNameMap {
-                {"headless",    Mode::HEADLESS},
-                {"viewer",      Mode::VIEWER},
-                {"interactive", Mode::INTERACTIVE}
-        };
 
         CLI::App _commandParser {"Modular Integrator for N-body Interaction", "mini"};
 
@@ -70,11 +65,6 @@ namespace Controller {
         bool _logSilent {false};
 
         Config::Mode _mode {Config::Mode::INTERACTIVE};
-
-        /**
-         * @brief Sets up the logger as specified by other member variables.
-         */
-        void prepareLogger();
 
         /**
          * @brief Runs the program in the console only.
