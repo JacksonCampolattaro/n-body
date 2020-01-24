@@ -57,13 +57,9 @@ void Controller::Config::prepareLogger() {
         auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 
         // It will use a simplified output format
-        consoleSink->set_pattern("[%^%l%$] %v");
+        consoleSink->set_pattern("%^[%l]%$ %v");
 
-        // It can do some nice color coding to indicate urgency level
-        consoleSink->set_color(spdlog::level::warn, consoleSink->yellow);
-        consoleSink->set_color(spdlog::level::err, consoleSink->red);
-        consoleSink->set_color(spdlog::level::critical, consoleSink->white);
-        consoleSink->set_color(spdlog::level::critical, consoleSink->on_red);
+        // The default color scheme is pretty good
 
         _logDistributor->add_sink(consoleSink);
     }
@@ -74,7 +70,7 @@ void Controller::Config::prepareLogger() {
     }
 
     // The log should now be set properly
-    _logger->warn("Configured logger");
+    _logger->debug("Configured logger");
 }
 
 int Controller::Config::runHeadless() {

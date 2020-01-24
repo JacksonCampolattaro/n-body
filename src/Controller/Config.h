@@ -70,7 +70,7 @@ namespace Controller {
         std::shared_ptr<spdlog::logger> _logger
                 {std::make_shared<spdlog::logger>("logger", _logDistributor)};
         std::string _logFile {""};
-        spdlog::level::level_enum _logLevel {spdlog::level::debug};
+        spdlog::level::level_enum _logLevel {spdlog::level::trace};
         bool _logSilent {false};
 
         Config::Mode _mode {Config::Mode::INTERACTIVE};
