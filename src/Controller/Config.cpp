@@ -59,8 +59,6 @@ void Controller::Config::prepareLogger() {
         // It will use a simplified output format
         consoleSink->set_pattern("%^[%l]%$ %v");
 
-        // The default color scheme is pretty good
-
         _logDistributor->add_sink(consoleSink);
     }
 
