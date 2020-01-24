@@ -28,6 +28,12 @@ Controller::Config::Config() {
     _commandParser.add_option("-v,--verbosity", _logLevel, "Set the graphics mode of the program")
             ->transform(CLI::CheckedTransformer{logLevelMap, CLI::ignore_case});
 
+    // The program can be run in silent mode with a specific flag
+    _commandParser.add_flag("-s,--silent",
+                            _logSilent,
+                            "Disables printing any information to the console"
+    );
+
     // @todo Bind more commands to the parser
 }
 
