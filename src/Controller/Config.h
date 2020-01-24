@@ -9,6 +9,15 @@ namespace Controller {
 
     class Config {
 
+    public:
+
+        Config(int argc, char *argv[]);
+
+        int run();
+
+    private:
+
+
     };
 
 }
