@@ -7,7 +7,7 @@
 Controller::Config::Config() {
 
     _commandParser.add_option("-m,--mode", _mode, "Set the graphics mode of the program")
-            ->transform(CLI::CheckedTransformer{ModeNameMap, CLI::ignore_case});
+            ->transform(CLI::CheckedTransformer {ModeNameMap, CLI::ignore_case});
 
     // @todo Bind more commands to the parser
 }
@@ -30,9 +30,7 @@ int Controller::Config::run() {
     // The logger is constant to all modes
     // it must be prepared just before running (after parsing)
     // @todo configure the logger
-
-    _logDistributor->add_sink(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
-    _logger->info("Console added as log sink");
+    prepareLogger();
 
     // Run the program in the appropriate mode
     switch (_mode) {
@@ -42,8 +40,41 @@ int Controller::Config::run() {
             return runViewer();
         case Mode::INTERACTIVE :
             return runInteractive();
+        default:
+            return runHeadless();
     }
-    return EXIT_SUCCESS;
+}
+
+void Controller::Config::prepareLogger() {
+
+    // Set the log level according to the user's request
+    _logger->set_level(_logLevel);
+
+    // Only add the console as a sink if the user didn't use silent mode
+    if (!_logSilent) {
+
+        // The console supports color and can be thread-safe
+        auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+
+        // It will use a simplified output format
+        consoleSink->set_pattern("[%^%l%$] %v");
+
+        // It can do some nice color coding to indicate urgency level
+        consoleSink->set_color(spdlog::level::warn, consoleSink->yellow);
+        consoleSink->set_color(spdlog::level::err, consoleSink->red);
+        consoleSink->set_color(spdlog::level::critical, consoleSink->white);
+        consoleSink->set_color(spdlog::level::critical, consoleSink->on_red);
+
+        _logDistributor->add_sink(consoleSink);
+    }
+
+    // Only add a file as a sink if the user provided a valid path
+    if ("" != _logFile) {
+        _logDistributor->add_sink(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_logFile));
+    }
+
+    // The log should now be set properly
+    _logger->warn("Configured logger");
 }
 
 int Controller::Config::runHeadless() {
