@@ -9,6 +9,8 @@
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/dist_sink.h>
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include <spdlog/sinks/basic_file_sink.h>
 
 #include <cstdlib>
 #include <string>
@@ -68,10 +70,15 @@ namespace Controller {
         std::shared_ptr<spdlog::logger> _logger
                 {std::make_shared<spdlog::logger>("logger", _logDistributor)};
         std::string _logFile {""};
-        spdlog::level::level_enum _logLevel {spdlog::level::info};
+        spdlog::level::level_enum _logLevel {spdlog::level::debug};
         bool _logSilent {false};
 
         Config::Mode _mode {Config::Mode::INTERACTIVE};
+
+        /**
+         * @brief Sets up the logger as specified by other member variables.
+         */
+        void prepareLogger();
 
         /**
          * @brief Runs the program in the console only.
