@@ -53,6 +53,8 @@ namespace Controller {
 
     private:
 
+        CLI::App _commandParser;
+
     };
 
 }
