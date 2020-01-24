@@ -5,6 +5,9 @@
 #ifndef N_BODY_CONFIG_H
 #define N_BODY_CONFIG_H
 
+#include <cstdlib>
+#include <CLI/CLI.hpp>
+
 namespace Controller {
 
     /**

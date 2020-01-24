@@ -4,9 +4,11 @@
 
 #include "Config.h"
 
-#include <cstdlib>
-
 Controller::Config::Config(int argc, char **argv) {
+
+    // Setting the name and description
+    CLI::App CLIApplication("Modular Integrator for N-body Interaction");
+
 
 }
 
