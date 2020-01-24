@@ -5,12 +5,9 @@
 #ifndef N_BODY_CONFIG_H
 #define N_BODY_CONFIG_H
 
-#include <CLI/CLI.hpp>
+#include "Logger.h"
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/dist_sink.h>
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include <spdlog/sinks/basic_file_sink.h>
+#include <CLI/CLI.hpp>
 
 #include <cstdlib>
 #include <string>
