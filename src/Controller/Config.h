@@ -27,15 +27,6 @@ namespace Controller {
         Config();
 
         /**
-         * @brief Uses a CLI parsing library to set various member variables.
-         *
-         * @param argc The number of arguments passed to the program.
-         * @param argv An array of strings, representing each argument.
-         * @return The exit code generated when parsing command lines (e.g. 0 for success).
-         */
-        int parseCommandLine(int argc, char** argv);
-
-        /**
          * @brief Runs the program based on its current settings.
          *
          * @return The exit code of the program (e.g. 0 for success).
