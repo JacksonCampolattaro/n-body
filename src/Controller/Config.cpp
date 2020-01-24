@@ -4,14 +4,7 @@
 
 #include "Config.h"
 
-Controller::Config::Config() :
-        _commandParser{"Modular Integrator for N-body Interaction", "mini"},
-        _logDistributor{std::make_shared<spdlog::sinks::dist_sink_mt>()},
-        _logger{std::make_shared<spdlog::logger>("logger", _logDistributor)},
-        _mode{Config::Mode::INTERACTIVE} {
-
-    _logDistributor->add_sink(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
-    _logger->error("Console added as log sink");
+Controller::Config::Config() {
 
     _commandParser.add_option("-m,--mode", _mode, "Set the graphics mode of the program")
             ->transform(CLI::CheckedTransformer{ModeNameMap, CLI::ignore_case});
@@ -33,6 +26,13 @@ int Controller::Config::run(int argc, char **argv) {
 }
 
 int Controller::Config::run() {
+
+    // The logger is constant to all modes
+    // it must be prepared just before running (after parsing)
+    // @todo configure the logger
+
+    _logDistributor->add_sink(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
+    _logger->info("Console added as log sink");
 
     // Run the program in the appropriate mode
     switch (_mode) {

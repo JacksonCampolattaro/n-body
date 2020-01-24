@@ -28,7 +28,7 @@ namespace Controller {
     public:
 
         /**
-         * @brief Constructor that initializes all options to default values.
+         * @brief Constructor that binds options to console commands.
          */
         Config();
 
@@ -61,10 +61,17 @@ namespace Controller {
                 {"interactive", Mode::INTERACTIVE}
         };
 
-        CLI::App _commandParser;
-        std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor;
-        std::shared_ptr<spdlog::logger> _logger;
-        Config::Mode _mode;
+        CLI::App _commandParser {"Modular Integrator for N-body Interaction", "mini"};
+
+        std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor
+                {std::make_shared<spdlog::sinks::dist_sink_mt>()};
+        std::shared_ptr<spdlog::logger> _logger
+                {std::make_shared<spdlog::logger>("logger", _logDistributor)};
+        std::string _logFile {""};
+        spdlog::level::level_enum _logLevel {spdlog::level::info};
+        bool _logSilent {false};
+
+        Config::Mode _mode {Config::Mode::INTERACTIVE};
 
         /**
          * @brief Runs the program in the console only.
