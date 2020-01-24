@@ -9,7 +9,7 @@ Controller::Config::Config() :
         _mode{Config::Mode::INTERACTIVE} {
 
     _commandParser.add_option("--mode", _mode, "Set the graphics mode of the program")
-            ->transform(CLI::CheckedTransformer{ModeMap, CLI::ignore_case});
+            ->transform(CLI::CheckedTransformer{ModeNameMap, CLI::ignore_case});
 
     // @todo Bind more commands to the parser
 }
@@ -33,11 +33,23 @@ int Controller::Config::run() {
 
     switch (_mode) {
         case Mode::HEADLESS :
-            return 0;
+            return runHeadless();
         case Mode::VIEWER :
-            return 1;
+            return runViewer();
         case Mode::INTERACTIVE :
-            return 2;
+            return runInteractive();
     }
+    return EXIT_SUCCESS;
+}
 
+int Controller::Config::runHeadless() {
+    return 0;
+}
+
+int Controller::Config::runViewer() {
+    return 1;
+}
+
+int Controller::Config::runInteractive() {
+    return 2;
 }

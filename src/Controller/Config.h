@@ -35,7 +35,7 @@ namespace Controller {
          * @param argv An array of strings, representing each argument.
          * @return The exit code of the program (e.g. 0 for success).
          */
-        int run(int argc, char** argv);
+        int run(int argc, char **argv);
 
         /**
          * @brief Runs the program based on its current settings.
@@ -51,14 +51,35 @@ namespace Controller {
             VIEWER,
             INTERACTIVE
         };
-        std::map<std::string, Mode> ModeMap {
-                {"headless", Mode::HEADLESS},
-                {"viewer", Mode::VIEWER},
+        std::map<std::string, Mode> ModeNameMap{
+                {"headless",    Mode::HEADLESS},
+                {"viewer",      Mode::VIEWER},
                 {"interactive", Mode::INTERACTIVE}
         };
 
         CLI::App _commandParser;
         Config::Mode _mode;
+
+        /**
+         * @brief Runs the program in the console only.
+         *
+         * @return The exit code of the program (e.g. 0 for success).
+         */
+        int runHeadless();
+
+        /**
+         * @brief Runs the program with a live view of the results.
+         *
+         * @return The exit code of the program (e.g. 0 for success).
+         */
+        int runViewer();
+
+        /**
+         * @brief Runs the program with a full graphical interface.
+         *
+         * @return The exit code of the program (e.g. 0 for success).
+         */
+        int runInteractive();
 
     };
 
