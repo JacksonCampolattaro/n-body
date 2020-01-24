@@ -34,6 +34,13 @@ Controller::Config::Config() {
                             "Disables printing any information to the console"
     );
 
+    // The program can be set to write logs to a specific file
+    _commandParser.add_option("-l,--logfile",
+                              _logFile,
+                              "Sets the path to write log files to",
+                              true
+    );
+
     // @todo Bind more commands to the parser
 }
 
