@@ -8,16 +8,16 @@
 Controller::Config::Config() {
 
     // The program's mode can be set to the following keywords
-    std::map<std::string, Mode> modeMap{
+    std::map<std::string, Mode> modeMap {
             {"headless",    Mode::HEADLESS},
             {"viewer",      Mode::VIEWER},
             {"interactive", Mode::INTERACTIVE}
     };
     _commandParser.add_option("-m,--mode", _mode, "Set the graphics mode of the program")
-            ->transform(CLI::CheckedTransformer{modeMap, CLI::ignore_case});
+            ->transform(CLI::CheckedTransformer {modeMap, CLI::ignore_case});
 
     // The verbosity of the program can be set to the following keywords
-    std::map<std::string, spdlog::level::level_enum> logLevelMap{
+    std::map<std::string, spdlog::level::level_enum> logLevelMap {
             {"trace",    spdlog::level::trace},
             {"debug",    spdlog::level::debug},
             {"info",     spdlog::level::info},
@@ -25,8 +25,8 @@ Controller::Config::Config() {
             {"error",    spdlog::level::err},
             {"critical", spdlog::level::critical}
     };
-    _commandParser.add_option("-v,--verbosity", _logLevel, "Set the graphics mode of the program")
-            ->transform(CLI::CheckedTransformer{logLevelMap, CLI::ignore_case});
+    _commandParser.add_option("-v,--verbosity", _logLevel, "Set the verbosity level of the program")
+            ->transform(CLI::CheckedTransformer {logLevelMap, CLI::ignore_case});
 
     // The program can be run in silent mode with a specific flag
     _commandParser.add_flag("-s,--silent",
