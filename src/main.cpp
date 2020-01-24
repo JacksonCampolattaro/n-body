@@ -1,5 +1,5 @@
 
-#include "Controller/Config.h"
+#include "Controller/Controller.h"
 
 int main(int argc, char *argv[]) {
 
