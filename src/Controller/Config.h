@@ -7,6 +7,8 @@
 
 #include <cstdlib>
 #include <CLI/CLI.hpp>
+#include <map>
+#include <string>
 
 namespace Controller {
 
@@ -27,13 +29,6 @@ namespace Controller {
         Config();
 
         /**
-         * @brief Runs the program based on its current settings.
-         *
-         * @return The exit code of the program (e.g. 0 for success).
-         */
-        int run();
-
-        /**
          * @brief Runs the program after parsing the command line arguments passed in.
          *
          * @param argc The number of arguments passed to the program.
@@ -42,9 +37,28 @@ namespace Controller {
          */
         int run(int argc, char** argv);
 
+        /**
+         * @brief Runs the program based on its current settings.
+         *
+         * @return The exit code of the program (e.g. 0 for success).
+         */
+        int run();
+
     private:
 
+        enum class Mode : int {
+            HEADLESS,
+            VIEWER,
+            INTERACTIVE
+        };
+        std::map<std::string, Mode> ModeMap {
+                {"headless", Mode::HEADLESS},
+                {"viewer", Mode::VIEWER},
+                {"interactive", Mode::INTERACTIVE}
+        };
+
         CLI::App _commandParser;
+        Config::Mode _mode;
 
     };
 
