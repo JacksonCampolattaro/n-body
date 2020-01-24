@@ -22,22 +22,36 @@ namespace Controller {
     public:
 
         /**
-         * @brief Constructor that parses command line arguments to create a configuration.
+         * @brief Constructor that initializes all options to default values.
+         */
+        Config();
+
+        /**
+         * @brief Uses a CLI parsing library to set various member variables.
          *
          * @param argc The number of arguments passed to the program.
          * @param argv An array of strings, representing each argument.
+         * @return The exit code generated when parsing command lines (e.g. 0 for success).
          */
-        Config(int argc, char *argv[]);
+        int parseCommandLine(int argc, char** argv);
 
         /**
-         * @brief Runs the program based on the Config's settings.
+         * @brief Runs the program based on its current settings.
          *
-         * @return The Exit Code of the program (e.g. 0 for success).
+         * @return The exit code of the program (e.g. 0 for success).
          */
         int run();
 
-    private:
+        /**
+         * @brief Runs the program after parsing the command line arguments passed in.
+         *
+         * @param argc The number of arguments passed to the program.
+         * @param argv An array of strings, representing each argument.
+         * @return The exit code of the program (e.g. 0 for success).
+         */
+        int run(int argc, char** argv);
 
+    private:
 
     };
 
