@@ -5,10 +5,14 @@
 #ifndef N_BODY_CONFIG_H
 #define N_BODY_CONFIG_H
 
-#include <cstdlib>
 #include <CLI/CLI.hpp>
-#include <map>
+
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/dist_sink.h>
+
+#include <cstdlib>
 #include <string>
+#include <map>
 
 namespace Controller {
 
@@ -51,13 +55,15 @@ namespace Controller {
             VIEWER,
             INTERACTIVE
         };
-        std::map<std::string, Mode> ModeNameMap{
+        std::map<std::string, Mode> ModeNameMap {
                 {"headless",    Mode::HEADLESS},
                 {"viewer",      Mode::VIEWER},
                 {"interactive", Mode::INTERACTIVE}
         };
 
         CLI::App _commandParser;
+        std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor;
+        std::shared_ptr<spdlog::logger> _logger;
         Config::Mode _mode;
 
         /**
