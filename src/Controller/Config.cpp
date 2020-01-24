@@ -47,6 +47,11 @@ int Controller::Config::run() {
 
 void Controller::Config::prepareLogger() {
 
+    std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor
+            {std::make_shared<spdlog::sinks::dist_sink_mt>()};
+    std::shared_ptr<spdlog::logger> _logger
+            {std::make_shared<spdlog::logger>("logger", _logDistributor)};
+
     // Set the log level according to the user's request
     _logger->set_level(_logLevel);
 
@@ -68,20 +73,24 @@ void Controller::Config::prepareLogger() {
     }
 
     // The log should now be set properly
+    spdlog::set_default_logger(_logger);
     _logger->debug("Configured logger");
 }
 
 int Controller::Config::runHeadless() {
+    spdlog::debug("Running program in headless mode");
     // @todo Actually create the program
     return 0;
 }
 
 int Controller::Config::runViewer() {
+    spdlog::debug("Running program in viewer mode");
     // @todo Actually create the program
     return 1;
 }
 
 int Controller::Config::runInteractive() {
+    spdlog::debug("Running program in interactive mode");
     // @todo Actually create the program
     return 2;
 }

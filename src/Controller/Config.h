@@ -65,10 +65,6 @@ namespace Controller {
 
         CLI::App _commandParser {"Modular Integrator for N-body Interaction", "mini"};
 
-        std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor
-                {std::make_shared<spdlog::sinks::dist_sink_mt>()};
-        std::shared_ptr<spdlog::logger> _logger
-                {std::make_shared<spdlog::logger>("logger", _logDistributor)};
         std::string _logFile {""};
         spdlog::level::level_enum _logLevel {spdlog::level::trace};
         bool _logSilent {false};
