@@ -5,6 +5,6 @@
 
 int main(int argc, char *argv[]) {
 
-    Controller::Config config{argc, argv};
-    return config.run();
+    Controller::Config config{};
+    return config.run(argc, argv);
 }
