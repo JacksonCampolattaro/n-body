@@ -3,6 +3,7 @@
 //
 
 #include "Config.h"
+#include "Logger.h"
 
 Controller::Config::Config() {
 
@@ -29,8 +30,7 @@ int Controller::Config::run() {
 
     // The logger is constant to all modes
     // it must be prepared just before running (after parsing)
-    // @todo configure the logger
-    prepareLogger();
+    Logger::prepare(_logSilent, _logLevel, _logFile);
 
     // Run the program in the appropriate mode
     switch (_mode) {
@@ -43,38 +43,6 @@ int Controller::Config::run() {
         default:
             return runHeadless();
     }
-}
-
-void Controller::Config::prepareLogger() {
-
-    std::shared_ptr<spdlog::sinks::dist_sink_mt> _logDistributor
-            {std::make_shared<spdlog::sinks::dist_sink_mt>()};
-    std::shared_ptr<spdlog::logger> _logger
-            {std::make_shared<spdlog::logger>("logger", _logDistributor)};
-
-    // Set the log level according to the user's request
-    _logger->set_level(_logLevel);
-
-    // Only add the console as a sink if the user didn't use silent mode
-    if (!_logSilent) {
-
-        // The console supports color and can be thread-safe
-        auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-
-        // It will use a simplified output format
-        consoleSink->set_pattern("%^[%l]%$ %v");
-
-        _logDistributor->add_sink(consoleSink);
-    }
-
-    // Only add a file as a sink if the user provided a valid path
-    if ("" != _logFile) {
-        _logDistributor->add_sink(std::make_shared<spdlog::sinks::basic_file_sink_mt>(_logFile));
-    }
-
-    // The log should now be set properly
-    spdlog::set_default_logger(_logger);
-    _logger->debug("Configured logger");
 }
 
 int Controller::Config::runHeadless() {
