@@ -9,8 +9,10 @@ project(n_body)
 # Add main subdirectory
 add_subdirectory(src)
 
-# Doxygen
+# Add Doxygen target
 find_package(Doxygen)
-add_custom_target(doc
-    COMMAND ${DOXYGEN_EXECUTABLE} ../Doxyfile
+add_custom_target(doxygen
+    COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Generating documentation"
     )
