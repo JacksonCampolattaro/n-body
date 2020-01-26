@@ -33,5 +33,5 @@ void Controller::Logger::prepare(bool silent, spdlog::level::level_enum logLevel
 
     // The log should now be set properly
     spdlog::set_default_logger(logger);
-    logger->debug("Configured logger");
+    logger->info("Configured logger");
 }

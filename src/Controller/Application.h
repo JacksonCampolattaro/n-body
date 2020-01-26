@@ -14,27 +14,11 @@ namespace Controller {
     class Application : public Gtk::Application {
     public:
 
-        Application() : Gtk::Application {"my.app", Gio::APPLICATION_HANDLES_COMMAND_LINE} {
-
-            add_main_option_entry(OptionType::OPTION_TYPE_BOOL, "silent", 's',
-                                  "Disables printing any information to the console");
-        };
+        Application();
 
     protected:
 
-        int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override {
-            auto options = command_line->get_options_dict();
-
-            std::cout << "command";
-
-            if (options->contains("silent")) {
-                std::cout << " silent mode";
-            }
-
-            activate();
-
-            return Gtk::Application::on_command_line(command_line);
-        }
+        int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
 
     private:
 
