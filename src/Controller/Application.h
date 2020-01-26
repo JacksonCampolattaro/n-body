@@ -11,6 +11,18 @@
 namespace Controller {
 
     class Application : public Gtk::Application {
+    public:
+
+        Application() : Gtk::Application {"my.app"} {
+
+            add_main_option_entry(Glib::OptionGroup::SlotOptionArgString(), "silent", 's', "Disables printing any information to the console");
+        };
+
+    protected:
+
+    private:
+
+        int cycles = 100;
 
     };
 
