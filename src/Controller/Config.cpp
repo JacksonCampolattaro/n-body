@@ -70,9 +70,6 @@ int Controller::Config::run() {
             return runViewer();
         case Mode::INTERACTIVE :
             return runInteractive();
-        default:
-            spdlog::warn("Unrecognized mode");
-            return runHeadless();
     }
 }
 
