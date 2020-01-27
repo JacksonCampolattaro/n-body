@@ -59,9 +59,6 @@ int Controller::Config::run(int argc, char **argv) {
 
 int Controller::Config::run() {
 
-    // Preparing the logger
-    Logger::prepare(_logSilent, _logLevel, _logFile);
-
     // Run the program in the appropriate mode
     switch (_mode) {
         case Mode::HEADLESS :
