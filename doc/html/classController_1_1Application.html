@@ -66,12 +66,18 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classController_1_1Application-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Controller::Application Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>An extension of Gtkmm's application class with project-specific features.  
+ <a href="classController_1_1Application.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Application_8h_source.html">Application.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Controller::Application:</div>
 <div class="dyncontent">
@@ -79,12 +85,42 @@ Inheritance diagram for Controller::Application:</div>
   <img src="classController_1_1Application.png" alt=""/>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ab80e09311c2402c2fa81c70de598f521"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classController_1_1Application.html#ab80e09311c2402c2fa81c70de598f521">Application</a> ()</td></tr>
+<tr class="memdesc:ab80e09311c2402c2fa81c70de598f521"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default constructor defines a number of CLI options.  <a href="#ab80e09311c2402c2fa81c70de598f521">More...</a><br /></td></tr>
+<tr class="separator:ab80e09311c2402c2fa81c70de598f521"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:aa249e6a201a8e02879e60d56bd657fc3"><td class="memItemLeft" align="right" valign="top"><a id="aa249e6a201a8e02879e60d56bd657fc3"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>on_command_line</b> (const Glib::RefPtr&lt; Gio::ApplicationCommandLine &gt; &amp;command_line) override</td></tr>
 <tr class="separator:aa249e6a201a8e02879e60d56bd657fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>An extension of Gtkmm's application class with project-specific features. </p>
+<p>This extension of Gtk::Application makes instancing my project easier. It parses extra command line instructions and uses them to determine which features to enable. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ab80e09311c2402c2fa81c70de598f521"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab80e09311c2402c2fa81c70de598f521">&#9670;&nbsp;</a></span>Application()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Controller::Application::Application </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The default constructor defines a number of CLI options. </p>
+<p>This constructor sets the application's name and provides descriptions for the program's various CLI options. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/Controller/<a class="el" href="Application_8h_source.html">Application.h</a></li>
 <li>src/Controller/Application.cpp</li>
