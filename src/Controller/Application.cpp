@@ -25,6 +25,18 @@ Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLIC
                           "Set the file path to write a log file to",
                           "FILEPATH"
     );
+
+    add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
+                          "headlesss",
+                          '\0',
+                          "Runs the program without any interface or visualization"
+    );
+
+    add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
+                          "viewer",
+                          '\0',
+                          "Runs the program with only a visualization and no interactivity"
+    );
 }
 
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
@@ -45,5 +57,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string filepath; options->lookup_value("logfile", filepath))
         Logger::attachFile(filepath);
 
+    activate();
     return Gtk::Application::on_command_line(command_line);
 }
