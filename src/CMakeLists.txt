@@ -1,6 +1,6 @@
 
 # Set C++ version
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 # Add Gtkmm's include files
 find_package(PkgConfig)

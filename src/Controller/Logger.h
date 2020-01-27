@@ -33,6 +33,14 @@ namespace Controller {
                 std::string logFilePath = ""
         );
 
+        void reset();
+
+        void attachConsole();
+
+        void attachFile(std::string& filePath);
+
+        void setVerbosity(std::string& level);
+
     };
 
 }
