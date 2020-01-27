@@ -1,0 +1,6 @@
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/CMakeFiles/documentation.dir
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/CMakeFiles/n_body.dir
+/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/CMakeFiles/edit_cache.dir

@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+bc912b7d60d7c819b6521943d379795e CMakeFiles/documentation
+3538e558389f9bbc3d5b858ab0f59dc5 external/magnum/src/Magnum/Shaders/resource_MagnumShaders_RCS.cpp
+e9ab2c58de76405c79afb5dda394c793 magnum/src/Magnum/Shaders/resource_MagnumShaders_RCS.cpp

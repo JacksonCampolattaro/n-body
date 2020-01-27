@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="n_body"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="documentation">
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 documentation"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="n_body">
+				<Option output="/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Debug/bin/n_body" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug/$&lt;CONFIG&gt;/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/gtkmm-3.0"/>
+					<Add directory="/usr/lib64/gtkmm-3.0/include"/>
+					<Add directory="/usr/include/atkmm-1.6"/>
+					<Add directory="/usr/include/atk-1.0"/>
+					<Add directory="/usr/include/glib-2.0"/>
+					<Add directory="/usr/lib64/glib-2.0/include"/>
+					<Add directory="/usr/include/glibmm-2.4"/>
+					<Add directory="/usr/lib64/glibmm-2.4/include"/>
+					<Add directory="/usr/include/sigc++-2.0"/>
+					<Add directory="/usr/lib64/sigc++-2.0/include"/>
+					<Add directory="/usr/include/giomm-2.4"/>
+					<Add directory="/usr/lib64/giomm-2.4/include"/>
+					<Add directory="/usr/include/libmount"/>
+					<Add directory="/usr/include/blkid"/>
+					<Add directory="/usr/include/pangomm-1.4"/>
+					<Add directory="/usr/lib64/pangomm-1.4/include"/>
+					<Add directory="/usr/include/cairomm-1.0"/>
+					<Add directory="/usr/lib64/cairomm-1.0/include"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/usr/include/pixman-1"/>
+					<Add directory="/usr/include/freetype2"/>
+					<Add directory="/usr/include/libpng16"/>
+					<Add directory="/usr/include/pango-1.0"/>
+					<Add directory="/usr/include/harfbuzz"/>
+					<Add directory="/usr/include/fribidi"/>
+					<Add directory="/usr/include/gtk-3.0"/>
+					<Add directory="/usr/include/gdk-pixbuf-2.0"/>
+					<Add directory="/usr/include/gio-unix-2.0"/>
+					<Add directory="/usr/include/libdrm"/>
+					<Add directory="/usr/include/at-spi2-atk/2.0"/>
+					<Add directory="/usr/include/at-spi-2.0"/>
+					<Add directory="/usr/include/dbus-1.0"/>
+					<Add directory="/usr/lib64/dbus-1.0/include"/>
+					<Add directory="/usr/include/gtk-3.0/unix-print"/>
+					<Add directory="/usr/include/gdkmm-3.0"/>
+					<Add directory="/usr/lib64/gdkmm-3.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9/x86_64-redhat-linux"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 n_body"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="n_body/fast">
+				<Option output="/home/jackcamp/CLionProjects/n_body/cmake-build-debug/Debug/bin/n_body" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jackcamp/CLionProjects/n_body/cmake-build-debug/$&lt;CONFIG&gt;/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/include/gtkmm-3.0"/>
+					<Add directory="/usr/lib64/gtkmm-3.0/include"/>
+					<Add directory="/usr/include/atkmm-1.6"/>
+					<Add directory="/usr/include/atk-1.0"/>
+					<Add directory="/usr/include/glib-2.0"/>
+					<Add directory="/usr/lib64/glib-2.0/include"/>
+					<Add directory="/usr/include/glibmm-2.4"/>
+					<Add directory="/usr/lib64/glibmm-2.4/include"/>
+					<Add directory="/usr/include/sigc++-2.0"/>
+					<Add directory="/usr/lib64/sigc++-2.0/include"/>
+					<Add directory="/usr/include/giomm-2.4"/>
+					<Add directory="/usr/lib64/giomm-2.4/include"/>
+					<Add directory="/usr/include/libmount"/>
+					<Add directory="/usr/include/blkid"/>
+					<Add directory="/usr/include/pangomm-1.4"/>
+					<Add directory="/usr/lib64/pangomm-1.4/include"/>
+					<Add directory="/usr/include/cairomm-1.0"/>
+					<Add directory="/usr/lib64/cairomm-1.0/include"/>
+					<Add directory="/usr/include/cairo"/>
+					<Add directory="/usr/include/pixman-1"/>
+					<Add directory="/usr/include/freetype2"/>
+					<Add directory="/usr/include/libpng16"/>
+					<Add directory="/usr/include/pango-1.0"/>
+					<Add directory="/usr/include/harfbuzz"/>
+					<Add directory="/usr/include/fribidi"/>
+					<Add directory="/usr/include/gtk-3.0"/>
+					<Add directory="/usr/include/gdk-pixbuf-2.0"/>
+					<Add directory="/usr/include/gio-unix-2.0"/>
+					<Add directory="/usr/include/libdrm"/>
+					<Add directory="/usr/include/at-spi2-atk/2.0"/>
+					<Add directory="/usr/include/at-spi-2.0"/>
+					<Add directory="/usr/include/dbus-1.0"/>
+					<Add directory="/usr/lib64/dbus-1.0/include"/>
+					<Add directory="/usr/include/gtk-3.0/unix-print"/>
+					<Add directory="/usr/include/gdkmm-3.0"/>
+					<Add directory="/usr/lib64/gdkmm-3.0/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9/x86_64-redhat-linux"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-redhat-linux/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 n_body/fast"/>
+					<CompileFile command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -j12 -f &quot;/home/jackcamp/CLionProjects/n_body/cmake-build-debug/src/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Application.cpp">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Application.h">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Config.cpp">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Config.h">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Controller.h">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Logger.cpp">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/Controller/Logger.h">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/main.cpp">
+			<Option target="n_body"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/jackcamp/CLionProjects/n_body/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

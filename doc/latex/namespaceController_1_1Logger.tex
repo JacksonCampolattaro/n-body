@@ -1,0 +1,80 @@
+\hypertarget{namespaceController_1_1Logger}{}\section{Controller\+::Logger Namespace Reference}
+\label{namespaceController_1_1Logger}\index{Controller::Logger@{Controller::Logger}}
+
+
+Namespace for free functions related to Logging.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{namespaceController_1_1Logger_af6dad87d5575525f3ab749ead10da772}{reset}} ()
+\begin{DoxyCompactList}\small\item\em Removes options applied to the logger. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceController_1_1Logger_ac59dfc82da6b3803faae8bbab0fba789}{attach\+Console}} ()
+\begin{DoxyCompactList}\small\item\em Attaches the console to the logger. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceController_1_1Logger_a30f74b95beb503c15cbca331bf9e229d}{attach\+File}} (std\+::string \&file\+Path)
+\begin{DoxyCompactList}\small\item\em Attaches an output file to the logger. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespaceController_1_1Logger_a4d446defe9f1cd8fa09b3bc042001c18}{set\+Verbosity}} (std\+::string \&level)
+\begin{DoxyCompactList}\small\item\em Sets the level of verbosity based on a string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Namespace for free functions related to Logging. 
+
+Spdlog provides a singleton logger which can be accessed anywhere, this namespace groups functions which configure spdlog\textquotesingle{}s default logger. 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespaceController_1_1Logger_ac59dfc82da6b3803faae8bbab0fba789}\label{namespaceController_1_1Logger_ac59dfc82da6b3803faae8bbab0fba789}} 
+\index{Controller::Logger@{Controller::Logger}!attachConsole@{attachConsole}}
+\index{attachConsole@{attachConsole}!Controller::Logger@{Controller::Logger}}
+\subsubsection{\texorpdfstring{attachConsole()}{attachConsole()}}
+{\footnotesize\ttfamily void Controller\+::\+Logger\+::attach\+Console (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Attaches the console to the logger. 
+
+The console is provided as a sink for the default logger to write logs to. Logs written to the console do not include as many details as those written to files. \mbox{\Hypertarget{namespaceController_1_1Logger_a30f74b95beb503c15cbca331bf9e229d}\label{namespaceController_1_1Logger_a30f74b95beb503c15cbca331bf9e229d}} 
+\index{Controller::Logger@{Controller::Logger}!attachFile@{attachFile}}
+\index{attachFile@{attachFile}!Controller::Logger@{Controller::Logger}}
+\subsubsection{\texorpdfstring{attachFile()}{attachFile()}}
+{\footnotesize\ttfamily void Controller\+::\+Logger\+::attach\+File (\begin{DoxyParamCaption}\item[{std\+::string \&}]{file\+Path }\end{DoxyParamCaption})}
+
+
+
+Attaches an output file to the logger. 
+
+A file path is used to create a sink for the default logger to write to. \begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000001}{Todo}}]If a file could not be created, the issue should appear as an error in the log.\end{DoxyRefDesc}
+
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Path} & The path of the file to be created or added to. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{namespaceController_1_1Logger_af6dad87d5575525f3ab749ead10da772}\label{namespaceController_1_1Logger_af6dad87d5575525f3ab749ead10da772}} 
+\index{Controller::Logger@{Controller::Logger}!reset@{reset}}
+\index{reset@{reset}!Controller::Logger@{Controller::Logger}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void Controller\+::\+Logger\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Removes options applied to the logger. 
+
+Removes all sinks from spdlog\textquotesingle{}s default instance, to prevent the creation of duplicate sinks. \mbox{\Hypertarget{namespaceController_1_1Logger_a4d446defe9f1cd8fa09b3bc042001c18}\label{namespaceController_1_1Logger_a4d446defe9f1cd8fa09b3bc042001c18}} 
+\index{Controller::Logger@{Controller::Logger}!setVerbosity@{setVerbosity}}
+\index{setVerbosity@{setVerbosity}!Controller::Logger@{Controller::Logger}}
+\subsubsection{\texorpdfstring{setVerbosity()}{setVerbosity()}}
+{\footnotesize\ttfamily void Controller\+::\+Logger\+::set\+Verbosity (\begin{DoxyParamCaption}\item[{std\+::string \&}]{level }\end{DoxyParamCaption})}
+
+
+
+Sets the level of verbosity based on a string. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em level} & The logging verbosity level requested \\
+\hline
+\end{DoxyParams}

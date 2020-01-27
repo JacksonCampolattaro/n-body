@@ -11,9 +11,21 @@
 
 namespace Controller {
 
+    /**
+     * @brief An extension of Gtkmm's application class with project-specific features.
+     *
+     * This extension of Gtk::Application makes instancing my project easier.
+     * It parses extra command line instructions and uses them to determine which features to enable.
+     */
     class Application : public Gtk::Application {
     public:
 
+        /**
+         * @brief The default constructor defines a number of CLI options.
+         *
+         * This constructor sets the application's name and
+         * provides descriptions for the program's various CLI options.
+         */
         Application();
 
     protected:

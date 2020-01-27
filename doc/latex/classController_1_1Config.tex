@@ -1,0 +1,68 @@
+\hypertarget{classController_1_1Config}{}\section{Controller\+::Config Class Reference}
+\label{classController_1_1Config}\index{Controller::Config@{Controller::Config}}
+
+
+A manager class for the program\textquotesingle{}s operation status.  
+
+
+
+
+{\ttfamily \#include $<$Config.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classController_1_1Config_ac7daa7cd9a6542b2607c1f491c9adc58}\label{classController_1_1Config_ac7daa7cd9a6542b2607c1f491c9adc58}} 
+\mbox{\hyperlink{classController_1_1Config_ac7daa7cd9a6542b2607c1f491c9adc58}{Config}} ()
+\begin{DoxyCompactList}\small\item\em Constructor that binds options to console commands. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classController_1_1Config_ac37d92603bcd7a4f27e64b92a9cff1c0}{run}} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em Runs the program after parsing the command line arguments passed in. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classController_1_1Config_adcbaa24721e3f3db508c93301b75a49c}{run}} ()
+\begin{DoxyCompactList}\small\item\em Runs the program based on its current settings. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A manager class for the program\textquotesingle{}s operation status. 
+
+This class is responsible for keeping track of the program\textquotesingle{}s state, and all of its settings. It contains many parameters which are set on creation, but may be updated as the program runs. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classController_1_1Config_ac37d92603bcd7a4f27e64b92a9cff1c0}\label{classController_1_1Config_ac37d92603bcd7a4f27e64b92a9cff1c0}} 
+\index{Controller::Config@{Controller::Config}!run@{run}}
+\index{run@{run}!Controller::Config@{Controller::Config}}
+\subsubsection{\texorpdfstring{run()}{run()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily int Controller\+::\+Config\+::run (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+
+
+Runs the program after parsing the command line arguments passed in. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of arguments passed to the program. \\
+\hline
+{\em argv} & An array of strings, representing each argument. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The exit code of the program (e.\+g. 0 for success). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classController_1_1Config_adcbaa24721e3f3db508c93301b75a49c}\label{classController_1_1Config_adcbaa24721e3f3db508c93301b75a49c}} 
+\index{Controller::Config@{Controller::Config}!run@{run}}
+\index{run@{run}!Controller::Config@{Controller::Config}}
+\subsubsection{\texorpdfstring{run()}{run()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily int Controller\+::\+Config\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Runs the program based on its current settings. 
+
+\begin{DoxyReturn}{Returns}
+The exit code of the program (e.\+g. 0 for success). 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\+Controller/Config.\+h\item 
+src/\+Controller/Config.\+cpp\end{DoxyCompactItemize}
