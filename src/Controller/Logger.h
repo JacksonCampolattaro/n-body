@@ -20,26 +20,13 @@ namespace Controller {
      */
     namespace Logger {
 
-        /**
-         * @brief Configures the global spdlog default logger.
-         *
-         * @param silent Nothing is printed to the console when silent is true.
-         * @param logLevel The level of verbosity to include in the logs.
-         * @param logFilePath The location of a file to write a log to.
-         */
-        void prepare(
-                bool silent = false,
-                spdlog::level::level_enum logLevel = spdlog::level::info,
-                std::string logFilePath = ""
-        );
-
         void reset();
 
         void attachConsole();
 
-        void attachFile(std::string& filePath);
+        void attachFile(std::string &filePath);
 
-        void setVerbosity(std::string& level);
+        void setVerbosity(std::string &level);
 
     };
 
