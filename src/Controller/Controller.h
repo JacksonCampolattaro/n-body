@@ -6,6 +6,7 @@
 #define N_BODY_CONTROLLER_H
 
 #include "Config.h"
+#include "Application.h"
 #include "Logger.h"
 
 namespace Controller {}
