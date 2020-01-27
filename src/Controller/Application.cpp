@@ -6,17 +6,44 @@
 
 Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLICATION_HANDLES_COMMAND_LINE} {
 
-    add_main_option_entry(OptionType::OPTION_TYPE_BOOL, "silent", 's',
-                          "Disables printing any information to the console");
+    add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
+                          "silent",
+                          's',
+                          "Disables printing any information to the console"
+    );
+
+    add_main_option_entry(OptionType::OPTION_TYPE_FILENAME,
+                          "verbosity",
+                          'v',
+                          "Set the verbosity level of the program's logging",
+                          "{trace|debug|info|warn|error|critical}"
+    );
+
+    add_main_option_entry(OptionType::OPTION_TYPE_FILENAME,
+                          "logfile",
+                          'l',
+                          "Set the file path to write a log file to",
+                          "FILEPATH"
+    );
 }
 
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
 
-    // Prepare the logger
-    Logger::prepare(
-            options->contains("silent")
-    );
+    // Clear all sinks from the logger
+    Logger::reset();
+
+    // Only attach the console to the logger if the silent flag isn't set
+    if (!options->contains("silent"))
+        Logger::attachConsole();
+
+    // Set the log level based on the verbosity flag
+    if (std::string verbosity; options->lookup_value("verbosity", verbosity))
+        Logger::setVerbosity(verbosity);
+
+    // Attach a log file according to the logfile flag
+    if (std::string filepath; options->lookup_value("logfile", filepath))
+        Logger::attachFile(filepath);
 
     return Gtk::Application::on_command_line(command_line);
 }
