@@ -4,10 +4,6 @@
 
 #include "Application.h"
 
-Glib::RefPtr<Controller::Application> Controller::Application::create() {
-    return Glib::RefPtr<Controller::Application>(new Controller::Application());
-}
-
 Controller::Application::Application() :
         Gtk::Application {
                 "my.app",
