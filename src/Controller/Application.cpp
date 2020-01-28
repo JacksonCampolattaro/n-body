@@ -68,13 +68,15 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         return Gtk::Application::on_command_line(command_line);
     }
 
+    if (options->contains("viewer")) {
+
+    } else {
+        _window.add(_button);
+        _button.show();
+    }
+
     activate();
     return Gtk::Application::on_command_line(command_line);
-}
-
-void Controller::Application::on_startup() {
-    Gtk::Application::on_startup();
-    // @todo What should this actually be responsible for?
 }
 
 void Controller::Application::on_activate() {
