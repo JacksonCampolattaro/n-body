@@ -41,6 +41,7 @@ Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLIC
 
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
+    spdlog::info("parsing");
 
     // Clear all sinks from the logger
     Logger::reset();
@@ -57,6 +58,26 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string filepath; options->lookup_value("logfile", filepath))
         Logger::attachFile(filepath);
 
+    // Run the program in headless mode if that flag is set
+    if (options->contains("headless")) {
+        spdlog::info("Running in headless mode");
+        return Gtk::Application::on_command_line(command_line);
+    }
+
     activate();
     return Gtk::Application::on_command_line(command_line);
+}
+
+void Controller::Application::on_startup() {
+    Gtk::Application::on_startup();
+    spdlog::info("startup");
+}
+
+void Controller::Application::on_activate() {
+    Gtk::Application::on_activate();
+    spdlog::info("activate");
+
+    add_window(_window);
+    _window.show();
+
 }
