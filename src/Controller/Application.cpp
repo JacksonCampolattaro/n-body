@@ -6,7 +6,7 @@
 
 Controller::Application::Application() :
         Gtk::Application {
-                "my.app",
+                "com.github.JacksonCampolattaro.nbody",
                 Gio::APPLICATION_HANDLES_COMMAND_LINE |
                 Gio::APPLICATION_HANDLES_OPEN
         } {
@@ -74,6 +74,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 void Controller::Application::on_startup() {
     Gtk::Application::on_startup();
+    // @todo What should this actually be responsible for?
 }
 
 void Controller::Application::on_activate() {
