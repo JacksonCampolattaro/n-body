@@ -21,6 +21,10 @@ namespace Controller {
     class Application : public Gtk::Application {
     public:
 
+        static Glib::RefPtr<Application> create();
+
+    protected:
+
         /**
          * @brief The default constructor defines a number of CLI options.
          *
@@ -28,8 +32,6 @@ namespace Controller {
          * provides descriptions for the program's various CLI options.
          */
         Application();
-
-    protected:
 
         int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
 
