@@ -38,8 +38,8 @@ namespace Controller {
 
     private:
 
-        Gtk::Button _button{"button"};
-        Gtk::Window _window;
+        std::shared_ptr<Gtk::Button> _button;
+        std::shared_ptr<Gtk::Window> _window;
     };
 
 }

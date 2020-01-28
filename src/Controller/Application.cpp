@@ -68,12 +68,21 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         return Gtk::Application::on_command_line(command_line);
     }
 
+    // Create the window if the headless flag wasn't set
+    _window = std::make_shared<Gtk::Window>(Gtk::Window{});
+    _window->set_default_size(200, 200);
+
+    // Run the program in viewer mode if that flag was set
     if (options->contains("viewer")) {
 
-    } else {
-        _window.add(_button);
-        _button.show();
+        activate();
+        return Gtk::Application::on_command_line(command_line);
     }
+
+    // Default to running the program in interactive mode
+    _button = std::make_shared<Gtk::Button>(Gtk::Button{"button"});
+    _window->add(*_button);
+    _button->show();
 
     activate();
     return Gtk::Application::on_command_line(command_line);
@@ -83,7 +92,7 @@ void Controller::Application::on_activate() {
     Gtk::Application::on_activate();
     spdlog::info("activate");
 
-    add_window(_window);
-    _window.show();
+    add_window(*_window);
+    _window->show();
 
 }
