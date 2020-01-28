@@ -4,7 +4,8 @@
 
 #include "Application.h"
 
-Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLICATION_HANDLES_COMMAND_LINE} {
+Controller::Application::Application() :
+        Gtk::Application {"my.app", Gio::APPLICATION_HANDLES_COMMAND_LINE | Gio::APPLICATION_HANDLES_OPEN} {
 
     add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
                           "silent",
@@ -27,7 +28,7 @@ Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLIC
     );
 
     add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
-                          "headlesss",
+                          "headless",
                           '\0',
                           "Runs the program without any interface or visualization"
     );
@@ -41,7 +42,6 @@ Controller::Application::Application() : Gtk::Application {"my.app", Gio::APPLIC
 
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
-    spdlog::info("parsing");
 
     // Clear all sinks from the logger
     Logger::reset();
@@ -70,7 +70,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 void Controller::Application::on_startup() {
     Gtk::Application::on_startup();
-    spdlog::info("startup");
 }
 
 void Controller::Application::on_activate() {
