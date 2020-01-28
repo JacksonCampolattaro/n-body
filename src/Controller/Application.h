@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
+#include <gtkmm/button.h>
 #include <iostream>
 
 namespace Controller {
@@ -33,12 +34,11 @@ namespace Controller {
 
         int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
 
-        void on_startup() override;
-
         void on_activate() override;
 
     private:
 
+        Gtk::Button _button{"button"};
         Gtk::Window _window;
     };
 
