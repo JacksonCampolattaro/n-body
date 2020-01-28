@@ -4,8 +4,16 @@
 
 #include "Application.h"
 
+Glib::RefPtr<Controller::Application> Controller::Application::create() {
+    return Glib::RefPtr<Controller::Application>(new Controller::Application());
+}
+
 Controller::Application::Application() :
-        Gtk::Application {"my.app", Gio::APPLICATION_HANDLES_COMMAND_LINE | Gio::APPLICATION_HANDLES_OPEN} {
+        Gtk::Application {
+                "my.app",
+                Gio::APPLICATION_HANDLES_COMMAND_LINE |
+                Gio::APPLICATION_HANDLES_OPEN
+        } {
 
     add_main_option_entry(OptionType::OPTION_TYPE_BOOL,
                           "silent",

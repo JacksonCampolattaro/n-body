@@ -3,6 +3,6 @@
 
 int main(int argc, char *argv[]) {
 
-    Controller::Application application{};
-    application.run(argc, argv);
+    auto application = Controller::Application::create();
+    application->run(argc, argv);
 }
