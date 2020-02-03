@@ -14,7 +14,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         Controller/Controller.h
     Controller/Logger.cpp
-        Controller/Logger.h Controller/Application.cpp Controller/Application.h)
+        Controller/Logger.h Controller/Application.cpp Controller/Application.h View/Builder.cpp View/Builder.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         ${GTKMM_LIBRARIES}
