@@ -13,9 +13,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         main.cpp
 
         Controller/Controller.h
-        Controller/Config.cpp
-        Controller/Config.h
-        Controller/Logger.cpp
+    Controller/Logger.cpp
         Controller/Logger.h Controller/Application.cpp Controller/Application.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE

@@ -80,10 +80,12 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     }
 
     // Default to running the program in interactive mode
-    _button = std::make_shared<Gtk::Button>(Gtk::Button{"button"});
-    _window->add(*_button);
-    _button->show();
+    auto button = std::make_shared<Gtk::Button>(Gtk::Button{"button"});
+    _window->add(*button);
+    button->show();
+    add_window(*_window);
 
+    _window->show();
     activate();
     return Gtk::Application::on_command_line(command_line);
 }
@@ -91,8 +93,4 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 void Controller::Application::on_activate() {
     Gtk::Application::on_activate();
     spdlog::info("activate");
-
-    add_window(*_window);
-    _window->show();
-
 }
