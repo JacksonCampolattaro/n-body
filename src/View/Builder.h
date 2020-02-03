@@ -9,8 +9,15 @@
 
 namespace View {
 
-    class Builder : public Gtk::Builder {
+    class Builder {
+    public:
 
+        Builder() {
+            _builder = Gtk::Builder::create_from_file("viewer.glade");
+
+        }
+
+        Glib::RefPtr<Gtk::Builder> _builder;
     };
 }
 
