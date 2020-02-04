@@ -10,6 +10,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
 #include <iostream>
+#include <gtkmm/builder.h>
 
 namespace Controller {
 
@@ -38,7 +39,7 @@ namespace Controller {
 
     private:
 
-        std::shared_ptr<Gtk::Window> _window;
+        Glib::RefPtr<Gtk::Builder> _builder;
     };
 
 }
