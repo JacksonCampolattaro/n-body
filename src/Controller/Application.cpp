@@ -73,8 +73,25 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     // Run the program in viewer mode if that flag was set
     if (options->contains("viewer")) {
         spdlog::info("Program was run in viewer mode");
-        spdlog::info("Viewer mode is not yet implemented");
-        spdlog::info("Exiting");
+
+        // Create the builder
+        spdlog::debug("Loading interface from a file");
+        _builder = Gtk::Builder::create_from_file("../../viewer.glade");
+
+        // Retrieving the window
+        spdlog::debug("Retrieving window from builder");
+        Gtk::Window* window;
+        _builder->get_widget("window", window);
+
+        // Default to running the program in interactive mode
+        spdlog::debug("Adding window to application");
+        add_window(*window);
+        window->show();
+
+        // Run the program itself
+        spdlog::debug("Running the program");
+        activate();
+
         return Gtk::Application::on_command_line(command_line);
     }
 
