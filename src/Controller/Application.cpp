@@ -64,31 +64,42 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
-        spdlog::info("Running in headless mode");
+        spdlog::info("Program was run in headless mode");
+        spdlog::info("Headless mode is not yet implemented");
+        spdlog::info("Exiting");
         return Gtk::Application::on_command_line(command_line);
     }
-
-    // Create the window if the headless flag wasn't set
-    _builder = Gtk::Builder::create_from_file("../../viewer.glade");
-    Gtk::Window* window;
-    _builder->get_widget("window", window);
 
     // Run the program in viewer mode if that flag was set
     if (options->contains("viewer")) {
-
-        activate();
+        spdlog::info("Program was run in viewer mode");
+        spdlog::info("Viewer mode is not yet implemented");
+        spdlog::info("Exiting");
         return Gtk::Application::on_command_line(command_line);
     }
 
+    spdlog::info("Program was run in interactive mode");
+
+    // Create the builder
+    spdlog::debug("Loading interface from a file");
+    _builder = Gtk::Builder::create_from_file("../../viewer.glade");
+
+    // Retrieving the window
+    spdlog::debug("Retrieving window from builder");
+    Gtk::Window* window;
+    _builder->get_widget("window", window);
+
     // Default to running the program in interactive mode
+    spdlog::debug("Adding window to application");
     add_window(*window);
-    window->set_default_size(200, 200);
     window->show();
+
+    // Run the program itself
+    spdlog::debug("Running the program");
     activate();
     return Gtk::Application::on_command_line(command_line);
 }
 
 void Controller::Application::on_activate() {
     Gtk::Application::on_activate();
-    spdlog::info("activate");
 }
