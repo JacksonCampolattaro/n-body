@@ -13,7 +13,7 @@ namespace View {
     public:
 
         Builder() {
-            _builder = Gtk::Builder::create_from_file("viewer.glade");
+            _builder = Gtk::Builder::create_from_file("interface.glade");
 
         }
 

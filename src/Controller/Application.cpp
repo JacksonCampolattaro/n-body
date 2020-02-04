@@ -82,7 +82,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
     // Create the builder
     spdlog::debug("Loading interface from a file");
-    _builder = Gtk::Builder::create_from_file("../../viewer.glade");
+    _builder = Gtk::Builder::create_from_file("../../interface.glade");
 
     // Retrieving the window
     spdlog::debug("Retrieving window from builder");
