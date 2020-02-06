@@ -5,7 +5,7 @@ An n-body Gravity Simulator by Jackson Campolattaro.
 
 ![Galaxy](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/galaxy.png)
 
-NOTE: The branch 'Gtkmm' currently contains the most up-to-date code, and will be merged to master soon.
+NOTE: The branch gtkmm-magnum contains the most up-to-date code, but isn't currently functional.
 
 ## Concept
 
