@@ -9,7 +9,10 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 include_directories(${GTKMM_INCLUDE_DIRS})
 
 # Add Magnum's include files
-find_package(Magnum REQUIRED GL)
+find_package(Magnum REQUIRED
+    GL
+    SceneGraph
+    )
 
 if(MAGNUM_TARGET_GLES AND NOT MAGNUM_TARGET_DESKTOP_GLES)
     find_package(Magnum REQUIRED EglContext)
@@ -42,4 +45,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     Magnum::GLContext
     Magnum::GL
     Magnum::Magnum
+    Magnum::SceneGraph
     )
