@@ -9,6 +9,8 @@
 
 #include <gtkmm/glarea.h>
 
+#include <Magnum/Platform/GLContext.h>
+
 namespace View {
 
     class MagnumViewport : public Gtk::GLArea {
@@ -17,6 +19,15 @@ namespace View {
 
         MagnumViewport();
         ~MagnumViewport() override;
+
+    protected:
+
+        void onRealize();
+        bool onRender(const Glib::RefPtr<Gdk::GLContext>& context);
+        void onResize(int width, int height);
+        void onUnrealize();
+
+        Magnum::Platform::GLContext _context;
 
     };
 
