@@ -6,11 +6,15 @@
 #define N_BODY_APPLICATION_H
 
 #include "Logger.h"
+#include "../View/ViewerWindow.h"
+
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
-#include <iostream>
 #include <gtkmm/builder.h>
+
+#include <iostream>
+#include <memory>
 
 namespace Controller {
 
@@ -39,7 +43,6 @@ namespace Controller {
 
     private:
 
-        Glib::RefPtr<Gtk::Builder> _builder;
     };
 
 }

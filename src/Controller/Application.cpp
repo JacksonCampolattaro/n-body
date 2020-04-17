@@ -74,9 +74,18 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (options->contains("viewer")) {
         spdlog::info("Program was run in viewer mode");
 
+        // Create a window
+        spdlog::debug("Creating a window with a viewport");
+        auto window = new View::ViewerWindow();
+
+        // Attach the window to this application
+        spdlog::debug("Adding window to application");
+        add_window(*window);
+        window->show();
+/*
         // Create the builder
         spdlog::debug("Loading interface from a file");
-        _builder = Gtk::Builder::create_from_file("../../viewer.glade");
+        auto _builder = Gtk::Builder::create_from_file("../../viewport.glade");
 
         // Retrieving the window
         spdlog::debug("Retrieving window from builder");
@@ -86,12 +95,11 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         // Default to running the program in interactive mode
         spdlog::debug("Adding window to application");
         add_window(*window);
-        window->show();
+        window->show();*/
 
         // Run the program itself
         spdlog::debug("Running the program");
         activate();
-
         return Gtk::Application::on_command_line(command_line);
     }
 
@@ -99,7 +107,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
     // Create the builder
     spdlog::debug("Loading interface from a file");
-    _builder = Gtk::Builder::create_from_file("../../interface.glade");
+    auto _builder = Gtk::Builder::create_from_file("../../interface.glade");
 
     // Retrieving the window
     spdlog::debug("Retrieving window from builder");

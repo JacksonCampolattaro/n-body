@@ -3,3 +3,8 @@
 //
 
 #include "MagnumViewport.h"
+
+View::MagnumViewport::MagnumViewport() :
+    Gtk::GLArea() {}
+
+View::MagnumViewport::~MagnumViewport() {}
