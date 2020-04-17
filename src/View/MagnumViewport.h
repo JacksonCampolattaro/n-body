@@ -10,8 +10,17 @@
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
+#include <Magnum/GL/Framebuffer.h>
+
+// FIXME Temporary (for testing):
+#include <Magnum/SceneGraph/Scene.h>
+#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/Camera.h>
+#include <Magnum/SceneGraph/Drawable.h>
 
 namespace View {
+
+    using namespace Magnum;
 
     class MagnumViewport : public Gtk::GLArea {
 
@@ -27,7 +36,7 @@ namespace View {
         void onResize(int width, int height);
         void onUnrealize();
 
-        Magnum::Platform::GLContext _context;
+        Platform::GLContext _context;
 
     };
 
