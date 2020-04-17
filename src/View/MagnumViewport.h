@@ -5,6 +5,7 @@
 #ifndef N_BODY_MAGNUMVIEWPORT_H
 #define N_BODY_MAGNUMVIEWPORT_H
 
+#include "../Controller/Logger.h"
 
 #include <gtkmm/glarea.h>
 
