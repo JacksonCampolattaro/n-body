@@ -6,6 +6,10 @@
 
 View::ViewerWindow::ViewerWindow() :
     Gtk::Window(), _viewport() {
+
+    spdlog::trace("ViewerWindow constructor invoked");
+
+    add(_viewport);
     _viewport.show();
 }
 

@@ -6,6 +6,7 @@
 #define N_BODY_VIEWERWINDOW_H
 
 #include "MagnumViewport.h"
+#include "../Controller/Logger.h"
 
 #include <gtkmm/window.h>
 
@@ -20,7 +21,7 @@ namespace View {
 
     protected:
 
-        Gtk::GLArea _viewport;
+        MagnumViewport _viewport;
 
     };
 

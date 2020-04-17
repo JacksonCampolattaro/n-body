@@ -5,6 +5,9 @@
 #include "MagnumViewport.h"
 
 View::MagnumViewport::MagnumViewport() :
-    Gtk::GLArea() {}
+    Gtk::GLArea() {
+
+    spdlog::trace("MagnumViewport constructor invoked");
+}
 
 View::MagnumViewport::~MagnumViewport() {}
