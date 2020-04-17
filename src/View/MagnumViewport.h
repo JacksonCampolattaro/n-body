@@ -8,9 +8,18 @@
 
 #include <gtkmm/glarea.h>
 
-class MagnumViewport : public Gtk::GLArea {
+namespace View {
 
-};
+    class MagnumViewport : public Gtk::GLArea {
+
+    public:
+
+        MagnumViewport();
+        ~MagnumViewport() override;
+
+    };
+
+}
 
 
 #endif //N_BODY_MAGNUMVIEWPORT_H
