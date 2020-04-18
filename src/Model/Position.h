@@ -5,6 +5,7 @@
 #ifndef N_BODY_POSITION_H
 #define N_BODY_POSITION_H
 
+#include <cereal/cereal.hpp>
 #include <glm/vec3.hpp>
 
 namespace Model {
@@ -15,6 +16,14 @@ namespace Model {
 
         Position(float x, float y, float z) : glm::vec3(x, y, z){};
         Position(glm::vec3 vector) : glm::vec3(vector){};
+
+        template<class Archive>
+        void serialize(Archive & ar)
+        {
+            ar(
+                    cereal::make_nvp("x", this->x), cereal::make_nvp("y", this->y), cereal::make_nvp("z", this->z)
+            );
+        }
     };
 
 }
