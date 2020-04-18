@@ -5,6 +5,8 @@
 #ifndef N_BODY_CONTROLLER_H
 #define N_BODY_CONTROLLER_H
 
+#include "Logger.h"
+
 #include <string>
 
 namespace Controller {
@@ -13,7 +15,8 @@ namespace Controller {
 
     public:
 
-        void openSimulation(std::string filepath);
+        void openSimulation(const std::string& filepath);
+        void saveSimulation(const std::string& filepath);
     };
 
 }
