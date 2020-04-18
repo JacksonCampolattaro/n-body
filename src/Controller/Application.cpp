@@ -103,7 +103,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     // Attach a simulation file according to the file flag
     std::string filepath;
     if (options->lookup_value("file", filepath)) {
-        _controller->openSimulation(filepath);
+        _controller->loadSimulation(filepath);
     }
 
     // TODO Temporarily disabling interactive mode
