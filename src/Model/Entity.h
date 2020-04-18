@@ -9,6 +9,7 @@
 #include "Velocity.h"
 #include "Drawable/Drawable.h"
 
+#include <cereal/cereal.hpp>
 #include <memory>
 
 namespace Model {
@@ -28,6 +29,16 @@ namespace Model {
         std::shared_ptr<Velocity> _velocity;
 
         std::shared_ptr<Drawable::Drawable> _drawable;
+
+        template<class Archive>
+        void serialize(Archive & ar)
+        {
+            ar(
+                    CEREAL_NVP(_position),
+                    CEREAL_NVP(_velocity)
+            );
+
+        }
     };
 
 }
