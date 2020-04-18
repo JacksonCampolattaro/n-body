@@ -26,11 +26,11 @@ namespace Model {
 
     public:
 
-        Entity();
+        Entity() = default;
 
         Entity* setPosition(Position position);
 
-        Entity* setVelocity(Position position);
+        Entity* setVelocity(Velocity velocity);
 
         template<class Archive>
         void serialize(Archive & ar)
