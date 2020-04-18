@@ -31,6 +31,7 @@ endif()
 
 # Set files to be compiled
 add_executable(${CMAKE_PROJECT_NAME}
+
     main.cpp
 
     Controller/Controller.h
@@ -42,8 +43,11 @@ add_executable(${CMAKE_PROJECT_NAME}
     Model/Simulation.cpp Model/Simulation.h
     Model/Position.cpp Model/Position.h
     Model/Velocity.cpp Model/Velocity.h
+
     Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
+
     Model/Physics/Physics.h
+    Model/Physics/Rule.cpp Model/Physics/Rule.h
 
     View/Builder.cpp View/Builder.h
     View/MagnumViewport.cpp View/MagnumViewport.h
