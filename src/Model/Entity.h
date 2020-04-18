@@ -7,6 +7,7 @@
 
 #include "Position.h"
 #include "Velocity.h"
+#include "Drawable/Drawable.h"
 
 #include <memory>
 
@@ -25,6 +26,8 @@ namespace Model {
 
         std::shared_ptr<Position> _position;
         std::shared_ptr<Velocity> _velocity;
+
+        std::shared_ptr<Drawable::Drawable> _drawable;
     };
 
 }
