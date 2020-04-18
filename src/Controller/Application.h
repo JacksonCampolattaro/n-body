@@ -7,6 +7,7 @@
 
 #include "Logger.h"
 #include "../View/ViewerWindow.h"
+#include "Controller.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -41,7 +42,11 @@ namespace Controller {
 
         void on_activate() override;
 
+        virtual void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
+
     private:
+
+        std::shared_ptr<Controller> _controller;
 
     };
 

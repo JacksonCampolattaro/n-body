@@ -8,6 +8,7 @@
 #include "Position.h"
 #include "Velocity.h"
 #include "Entity.h"
+#include "Physics/Rule.h"
 
 #include <vector>
 #include <memory>
@@ -17,7 +18,6 @@ namespace Model {
     class Simulation {
 
     public:
-
 
         /**
          * @brief Adds a new entity to the simulation
@@ -30,6 +30,8 @@ namespace Model {
         void addEntity(std::shared_ptr<Entity> entity);
 
     private:
+
+        Physics::Rule _rule;
 
         std::vector<std::shared_ptr<Entity>> _entities;
 

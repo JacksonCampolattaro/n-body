@@ -1,13 +1,21 @@
 //
-// Created by jackcamp on 1/24/20.
+// Created by jackcamp on 4/18/20.
 //
 
 #ifndef N_BODY_CONTROLLER_H
 #define N_BODY_CONTROLLER_H
 
-#include "Application.h"
-#include "Logger.h"
+#include <string>
 
-namespace Controller {}
+namespace Controller {
+
+    class Controller {
+
+    public:
+
+        void openSimulation(std::string filepath);
+    };
+
+}
 
 #endif //N_BODY_CONTROLLER_H

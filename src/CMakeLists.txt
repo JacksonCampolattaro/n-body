@@ -34,7 +34,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
     main.cpp
 
-    Controller/Controller.h
+    Controller/Controller.cpp Controller/Controller.h
+    Controller/HeadlessController.cpp Controller/HeadlessController.h
     Controller/Logger.cpp Controller/Logger.h
     Controller/Application.cpp Controller/Application.h
 
