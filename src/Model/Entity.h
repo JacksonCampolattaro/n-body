@@ -23,13 +23,6 @@ namespace Model {
 
     public:
 
-    private:
-
-        std::shared_ptr<Position> _position;
-        std::shared_ptr<Velocity> _velocity;
-
-        std::shared_ptr<Drawable::Drawable> _drawable;
-
         template<class Archive>
         void serialize(Archive & ar)
         {
@@ -39,6 +32,14 @@ namespace Model {
             );
 
         }
+
+    private:
+
+        std::shared_ptr<Position> _position;
+        std::shared_ptr<Velocity> _velocity;
+
+        std::shared_ptr<Drawable::Drawable> _drawable;
+
     };
 
 }

@@ -29,6 +29,14 @@ namespace Model {
          */
         void addEntity(std::shared_ptr<Entity> entity);
 
+        template<class Archive>
+        void serialize(Archive & ar)
+        {
+            ar(
+                    CEREAL_NVP(_entities)
+            );
+        }
+
     private:
 
         Physics::Rule _rule;
