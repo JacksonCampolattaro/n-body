@@ -26,12 +26,18 @@ namespace Model {
 
     public:
 
+        Entity();
+
+        Entity* setPosition(Position position);
+
+        Entity* setVelocity(Position position);
+
         template<class Archive>
         void serialize(Archive & ar)
         {
             ar(
-                    CEREAL_NVP(_position),
-                    CEREAL_NVP(_velocity)
+                    cereal::make_nvp("position", _position),
+                    cereal::make_nvp("velocity", _velocity)
             );
 
         }
