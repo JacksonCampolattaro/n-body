@@ -16,7 +16,6 @@ namespace Model {
      * @brief A class tying together the aspects that describe an object.
      *
      * TODO
-     *
      */
     class Entity {
 

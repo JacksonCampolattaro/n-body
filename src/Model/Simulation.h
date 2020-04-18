@@ -31,7 +31,8 @@ namespace Model {
 
     private:
 
-        std::vector<Entity> _entities;
+        std::vector<std::shared_ptr<Entity>> _entities;
+
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;
     };
