@@ -44,6 +44,8 @@ namespace Model {
 
     private:
 
+        friend class Simulation;
+
         std::shared_ptr<Position> _position;
         std::shared_ptr<Velocity> _velocity;
 

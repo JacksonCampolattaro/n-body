@@ -9,6 +9,7 @@
 #include "Velocity.h"
 #include "Entity.h"
 #include "Physics/Rule.h"
+#include "../Controller/Logger.h"
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/xml.hpp>
