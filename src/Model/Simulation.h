@@ -38,7 +38,7 @@ namespace Model {
         void serialize(Archive & ar)
         {
             ar(
-                    CEREAL_NVP(_entities)
+                    cereal::make_nvp("entities", _entities)
             );
         }
 
