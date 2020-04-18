@@ -3,6 +3,9 @@
 //
 
 #include "Application.h"
+#include "../Model/Simulation.h"
+#include "HeadlessController.h"
+#include <giomm/notification.h>
 
 Controller::Application::Application() :
         Gtk::Application {
@@ -42,6 +45,14 @@ Controller::Application::Application() :
                           '\0',
                           "Runs the program with only a visualization and no interactivity"
     );
+
+    // TODO: Temporary solution for loading a simulation file
+    add_main_option_entry(OptionType::OPTION_TYPE_FILENAME,
+                          "file",
+                          'f',
+                          "Set the file path to load a simulation from",
+                          "FILEPATH"
+    );
 }
 
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
@@ -59,15 +70,16 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         Logger::setVerbosity(verbosity);
 
     // Attach a log file according to the logfile flag
-    if (std::string filepath; options->lookup_value("logfile", filepath))
-        Logger::attachFile(filepath);
+    if (std::string logfilePath; options->lookup_value("logfile", logfilePath))
+        Logger::attachFile(logfilePath);
 
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
         spdlog::info("Program was run in headless mode");
         spdlog::info("Headless mode is not yet implemented");
-        spdlog::info("Exiting");
-        return Gtk::Application::on_command_line(command_line);
+
+        _controller = std::make_shared<Controller>(HeadlessController());
+
     }
 
     // Run the program in viewer mode if that flag was set
@@ -82,42 +94,34 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::debug("Adding window to application");
         add_window(*window);
         window->show();
-/*
-        // Create the builder
-        spdlog::debug("Loading interface from a file");
-        auto _builder = Gtk::Builder::create_from_file("../../viewport.glade");
-
-        // Retrieving the window
-        spdlog::debug("Retrieving window from builder");
-        Gtk::Window* window;
-        _builder->get_widget("window", window);
-
-        // Default to running the program in interactive mode
-        spdlog::debug("Adding window to application");
-        add_window(*window);
-        window->show();*/
 
         // Run the program itself
         spdlog::debug("Running the program");
-        activate();
-        return Gtk::Application::on_command_line(command_line);
     }
 
-    spdlog::info("Program was run in interactive mode");
+    // TODO Temporary
+    // Attach a simulation file according to the file flag
+    std::string filepath;
+    if (options->lookup_value("file", filepath)) {
+        _controller->openSimulation(filepath);
+    }
 
-    // Create the builder
-    spdlog::debug("Loading interface from a file");
-    auto _builder = Gtk::Builder::create_from_file("../../interface.glade");
-
-    // Retrieving the window
-    spdlog::debug("Retrieving window from builder");
-    Gtk::Window* window;
-    _builder->get_widget("window", window);
-
-    // Default to running the program in interactive mode
-    spdlog::debug("Adding window to application");
-    add_window(*window);
-    window->show();
+    // TODO Temporarily disabling interactive mode
+//    spdlog::info("Program was run in interactive mode");
+//
+//    // Create the builder
+//    spdlog::debug("Loading interface from a file");
+//    auto _builder = Gtk::Builder::create_from_file("../../interface.glade");
+//
+//    // Retrieving the window
+//    spdlog::debug("Retrieving window from builder");
+//    Gtk::Window* window;
+//    _builder->get_widget("window", window);
+//
+//    // Default to running the program in interactive mode
+//    spdlog::debug("Adding window to application");
+//    add_window(*window);
+//    window->show();
 
     // Run the program itself
     spdlog::debug("Running the program");
@@ -127,4 +131,9 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 void Controller::Application::on_activate() {
     Gtk::Application::on_activate();
+}
+
+void Controller::Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
+
+    spdlog::trace("on_open invoked");
 }
