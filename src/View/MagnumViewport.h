@@ -7,6 +7,8 @@
 
 #include "../Controller/Logger.h"
 
+#include <memory.h>
+
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
@@ -20,7 +22,9 @@
 
 namespace View {
 
-    using namespace Magnum;
+    typedef Magnum::SceneGraph::Object<Magnum::SceneGraph::MatrixTransformation3D> Object3D;
+    typedef Magnum::SceneGraph::Scene<Magnum::SceneGraph::MatrixTransformation3D> Scene3D;
+
 
     class MagnumViewport : public Gtk::GLArea {
 
@@ -36,8 +40,7 @@ namespace View {
         void onResize(int width, int height);
         void onUnrealize();
 
-        Platform::GLContext _context;
-
+        Magnum::Platform::GLContext _context;
     };
 
 }

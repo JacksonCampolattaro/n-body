@@ -12,6 +12,8 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 find_package(Magnum REQUIRED
     GL
     SceneGraph
+    MeshTools
+    Shaders
     )
 
 if(MAGNUM_TARGET_GLES AND NOT MAGNUM_TARGET_DESKTOP_GLES)
@@ -35,6 +37,9 @@ add_executable(${CMAKE_PROJECT_NAME}
     Controller/Logger.cpp Controller/Logger.h
     Controller/Application.cpp Controller/Application.h
 
+    Model/Position.cpp Model/Position.h
+    Model/Velocity.cpp Model/Velocity.h
+
     View/Builder.cpp View/Builder.h
     View/MagnumViewport.cpp View/MagnumViewport.h
     View/ViewerWindow.cpp View/ViewerWindow.h
@@ -46,4 +51,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     Magnum::GL
     Magnum::Magnum
     Magnum::SceneGraph
+    Magnum::MeshTools
+    Magnum::Shaders
     )
