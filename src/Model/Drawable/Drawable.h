@@ -5,12 +5,26 @@
 #ifndef N_BODY_DRAWABLE_H
 #define N_BODY_DRAWABLE_H
 
-namespace Drawable {
+#include "../Position.h"
 
-    // TODO
-    class Drawable {
+#include <memory>
 
-    };
+namespace Model {
+
+    namespace Drawable {
+
+        // TODO
+        class Drawable {
+
+        public:
+
+        protected:
+
+            std::shared_ptr<Position> _position;
+
+        };
+
+    }
 
 }
 
