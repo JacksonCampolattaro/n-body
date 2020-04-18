@@ -10,6 +10,9 @@
 #include "Drawable/Drawable.h"
 
 #include <cereal/cereal.hpp>
+#include <cereal/archives/xml.hpp>
+#include <cereal/types/memory.hpp>
+
 #include <memory>
 
 namespace Model {

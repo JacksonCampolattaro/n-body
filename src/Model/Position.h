@@ -6,6 +6,7 @@
 #define N_BODY_POSITION_H
 
 #include <cereal/cereal.hpp>
+#include <cereal/archives/xml.hpp>
 #include <glm/vec3.hpp>
 
 namespace Model {
