@@ -4,6 +4,9 @@
 
 #include "MagnumViewport.h"
 
+using namespace Magnum;
+using namespace Math::Literals;
+
 View::MagnumViewport::MagnumViewport() :
     Gtk::GLArea(),
     _context(NoCreate) {
@@ -21,6 +24,7 @@ View::MagnumViewport::MagnumViewport() :
     signal_render().connect(sigc::mem_fun(this, &MagnumViewport::onRender));
     signal_resize().connect(sigc::mem_fun(this, &MagnumViewport::onResize));
     signal_unrealize().connect(sigc::mem_fun(this, &MagnumViewport::onUnrealize));
+
 }
 
 View::MagnumViewport::~MagnumViewport() {}
@@ -32,6 +36,7 @@ void View::MagnumViewport::onRealize() {
     // Make the OpenGL context current, and then configure it
     make_current();
     _context.create();
+
 }
 
 bool View::MagnumViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
@@ -51,9 +56,6 @@ bool View::MagnumViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context)
 
     // Clear
     framebuffer.clear(GL::FramebufferClear::Color);
-
-    // Rendering
-    // TODO
 
     // Undo Magnum's changes to the graphics state
     Magnum::GL::Context::current().resetState(GL::Context::State::EnterExternal);;
