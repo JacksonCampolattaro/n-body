@@ -5,10 +5,15 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
+#include "Position.h"
+
+#include <vector>
+
 namespace Model {
 
     class Simulation {
 
+        std::vector<Position> _positions;
     };
 
 }
