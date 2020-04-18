@@ -43,6 +43,7 @@ add_executable(${CMAKE_PROJECT_NAME}
     Model/Position.cpp Model/Position.h
     Model/Velocity.cpp Model/Velocity.h
     Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
+    Model/Physics/Physics.h
 
     View/Builder.cpp View/Builder.h
     View/MagnumViewport.cpp View/MagnumViewport.h
