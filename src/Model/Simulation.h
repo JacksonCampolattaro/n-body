@@ -18,12 +18,15 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace Model {
 
     class Simulation {
 
     public:
+
+        Simulation() = default;
 
         /**
          * @brief Adds a new entity to the simulation

@@ -19,6 +19,8 @@ namespace Model {
         Position(float x, float y, float z) : glm::vec3(x, y, z){};
         Position(glm::vec3 vector) : glm::vec3(vector){};
 
+        std::string toString();
+
         template<class Archive>
         void serialize(Archive & ar)
         {
