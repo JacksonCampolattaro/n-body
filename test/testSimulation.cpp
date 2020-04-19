@@ -12,6 +12,30 @@
 
 using namespace Model;
 
+TEST_CASE("Converting to string with no entities", "[Simulation]") {
+
+    auto simulation = Simulation();
+
+    std::string expected =
+            "[ Simulation \n"
+            "]";
+
+    CHECK(simulation.toString() == expected);
+}
+
+TEST_CASE("Converting to string with a single default entity", "[Simulation]") {
+
+    auto simulation = Simulation();
+    simulation.addEntity(Entity());
+
+    std::string expected =
+            "[ Simulation \n"
+            "[ entity: (0.000000, 0.000000, 0.000000) <0.000000, 0.000000, 0.000000> ]\n"
+            "]";
+
+    CHECK(simulation.toString() == expected);
+}
+
 TEST_CASE("Serialization with no entities", "[Simulation]") {
 
     auto simulation = Simulation();
@@ -33,7 +57,6 @@ TEST_CASE("Serialization with no entities", "[Simulation]") {
 
     CHECK(stream.str() == expected);
 }
-/*
 
 TEST_CASE("Serialization with a single default entity", "[Simulation]") {
 
@@ -94,31 +117,16 @@ TEST_CASE("Serialization with a single simple entity", "[Simulation]") {
             "\t<value0>\n"
             "\t\t<entities size=\"dynamic\">\n"
             "\t\t\t<value0>\n"
-            "\t\t\t\t<ptr_wrapper>\n"
-            "\t\t\t\t\t<id>2147483649</id>\n"
-            "\t\t\t\t\t<data>\n"
-            "\t\t\t\t\t\t<position>\n"
-            "\t\t\t\t\t\t\t<ptr_wrapper>\n"
-            "\t\t\t\t\t\t\t\t<id>2147483650</id>\n"
-            "\t\t\t\t\t\t\t\t<data>\n"
-            "\t\t\t\t\t\t\t\t\t<x>1</x>\n"
-            "\t\t\t\t\t\t\t\t\t<y>2</y>\n"
-            "\t\t\t\t\t\t\t\t\t<z>3</z>\n"
-            "\t\t\t\t\t\t\t\t</data>\n"
-            "\t\t\t\t\t\t\t</ptr_wrapper>\n"
-            "\t\t\t\t\t\t</position>\n"
-            "\t\t\t\t\t\t<velocity>\n"
-            "\t\t\t\t\t\t\t<ptr_wrapper>\n"
-            "\t\t\t\t\t\t\t\t<id>2147483651</id>\n"
-            "\t\t\t\t\t\t\t\t<data>\n"
-            "\t\t\t\t\t\t\t\t\t<Δx>4</Δx>\n"
-            "\t\t\t\t\t\t\t\t\t<Δy>5</Δy>\n"
-            "\t\t\t\t\t\t\t\t\t<Δz>6</Δz>\n"
-            "\t\t\t\t\t\t\t\t</data>\n"
-            "\t\t\t\t\t\t\t</ptr_wrapper>\n"
-            "\t\t\t\t\t\t</velocity>\n"
-            "\t\t\t\t\t</data>\n"
-            "\t\t\t\t</ptr_wrapper>\n"
+            "\t\t\t\t<position>\n"
+            "\t\t\t\t\t<x>1</x>\n"
+            "\t\t\t\t\t<y>2</y>\n"
+            "\t\t\t\t\t<z>3</z>\n"
+            "\t\t\t\t</position>\n"
+            "\t\t\t\t<velocity>\n"
+            "\t\t\t\t\t<x>1</x>\n"
+            "\t\t\t\t\t<y>2</y>\n"
+            "\t\t\t\t\t<z>3</z>\n"
+            "\t\t\t\t</velocity>\n"
             "\t\t\t</value0>\n"
             "\t\t</entities>\n"
             "\t</value0>\n"
@@ -127,4 +135,3 @@ TEST_CASE("Serialization with a single simple entity", "[Simulation]") {
 
     CHECK(stream.str() == expected);
 }
-*/

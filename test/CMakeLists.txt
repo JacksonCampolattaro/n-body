@@ -1,7 +1,7 @@
 
 # Set C++ version
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-g -O0 -Wall --coverage")
 
 add_executable(test
 

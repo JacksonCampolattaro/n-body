@@ -11,10 +11,10 @@ void Model::Simulation::addEntity(const Entity &entity) {
     _entities.push_back(entity);
 
     _positions.emplace_back(*_entities.back()._position);
-    _entities.back()._position.reset(&_positions.back());
+    _entities.back()._position = std::make_shared<Position>(_positions.back());
 
     _velocities.emplace_back(*_entities.back()._position);
-    _entities.back()._velocity.reset(&_velocities.back());
+    _entities.back()._velocity = std::make_shared<Velocity>(_velocities.back());
 }
 
 std::string Model::Simulation::toString() {
