@@ -36,7 +36,7 @@ namespace Model {
          *
          * @param entity The entity to be added
          */
-        void addEntity(std::shared_ptr<Entity> entity);
+        void addEntity(const Entity &entity);
 
         template<class Archive>
         void serialize(Archive & ar)
@@ -50,7 +50,7 @@ namespace Model {
 
         Physics::Rule _rule;
 
-        std::vector<std::shared_ptr<Entity>> _entities;
+        std::vector<Entity> _entities;
 
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;
