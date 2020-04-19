@@ -16,3 +16,19 @@ void Model::Simulation::addEntity(const Entity &entity) {
     _velocities.emplace_back(*_entities.back()._position);
     _entities.back()._velocity.reset(&_velocities.back());
 }
+
+std::string Model::Simulation::toString() {
+
+    std::stringstream stream;
+
+    stream << "[ Simulation \n";
+
+    for (auto entity : _entities) {
+
+        stream << entity.toString() << "\n";
+    }
+
+    stream << "]";
+
+    return stream.str();
+}
