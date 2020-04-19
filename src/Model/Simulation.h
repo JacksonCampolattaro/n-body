@@ -38,6 +38,8 @@ namespace Model {
          */
         void addEntity(const Entity &entity);
 
+        std::string toString();
+
         template<class Archive>
         void serialize(Archive & ar)
         {
