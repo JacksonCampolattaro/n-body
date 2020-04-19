@@ -4,16 +4,16 @@
 
 #include "Entity.h"
 
-Model::Entity::Entity() {}
+Model::Entity::Entity() :
+        _position(std::make_shared<Position>(0, 0, 0)),
+        _velocity(std::make_shared<Velocity>(0, 0, 0)) {}
 
-Model::Entity *Model::Entity::setPosition(Model::Position position) {
+void Model::Entity::setPosition(const Position &position) {
     _position = std::make_shared<Model::Position>(position);
-    return this;
 }
 
-Model::Entity *Model::Entity::setVelocity(Model::Velocity velocity) {
+void Model::Entity::setVelocity(const Velocity &velocity) {
     _velocity = std::make_shared<Model::Velocity>(velocity);
-    return this;
 }
 
 std::string Model::Entity::toString() {

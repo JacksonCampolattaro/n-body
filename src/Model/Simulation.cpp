@@ -4,19 +4,15 @@
 
 #include "Simulation.h"
 
-void Model::Simulation::addEntity(std::shared_ptr<Entity> entity) {
+void Model::Simulation::addEntity(const Entity &entity) {
 
     spdlog::debug("Adding an entity to the simulation");
 
     _entities.push_back(entity);
 
-    if (nullptr != entity->_position) {
-        _positions.push_back(*entity->_position);
-        entity->_position.reset(&_positions.back());
-    }
+    _positions.emplace_back(*_entities.back()._position);
+    _entities.back()._position.reset(&_positions.back());
 
-    if (nullptr != entity->_velocity) {
-        _velocities.push_back(*entity->_velocity);
-        entity->_velocity.reset(&_velocities.back());
-    }
+    _velocities.emplace_back(*_entities.back()._position);
+    _entities.back()._velocity.reset(&_velocities.back());
 }

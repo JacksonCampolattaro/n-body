@@ -20,7 +20,10 @@ namespace Model {
     /**
      * @brief A class tying together the aspects that describe an object.
      *
-     * TODO
+     * This class provides easy access to the components that make up an object in the simulation.
+     * Notably, it contains none of the components directly. For cache optimization reasons,
+     * the components themselves are stored in contiguous collections.
+     * This class contains smart pointers to its (optional) aspects.
      */
     class Entity {
 
@@ -28,19 +31,23 @@ namespace Model {
 
         Entity();
 
-        Entity* setPosition(Position position);
+        void setPosition(const Position &position);
 
-        Entity* setVelocity(Velocity velocity);
+        void setVelocity(const Velocity &velocity);
 
         std::string toString();
 
         template<class Archive>
-        void serialize(Archive & ar)
-        {
+        void serialize(Archive & ar) {
+
+            Position position = *_position;
+            Position velocity = *_velocity;
             ar(
-                    cereal::make_nvp("position", _position),
-                    cereal::make_nvp("velocity", _velocity)
+                    cereal::make_nvp("position", position),
+                    cereal::make_nvp("velocity", velocity)
             );
+            *_position = position;
+            *_velocity = velocity;
 
         }
 
