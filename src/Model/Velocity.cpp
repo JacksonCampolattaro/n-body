@@ -3,3 +3,7 @@
 //
 
 #include "Velocity.h"
+
+std::string Model::Velocity::toString() {
+    return "<" + std::to_string(this->x) + ", " + std::to_string(this->y) + ", " + std::to_string(this->z) + ">";
+}
