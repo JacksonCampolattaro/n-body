@@ -9,7 +9,9 @@
 
 namespace View {
 
-    class InteractiveView : View {
+    class InteractiveView : public View {
+    public:
+        InteractiveView();
 
     };
 

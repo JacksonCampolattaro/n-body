@@ -9,7 +9,9 @@
 
 namespace View {
 
-    class HeadlessView : View {
+    class HeadlessView : public View {
+    public:
+        HeadlessView();
 
     };
 

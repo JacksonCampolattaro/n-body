@@ -81,51 +81,25 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
         spdlog::info("Program was run in headless mode");
-        spdlog::info("Headless mode is not yet implemented");
 
-        _view = std::make_shared<View::HeadlessView>();
+        spdlog::info("Creating a headless view");
+        _view = std::make_shared<View::View>(View::HeadlessView());
     }
 
     // Run the program in viewer mode if that flag was set
     if (options->contains("viewer")) {
         spdlog::info("Program was run in viewer mode");
 
-//        // Create a window
-//        spdlog::debug("Creating a window with a viewport");
-//        auto window = new View::ViewerWindow();
-//
-//        // Attach the window to this application
-//        spdlog::debug("Adding window to application");
-//        add_window(*window);
-//        window->show();
-//
-//        // Run the program itself
-//        spdlog::debug("Running the program");
+        spdlog::info("Creating a viewer view");
+        _view = std::make_shared<View::View>(View::ViewerView());
     }
 
-    // TODO Temporary
-    // Attach a simulation file according to the file flag
-    std::string filepath;
-    if (options->lookup_value("file", filepath)) {
-        _controller->saveSimulation(filepath);
-    }
+    if (!_view) {
+        spdlog::info("Program was run in interactive mode");
 
-    // TODO Temporarily disabling interactive mode
-//    spdlog::info("Program was run in interactive mode");
-//
-//    // Create the builder
-//    spdlog::debug("Loading interface from a file");
-//    auto _builder = Gtk::Builder::create_from_file("../../interface.glade");
-//
-//    // Retrieving the window
-//    spdlog::debug("Retrieving window from builder");
-//    Gtk::Window* window;
-//    _builder->get_widget("window", window);
-//
-//    // Default to running the program in interactive mode
-//    spdlog::debug("Adding window to application");
-//    add_window(*window);
-//    window->show();
+        spdlog::info("Creating an interactive view");
+        _view = std::make_shared<View::View>(View::InteractiveView());
+    }
 
     // Run the program itself
     spdlog::debug("Running the program");

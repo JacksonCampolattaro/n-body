@@ -9,7 +9,9 @@
 
 namespace View {
 
-    class ViewerView : View {
+    class ViewerView : public View {
+    public:
+        ViewerView();
 
     };
 
