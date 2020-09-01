@@ -7,12 +7,15 @@
 
 #include "View.h"
 
+#include "ViewerWindow.h"
+
 namespace View {
 
     class InteractiveView : public View {
     public:
         InteractiveView();
 
+        void attach_application(Controller::Application *application) override;
     };
 
 }

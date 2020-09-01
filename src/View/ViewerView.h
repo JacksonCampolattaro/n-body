@@ -7,11 +7,18 @@
 
 #include "View.h"
 
+
+namespace Controller {
+    class Application;
+}
+
 namespace View {
 
     class ViewerView : public View {
     public:
         ViewerView();
+
+        void attach_application(Controller::Application *application) override;
 
     };
 
