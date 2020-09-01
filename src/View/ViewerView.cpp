@@ -3,3 +3,5 @@
 //
 
 #include "ViewerView.h"
+
+View::ViewerView::ViewerView() {}

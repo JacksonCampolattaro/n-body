@@ -3,3 +3,5 @@
 //
 
 #include "InteractiveView.h"
+
+View::InteractiveView::InteractiveView() {}

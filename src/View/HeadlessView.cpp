@@ -3,3 +3,5 @@
 //
 
 #include "HeadlessView.h"
+
+View::HeadlessView::HeadlessView() {}
