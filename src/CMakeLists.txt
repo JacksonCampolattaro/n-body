@@ -36,7 +36,6 @@ add_executable(${CMAKE_PROJECT_NAME}
         main.cpp
 
         Controller/Controller.cpp Controller/Controller.h
-        Controller/HeadlessController.cpp Controller/HeadlessController.h
         Controller/Logger.cpp Controller/Logger.h
         Controller/Application.cpp Controller/Application.h
 
@@ -47,11 +46,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Velocity.cpp Model/Velocity.h
 
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
-
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
 
-        View/Builder.cpp View/Builder.h
         View/MagnumViewport.cpp View/MagnumViewport.h
         View/ViewerWindow.cpp View/ViewerWindow.h
         )
