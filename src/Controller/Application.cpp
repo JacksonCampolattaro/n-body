@@ -86,17 +86,17 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (options->contains("viewer")) {
         spdlog::info("Program was run in viewer mode");
 
-        // Create a window
-        spdlog::debug("Creating a window with a viewport");
-        auto window = new View::ViewerWindow();
-
-        // Attach the window to this application
-        spdlog::debug("Adding window to application");
-        add_window(*window);
-        window->show();
-
-        // Run the program itself
-        spdlog::debug("Running the program");
+//        // Create a window
+//        spdlog::debug("Creating a window with a viewport");
+//        auto window = new View::ViewerWindow();
+//
+//        // Attach the window to this application
+//        spdlog::debug("Adding window to application");
+//        add_window(*window);
+//        window->show();
+//
+//        // Run the program itself
+//        spdlog::debug("Running the program");
     }
 
     // TODO Temporary

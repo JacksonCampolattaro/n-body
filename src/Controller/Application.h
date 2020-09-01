@@ -6,7 +6,7 @@
 #define N_BODY_APPLICATION_H
 
 #include "Logger.h"
-#include "../View/ViewerWindow.h"
+#include "../View/View.h"
 #include "Controller.h"
 
 #include <gtkmm/application.h>
@@ -42,11 +42,12 @@ namespace Controller {
 
         void on_activate() override;
 
-        virtual void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
+        virtual void on_open(const type_vec_files &files, const Glib::ustring &hint) override;
 
     private:
 
         std::shared_ptr<Controller> _controller;
+        std::shared_ptr<View::View> _view;
 
     };
 

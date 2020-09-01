@@ -17,7 +17,7 @@ void Controller::Controller::saveSimulation(const std::string &filepath) {
     spdlog::debug("Attempting to save a simulation at file path: " + filepath);
 
     // TODO Temporarily adding a few Entities to the simulation
-    _simulation.addEntity(std::make_shared<Model::Entity>(Model::Entity()));
+//    _simulation.addEntity(std::make_shared<Model::Entity>(Model::Entity()));
 
     std::ofstream out(filepath);
 
