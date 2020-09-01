@@ -5,3 +5,7 @@
 #include "ViewerView.h"
 
 View::ViewerView::ViewerView() {}
+
+void View::ViewerView::attach_application(Controller::Application *application) {
+
+}
