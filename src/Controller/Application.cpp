@@ -3,8 +3,8 @@
 //
 
 #include "Application.h"
+
 #include "../Model/Simulation.h"
-#include "HeadlessController.h"
 #include <giomm/notification.h>
 
 Controller::Application::Application() :
@@ -78,7 +78,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in headless mode");
         spdlog::info("Headless mode is not yet implemented");
 
-        _controller = std::make_shared<Controller>(HeadlessController());
+        _controller = std::make_shared<Controller>();
 
     }
 
