@@ -51,6 +51,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         View/View.h
         View/HeadlessView.cpp View/HeadlessView.h
+        View/ViewerView.cpp View/ViewerView.h
+        View/InteractiveView.cpp View/InteractiveView.h
 
         View/MagnumViewport.cpp View/MagnumViewport.h
         View/ViewerWindow.cpp View/ViewerWindow.h
