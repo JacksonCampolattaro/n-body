@@ -49,6 +49,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
 
+        View/View.h
+        View/HeadlessView.cpp View/HeadlessView.h
+
         View/MagnumViewport.cpp View/MagnumViewport.h
         View/ViewerWindow.cpp View/ViewerWindow.h
         )
