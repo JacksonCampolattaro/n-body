@@ -5,6 +5,11 @@
 #include "Application.h"
 
 #include "../Model/Simulation.h"
+
+#include "../View/HeadlessView.h"
+#include "../View/ViewerView.h"
+#include "../View/InteractiveView.h"
+
 #include <giomm/notification.h>
 
 Controller::Application::Application() :
@@ -78,8 +83,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in headless mode");
         spdlog::info("Headless mode is not yet implemented");
 
-        _controller = std::make_shared<Controller>();
-
+        _view = std::make_shared<View::HeadlessView>();
     }
 
     // Run the program in viewer mode if that flag was set
