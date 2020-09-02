@@ -6,7 +6,7 @@
 
 #include "../Controller/Application.h"
 
-View::ViewerView::ViewerView(Controller::Application &application) :
+View::ViewerView::ViewerView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation) :
         _window(),
         _view() {
 

@@ -6,7 +6,7 @@
 
 #include "../Controller/Application.h"
 
-View::InteractiveView::InteractiveView(Controller::Application &application) :
+View::InteractiveView::InteractiveView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation) :
         _window(),
         _vbox(Gtk::Orientation::ORIENTATION_VERTICAL),
         _hbox(Gtk::Orientation::ORIENTATION_HORIZONTAL),

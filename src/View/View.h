@@ -5,6 +5,8 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
+#include "../Model/Simulation.h"
+
 #include <spdlog/spdlog.h>
 
 namespace Controller {
