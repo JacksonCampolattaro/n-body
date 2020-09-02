@@ -108,11 +108,24 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     return Gtk::Application::on_command_line(command_line);
 }
 
-void Controller::Application::on_activate() {
-    Gtk::Application::on_activate();
-}
-
 void Controller::Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
 
     spdlog::trace("on_open invoked");
+}
+
+void Controller::Application::loadSimulation(const std::string &filepath) {
+
+    spdlog::debug("Attempting to load a simulation from file path: " + filepath);
+    spdlog::error("unimplemented");
+}
+
+void Controller::Application::saveSimulation(const std::string &filepath) {
+
+    spdlog::debug("Attempting to save a simulation at file path: " + filepath);
+
+    std::ofstream out(filepath);
+    cereal::XMLOutputArchive archive(out);
+
+    spdlog::error("unimplemented");
+
 }

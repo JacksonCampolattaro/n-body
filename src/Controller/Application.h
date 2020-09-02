@@ -36,11 +36,12 @@ namespace Controller {
          */
         Application();
 
+        void loadSimulation(const std::string& filepath);
+        void saveSimulation(const std::string& filepath);
+
     protected:
 
         int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
-
-        void on_activate() override;
 
         void on_open(const type_vec_files &files, const Glib::ustring &hint) override;
 
