@@ -17,6 +17,8 @@ View::InteractiveView::InteractiveView(Controller::Application &application, std
     _window.add(_vbox);
 
     _viewport.attach_simulation(simulation);
+    _button_advance.signal_clicked().connect(sigc::mem_fun(simulation.get(), &Model::Simulation::update));
+    _button_advance.signal_clicked().connect(sigc::mem_fun(&_viewport, &SimulationViewport::queue_render));
     _vbox.pack_start(_viewport);
 
     _vbox.pack_start(_hbox, false, true);
