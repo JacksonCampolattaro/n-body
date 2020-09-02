@@ -16,6 +16,12 @@ void Model::Simulation::addEntity(const Entity &entity) {
     _velocities.emplace_back(*_entities.back()._velocity);
     _entities.back()._velocity = std::make_shared<Velocity>(_velocities.back());
 
+    if (_entities.back()._drawable) {
+        _drawables.emplace_back(_entities.back()._drawable);
+        _entities.back()._drawable = _drawables.back();
+        _drawables.back()->_position = _entities.back()._position;
+    }
+
     spdlog::trace(_entities.back().toString());
 }
 

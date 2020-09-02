@@ -45,6 +45,7 @@ namespace Model {
 
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;
+        std::vector<std::shared_ptr<Drawable::Drawable>> _drawables;
     };
 
 }

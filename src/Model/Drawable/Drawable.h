@@ -7,21 +7,21 @@
 
 #include "../Position.h"
 
+#include <Magnum/Magnum.h>
+#include <Magnum/Math/Color.h>
+
 #include <memory>
+
+using namespace Magnum;
 
 namespace Model {
 
     namespace Drawable {
 
-        // TODO
         class Drawable {
-
         public:
 
-        protected:
-
             std::shared_ptr<Position> _position;
-
         };
 
     }

@@ -35,6 +35,8 @@ namespace Model {
 
         void setVelocity(const Velocity &velocity);
 
+        void setDrawable(const Drawable::Drawable &drawable);
+
         std::string toString();
 
         template<class Archive>
@@ -57,7 +59,6 @@ namespace Model {
 
         std::shared_ptr<Position> _position;
         std::shared_ptr<Velocity> _velocity;
-
         std::shared_ptr<Drawable::Drawable> _drawable;
 
     };

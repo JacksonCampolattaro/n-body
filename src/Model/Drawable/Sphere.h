@@ -11,12 +11,12 @@ namespace Model {
 
     namespace Drawable {
 
-        class Sphere : protected Drawable {
-
+        class Sphere : public Drawable {
         public:
 
-        private:
+            Sphere(Color3 color, float radius);
 
+            Color3 _color;
             float _radius;
         };
 

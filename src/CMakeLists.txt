@@ -45,6 +45,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Velocity.cpp Model/Velocity.h
 
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
+        Model/Drawable/Sphere.cpp Model/Drawable/Sphere.h
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
 
