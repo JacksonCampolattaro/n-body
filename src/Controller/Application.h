@@ -7,7 +7,6 @@
 
 #include "Logger.h"
 #include "../View/View.h"
-#include "Controller.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -47,7 +46,6 @@ namespace Controller {
 
     private:
 
-        std::shared_ptr<Controller> _controller;
         std::shared_ptr<View::View> _view;
 
 
