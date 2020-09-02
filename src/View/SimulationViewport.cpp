@@ -1,15 +1,15 @@
 //
-// Created by jackcamp on 2/4/20.
+// Created by jackcamp on 9/1/20.
 //
 
-#include "MagnumViewport.h"
+#include "SimulationViewport.h"
 
 using namespace Magnum;
 using namespace Math::Literals;
 
-View::MagnumViewport::MagnumViewport() :
-    Gtk::GLArea(),
-    _context(NoCreate) {
+View::SimulationViewport::SimulationViewport() :
+        Gtk::GLArea(),
+        _context(NoCreate) {
 
     spdlog::trace("MagnumViewport constructor invoked");
 
@@ -20,28 +20,30 @@ View::MagnumViewport::MagnumViewport() :
     set_required_version(4, 5);
 
     // Connecting signals to their respective handlers
-    signal_realize().connect(sigc::mem_fun(this, &MagnumViewport::onRealize));
-    signal_render().connect(sigc::mem_fun(this, &MagnumViewport::onRender));
-    signal_resize().connect(sigc::mem_fun(this, &MagnumViewport::onResize));
-    signal_unrealize().connect(sigc::mem_fun(this, &MagnumViewport::onUnrealize));
+    signal_realize().connect(sigc::mem_fun(this, &SimulationViewport::onRealize));
+    signal_render().connect(sigc::mem_fun(this, &SimulationViewport::onRender));
+    signal_resize().connect(sigc::mem_fun(this, &SimulationViewport::onResize));
+    signal_unrealize().connect(sigc::mem_fun(this, &SimulationViewport::onUnrealize));
 
 }
 
-View::MagnumViewport::~MagnumViewport() {}
+void View::SimulationViewport::attach_simulation(std::shared_ptr<Model::Simulation> simulation) {
 
-void View::MagnumViewport::onRealize() {
+    // TODO
+}
 
-    spdlog::trace("MagnumViewport onRealize invoked");
+void View::SimulationViewport::onRealize() {
+
+    spdlog::trace("SimulationViewport onRealize invoked");
 
     // Make the OpenGL context current, and then configure it
     make_current();
     _context.create();
-
 }
 
-bool View::MagnumViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
+bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
 
-    spdlog::trace("MagnumViewport onRender invoked");
+    spdlog::trace("SimulationViewport onRender invoked");
 
     // Reset state, so Gtkmm's defaults won't interfere with Magnum
     GL::Context::current().resetState(GL::Context::State::ExitExternal);
@@ -62,16 +64,16 @@ bool View::MagnumViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context)
     return false;
 }
 
-void View::MagnumViewport::onResize(int width, int height) {
+void View::SimulationViewport::onResize(int width, int height) {
 
-    spdlog::trace("MagnumViewport onResize invoked");
+    spdlog::trace("SimulationViewport onResize invoked");
 
     // TODO
 }
 
-void View::MagnumViewport::onUnrealize() {
+void View::SimulationViewport::onUnrealize() {
 
-    spdlog::trace("MagnumViewport onUnrealize invoked");
+    spdlog::trace("SimulationViewport onUnrealize invoked");
 
     // TODO
 }
