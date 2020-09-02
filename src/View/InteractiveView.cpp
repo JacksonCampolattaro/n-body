@@ -10,13 +10,14 @@ View::InteractiveView::InteractiveView(Controller::Application &application, std
         _window(),
         _vbox(Gtk::Orientation::ORIENTATION_VERTICAL),
         _hbox(Gtk::Orientation::ORIENTATION_HORIZONTAL),
-        _view(),
+        _viewport(),
         _button_advance(">"),
         _button_run(">>>") {
 
     _window.add(_vbox);
 
-    _vbox.pack_start(_view);
+    _viewport.attach_simulation(simulation);
+    _vbox.pack_start(_viewport);
 
     _vbox.pack_start(_hbox, false, true);
 
@@ -26,7 +27,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application, std
 
     _window.show();
     _vbox.show();
-    _view.show();
+    _viewport.show();
     _hbox.show();
     _button_advance.show();
     _button_run.show();

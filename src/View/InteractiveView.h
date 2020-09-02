@@ -23,7 +23,7 @@ namespace View {
 
         Gtk::Window _window;
         Gtk::Box _vbox, _hbox;
-        SimulationViewport _view;
+        SimulationViewport _viewport;
         Gtk::Button _button_advance, _button_run;
     };
 

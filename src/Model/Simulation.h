@@ -38,20 +38,7 @@ namespace Model {
          */
         void addEntity(const Entity &entity);
 
-        std::string toString();
-
-        template<class Archive>
-        void serialize(Archive & ar)
-        {
-            ar(
-                    cereal::make_nvp("entities", _entities)
-            );
-        }
-
-    private:
-
         Physics::Rule _rule;
-
         std::vector<Entity> _entities;
 
         std::vector<Position> _positions;

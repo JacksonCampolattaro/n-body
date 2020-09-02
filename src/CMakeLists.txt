@@ -12,8 +12,8 @@ include_directories(${GTKMM_INCLUDE_DIRS})
 # Add Magnum's include files
 find_package(Magnum REQUIRED
         GL
-        SceneGraph
         MeshTools
+        Primitives
         Shaders
         )
 
@@ -61,8 +61,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::GLContext
         Magnum::GL
         Magnum::Magnum
-        Magnum::SceneGraph
         Magnum::MeshTools
+        Magnum::Primitives
         Magnum::Shaders
         spdlog::spdlog
         )
