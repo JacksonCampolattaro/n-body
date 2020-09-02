@@ -47,10 +47,6 @@ void View::SimulationViewport::onRealize() {
 
     _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
     _shader = Shaders::Phong();
-    _shader
-            .setLightPosition({7.0f, 5.0f, 2.5f})
-            .setLightColor(Color3{1.0f})
-            .setAmbientColor(Color3{0.4f});
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
@@ -84,8 +80,15 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                             35.0_degf, _aspectRatio, 0.01f, 100.0f) *
                     Matrix4::translation(Vector3::zAxis(-35.0f));
 
+            spdlog::trace(drawable->_position->toString());
+
             auto locationTransformation =
                     Matrix4::translation({drawable->_position->x, drawable->_position->y, drawable->_position->z});
+
+            _shader
+                    .setLightPosition({7.0f, 5.0f, 2.5f})
+                    .setLightColor(drawable->_color)
+                    .setAmbientColor(drawable->_color / 2);
 
             _shader
                     .setTransformationMatrix(locationTransformation)

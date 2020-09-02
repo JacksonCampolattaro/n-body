@@ -4,6 +4,6 @@
 
 #include "Velocity.h"
 
-std::string Model::Velocity::toString() {
+std::string Model::Velocity::toString() const {
     return "<" + std::to_string(this->x) + ", " + std::to_string(this->y) + ", " + std::to_string(this->z) + ">";
 }
