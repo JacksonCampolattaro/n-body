@@ -17,15 +17,18 @@ namespace Model {
     public:
 
         Position(float x, float y, float z) : glm::vec3(x, y, z){};
+
         Position(glm::vec3 vector) : glm::vec3(vector){};
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
 
         template<class Archive>
         void serialize(Archive & ar)
         {
             ar(
-                    cereal::make_nvp("x", this->x), cereal::make_nvp("y", this->y), cereal::make_nvp("z", this->z)
+                    cereal::make_nvp("x", this->x),
+                    cereal::make_nvp("y", this->y),
+                    cereal::make_nvp("z", this->z)
             );
         }
     };

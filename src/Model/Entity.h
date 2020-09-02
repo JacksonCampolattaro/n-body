@@ -31,12 +31,6 @@ namespace Model {
 
         Entity();
 
-//        void setPosition(const Position &position);
-//
-//        void setVelocity(const Velocity &velocity);
-//
-//        void setDrawable(const Drawable::Drawable &drawable);
-
         std::string toString();
 
     private:
