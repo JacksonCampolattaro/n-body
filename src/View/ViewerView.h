@@ -19,11 +19,11 @@ namespace View {
 
     class ViewerView : public View {
     public:
+
         explicit ViewerView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
         Gtk::Window _window;
-        SimulationViewport _view;
-
+        SimulationViewport _viewport;
     };
 
 }

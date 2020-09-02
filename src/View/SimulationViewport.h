@@ -12,7 +12,21 @@
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
+
 #include <Magnum/GL/Framebuffer.h>
+#include <Magnum/GL/Renderer.h>
+#include <Magnum/GL/Mesh.h>
+
+#include <Magnum/Math/Color.h>
+#include <Magnum/Math/Matrix4.h>
+
+#include <Magnum/MeshTools/Compile.h>
+#include <Magnum/Primitives/Icosphere.h>
+#include <Magnum/Shaders/Phong.h>
+#include <Magnum/Shaders/Flat.h>
+#include <Magnum/Trade/MeshData.h>
+
+using namespace Magnum;
 
 namespace View {
 
@@ -31,8 +45,16 @@ namespace View {
         void onResize(int width, int height);
         void onUnrealize();
 
-        Magnum::Platform::GLContext _context;
+        Platform::GLContext _context{NoCreate};
         std::shared_ptr<Model::Simulation> _simulation;
+
+    private:
+
+        GL::Mesh _sphereMesh{NoCreate};
+        Shaders::Phong _shader{NoCreate};
+        Matrix4 _projection;
+
+        float _aspectRatio;
     };
 
 }

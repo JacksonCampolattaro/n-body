@@ -8,10 +8,14 @@
 
 View::ViewerView::ViewerView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation) :
         _window(),
-        _view() {
+        _viewport() {
 
-    _window.add(_view);
+    _window.add(_viewport);
 
     _window.show();
-    _view.show();
+    _viewport.show();
+
+    application.add_window(_window);
+
+    _viewport.attach_simulation(simulation);
 }

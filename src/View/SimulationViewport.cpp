@@ -39,6 +39,13 @@ void View::SimulationViewport::onRealize() {
     // Make the OpenGL context current, and then configure it
     make_current();
     _context.create();
+
+    // Configure the graphics features
+    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
+    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+
+    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(1));
+    _shader = Shaders::Phong();
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
@@ -54,10 +61,21 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
 
     // Attach Magnum's framebuffer manager to the framebuffer provided by Gtkmm
     auto framebuffer =
-            GL::Framebuffer::wrap(framebufferID, {{}, {get_width(), get_height()}});
+            GL::Framebuffer::wrap(framebufferID, {{},
+                                                  {get_width(), get_height()}});
 
     // Clear
     framebuffer.clear(GL::FramebufferClear::Color);
+
+    {
+
+        _projection =
+                Matrix4::perspectiveProjection(
+                        35.0_degf, _aspectRatio, 0.01f, 100.0f) *
+                Matrix4::translation(Vector3::zAxis(-35.0f));
+
+        _shader.setProjectionMatrix(_projection).draw(_sphereMesh);
+    }
 
     // Undo Magnum's changes to the graphics state
     Magnum::GL::Context::current().resetState(GL::Context::State::EnterExternal);;
@@ -68,7 +86,7 @@ void View::SimulationViewport::onResize(int width, int height) {
 
     spdlog::trace("SimulationViewport onResize invoked");
 
-    // TODO
+    _aspectRatio = (float) width / (float) height;
 }
 
 void View::SimulationViewport::onUnrealize() {
