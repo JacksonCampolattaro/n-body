@@ -12,12 +12,6 @@ View::InteractiveView::InteractiveView() :
         _view(),
         _button("text") {
 
-}
-
-void View::InteractiveView::attach_application(Controller::Application *application) {
-
-    spdlog::debug("Creating a window with a viewport");
-
     _window.add(_box);
 
     _button.set_margin_top(5);
@@ -28,12 +22,12 @@ void View::InteractiveView::attach_application(Controller::Application *applicat
     _box.pack_start(_view);
     _box.pack_start(_button, false, true);
 
-    spdlog::debug("Adding window to application");
-    application->add_window(_window);
     _window.show();
     _box.show();
     _view.show();
     _button.show();
+}
 
-    spdlog::debug("Running the program");
+void View::InteractiveView::attach_application(Controller::Application *application) {
+    application->add_window(_window);
 }
