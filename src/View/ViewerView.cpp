@@ -10,12 +10,12 @@ View::ViewerView::ViewerView(Controller::Application &application, std::shared_p
         _window(),
         _viewport() {
 
+    _viewport.attach_drawables(
+            std::make_shared<std::vector<std::shared_ptr<Model::Drawable::Drawable>>>(simulation->_drawables));
     _window.add(_viewport);
 
     _window.show();
     _viewport.show();
 
     application.add_window(_window);
-
-    _viewport.attach_simulation(simulation);
 }

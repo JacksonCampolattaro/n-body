@@ -27,8 +27,10 @@ View::SimulationViewport::SimulationViewport() :
 
 }
 
-void View::SimulationViewport::attach_simulation(std::shared_ptr<Model::Simulation> simulation) {
-    _simulation = simulation;
+void
+View::SimulationViewport::attach_drawables(
+        std::shared_ptr<std::vector<std::shared_ptr<Model::Drawable::Drawable>>> drawables) {
+    _drawables = drawables;
 }
 
 void View::SimulationViewport::onRealize() {
@@ -70,11 +72,12 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
     // Clear
     framebuffer.clear(GL::FramebufferClear::Color);
 
-    if (_simulation) {
+    if (_drawables) {
 
         spdlog::trace("rendering simulation");
+        spdlog::trace(_drawables->size());
 
-        for (auto location : _simulation->_positions) {
+        for (auto drawable : *_drawables) {
 
             _projection =
                     Matrix4::perspectiveProjection(
@@ -82,7 +85,7 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                     Matrix4::translation(Vector3::zAxis(-35.0f));
 
             auto locationTransformation =
-                    Matrix4::translation({location.x, location.y, location.z});
+                    Matrix4::translation({drawable->_position->x, drawable->_position->y, drawable->_position->z});
 
             _shader
                     .setTransformationMatrix(locationTransformation)

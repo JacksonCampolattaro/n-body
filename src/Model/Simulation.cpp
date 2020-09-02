@@ -23,6 +23,7 @@ void Model::Simulation::addEntity(const Entity &entity) {
     }
 
     spdlog::trace(_entities.back().toString());
+    spdlog::trace(_drawables.size());
 }
 
 void Model::Simulation::update() {
