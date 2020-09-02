@@ -11,6 +11,7 @@
 #include "../View/InteractiveView.h"
 
 #include <giomm/notification.h>
+#include <fstream>
 
 Controller::Application::Application() :
         Gtk::Application {
