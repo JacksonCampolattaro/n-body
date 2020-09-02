@@ -80,10 +80,9 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                             35.0_degf, _aspectRatio, 0.01f, 100.0f) *
                     Matrix4::translation(Vector3::zAxis(-35.0f));
 
-            spdlog::trace(drawable->_position->toString());
-
+            Model::Position position = (*drawable->_positionVector)[drawable->_positionIndex];
             auto locationTransformation =
-                    Matrix4::translation({drawable->_position->x, drawable->_position->y, drawable->_position->z});
+                    Matrix4::translation({position.x, position.y, position.z});
 
             _shader
                     .setLightPosition({7.0f, 5.0f, 2.5f})

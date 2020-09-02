@@ -75,10 +75,14 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 
         // Add a few entities to the simulation
-        _simulation->addEntity({10, 0, -10}, {-1, 0, 0},
+        _simulation->addEntity({-5, 0, 0}, {0.5, 0.1, 0},
                                Model::Drawable::Sphere(Color3(0.8, 0, 0), 5.0f));
-        _simulation->addEntity({5, 0, -10}, {1, 2, 0},
-                               Model::Drawable::Sphere(Color3(0.7, 0.8, 0), 1.0f));
+        _simulation->addEntity({5, 0, 0}, {-0.5, -0.1, 0},
+                               Model::Drawable::Sphere(Color3(0, 0, 0.8), 5.0f));
+//        _simulation->addEntity({5, 0, -10}, {-1, 0, 0},
+//                               Model::Drawable::Sphere(Color3(0.8, 0, 0), 5.0f));
+//        _simulation->addEntity({-5, 0, -10}, {1, 2, 0},
+//                               Model::Drawable::Sphere(Color3(0, 0.8, 0.8), 1.0f));
     }
 
     // Only attach the console to the logger if the silent flag isn't set
