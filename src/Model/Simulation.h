@@ -38,6 +38,8 @@ namespace Model {
          */
         void addEntity(const Entity &entity);
 
+        void update();
+
         Physics::Rule _rule;
         std::vector<Entity> _entities;
 
