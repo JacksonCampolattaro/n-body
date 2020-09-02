@@ -44,8 +44,12 @@ void View::SimulationViewport::onRealize() {
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
-    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(1));
+    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
     _shader = Shaders::Phong();
+    _shader
+            .setLightPosition({7.0f, 5.0f, 2.5f})
+            .setLightColor(Color3{1.0f})
+            .setAmbientColor(Color3{0.4f});
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
