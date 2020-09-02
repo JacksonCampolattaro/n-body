@@ -17,9 +17,6 @@ namespace View {
 
     public:
 
-        virtual void attach_application(Controller::Application *application) = 0;
-
-
     };
 
 }

@@ -17,16 +17,14 @@ namespace View {
 
     class InteractiveView : public View {
     public:
-        InteractiveView();
-
-        void attach_application(Controller::Application *application) override;
+        explicit InteractiveView(Controller::Application &application);
 
     private:
 
         Gtk::Window _window;
-        Gtk::Box _box;
+        Gtk::Box _vbox, _hbox;
         MagnumViewport _view;
-        Gtk::Button _button;
+        Gtk::Button _button_advance, _button_run;
     };
 
 }

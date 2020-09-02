@@ -16,9 +16,7 @@ namespace View {
 
     class HeadlessView : public View {
     public:
-        HeadlessView();
-
-        void attach_application(Controller::Application *application) override;
+        explicit HeadlessView(Controller::Application &application);
 
     };
 
