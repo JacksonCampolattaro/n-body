@@ -6,7 +6,9 @@
 #define N_BODY_APPLICATION_H
 
 #include "Logger.h"
+
 #include "../View/View.h"
+#include "../Model/Simulation.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -35,9 +37,6 @@ namespace Controller {
          */
         Application();
 
-        void loadSimulation(const std::string& filepath);
-        void saveSimulation(const std::string& filepath);
-
     protected:
 
         int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
@@ -46,6 +45,7 @@ namespace Controller {
 
     private:
 
+        std::shared_ptr<Model::Simulation> _simulation;
         std::shared_ptr<View::View> _view;
 
 
