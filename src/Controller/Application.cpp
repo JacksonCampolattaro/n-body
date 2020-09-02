@@ -73,6 +73,18 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         // Create a new simulation
         _simulation = std::make_shared<Model::Simulation>();
 
+
+        // Add a few entities to the simulation
+        auto entity = Model::Entity();
+        entity.setPosition({10, 0, -10});
+        entity.setVelocity({0, 0, -0.5});
+        entity.setDrawable(
+                Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f)
+        );
+        _simulation->addEntity(entity);
+//        entity.setPosition({10, 5, -10});
+//        entity.setVelocity({-0.5, 0, 0});
+//        _simulation->addEntity(entity);
     }
 
     // Only attach the console to the logger if the silent flag isn't set
@@ -110,19 +122,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Creating an interactive view");
         _view = std::make_shared<View::InteractiveView>(*this, _simulation);
     }
-
-    // Add a few entities to the simulation
-    auto entity = Model::Entity();
-    entity.setPosition({10, 0, -10});
-    entity.setVelocity({0, 0, -0.5});
-    auto drawable = Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f);
-//    entity.setDrawable(
-//            Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f)
-//    );
-    _simulation->addEntity(entity);
-//        entity.setPosition({10, 5, -10});
-//        entity.setVelocity({-0.5, 0, 0});
-//        _simulation->addEntity(entity);
 
     // Run the program itself
     spdlog::debug("Running the program");

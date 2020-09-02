@@ -6,7 +6,8 @@
 
 #include "../Controller/Application.h"
 
-View::InteractiveView::InteractiveView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation) :
+View::InteractiveView::InteractiveView(Controller::Application &application,
+                                       std::shared_ptr<Model::Simulation> simulation) :
         _window(),
         _vbox(Gtk::Orientation::ORIENTATION_VERTICAL),
         _hbox(Gtk::Orientation::ORIENTATION_HORIZONTAL),
@@ -16,7 +17,8 @@ View::InteractiveView::InteractiveView(Controller::Application &application, std
 
     _window.add(_vbox);
 
-    _viewport.attach_simulation(simulation);
+    _viewport.attach_drawables(
+            std::make_shared<std::vector<std::shared_ptr<Model::Drawable::Drawable>>>(simulation->_drawables));
     _button_advance.signal_clicked().connect(sigc::mem_fun(simulation.get(), &Model::Simulation::update));
     _button_advance.signal_clicked().connect(sigc::mem_fun(&_viewport, &SimulationViewport::queue_render));
     _vbox.pack_start(_viewport);
