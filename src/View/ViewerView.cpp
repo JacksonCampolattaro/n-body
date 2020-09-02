@@ -6,7 +6,7 @@
 
 #include "../Controller/Application.h"
 
-View::ViewerView::ViewerView() :
+View::ViewerView::ViewerView(Controller::Application &application) :
         _window(),
         _view() {
 
@@ -14,8 +14,4 @@ View::ViewerView::ViewerView() :
 
     _window.show();
     _view.show();
-}
-
-void View::ViewerView::attach_application(Controller::Application *application) {
-    application->add_window(_window);
 }

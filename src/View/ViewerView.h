@@ -19,9 +19,7 @@ namespace View {
 
     class ViewerView : public View {
     public:
-        ViewerView();
-
-        void attach_application(Controller::Application *application) override;
+        explicit ViewerView(Controller::Application &application);
 
         Gtk::Window _window;
         MagnumViewport _view;

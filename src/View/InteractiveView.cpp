@@ -6,28 +6,30 @@
 
 #include "../Controller/Application.h"
 
-View::InteractiveView::InteractiveView() :
+View::InteractiveView::InteractiveView(Controller::Application &application) :
         _window(),
-        _box(Gtk::Orientation::ORIENTATION_VERTICAL),
+        _vbox(Gtk::Orientation::ORIENTATION_VERTICAL),
+        _hbox(Gtk::Orientation::ORIENTATION_HORIZONTAL),
         _view(),
-        _button("text") {
+        _button_advance(">"),
+        _button_run(">>>") {
 
-    _window.add(_box);
+    _window.add(_vbox);
 
-    _button.set_margin_top(5);
-    _button.set_margin_bottom(5);
-    _button.set_margin_left(5);
-    _button.set_margin_right(5);
+    _vbox.pack_start(_view);
 
-    _box.pack_start(_view);
-    _box.pack_start(_button, false, true);
+    _vbox.pack_start(_hbox, false, true);
+
+    _hbox.set_homogeneous();
+    _hbox.pack_start(_button_advance);
+    _hbox.pack_start(_button_run);
 
     _window.show();
-    _box.show();
+    _vbox.show();
     _view.show();
-    _button.show();
-}
+    _hbox.show();
+    _button_advance.show();
+    _button_run.show();
 
-void View::InteractiveView::attach_application(Controller::Application *application) {
-    application->add_window(_window);
+    application.add_window(_window);
 }
