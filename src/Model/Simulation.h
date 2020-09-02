@@ -7,7 +7,7 @@
 
 #include "Position.h"
 #include "Velocity.h"
-#include "Entity.h"
+#include "Drawable/Drawable.h"
 #include "Physics/Rule.h"
 #include "../Controller/Logger.h"
 
@@ -28,14 +28,12 @@ namespace Model {
 
         Simulation() = default;
 
-        Entity &addEntity(Position position, Velocity velocity);
-        Entity &addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
+        void addEntity(Position position, Velocity velocity);
+        void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
 
         void update();
 
         Physics::Rule _rule;
-
-        std::vector<Entity> _entities;
 
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;

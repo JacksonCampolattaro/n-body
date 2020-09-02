@@ -23,7 +23,9 @@ namespace Model {
 
             Color3 _color;
             float _scale;
-            const Position *_position;
+
+            const std::vector<Position> *_positionVector;
+            size_t _positionIndex;
         };
 
     }

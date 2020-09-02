@@ -39,7 +39,6 @@ add_executable(${CMAKE_PROJECT_NAME}
         Controller/Application.cpp Controller/Application.h
 
         Model/Model.h
-        Model/Entity.cpp Model/Entity.h
         Model/Simulation.cpp Model/Simulation.h
         Model/Position.cpp Model/Position.h
         Model/Velocity.cpp Model/Velocity.h

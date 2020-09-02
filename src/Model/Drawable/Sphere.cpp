@@ -8,5 +8,6 @@ Model::Drawable::Sphere::Sphere(Color3 color, float radius) {
 
     _color = color;
     _scale = radius;
-    _position = nullptr;
+    _positionVector = nullptr;
+    _positionIndex = 0;
 }
