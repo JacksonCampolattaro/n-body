@@ -64,8 +64,21 @@ Controller::Application::Application() :
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
 
-    // Clear all sinks from the logger
-    Logger::reset();
+    // Universal tasks
+    {
+        // Clear all sinks from the logger
+        Logger::reset();
+
+        // Create a new simulation
+        _simulation = std::make_shared<Model::Simulation>();
+
+        // TODO Temporary
+        // Add a few entities to the simulation
+        auto entity = Model::Entity();
+        entity.setPosition({0, 0, -10});
+        entity.setPosition({1, 1, 0});
+        _simulation->addEntity(entity);
+    }
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))
@@ -112,21 +125,4 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 void Controller::Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
 
     spdlog::trace("on_open invoked");
-}
-
-void Controller::Application::loadSimulation(const std::string &filepath) {
-
-    spdlog::debug("Attempting to load a simulation from file path: " + filepath);
-    spdlog::error("unimplemented");
-}
-
-void Controller::Application::saveSimulation(const std::string &filepath) {
-
-    spdlog::debug("Attempting to save a simulation at file path: " + filepath);
-
-    std::ofstream out(filepath);
-    cereal::XMLOutputArchive archive(out);
-
-    spdlog::error("unimplemented");
-
 }
