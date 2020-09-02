@@ -75,8 +75,9 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         // TODO Temporary
         // Add a few entities to the simulation
         auto entity = Model::Entity();
-        entity.setPosition({0, 0, -10});
-        entity.setPosition({1, 1, 0});
+        entity.setPosition({10, 0, -10});
+        _simulation->addEntity(entity);
+        entity.setPosition({10, 5, -10});
         _simulation->addEntity(entity);
     }
 

@@ -28,8 +28,7 @@ View::SimulationViewport::SimulationViewport() :
 }
 
 void View::SimulationViewport::attach_simulation(std::shared_ptr<Model::Simulation> simulation) {
-
-    // TODO
+    _simulation = simulation;
 }
 
 void View::SimulationViewport::onRealize() {
@@ -71,14 +70,26 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
     // Clear
     framebuffer.clear(GL::FramebufferClear::Color);
 
-    {
+    if (_simulation) {
 
-        _projection =
-                Matrix4::perspectiveProjection(
-                        35.0_degf, _aspectRatio, 0.01f, 100.0f) *
-                Matrix4::translation(Vector3::zAxis(-35.0f));
+        spdlog::trace("rendering simulation");
 
-        _shader.setProjectionMatrix(_projection).draw(_sphereMesh);
+        for (auto location : _simulation->_positions) {
+
+            _projection =
+                    Matrix4::perspectiveProjection(
+                            35.0_degf, _aspectRatio, 0.01f, 100.0f) *
+                    Matrix4::translation(Vector3::zAxis(-35.0f));
+
+            auto locationTransformation =
+                    Matrix4::translation({location.x, location.y, location.z});
+
+            _shader
+                    .setTransformationMatrix(locationTransformation)
+                    .setNormalMatrix(locationTransformation.normalMatrix())
+                    .setProjectionMatrix(_projection)
+                    .draw(_sphereMesh);
+        }
     }
 
     // Undo Magnum's changes to the graphics state
