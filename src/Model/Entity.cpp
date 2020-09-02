@@ -16,20 +16,28 @@ void Model::Entity::setVelocity(const Velocity &velocity) {
     _velocity = std::make_shared<Model::Velocity>(velocity);
 }
 
+void Model::Entity::setDrawable(const Drawable::Drawable &drawable) {
+    _drawable = std::make_shared<Drawable::Drawable>(drawable);
+}
+
 std::string Model::Entity::toString() {
 
     std::stringstream stream;
 
     stream << "[ entity: ";
 
-    if (nullptr != _position) {
+    if (_position) {
         stream << _position->toString();
     }
 
     stream << " ";
 
-    if (nullptr != _velocity) {
+    if (_velocity) {
         stream << _velocity->toString();
+    }
+
+    if (_drawable) {
+        stream << " drawable";
     }
 
     stream << " ]";

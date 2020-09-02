@@ -5,6 +5,7 @@
 #include "Application.h"
 
 #include "../Model/Simulation.h"
+#include "../Model/Drawable/Sphere.h"
 
 #include "../View/HeadlessView.h"
 #include "../View/ViewerView.h"
@@ -14,7 +15,7 @@
 #include <fstream>
 
 Controller::Application::Application() :
-        Gtk::Application {
+        Gtk::Application{
                 "com.github.JacksonCampolattaro.nbody",
                 Gio::APPLICATION_HANDLES_COMMAND_LINE |
                 Gio::APPLICATION_HANDLES_OPEN
@@ -114,6 +115,10 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     auto entity = Model::Entity();
     entity.setPosition({10, 0, -10});
     entity.setVelocity({0, 0, -0.5});
+    auto drawable = Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f);
+//    entity.setDrawable(
+//            Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f)
+//    );
     _simulation->addEntity(entity);
 //        entity.setPosition({10, 5, -10});
 //        entity.setVelocity({-0.5, 0, 0});
