@@ -7,7 +7,11 @@
 
 #include "View.h"
 
-#include "ViewerWindow.h"
+#include "MagnumViewport.h"
+
+#include <gtkmm/window.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
 
 namespace View {
 
@@ -16,6 +20,13 @@ namespace View {
         InteractiveView();
 
         void attach_application(Controller::Application *application) override;
+
+    private:
+
+        Gtk::Window _window;
+        Gtk::Box _box;
+        MagnumViewport _view;
+        Gtk::Button _button;
     };
 
 }
