@@ -75,16 +75,8 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 
         // Add a few entities to the simulation
-        auto entity = Model::Entity();
-        entity.setPosition({10, 0, -10});
-        entity.setVelocity({0, 0, -0.5});
-        entity.setDrawable(
-                Model::Drawable::Sphere(Color3(0, 0, 0), 5.0f)
-        );
-        _simulation->addEntity(entity);
-//        entity.setPosition({10, 5, -10});
-//        entity.setVelocity({-0.5, 0, 0});
-//        _simulation->addEntity(entity);
+        _simulation->addEntity({10, 0, -10}, {-1, 0, 0},
+                               Model::Drawable::Sphere(Color3(0.8, 0, 0), 5.0f));
     }
 
     // Only attach the console to the logger if the silent flag isn't set

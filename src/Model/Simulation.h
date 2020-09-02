@@ -28,19 +28,13 @@ namespace Model {
 
         Simulation() = default;
 
-        /**
-         * @brief Adds a new entity to the simulation
-         *
-         * Aspects of the entity are added to their respective collections.
-         * The entity's references to those aspects are reassigned to their new locations.
-         *
-         * @param entity The entity to be added
-         */
-        void addEntity(const Entity &entity);
+        Entity &addEntity(Position position, Velocity velocity);
+        Entity &addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
 
         void update();
 
         Physics::Rule _rule;
+
         std::vector<Entity> _entities;
 
         std::vector<Position> _positions;

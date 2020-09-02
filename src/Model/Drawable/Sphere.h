@@ -15,9 +15,6 @@ namespace Model {
         public:
 
             Sphere(Color3 color, float radius);
-
-            Color3 _color;
-            float _radius;
         };
 
     }

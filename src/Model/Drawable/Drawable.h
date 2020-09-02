@@ -21,7 +21,9 @@ namespace Model {
         class Drawable {
         public:
 
-            std::shared_ptr<Position> _position;
+            Color3 _color;
+            float _scale;
+            const Position *_position;
         };
 
     }

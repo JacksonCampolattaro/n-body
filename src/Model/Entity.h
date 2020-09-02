@@ -31,34 +31,20 @@ namespace Model {
 
         Entity();
 
-        void setPosition(const Position &position);
-
-        void setVelocity(const Velocity &velocity);
-
-        void setDrawable(const Drawable::Drawable &drawable);
+//        void setPosition(const Position &position);
+//
+//        void setVelocity(const Velocity &velocity);
+//
+//        void setDrawable(const Drawable::Drawable &drawable);
 
         std::string toString();
-
-        template<class Archive>
-        void serialize(Archive & ar) {
-
-            Position position = *_position;
-            Position velocity = *_velocity;
-            ar(
-                    cereal::make_nvp("position", position),
-                    cereal::make_nvp("velocity", velocity)
-            );
-            *_position = position;
-            *_velocity = velocity;
-
-        }
 
     private:
 
         friend class Simulation;
 
-        std::shared_ptr<Position> _position;
-        std::shared_ptr<Velocity> _velocity;
+        Position *_position;
+        Velocity *_velocity;
         std::shared_ptr<Drawable::Drawable> _drawable;
 
     };
