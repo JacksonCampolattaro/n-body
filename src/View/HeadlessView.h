@@ -16,7 +16,7 @@ namespace View {
 
     class HeadlessView : public View {
     public:
-        explicit HeadlessView(Controller::Application &application);
+        explicit HeadlessView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
     };
 

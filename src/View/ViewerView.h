@@ -19,7 +19,7 @@ namespace View {
 
     class ViewerView : public View {
     public:
-        explicit ViewerView(Controller::Application &application);
+        explicit ViewerView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
         Gtk::Window _window;
         MagnumViewport _view;

@@ -17,7 +17,7 @@ namespace View {
 
     class InteractiveView : public View {
     public:
-        explicit InteractiveView(Controller::Application &application);
+        explicit InteractiveView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
     private:
 

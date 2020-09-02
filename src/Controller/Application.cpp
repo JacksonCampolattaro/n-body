@@ -97,7 +97,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in headless mode");
 
         spdlog::info("Creating a headless view");
-        _view = std::make_shared<View::HeadlessView>(*this);
+        _view = std::make_shared<View::HeadlessView>(*this, _simulation);
     }
 
     // Run the program in viewer mode if that flag was set
@@ -105,7 +105,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in viewer mode");
 
         spdlog::info("Creating a viewer view");
-        _view = std::make_shared<View::ViewerView>(*this);
+        _view = std::make_shared<View::ViewerView>(*this, _simulation);
     }
 
     // Otherwise, run the program in interactive mode
@@ -113,7 +113,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in interactive mode");
 
         spdlog::info("Creating an interactive view");
-        _view = std::make_shared<View::InteractiveView>(*this);
+        _view = std::make_shared<View::InteractiveView>(*this, _simulation);
     }
 
     // Run the program itself
