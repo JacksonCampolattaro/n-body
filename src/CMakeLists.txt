@@ -53,7 +53,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         View/ViewerView.cpp View/ViewerView.h
         View/InteractiveView.cpp View/InteractiveView.h
 
-        View/MagnumViewport.cpp View/MagnumViewport.h
+        View/SimulationViewport.cpp View/SimulationViewport.h
         )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE

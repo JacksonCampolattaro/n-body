@@ -7,7 +7,7 @@
 
 #include "View.h"
 
-#include "MagnumViewport.h"
+#include "SimulationViewport.h"
 
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
@@ -23,7 +23,7 @@ namespace View {
 
         Gtk::Window _window;
         Gtk::Box _vbox, _hbox;
-        MagnumViewport _view;
+        SimulationViewport _view;
         Gtk::Button _button_advance, _button_run;
     };
 

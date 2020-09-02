@@ -7,7 +7,7 @@
 
 #include "View.h"
 
-#include "MagnumViewport.h"
+#include "SimulationViewport.h"
 
 #include <gtkmm/window.h>
 
@@ -22,7 +22,7 @@ namespace View {
         explicit ViewerView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
         Gtk::Window _window;
-        MagnumViewport _view;
+        SimulationViewport _view;
 
     };
 
