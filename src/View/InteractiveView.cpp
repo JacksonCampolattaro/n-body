@@ -16,7 +16,6 @@ View::InteractiveView::InteractiveView() :
 
 void View::InteractiveView::attach_application(Controller::Application *application) {
 
-    // Create a window
     spdlog::debug("Creating a window with a viewport");
 
     _window.add(_box);
@@ -29,7 +28,6 @@ void View::InteractiveView::attach_application(Controller::Application *applicat
     _box.pack_start(_view);
     _box.pack_start(_button, false, true);
 
-    // Attach the window to this application
     spdlog::debug("Adding window to application");
     application->add_window(_window);
     _window.show();
@@ -37,6 +35,5 @@ void View::InteractiveView::attach_application(Controller::Application *applicat
     _view.show();
     _button.show();
 
-    // Run the program itself
     spdlog::debug("Running the program");
 }
