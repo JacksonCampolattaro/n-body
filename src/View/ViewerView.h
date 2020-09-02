@@ -7,6 +7,9 @@
 
 #include "View.h"
 
+#include "MagnumViewport.h"
+
+#include <gtkmm/window.h>
 
 namespace Controller {
     class Application;
@@ -19,6 +22,9 @@ namespace View {
         ViewerView();
 
         void attach_application(Controller::Application *application) override;
+
+        Gtk::Window _window;
+        MagnumViewport _view;
 
     };
 
