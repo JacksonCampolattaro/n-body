@@ -72,7 +72,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         // Create a new simulation
         _simulation = std::make_shared<Model::Simulation>();
 
-
         // Add a few entities to the simulation
         _simulation->addEntity({-5, 0, 0},
                                {0, 0.1, 0})
