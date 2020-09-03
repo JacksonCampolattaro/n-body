@@ -11,15 +11,20 @@
 
 namespace Model {
 
-    class Entity {
+    class Simulation;
 
+    class Entity {
     public:
 
     private:
 
+        friend class Simulation;
+
+        Entity(Simulation &simulation, const Position &position, const Velocity &velocity);
+
+        Simulation &_simulation;
         Handle<Position> _position;
         Handle<Velocity> _velocity;
-
     };
 }
 
