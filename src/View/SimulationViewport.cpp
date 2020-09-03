@@ -89,8 +89,9 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                     Matrix4::scaling(Vector3{drawable._radius});
 
             _shader
-                    .setLightPosition({7.0f, 5.0f, 2.5f})
+                    .setLightPosition({0.0f, 10.0f, 10.0f})
                     .setLightColor(drawable._color)
+                    .setSpecularColor(drawable._color)
                     .setAmbientColor(drawable._color / 2);
 
             _shader

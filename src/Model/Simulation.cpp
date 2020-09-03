@@ -19,7 +19,7 @@ void Model::Simulation::update() {
 
     // Drift
     for (int i = 0; i < _positions.size(); ++i)
-        _positions[i] = _positions[i] + _velocities[i];
+        _positions[i] = _positions[i] + (_velocities[i] * _rule._timeIncrement);
 
     // Alert the renderer
     signal_update_complete.emit();
