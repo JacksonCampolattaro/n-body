@@ -16,8 +16,8 @@ void
 Model::Physics::Rule::operator()(const Model::Physics::ActiveElement &active, Model::Physics::PassiveElement &passive) const {
 
     float forceMagnitude =
-            (_gravitationalConstant * passive._mass * active._mass) /
-            ((float) pow((float) glm::distance((glm::vec3) passive.position(), (glm::vec3) active.position()), 2.0f) +
+            (float) (_gravitationalConstant * passive._mass * active._mass) /
+            (float) (pow((float) glm::distance((glm::vec3) passive.position(), (glm::vec3) active.position()), 2.0f) +
              0.0001);
 
     glm::vec3 forceDirection = glm::normalize(active.position() - passive.position());
