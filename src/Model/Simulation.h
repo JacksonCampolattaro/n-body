@@ -31,7 +31,7 @@ namespace Model {
 
         Simulation() = default;
 
-        void addEntity(Position position, Velocity velocity);
+        Entity &addEntity(Position position, Velocity velocity);
 
         void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
 

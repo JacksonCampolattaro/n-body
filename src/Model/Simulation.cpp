@@ -22,10 +22,10 @@ void Model::Simulation::update() {
         _positions[i] = _positions[i] + _velocities[i];
 }
 
-void Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity) {
+Model::Entity &Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity) {
 
-    _positions.emplace_back(position);
-    _velocities.emplace_back(velocity);
+    _entities.push_back(Entity(*this, position, velocity));
+    return _entities.back();
 }
 
 void Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity,
