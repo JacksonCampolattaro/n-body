@@ -19,6 +19,8 @@
 #include <cereal/types/vector.hpp>
 #include <cereal/types/memory.hpp>
 
+#include <sigc++/signal.h>
+
 #include <vector>
 #include <memory>
 #include <string>
@@ -34,6 +36,8 @@ namespace Model {
         Entity &addEntity(Position position, Velocity velocity);
 
         void update();
+
+        sigc::signal<void> signal_update_complete;
 
         Physics::Rule _rule;
 

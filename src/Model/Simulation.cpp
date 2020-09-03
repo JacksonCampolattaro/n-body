@@ -20,6 +20,9 @@ void Model::Simulation::update() {
     // Drift
     for (int i = 0; i < _positions.size(); ++i)
         _positions[i] = _positions[i] + _velocities[i];
+
+    // Alert the renderer
+    signal_update_complete.emit();
 }
 
 Model::Entity &Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity) {
