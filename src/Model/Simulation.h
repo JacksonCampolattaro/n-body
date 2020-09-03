@@ -5,6 +5,7 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
+#include "Entity.h"
 #include "Position.h"
 #include "Velocity.h"
 #include "Drawable/Drawable.h"
@@ -41,6 +42,7 @@ namespace Model {
 
         Physics::Rule _rule;
 
+        std::vector<Entity> _entities;
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;
         std::vector<Physics::PassiveElement> _passiveElements;

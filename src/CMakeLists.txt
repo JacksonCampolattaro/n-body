@@ -40,8 +40,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         Controller/Logger.cpp Controller/Logger.h
         Controller/Application.cpp Controller/Application.h
 
-        Model/Model.h
         Model/Simulation.cpp Model/Simulation.h
+        Model/Entity.cpp Model/Entity.cpp
         Model/Position.cpp Model/Position.h
         Model/Velocity.cpp Model/Velocity.h
 
