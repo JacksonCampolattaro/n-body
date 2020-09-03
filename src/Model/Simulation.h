@@ -33,11 +33,6 @@ namespace Model {
 
         Entity &addEntity(Position position, Velocity velocity);
 
-        void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
-
-        void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable,
-                       float mass);
-
         void update();
 
         Physics::Rule _rule;

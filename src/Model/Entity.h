@@ -9,6 +9,8 @@
 #include "Position.h"
 #include "Velocity.h"
 #include "Drawable/Drawable.h"
+#include "Physics/PassiveElement.h"
+#include "Physics/ActiveElement.h"
 
 namespace Model {
 
@@ -17,7 +19,10 @@ namespace Model {
     class Entity {
     public:
 
-        Model::Entity &addDrawable(Color3 color, float radius);
+        Entity &addDrawable(Color3 color, float radius);
+
+        Entity &addPassiveElement(float mass);
+        Entity &addActiveElement(float mass);
 
     private:
 
@@ -29,7 +34,10 @@ namespace Model {
 
         Handle<Position> _position;
         Handle<Velocity> _velocity;
+
         std::optional<Handle<Drawable::Drawable>> _drawable;
+        std::optional<Handle<Physics::PassiveElement>> _passiveElement;
+        std::optional<Handle<Physics::ActiveElement>> _activeElement;
     };
 }
 

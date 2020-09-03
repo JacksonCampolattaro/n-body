@@ -8,24 +8,23 @@
 #include "../Position.h"
 #include "../Velocity.h"
 
+#include "../Handle.h"
+
 namespace Model {
     namespace Physics {
 
         class PassiveElement {
         public:
 
-            PassiveElement(float mass);
+            PassiveElement(Handle <Position> position, Handle <Velocity> velocity, float mass);
 
             const Position &position() const;
+
             Velocity &velocity();
 
             float _mass;
-
-            std::vector<Velocity> *_velocityVector;
-            size_t _velocityIndex;
-
-            const std::vector<Position> *_positionVector;
-            size_t _positionIndex;
+            Handle <Velocity> _velocity;
+            const Handle <Position> _position;
         };
 
     }
