@@ -27,3 +27,16 @@ void Model::Simulation::addEntity(Model::Position position, Model::Velocity velo
     _drawables.back()->_positionVector = &_positions;
     _drawables.back()->_positionIndex = _positions.size() - 1;
 }
+
+void Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity,
+                                  const Model::Drawable::Drawable &drawable,
+                                  const Model::Physics::PassiveElement &passiveElement) {
+
+    addEntity(position, velocity, drawable);
+
+    _passiveElements.push_back(passiveElement);
+    _passiveElements.back()._positionVector = &_positions;
+    _passiveElements.back()._positionIndex = _positions.size() - 1;
+    _passiveElements.back()._velocityVector = &_velocities;
+    _passiveElements.back()._velocityIndex = _velocities.size() - 1;
+}

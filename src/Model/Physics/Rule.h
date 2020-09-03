@@ -4,13 +4,15 @@
 
 #ifndef N_BODY_RULE_H
 #define N_BODY_RULE_H
+namespace Model {
 
-namespace Physics {
+    namespace Physics {
 
-    class Rule {
+        class Rule {
 
-    };
+        };
 
+    }
 }
 
 
