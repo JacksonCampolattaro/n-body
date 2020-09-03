@@ -32,7 +32,7 @@ View::SimulationViewport::SimulationViewport() :
 
 void
 View::SimulationViewport::attach_drawables(
-        std::shared_ptr<std::vector<std::shared_ptr<Model::Drawable::Drawable>>> drawables) {
+        std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables) {
     _drawables = drawables;
 }
 
@@ -83,15 +83,15 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                             35.0_degf, _aspectRatio, 0.01f, 100.0f) *
                     Matrix4::translation(Vector3::zAxis(-35.0f));
 
-            Model::Position position = (*drawable->_positionVector)[drawable->_positionIndex];
+            Model::Position position = *drawable._position;
             auto locationTransformation =
                     Matrix4::translation({position.x, position.y, position.z}) *
-                    Matrix4::scaling(Vector3{drawable->_radius});
+                    Matrix4::scaling(Vector3{drawable._radius});
 
             _shader
                     .setLightPosition({7.0f, 5.0f, 2.5f})
-                    .setLightColor(drawable->_color)
-                    .setAmbientColor(drawable->_color / 2);
+                    .setLightColor(drawable._color)
+                    .setAmbientColor(drawable._color / 2);
 
             _shader
                     .setTransformationMatrix(locationTransformation)

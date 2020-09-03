@@ -6,11 +6,10 @@
 #define N_BODY_DRAWABLE_H
 
 #include "../Position.h"
+#include "../Handle.h"
 
 #include <Magnum/Magnum.h>
 #include <Magnum/Math/Color.h>
-
-#include <memory>
 
 using namespace Magnum;
 
@@ -21,13 +20,12 @@ namespace Model {
         class Drawable {
         public:
 
-            Drawable(Color3 color, float radius);
+            Drawable(Handle<Position> position, Color3 color, float radius);
 
             Color3 _color;
             float _radius;
 
-            const std::vector<Position> *_positionVector;
-            size_t _positionIndex;
+            const Handle<Position> _position;
         };
 
     }

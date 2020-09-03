@@ -47,7 +47,7 @@ namespace Model {
         std::vector<Velocity> _velocities;
         std::vector<Physics::PassiveElement> _passiveElements;
         std::vector<Physics::ActiveElement> _activeElements;
-        std::vector<std::shared_ptr<Drawable::Drawable>> _drawables;
+        std::vector<Drawable::Drawable> _drawables;
     };
 
 }
