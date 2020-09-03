@@ -5,7 +5,6 @@
 #include "Application.h"
 
 #include "../Model/Simulation.h"
-#include "../Model/Drawable/Sphere.h"
 
 #include "../View/HeadlessView.h"
 #include "../View/ViewerView.h"
@@ -76,13 +75,9 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
         // Add a few entities to the simulation
         _simulation->addEntity({-5, 0, 0}, {0.5, 0.1, 0},
-                               Model::Drawable::Sphere(Color3(0.8, 0, 0), 5.0f));
+                               Model::Drawable::Drawable(Color3(0.8, 0, 0), 1.2f));
         _simulation->addEntity({5, 0, 0}, {-0.5, -0.1, 0},
-                               Model::Drawable::Sphere(Color3(0, 0, 0.8), 5.0f));
-//        _simulation->addEntity({5, 0, -10}, {-1, 0, 0},
-//                               Model::Drawable::Sphere(Color3(0.8, 0, 0), 5.0f));
-//        _simulation->addEntity({-5, 0, -10}, {1, 2, 0},
-//                               Model::Drawable::Sphere(Color3(0, 0.8, 0.8), 1.0f));
+                               Model::Drawable::Drawable(Color3(0, 0, 0.8), 0.8f));
     }
 
     // Only attach the console to the logger if the silent flag isn't set

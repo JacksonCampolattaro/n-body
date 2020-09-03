@@ -4,6 +4,9 @@
 
 #include "SimulationViewport.h"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/spdlog-inl.h>
+
 using namespace Magnum;
 using namespace Math::Literals;
 
@@ -71,7 +74,7 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
     if (_drawables) {
 
         spdlog::trace("rendering simulation");
-        spdlog::trace(_drawables->size());
+        spdlog::info("{} drawables", _drawables->size());
 
         for (auto drawable : *_drawables) {
 
@@ -82,7 +85,8 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
 
             Model::Position position = (*drawable->_positionVector)[drawable->_positionIndex];
             auto locationTransformation =
-                    Matrix4::translation({position.x, position.y, position.z});
+                    Matrix4::translation({position.x, position.y, position.z}) *
+                    Matrix4::scaling(Vector3{drawable->_radius});
 
             _shader
                     .setLightPosition({7.0f, 5.0f, 2.5f})
