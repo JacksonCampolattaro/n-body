@@ -17,6 +17,8 @@ namespace Model {
 
             ActiveElement(float mass);
 
+            const Position &position() const;
+
             float _mass;
 
             const std::vector<Position> *_positionVector;

@@ -12,3 +12,11 @@ Model::Physics::PassiveElement::PassiveElement(float mass) :
         _velocityIndex(0) {
 
 }
+
+const Model::Position &Model::Physics::PassiveElement::position() const {
+    return (*_positionVector)[_positionIndex];
+}
+
+Model::Velocity &Model::Physics::PassiveElement::velocity() {
+    return (*_velocityVector)[_velocityIndex];
+}

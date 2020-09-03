@@ -16,6 +16,9 @@ namespace Model {
 
             PassiveElement(float mass);
 
+            const Position &position() const;
+            Velocity &velocity();
+
             float _mass;
 
             std::vector<Velocity> *_velocityVector;

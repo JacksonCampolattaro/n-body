@@ -15,9 +15,8 @@ void Model::Simulation::update() {
     }
 
     // Drift
-    for (int i = 0; i < _positions.size(); ++i) {
+    for (int i = 0; i < _positions.size(); ++i)
         _positions[i] = _positions[i] + _velocities[i];
-    }
 }
 
 void Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity) {
