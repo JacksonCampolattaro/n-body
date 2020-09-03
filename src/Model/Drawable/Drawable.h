@@ -21,8 +21,10 @@ namespace Model {
         class Drawable {
         public:
 
+            Drawable(Color3 color, float radius);
+
             Color3 _color;
-            float _scale;
+            float _radius;
 
             const std::vector<Position> *_positionVector;
             size_t _positionIndex;

@@ -4,10 +4,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Add Gtkmm's include files
 find_package(PkgConfig)
-find_package(spdlog REQUIRED)
 pkg_check_modules(GTKMM gtkmm-3.0)
 link_directories(${GTKMM_LIBRARY_DIRS})
 include_directories(${GTKMM_INCLUDE_DIRS})
+
+# Add spdlog's include files
+find_package(spdlog REQUIRED)
 
 # Add Magnum's include files
 find_package(Magnum REQUIRED
@@ -44,7 +46,6 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Velocity.cpp Model/Velocity.h
 
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
-        Model/Drawable/Sphere.cpp Model/Drawable/Sphere.h
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
 
