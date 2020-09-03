@@ -48,6 +48,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
+        Model/Physics/PassiveElement.cpp Model/Physics/PassiveElement.h
 
         View/View.h
         View/HeadlessView.cpp View/HeadlessView.h
