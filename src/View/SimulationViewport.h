@@ -38,6 +38,8 @@ namespace View {
 
         void attach_drawables(std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables);
 
+        sigc::signal<void> signal_render_complete;
+
     protected:
 
         void onRealize();

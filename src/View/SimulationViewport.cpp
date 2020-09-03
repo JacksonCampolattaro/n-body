@@ -103,6 +103,8 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
 
     // Undo Magnum's changes to the graphics state
     Magnum::GL::Context::current().resetState(GL::Context::State::EnterExternal);;
+
+    signal_render_complete.emit();
     return false;
 }
 
