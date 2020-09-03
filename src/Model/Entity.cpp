@@ -12,3 +12,9 @@ Model::Entity::Entity(Simulation &simulation, const Position &position, const Ve
         _velocity{_simulation._velocities, velocity} {
 
 }
+
+Model::Entity &Model::Entity::addDrawable(Color3 color, float radius) {
+
+    _drawable.emplace(_simulation._drawables, Drawable::Drawable(_position, color, radius));
+    return *this;
+}

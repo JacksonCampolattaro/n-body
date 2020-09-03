@@ -4,10 +4,9 @@
 
 #include "Drawable.h"
 
-Model::Drawable::Drawable::Drawable(Color3 color, float radius) :
+Model::Drawable::Drawable::Drawable(Model::Handle<Model::Position> position, Color3 color, float radius) :
+        _position(position),
         _color(color),
-        _radius(radius),
-        _positionVector(nullptr),
-        _positionIndex(0) {
+        _radius(radius) {
 
 }

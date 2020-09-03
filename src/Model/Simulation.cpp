@@ -32,10 +32,6 @@ void Model::Simulation::addEntity(Model::Position position, Model::Velocity velo
                                             const Model::Drawable::Drawable &drawable) {
 
     addEntity(position, velocity);
-
-    _drawables.push_back(std::make_shared<Drawable::Drawable>(drawable));
-    _drawables.back()->_positionVector = &_positions;
-    _drawables.back()->_positionIndex = _positions.size() - 1;
 }
 
 void Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity,

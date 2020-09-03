@@ -36,7 +36,7 @@ namespace View {
 
         SimulationViewport();
 
-        void attach_drawables(std::shared_ptr<std::vector<std::shared_ptr<Model::Drawable::Drawable>>> drawables);
+        void attach_drawables(std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables);
 
     protected:
 
@@ -47,7 +47,7 @@ namespace View {
 
         Platform::GLContext _context{NoCreate};
 
-        std::shared_ptr<std::vector<std::shared_ptr<Model::Drawable::Drawable>>> _drawables;
+        std::shared_ptr<std::vector<Model::Drawable::Drawable>> _drawables;
 
     private:
 
