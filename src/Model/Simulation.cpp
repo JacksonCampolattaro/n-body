@@ -12,7 +12,8 @@ void Model::Simulation::update() {
     // Kick
     for (auto &active : _activeElements) {
         for (auto &passive : _passiveElements) {
-            _rule(active, passive);
+            if (passive.position() != active.position())
+                _rule(active, passive);
         }
     }
 
