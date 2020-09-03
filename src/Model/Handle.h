@@ -11,7 +11,6 @@ namespace Model {
 
     template<typename T>
     class Handle {
-
     public:
 
         Handle(std::vector<T> &vector, size_t index) :
@@ -23,6 +22,14 @@ namespace Model {
 
             _vector.push_back(value);
             _index = _vector.size() - 1;
+        }
+
+        T &operator*() {
+            return _vector[_index];
+        }
+
+        const T &operator*() const {
+            return _vector[_index];
         }
 
     private:
