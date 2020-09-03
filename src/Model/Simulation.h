@@ -10,6 +10,7 @@
 #include "Drawable/Drawable.h"
 #include "Physics/Rule.h"
 #include "Physics/PassiveElement.h"
+#include "Physics/ActiveElement.h"
 #include "../Controller/Logger.h"
 
 #include <cereal/cereal.hpp>
@@ -34,7 +35,7 @@ namespace Model {
         void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable);
 
         void addEntity(Position position, Velocity velocity, const Drawable::Drawable &drawable,
-                       const Physics::PassiveElement &passiveElement);
+                       float mass);
 
         void update();
 
@@ -43,6 +44,7 @@ namespace Model {
         std::vector<Position> _positions;
         std::vector<Velocity> _velocities;
         std::vector<Physics::PassiveElement> _passiveElements;
+        std::vector<Physics::ActiveElement> _activeElements;
         std::vector<std::shared_ptr<Drawable::Drawable>> _drawables;
     };
 

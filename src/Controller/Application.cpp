@@ -74,12 +74,14 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
 
         // Add a few entities to the simulation
-        _simulation->addEntity({-5, 0, 0}, {0.5, 0.1, 0},
+        _simulation->addEntity({-5, 0, 0},
+                               {0, 0.1, 0},
                                Model::Drawable::Drawable(Color3(0.8, 0, 0), 1.2f),
-                               100);
-        _simulation->addEntity({5, 0, 0}, {-0.5, -0.1, 0},
+                               120);
+        _simulation->addEntity({5, 0, 0},
+                               {0, -0.1, 0},
                                Model::Drawable::Drawable(Color3(0, 0, 0.8), 0.8f),
-                               100);
+                               80);
     }
 
     // Only attach the console to the logger if the silent flag isn't set
