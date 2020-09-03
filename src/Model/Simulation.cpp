@@ -7,6 +7,8 @@
 
 void Model::Simulation::update() {
 
+    spdlog::trace("Update");
+
     // Kick
     for (auto &active : _activeElements) {
         for (auto &passive : _passiveElements) {
