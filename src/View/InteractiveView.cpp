@@ -15,6 +15,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
         _button_advance(">"),
         _button_run(">>>") {
 
+    _window.set_default_size(1000, 1000);
     _window.add(_vbox);
 
     _viewport.attach_drawables(
