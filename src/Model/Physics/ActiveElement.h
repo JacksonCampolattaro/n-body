@@ -8,6 +8,7 @@
 
 #include "../Position.h"
 #include "../Velocity.h"
+#include "../Handle.h"
 
 namespace Model {
     namespace Physics {
@@ -15,14 +16,12 @@ namespace Model {
         class ActiveElement {
         public:
 
-            ActiveElement(float mass);
+            ActiveElement(Handle<Position> position, float mass);
 
             const Position &position() const;
 
             float _mass;
-
-            const std::vector<Position> *_positionVector;
-            size_t _positionIndex;
+            const Handle <Position> _position;
         };
 
     }

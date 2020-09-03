@@ -4,13 +4,13 @@
 
 #include "ActiveElement.h"
 
-Model::Physics::ActiveElement::ActiveElement(float mass) :
-        _mass(mass),
-        _positionVector(nullptr),
-        _positionIndex(0) {
+
+Model::Physics::ActiveElement::ActiveElement(Model::Handle<Model::Position> position, float mass) :
+        _position(position),
+        _mass(mass) {
 
 }
 
 const Model::Position &Model::Physics::ActiveElement::position() const {
-    return (*_positionVector)[_positionIndex];
+    return *_position;
 }

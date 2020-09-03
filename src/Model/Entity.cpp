@@ -15,6 +15,21 @@ Model::Entity::Entity(Simulation &simulation, const Position &position, const Ve
 
 Model::Entity &Model::Entity::addDrawable(Color3 color, float radius) {
 
-    _drawable.emplace(_simulation._drawables, Drawable::Drawable(_position, color, radius));
+    _drawable.emplace(_simulation._drawables,
+                      Drawable::Drawable(_position, color, radius));
+    return *this;
+}
+
+Model::Entity &Model::Entity::addPassiveElement(float mass) {
+
+    _passiveElement.emplace(_simulation._passiveElements,
+                            Physics::PassiveElement(_position, _velocity, mass));
+    return *this;
+}
+
+Model::Entity &Model::Entity::addActiveElement(float mass) {
+
+    _activeElement.emplace(_simulation._activeElements,
+                            Physics::ActiveElement(_position, mass));
     return *this;
 }
