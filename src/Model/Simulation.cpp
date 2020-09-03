@@ -7,6 +7,14 @@
 
 void Model::Simulation::update() {
 
+    // Kick
+    for (auto &active : _activeElements) {
+        for (auto &passive : _passiveElements) {
+            _rule(active, passive);
+        }
+    }
+
+    // Drift
     for (int i = 0; i < _positions.size(); ++i) {
         _positions[i] = _positions[i] + _velocities[i];
     }

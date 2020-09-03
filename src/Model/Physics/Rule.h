@@ -19,8 +19,8 @@ namespace Model {
 
             void operator()(const ActiveElement &active, PassiveElement &passive);
 
-            float _G;
-            float _t;
+            float _gravitationalConstant;
+            float _timeIncrement;
         };
 
     }
