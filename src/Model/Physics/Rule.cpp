@@ -5,8 +5,8 @@
 #include "Rule.h"
 
 Model::Physics::Rule::Rule() :
-    _G(1.0),
-    _t(1.0) {
+    _gravitationalConstant(1.0),
+    _timeIncrement(1.0) {
 }
 
 void
