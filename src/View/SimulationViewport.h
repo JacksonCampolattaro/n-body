@@ -7,7 +7,7 @@
 
 
 #include "../Controller/Logger.h"
-#include "../Model/Simulation.h"
+#include "../Model/Drawable/Drawable.h"
 
 #include <gtkmm/glarea.h>
 
@@ -42,8 +42,6 @@ namespace View {
 
         SimulationViewport();
 
-        void attach_drawables(std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables);
-
         void draw(const std::vector<Model::Drawable::Drawable> &drawables);
 
         sigc::signal<void> signal_render_complete;
@@ -56,8 +54,6 @@ namespace View {
         void onUnrealize();
 
         Platform::GLContext _context{NoCreate};
-
-        std::shared_ptr<std::vector<Model::Drawable::Drawable>> _drawables;
 
     private:
 
