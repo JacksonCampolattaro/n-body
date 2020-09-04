@@ -20,7 +20,6 @@ View::SimulationViewport::SimulationViewport() :
 
     // Automatically re-render everything each time it needs to be redrawn
     set_auto_render();
-    set_has_depth_buffer();
 
     // Set desired OpenGL version
     set_required_version(4, 5);
@@ -40,10 +39,7 @@ void View::SimulationViewport::attach_drawables(
 
 void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable> &drawables) {
 
-//    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
-//
-//    // Instanced Rendering
-//    _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
+    _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
     for (int i = 0; i < drawables.size(); ++i) {
 
         auto position = *drawables[i]._position;
@@ -59,17 +55,7 @@ void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable>
         _sphereInstanceData[i].color =
                 color;
     }
-//    _sphereInstanceBuffer = GL::Buffer{};
-//    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
-//                                         Shaders::Phong::TransformationMatrix{},
-//                                         Shaders::Phong::NormalMatrix{},
-//                                         Shaders::Phong::Color3{});
-//    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
-//
-//    _shader = Shaders::Phong{
-//            Shaders::Phong::Flag::VertexColor |
-//            Shaders::Phong::Flag::InstancedTransformation
-//    };
+    _sphereMesh.setInstanceCount(drawables.size());
 
     queue_render();
 }
@@ -83,44 +69,25 @@ void View::SimulationViewport::onRealize() {
     _context.create();
 
     // Configure the graphics features
+    set_has_depth_buffer();
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
     _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
 
-    // Instanced Rendering
-    _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, _drawables->size()};
-    for (int i = 0; i < _drawables->size(); ++i) {
-
-        auto position = *(*_drawables)[i]._position;
-        auto color = (*_drawables)[i]._color;
-
-        _sphereInstanceData[i].transformation =
-                Matrix4::translation({position.x, position.y, position.z})
-                * Matrix4::scaling(Vector3{(*_drawables)[i]._radius});
-
-        _sphereInstanceData[i].normal =
-                _sphereInstanceData[i].transformation.normalMatrix();
-
-        _sphereInstanceData[i].color =
-                color;
-    }
     _shader = Shaders::Phong{
             Shaders::Phong::Flag::VertexColor |
             Shaders::Phong::Flag::InstancedTransformation
     };
 
-    _shader.setLightPosition({0, 0, 100});
-
+    _shader.setLightPosition({0, 0, 500});
 
     _sphereInstanceBuffer = GL::Buffer{};
     _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
                                          Shaders::Phong::TransformationMatrix{},
                                          Shaders::Phong::NormalMatrix{},
                                          Shaders::Phong::Color3{});
-    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
 
-    draw(*_drawables);
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
