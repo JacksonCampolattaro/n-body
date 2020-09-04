@@ -37,7 +37,7 @@ namespace Model {
 
         void update();
 
-        sigc::signal<void> signal_update_complete;
+        sigc::signal<void, const std::vector<Drawable::Drawable> &> signal_update_complete;
 
         Physics::Rule _rule;
 

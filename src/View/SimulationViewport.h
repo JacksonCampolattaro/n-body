@@ -30,6 +30,12 @@ using namespace Magnum;
 
 namespace View {
 
+    struct SphereInstanceData {
+        Matrix4 transformation;
+        Matrix3x3 normal;
+        Color3 color;
+    };
+
     class SimulationViewport : public Gtk::GLArea {
 
     public:
@@ -37,6 +43,8 @@ namespace View {
         SimulationViewport();
 
         void attach_drawables(std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables);
+
+        void draw(const std::vector<Model::Drawable::Drawable> &drawables);
 
         sigc::signal<void> signal_render_complete;
 
@@ -54,9 +62,10 @@ namespace View {
     private:
 
         GL::Mesh _sphereMesh{NoCreate};
+        GL::Buffer _sphereInstanceBuffer{NoCreate};
+        Containers::Array<SphereInstanceData> _sphereInstanceData;
         Shaders::Phong _shader{NoCreate};
         Matrix4 _projection;
-
         float _aspectRatio;
     };
 

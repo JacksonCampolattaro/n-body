@@ -73,13 +73,18 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         _simulation = std::make_shared<Model::Simulation>();
 
         // Add a few entities to the simulation
+        _simulation->addEntity({0, 5, 5},
+                               {0, -0.1, 0})
+                .addDrawable({0.8, 0.8, 0.8}, 1.0)
+                .addPassiveElement(0.5)
+                .addActiveElement(0.5);
         _simulation->addEntity({-5, 0, 0},
-                            {0, 0.1, 0})
+                               {0, 0.1, 0})
                 .addDrawable({0.0, 0.0, 0.8}, 1.0)
                 .addPassiveElement(0.5)
                 .addActiveElement(0.5);
         _simulation->addEntity({5, 0, 0},
-                            {0, -0.1, 0})
+                               {0, -0.1, 0})
                 .addDrawable({0.8, 0.0, 0.0}, 1.0)
                 .addPassiveElement(0.5)
                 .addActiveElement(0.5);
