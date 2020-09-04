@@ -30,10 +30,45 @@ View::SimulationViewport::SimulationViewport() :
 
 }
 
-void
-View::SimulationViewport::attach_drawables(
+void View::SimulationViewport::attach_drawables(
         std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables) {
     _drawables = drawables;
+}
+
+void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable> &drawables) {
+
+//    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
+//
+//    // Instanced Rendering
+//    _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
+    for (int i = 0; i < drawables.size(); ++i) {
+
+        auto position = *drawables[i]._position;
+        auto color = drawables[i]._color;
+
+        _sphereInstanceData[i].transformation =
+                Matrix4::translation({position.x, position.y, position.z})
+                * Matrix4::scaling(Vector3{drawables[i]._radius});
+
+        _sphereInstanceData[i].normal =
+                _sphereInstanceData[i].transformation.normalMatrix();
+
+        _sphereInstanceData[i].color =
+                color;
+    }
+//    _sphereInstanceBuffer = GL::Buffer{};
+//    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
+//                                         Shaders::Phong::TransformationMatrix{},
+//                                         Shaders::Phong::NormalMatrix{},
+//                                         Shaders::Phong::Color3{});
+//    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
+//
+//    _shader = Shaders::Phong{
+//            Shaders::Phong::Flag::VertexColor |
+//            Shaders::Phong::Flag::InstancedTransformation
+//    };
+
+    queue_render();
 }
 
 void View::SimulationViewport::onRealize() {
@@ -49,7 +84,39 @@ void View::SimulationViewport::onRealize() {
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
     _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
-    _shader = Shaders::Phong();
+
+    // Instanced Rendering
+    _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, _drawables->size()};
+    for (int i = 0; i < _drawables->size(); ++i) {
+
+        auto position = *(*_drawables)[i]._position;
+        auto color = (*_drawables)[i]._color;
+
+        _sphereInstanceData[i].transformation =
+                Matrix4::translation({position.x, position.y, position.z})
+                * Matrix4::scaling(Vector3{(*_drawables)[i]._radius});
+
+        _sphereInstanceData[i].normal =
+                _sphereInstanceData[i].transformation.normalMatrix();
+
+        _sphereInstanceData[i].color =
+                color;
+    }
+    _sphereInstanceBuffer = GL::Buffer{};
+    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
+                                         Shaders::Phong::TransformationMatrix{},
+                                         Shaders::Phong::NormalMatrix{},
+                                         Shaders::Phong::Color3{});
+    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
+
+    _shader = Shaders::Phong{
+            Shaders::Phong::Flag::VertexColor |
+            Shaders::Phong::Flag::InstancedTransformation
+    };
+
+    _shader.setLightPosition({0, 0, 100});
+
+    draw(*_drawables);
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
@@ -71,36 +138,14 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
     // Clear
     framebuffer.clear(GL::FramebufferClear::Color);
 
-    if (_drawables) {
+    _projection =
+            Matrix4::perspectiveProjection(
+                    35.0_degf, _aspectRatio, 0.01f, 100.0f) *
+            Matrix4::translation(Vector3::zAxis(-35.0f));
 
-        spdlog::trace("rendering simulation");
-        spdlog::info("{} drawables", _drawables->size());
-
-        for (auto drawable : *_drawables) {
-
-            _projection =
-                    Matrix4::perspectiveProjection(
-                            35.0_degf, _aspectRatio, 0.01f, 100.0f) *
-                    Matrix4::translation(Vector3::zAxis(-35.0f));
-
-            Model::Position position = *drawable._position;
-            auto locationTransformation =
-                    Matrix4::translation({position.x, position.y, position.z}) *
-                    Matrix4::scaling(Vector3{drawable._radius});
-
-            _shader
-                    .setLightPosition({0.0f, 10.0f, 10.0f})
-                    .setLightColor(drawable._color)
-                    .setSpecularColor(drawable._color)
-                    .setAmbientColor(drawable._color / 2);
-
-            _shader
-                    .setTransformationMatrix(locationTransformation)
-                    .setNormalMatrix(locationTransformation.normalMatrix())
-                    .setProjectionMatrix(_projection)
-                    .draw(_sphereMesh);
-        }
-    }
+    _sphereInstanceBuffer.setData(_sphereInstanceData, GL::BufferUsage::DynamicDraw);
+    _shader.setProjectionMatrix(_projection)
+            .draw(_sphereMesh);
 
     // Undo Magnum's changes to the graphics state
     Magnum::GL::Context::current().resetState(GL::Context::State::EnterExternal);;
@@ -122,3 +167,4 @@ void View::SimulationViewport::onUnrealize() {
 
     // TODO
 }
+

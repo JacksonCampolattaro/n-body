@@ -22,7 +22,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
             std::make_shared<std::vector<Model::Drawable::Drawable>>(simulation->_drawables));
 
     _button_advance.signal_clicked().connect(sigc::mem_fun(simulation.get(), &Model::Simulation::update));
-    simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::queue_render));
+    simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
 
     _vbox.pack_start(_viewport);
 
