@@ -17,6 +17,7 @@ Model::Entity &Model::Entity::addDrawable(Color3 color, float radius) {
 
     _drawable.emplace(_simulation._drawables,
                       Drawable::Drawable(_position, color, radius));
+    _simulation.signal_num_drawables_changed.emit(_simulation._drawables);
     return *this;
 }
 

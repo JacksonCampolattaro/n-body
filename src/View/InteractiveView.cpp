@@ -19,9 +19,6 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
     _window.set_default_size(1000, 1000);
     _window.add(_vbox);
 
-    _button_advance.signal_clicked().connect(sigc::mem_fun(this, &InteractiveView::on_advance_clicked));
-    simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
-
     _button_run.signal_clicked().connect(sigc::mem_fun(this, &InteractiveView::on_run_clicked));
 
     _vbox.pack_start(_viewport);
@@ -40,6 +37,12 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
     _button_run.show();
 
     application.add_window(_window);
+
+    _button_advance.signal_clicked().connect(sigc::mem_fun(this, &InteractiveView::on_advance_clicked));
+    simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
+    simulation->signal_num_drawables_changed.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
+
+    simulation->signal_update_complete.emit(simulation->_drawables);
 }
 
 void View::InteractiveView::on_advance_clicked() {
