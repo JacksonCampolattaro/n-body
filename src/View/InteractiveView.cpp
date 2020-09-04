@@ -23,6 +23,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
 
     _button_advance.signal_clicked().connect(sigc::mem_fun(simulation.get(), &Model::Simulation::update));
     simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
+    _viewport.draw(simulation->_drawables);
 
     _vbox.pack_start(_viewport);
 
