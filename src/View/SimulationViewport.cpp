@@ -87,11 +87,6 @@ void View::SimulationViewport::onRealize() {
                                          Shaders::Phong::NormalMatrix{},
                                          Shaders::Phong::Color3{});
 
-//    _shader
-//    .setLightPosition({0, 0, -500})
-//    .setAmbientColor({0.0, 0.2, 0.0});
-
-
 }
 
 bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &context) {

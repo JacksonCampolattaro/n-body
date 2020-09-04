@@ -19,7 +19,12 @@ namespace View {
     public:
         explicit InteractiveView(Controller::Application &application, std::shared_ptr<Model::Simulation> simulation);
 
+        void on_advance_clicked();
+        void on_run_clicked();
+
     private:
+
+        Model::Simulation &_simulation;
 
         Gtk::Window _window;
         Gtk::Box _vbox, _hbox;
