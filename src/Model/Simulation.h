@@ -38,6 +38,7 @@ namespace Model {
         void update();
 
         sigc::signal<void, const std::vector<Drawable::Drawable> &> signal_update_complete;
+        sigc::signal<void, const std::vector<Drawable::Drawable> &> signal_num_drawables_changed;
 
         Physics::Rule _rule;
 
