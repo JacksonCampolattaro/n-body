@@ -16,8 +16,11 @@ View::SimulationViewport::SimulationViewport() :
 
     spdlog::trace("MagnumViewport constructor invoked");
 
+    set_size_request(1000, 1000);
+
     // Automatically re-render everything each time it needs to be redrawn
     set_auto_render();
+    set_has_depth_buffer();
 
     // Set desired OpenGL version
     set_required_version(4, 5);
@@ -102,19 +105,20 @@ void View::SimulationViewport::onRealize() {
         _sphereInstanceData[i].color =
                 color;
     }
-    _sphereInstanceBuffer = GL::Buffer{};
-    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
-                                         Shaders::Phong::TransformationMatrix{},
-                                         Shaders::Phong::NormalMatrix{},
-                                         Shaders::Phong::Color3{});
-    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
-
     _shader = Shaders::Phong{
             Shaders::Phong::Flag::VertexColor |
             Shaders::Phong::Flag::InstancedTransformation
     };
 
     _shader.setLightPosition({0, 0, 100});
+
+
+    _sphereInstanceBuffer = GL::Buffer{};
+    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
+                                         Shaders::Phong::TransformationMatrix{},
+                                         Shaders::Phong::NormalMatrix{},
+                                         Shaders::Phong::Color3{});
+    _sphereMesh.setInstanceCount(_sphereInstanceData.size());
 
     draw(*_drawables);
 }
@@ -136,7 +140,8 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
                                                   {get_width(), get_height()}});
 
     // Clear
-    framebuffer.clear(GL::FramebufferClear::Color);
+    framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
 
     _projection =
             Matrix4::perspectiveProjection(
