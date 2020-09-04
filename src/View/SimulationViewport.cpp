@@ -32,11 +32,6 @@ View::SimulationViewport::SimulationViewport() :
 
 }
 
-void View::SimulationViewport::attach_drawables(
-        std::shared_ptr<std::vector<Model::Drawable::Drawable>> drawables) {
-    _drawables = drawables;
-}
-
 void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable> &drawables) {
 
     _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
