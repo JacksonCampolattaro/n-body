@@ -20,12 +20,14 @@ namespace Model {
         class Drawable {
         public:
 
-            Drawable(Handle<Position> position, Color3 color, float radius);
+            Drawable(Position *position, Color3 color, float radius);
+
+            const Position &position() const;
 
             Color3 _color;
             float _radius;
 
-            const Handle<Position> _position;
+            const Position *_position;
         };
 
     }

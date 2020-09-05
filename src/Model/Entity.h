@@ -29,18 +29,18 @@ namespace Model {
 
     private:
 
-        Entity(Simulation &simulation, const Position &position, const Velocity &velocity);
+        Entity(Simulation &simulation, Position &position, Velocity &velocity);
 
         friend class Simulation;
 
         Simulation &_simulation;
 
-        Handle<Position> _position;
-        Handle<Velocity> _velocity;
+        Position *_position;
+        Velocity *_velocity;
 
-        std::optional<Handle<Drawable::Drawable>> _drawable;
-        std::optional<Handle<Physics::PassiveElement>> _passiveElement;
-        std::optional<Handle<Physics::ActiveElement>> _activeElement;
+        Drawable::Drawable *_drawable;
+        Physics::PassiveElement *_passiveElement;
+        Physics::ActiveElement *_activeElement;
     };
 }
 
