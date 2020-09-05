@@ -43,7 +43,7 @@ endif ()
 add_subdirectory(src)
 
 # Add test subdirectory
-#add_subdirectory(test)
+add_subdirectory(test)
 
 # Add Doxygen target
 find_package(Doxygen REQUIRED)

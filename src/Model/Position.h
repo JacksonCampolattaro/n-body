@@ -16,15 +16,29 @@ namespace Model {
 
     public:
 
-        Position(float x, float y, float z) : glm::vec3(x, y, z){};
+        Position(float x, float y, float z) : glm::vec3(x, y, z) {};
 
-        Position(glm::vec3 vector) : glm::vec3(vector){};
+        Position(glm::vec3 vector) : glm::vec3(vector) {};
 
         [[nodiscard]] std::string toString() const;
 
-        friend std::ostream& operator<<(std::ostream& os, const Position &position);
+        friend std::ostream &operator<<(std::ostream &os, const Position &position) {
 
-        friend std::istream& operator>>(std::istream& in, Position &position);
+            os << "( "
+               << position.x << ", "
+               << position.y << ", "
+               << position.z << " )";
+
+            return os;
+        }
+
+
+        friend std::istream &operator>>(std::istream &in, Position &position) {
+
+            char _;
+            in >> _ >> position.x >> _ >> position.y >> _ >> position.z >> _;
+            return in;
+        }
     };
 
 }
