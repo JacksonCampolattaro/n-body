@@ -50,7 +50,7 @@ namespace Model {
                 assert("velocity" == _);
 
                 // The next value should be the colon
-                in >> std::quoted(_);
+                in >> _;
                 assert(":" == _);
 
                 // Get the value

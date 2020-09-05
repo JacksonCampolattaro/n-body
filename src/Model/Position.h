@@ -51,7 +51,7 @@ namespace Model {
                 assert("position" == _);
 
                 // The next value should be the colon
-                in >> std::quoted(_);
+                in >> _;
                 assert(":" == _);
 
                 // Get the value
@@ -64,8 +64,6 @@ namespace Model {
             in >> _;
             assert("}" == _);
 
-//            char _;
-//            in >> _ >> position.x >> _ >> position.y >> _ >> position.z >> _;
             return in;
         }
     };
