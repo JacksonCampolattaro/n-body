@@ -42,7 +42,7 @@ namespace View {
 
         SimulationViewport();
 
-        void draw(const std::vector<Model::Drawable::Drawable> &drawables);
+        void draw(const std::deque<Model::Drawable::Drawable> &drawables);
 
         sigc::signal<void> signal_render_complete;
 

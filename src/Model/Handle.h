@@ -5,7 +5,7 @@
 #ifndef N_BODY_HANDLE_H
 #define N_BODY_HANDLE_H
 
-#include <vector>
+#include <deque>
 
 namespace Model {
 
@@ -13,11 +13,11 @@ namespace Model {
     class Handle {
     public:
 
-        Handle(std::vector<T> &vector, size_t index) :
+        Handle(std::deque<T> &vector, size_t index) :
                 _vector(vector),
                 _index(index) {}
 
-        Handle(std::vector<T> &vector, const T &value) :
+        Handle(std::deque<T> &vector, const T &value) :
                 _vector(vector) {
 
             _vector.push_back(value);
@@ -34,7 +34,7 @@ namespace Model {
 
     private:
 
-        std::vector<T> &_vector;
+        std::deque<T> &_vector;
         size_t _index;
 
     };

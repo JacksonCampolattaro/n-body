@@ -31,7 +31,7 @@ View::SimulationViewport::SimulationViewport() :
 
 }
 
-void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable> &drawables) {
+void View::SimulationViewport::draw(const std::deque<Model::Drawable::Drawable> &drawables) {
 
     _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
     for (int i = 0; i < drawables.size(); ++i) {

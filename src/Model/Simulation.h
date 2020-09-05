@@ -22,6 +22,7 @@
 #include <sigc++/signal.h>
 
 #include <vector>
+#include <deque>
 #include <memory>
 #include <string>
 
@@ -37,17 +38,17 @@ namespace Model {
 
         void update();
 
-        sigc::signal<void, const std::vector<Drawable::Drawable> &> signal_update_complete;
-        sigc::signal<void, const std::vector<Drawable::Drawable> &> signal_num_drawables_changed;
+        sigc::signal<void, const std::deque<Drawable::Drawable> &> signal_update_complete;
+        sigc::signal<void, const std::deque<Drawable::Drawable> &> signal_num_drawables_changed;
 
         Physics::Rule _rule;
 
-        std::vector<Entity> _entities;
-        std::vector<Position> _positions;
-        std::vector<Velocity> _velocities;
-        std::vector<Physics::PassiveElement> _passiveElements;
-        std::vector<Physics::ActiveElement> _activeElements;
-        std::vector<Drawable::Drawable> _drawables;
+        std::deque<Entity> _entities;
+        std::deque<Position> _positions;
+        std::deque<Velocity> _velocities;
+        std::deque<Physics::PassiveElement> _passiveElements;
+        std::deque<Physics::ActiveElement> _activeElements;
+        std::deque<Drawable::Drawable> _drawables;
     };
 
 }
