@@ -23,6 +23,44 @@ namespace Model {
             float _mass;
             Velocity *_velocity;
             const Position *_position;
+
+            friend std::ostream &operator<<(std::ostream &os, const PassiveElement &passiveElement) {
+
+                os << "{ "
+                   << "\"passive\" : "
+                   << passiveElement._mass
+                   << " }";
+                return os;
+            }
+
+
+            friend std::istream &operator>>(std::istream &in, PassiveElement &passiveElement) {
+
+                std::string _;
+
+                // The first value should be the open bracket
+                in >> _;
+                assert("{" == _);
+                {
+
+                    // The next value should be the name
+                    in >> std::quoted(_);
+                    assert("passive" == _);
+
+                    // The next value should be the colon
+                    in >> _;
+                    assert(":" == _);
+
+                    // Get the value
+                    in >> passiveElement._mass;
+
+                }
+                // The last value should be the close bracket
+                in >> _;
+                assert("}" == _);
+
+                return in;
+            }
         };
 
     }
