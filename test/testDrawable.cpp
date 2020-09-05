@@ -1,25 +1,24 @@
 #include <cassert>
 
-#include "../src/Model/Position.h"
+#include "../src/Model/Drawable/Drawable.h"
 
-using Model::Position;
+using Model::Drawable::Drawable;
 
 int main() {
 
     std::stringstream stream;
 
     // Save the original to a stream
-    Position original(1, 2, 3);
+    Drawable original({0.1, 0.2, 0.3}, 100);
     stream << original;
     std::cout << original;
 
     // Load a copy from the stream
-    Position copy(0, 0, 0);
+    Drawable copy({0, 0, 0}, 1);
     stream >> copy;
     std::cout << copy;
 
     // Make sure the two match
-    assert(original == copy);
 
     return 0;
 }
