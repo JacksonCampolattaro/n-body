@@ -6,7 +6,6 @@
 #define N_BODY_DRAWABLE_H
 
 #include "../Position.h"
-#include "../Handle.h"
 
 #include <Magnum/Magnum.h>
 #include <Magnum/Math/Color.h>

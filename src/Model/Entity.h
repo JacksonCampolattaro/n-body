@@ -5,7 +5,6 @@
 #ifndef N_BODY_ENTITY_H
 #define N_BODY_ENTITY_H
 
-#include "Handle.h"
 #include "Position.h"
 #include "Velocity.h"
 #include "Drawable/Drawable.h"
