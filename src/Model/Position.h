@@ -22,15 +22,7 @@ namespace Model {
 
         [[nodiscard]] std::string toString() const;
 
-        template<class Archive>
-        void serialize(Archive & ar)
-        {
-            ar(
-                    cereal::make_nvp("x", this->x),
-                    cereal::make_nvp("y", this->y),
-                    cereal::make_nvp("z", this->z)
-            );
-        }
+        friend std::ostream& operator<<(std::ostream& os, const Position &body);
     };
 
 }
