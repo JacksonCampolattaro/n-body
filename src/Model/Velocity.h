@@ -9,6 +9,7 @@
 #include <cereal/archives/json.hpp>
 
 #include <glm/vec3.hpp>
+#include <iomanip>
 
 namespace Model {
 
@@ -24,18 +25,44 @@ namespace Model {
 
         friend std::ostream &operator<<(std::ostream &os, const Velocity &velocity) {
 
-            os << "< "
-               << velocity.x << ", "
-               << velocity.y << ", "
-               << velocity.z << " >";
-
+            os << "{ "
+               << "\"velocity\" : "
+               << "\""
+               << velocity.x << " "
+               << velocity.y << " "
+               << velocity.z
+               << "\""
+               << " }";
             return os;
         }
 
         friend std::istream &operator>>(std::istream &in, Velocity &velocity) {
 
-            char _;
-            in >> _ >> velocity.x >> _ >> velocity.y >> _ >> velocity.z >> _;
+            std::string _;
+
+            // The first value should be the open bracket
+            in >> _;
+            assert("{" == _);
+            {
+
+                // The next value should be the name
+                in >> std::quoted(_);
+                assert("velocity" == _);
+
+                // The next value should be the colon
+                in >> std::quoted(_);
+                assert(":" == _);
+
+                // Get the value
+                std::string value;
+                in >> std::quoted(value);
+                std::stringstream(value) >> velocity.x >> velocity.y >> velocity.z;
+
+            }
+            // The last value should be the close bracket
+            in >> _;
+            assert("}" == _);
+
             return in;
         }
     };
