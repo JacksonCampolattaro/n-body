@@ -9,8 +9,8 @@ project(n_body)
 # Add main subdirectory
 add_subdirectory(src)
 
-# Add main subdirectory
-add_subdirectory(test)
+# Add test subdirectory
+#add_subdirectory(test)
 
 # Add Doxygen target
 find_package(Doxygen REQUIRED)
