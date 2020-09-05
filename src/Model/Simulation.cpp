@@ -7,7 +7,7 @@
 
 void Model::Simulation::update() {
 
-    spdlog::trace("Update");
+    spdlog::trace("Simulation update invoked");
 
     // Kick
     for (auto &active : _activeElements) {
@@ -25,8 +25,7 @@ void Model::Simulation::update() {
     signal_update_complete.emit(_drawables);
 }
 
-Model::Entity &Model::Simulation::addEntity(Model::Position position, Model::Velocity velocity) {
-
-    _entities.push_back(Entity(*this, position, velocity));
+Model::Entity &Model::Simulation::newEntity() {
+    _entities.push_back(Entity(*this));
     return _entities.back();
 }

@@ -5,8 +5,8 @@
 #include "ActiveElement.h"
 
 
-Model::Physics::ActiveElement::ActiveElement(Position *position, float mass) :
-        _position(position),
+Model::Physics::ActiveElement::ActiveElement(float mass) :
+        _position(nullptr),
         _mass(mass) {
 
 }

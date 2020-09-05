@@ -34,7 +34,7 @@ namespace Model {
 
         Simulation() = default;
 
-        Entity &addEntity(Position position, Velocity velocity);
+        Entity &newEntity();
 
         void update();
 

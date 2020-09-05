@@ -14,7 +14,7 @@ namespace Model {
         class PassiveElement {
         public:
 
-            PassiveElement(Position *position, Velocity *velocity, float mass);
+            PassiveElement(float mass);
 
             const Position &position() const;
 
