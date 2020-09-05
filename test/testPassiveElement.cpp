@@ -1,20 +1,20 @@
 #include <cassert>
 
-#include "../src/Model/Drawable/Drawable.h"
+#include "../src/Model/Physics/PassiveElement.h"
 
-using Model::Drawable::Drawable;
+using Model::Physics::PassiveElement;
 
 int main() {
 
     std::stringstream stream;
 
     // Save the original to a stream
-    Drawable original({0.1, 0.2, 0.3}, 100);
+    PassiveElement original(100);
     stream << original;
     std::cout << original;
 
     // Load a copy from the stream
-    Drawable copy({0, 0, 0}, 1);
+    PassiveElement copy(1);
     stream >> copy;
     std::cout << copy;
 
