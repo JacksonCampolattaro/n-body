@@ -27,6 +27,24 @@ namespace Model {
             float _radius;
 
             const Position *_position;
+
+            friend std::ostream &operator<<(std::ostream &os, const Drawable &drawable) {
+                os << "{ drawable: "
+                   << "{ color: "
+                   << drawable._color.r() << " "
+                   << drawable._color.g() << " "
+                   << drawable._color.b() << " "
+                   << " }"
+                   << "{ radius: "
+                   << drawable._radius
+                   << " }"
+                   << " }";
+                return os;
+            }
+
+            friend std::istream &operator>>(std::istream &in, Drawable &drawable) {
+                return in;
+            }
         };
 
     }

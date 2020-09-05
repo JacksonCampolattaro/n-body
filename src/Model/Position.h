@@ -9,6 +9,7 @@
 #include <cereal/archives/json.hpp>
 
 #include <glm/vec3.hpp>
+#include <iomanip>
 
 namespace Model {
 
@@ -24,19 +25,47 @@ namespace Model {
 
         friend std::ostream &operator<<(std::ostream &os, const Position &position) {
 
-            os << "( "
-               << position.x << ", "
-               << position.y << ", "
-               << position.z << " )";
-
+            os << "{ "
+               << "\"position\" : "
+               << "\""
+               << position.x << " "
+               << position.y << " "
+               << position.z
+               << "\""
+               << " }";
             return os;
         }
 
 
         friend std::istream &operator>>(std::istream &in, Position &position) {
 
-            char _;
-            in >> _ >> position.x >> _ >> position.y >> _ >> position.z >> _;
+            std::string _;
+
+            // The first value should be the open bracket
+            in >> _;
+            assert("{" == _);
+            {
+
+                // The next value should be the name
+                in >> std::quoted(_);
+                assert("position" == _);
+
+                // The next value should be the colon
+                in >> std::quoted(_);
+                assert(":" == _);
+
+                // Get the value
+                std::string value;
+                in >> std::quoted(value);
+                std::stringstream(value) >> position.x >> position.y >> position.z;
+
+            }
+            // The last value should be the close bracket
+            in >> _;
+            assert("}" == _);
+
+//            char _;
+//            in >> _ >> position.x >> _ >> position.y >> _ >> position.z >> _;
             return in;
         }
     };

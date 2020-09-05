@@ -10,3 +10,9 @@ add_executable(test_velocity
         ../src/Model/Velocity.h ../src/Model/Velocity.cpp
 
         testVelocity.cpp)
+
+add_executable(test_drawable
+
+        ../src/Model/Drawable/Drawable.h ../src/Model/Drawable/Drawable.cpp
+
+        testDrawable.cpp)
