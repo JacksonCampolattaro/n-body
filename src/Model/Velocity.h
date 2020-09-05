@@ -22,7 +22,22 @@ namespace Model {
 
         [[nodiscard]] std::string toString() const;
 
-        friend std::ostream& operator<<(std::ostream& os, const Velocity &body);
+        friend std::ostream &operator<<(std::ostream &os, const Velocity &velocity) {
+
+            os << "< "
+               << velocity.x << ", "
+               << velocity.y << ", "
+               << velocity.z << " >";
+
+            return os;
+        }
+
+        friend std::istream &operator>>(std::istream &in, Velocity &velocity) {
+
+            char _;
+            in >> _ >> velocity.x >> _ >> velocity.y >> _ >> velocity.z >> _;
+            return in;
+        }
     };
 
 }
