@@ -29,20 +29,98 @@ namespace Model {
             const Position *_position;
 
             friend std::ostream &operator<<(std::ostream &os, const Drawable &drawable) {
-                os << "{ drawable: "
-                   << "{ color: "
-                   << drawable._color.r() << " "
-                   << drawable._color.g() << " "
-                   << drawable._color.b() << " "
-                   << " }"
-                   << "{ radius: "
-                   << drawable._radius
-                   << " }"
-                   << " }";
+
+                os << "{ \"drawable\" : ";
+                {
+
+                    os << "{ \"color\" : ";
+                    {
+                        os << "\""
+                           << drawable._color.x() << " "
+                           << drawable._color.y() << " "
+                           << drawable._color.z()
+                           << "\" ";
+                    }
+                    os << "} ";
+
+                    os << "{ \"radius\" : ";
+                    {
+                        os << drawable._radius << " ";
+                    }
+                    os << "} ";
+                }
+                os << "} ";
+
                 return os;
             }
 
             friend std::istream &operator>>(std::istream &in, Drawable &drawable) {
+
+                std::string _;
+
+                // The first value should be the open bracket
+                in >> _;
+                assert("{" == _);
+                {
+
+                    // The next value should be the name
+                    in >> std::quoted(_);
+                    assert("drawable" == _);
+
+                    // The next value should be the colon
+                    in >> _;
+                    assert(":" == _);
+
+                    // TODO: Split this out
+                    // The first value of the color should be the open bracket
+                    in >> _;
+                    assert("{" == _);
+                    {
+
+                        // The next value should be the name
+                        in >> std::quoted(_);
+                        assert("color" == _);
+
+                        // The next value should be the colon
+                        in >> _;
+                        assert(":" == _);
+
+                        // Get the value
+                        std::string value;
+                        in >> std::quoted(value);
+                        std::stringstream(value) >> drawable._color.x() >> drawable._color.y() >> drawable._color.z();
+
+                    }
+                    // The last value should be the close bracket
+                    in >> _;
+                    assert("}" == _);
+
+                    // TODO: Split this out
+                    // The first value of the radius should be the open bracket
+                    in >> _;
+                    assert("{" == _);
+                    {
+
+                        // The next value should be the name
+                        in >> std::quoted(_);
+                        assert("radius" == _);
+
+                        // The next value should be the colon
+                        in >> _;
+                        assert(":" == _);
+
+                        // Get the value
+                        in >> drawable._radius;
+
+                    }
+                    // The last value should be the close bracket
+                    in >> _;
+                    assert("}" == _);
+                }
+                // The last value should be the close bracket
+                in >> _;
+                assert("}" == _);
+
                 return in;
             }
         };
