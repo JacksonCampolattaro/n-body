@@ -5,7 +5,6 @@
 #include "SimulationViewport.h"
 
 #include <spdlog/spdlog.h>
-#include <spdlog/spdlog-inl.h>
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -51,9 +50,6 @@ void View::SimulationViewport::draw(const std::vector<Model::Drawable::Drawable>
                 color;
     }
     _sphereMesh.setInstanceCount(drawables.size());
-
-//    auto p = *drawables[0]._position;
-//    _shader.setLightPosition({p.x, p.y, p.z});
 
     queue_render();
 }

@@ -49,13 +49,14 @@ namespace View {
     protected:
 
         void onRealize();
-        bool onRender(const Glib::RefPtr<Gdk::GLContext>& context);
+
+        bool onRender(const Glib::RefPtr<Gdk::GLContext> &context);
+
         void onResize(int width, int height);
+
         void onUnrealize();
 
         Platform::GLContext _context{NoCreate};
-
-    private:
 
         GL::Mesh _sphereMesh{NoCreate};
         GL::Buffer _sphereInstanceBuffer{NoCreate};

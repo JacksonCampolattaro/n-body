@@ -43,6 +43,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Handle.h
         Model/Simulation.cpp Model/Simulation.h
         Model/Entity.cpp Model/Entity.cpp
+        Model/Body.cpp Model/Body.cpp
         Model/Position.cpp Model/Position.h
         Model/Velocity.cpp Model/Velocity.h
 

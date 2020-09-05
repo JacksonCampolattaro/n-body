@@ -12,6 +12,9 @@
 #include "Physics/PassiveElement.h"
 #include "Physics/ActiveElement.h"
 
+#include <cereal/cereal.hpp>
+#include <cereal/archives/json.hpp>
+
 namespace Model {
 
     class Simulation;
