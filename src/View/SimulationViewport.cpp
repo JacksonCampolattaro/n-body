@@ -36,7 +36,7 @@ void View::SimulationViewport::draw(const std::deque<Model::Drawable::Drawable> 
     _sphereInstanceData = Containers::Array<SphereInstanceData>{Containers::NoInit, drawables.size()};
     for (int i = 0; i < drawables.size(); ++i) {
 
-        auto position = *drawables[i]._position;
+        auto position = drawables[i].position();
         auto color = drawables[i]._color;
 
         _sphereInstanceData[i].transformation =

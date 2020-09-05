@@ -5,7 +5,7 @@
 #include "ActiveElement.h"
 
 
-Model::Physics::ActiveElement::ActiveElement(Model::Handle<Model::Position> position, float mass) :
+Model::Physics::ActiveElement::ActiveElement(Position *position, float mass) :
         _position(position),
         _mass(mass) {
 

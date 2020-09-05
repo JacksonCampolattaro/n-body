@@ -16,15 +16,15 @@ namespace Model {
         class PassiveElement {
         public:
 
-            PassiveElement(Handle <Position> position, Handle <Velocity> velocity, float mass);
+            PassiveElement(Position *position, Velocity *velocity, float mass);
 
             const Position &position() const;
 
             Velocity &velocity();
 
             float _mass;
-            Handle <Velocity> _velocity;
-            const Handle <Position> _position;
+            Velocity *_velocity;
+            const Position *_position;
         };
 
     }

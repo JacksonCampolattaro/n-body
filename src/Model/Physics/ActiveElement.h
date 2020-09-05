@@ -16,12 +16,12 @@ namespace Model {
         class ActiveElement {
         public:
 
-            ActiveElement(Handle<Position> position, float mass);
+            ActiveElement(Position *position, float mass);
 
             const Position &position() const;
 
             float _mass;
-            const Handle <Position> _position;
+            Position *_position;
         };
 
     }

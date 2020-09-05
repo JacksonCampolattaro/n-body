@@ -6,31 +6,36 @@
 
 #include "Simulation.h"
 
-Model::Entity::Entity(Simulation &simulation, const Position &position, const Velocity &velocity) :
+Model::Entity::Entity(Simulation &simulation, Position &position, Velocity &velocity) :
         _simulation(simulation),
-        _position{_simulation._positions, position},
-        _velocity{_simulation._velocities, velocity} {
+        _position(nullptr),
+        _velocity(nullptr) {
 
+    _simulation._positions.emplace_back(position);
+    _position = &_simulation._positions.back();
+
+    _simulation._velocities.emplace_back(velocity);
+    _velocity = &_simulation._velocities.back();
 }
 
 Model::Entity &Model::Entity::addDrawable(Color3 color, float radius) {
 
-    _drawable.emplace(_simulation._drawables,
-                      Drawable::Drawable(_position, color, radius));
+    _simulation._drawables.emplace_back(_position, color, radius);
+    _drawable = &_simulation._drawables.back();
     _simulation.signal_num_drawables_changed.emit(_simulation._drawables);
     return *this;
 }
 
 Model::Entity &Model::Entity::addPassiveElement(float mass) {
 
-    _passiveElement.emplace(_simulation._passiveElements,
-                            Physics::PassiveElement(_position, _velocity, mass));
+    _simulation._passiveElements.emplace_back(_position, _velocity, mass);
+    _passiveElement = &_simulation._passiveElements.back();
     return *this;
 }
 
 Model::Entity &Model::Entity::addActiveElement(float mass) {
 
-    _activeElement.emplace(_simulation._activeElements,
-                            Physics::ActiveElement(_position, mass));
+    _simulation._activeElements.emplace_back(_position, mass);
+    _activeElement = &_simulation._activeElements.back();
     return *this;
 }
