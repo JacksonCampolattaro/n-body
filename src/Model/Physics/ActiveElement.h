@@ -8,7 +8,6 @@
 
 #include "../Position.h"
 #include "../Velocity.h"
-#include "../Handle.h"
 
 namespace Model {
     namespace Physics {
