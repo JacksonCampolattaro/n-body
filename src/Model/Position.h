@@ -22,7 +22,9 @@ namespace Model {
 
         [[nodiscard]] std::string toString() const;
 
-        friend std::ostream& operator<<(std::ostream& os, const Position &body);
+        friend std::ostream& operator<<(std::ostream& os, const Position &position);
+
+        friend std::istream& operator>>(std::istream& in, Position &position);
     };
 
 }
