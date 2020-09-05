@@ -19,7 +19,7 @@ namespace Model {
         class Drawable {
         public:
 
-            Drawable(Position *position, Color3 color, float radius);
+            Drawable(Color3 color, float radius);
 
             const Position &position() const;
 

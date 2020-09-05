@@ -21,13 +21,15 @@ namespace Model {
     class Entity {
     public:
 
-        Entity &addDrawable(Color3 color, float radius);
-
-        Entity &addPassiveElement(float mass);
-        Entity &addActiveElement(float mass);
+        Entity &setPosition(const Position &position);
+        Entity &setVelocity(const Velocity &velocity);
+        Entity &setDrawable(const Drawable::Drawable &drawable);
+        Entity &setPassiveElement(const Physics::PassiveElement &passiveElement);
+        Entity &setActiveElement(const Physics::ActiveElement &activeElement);
 
     private:
 
+        Entity(Simulation &simulation);
         Entity(Simulation &simulation, Position &position, Velocity &velocity);
 
         friend class Simulation;

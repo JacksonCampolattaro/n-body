@@ -4,11 +4,9 @@
 
 #include "PassiveElement.h"
 
-Model::Physics::PassiveElement::PassiveElement(Position *position,
-                                               Velocity *velocity,
-                                               float mass) :
-        _position(position),
-        _velocity(velocity),
+Model::Physics::PassiveElement::PassiveElement(float mass) :
+        _position(nullptr),
+        _velocity(nullptr),
         _mass(mass) {}
 
 const Model::Position &Model::Physics::PassiveElement::position() const {

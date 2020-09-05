@@ -7,6 +7,8 @@
 #include <glm/geometric.hpp>
 #include <cmath>
 
+#include "../../Controller/Logger.h"
+
 Model::Physics::Rule::Rule() :
         _gravitationalConstant(1.0),
         _timeIncrement(0.1) {
@@ -14,6 +16,8 @@ Model::Physics::Rule::Rule() :
 
 void
 Model::Physics::Rule::operator()(const Model::Physics::ActiveElement &active, Model::Physics::PassiveElement &passive) const {
+
+    spdlog::trace("Rule invoked");
 
     float forceMagnitude =
             (float) (_gravitationalConstant * passive._mass * active._mass) /

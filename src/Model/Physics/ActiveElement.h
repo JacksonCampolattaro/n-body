@@ -15,7 +15,7 @@ namespace Model {
         class ActiveElement {
         public:
 
-            ActiveElement(Position *position, float mass);
+            ActiveElement(float mass);
 
             const Position &position() const;
 
