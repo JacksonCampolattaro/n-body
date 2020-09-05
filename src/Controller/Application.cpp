@@ -79,12 +79,12 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
                 .addPassiveElement(0.5)
                 .addActiveElement(0.5);
         _simulation->addEntity({-5, 0, 0},
-                               {0, 0.1, 0})
+                               {0, 0.15, 0})
                 .addDrawable({0.8, 0.8, 0.0}, 1.0)
                 .addPassiveElement(0.5)
                 .addActiveElement(0.5);
         _simulation->addEntity({5, 0, 0},
-                               {0, -0.1, 0})
+                               {0, -0.05, 0})
                 .addDrawable({0.8, 0.0, 0.0}, 1.0)
                 .addPassiveElement(0.5)
                 .addActiveElement(0.5);
