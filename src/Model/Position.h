@@ -5,8 +5,10 @@
 #ifndef N_BODY_POSITION_H
 #define N_BODY_POSITION_H
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/prettywriter.h>
 
 #include <glm/vec3.hpp>
 #include <iomanip>
@@ -23,47 +25,35 @@ namespace Model {
 
         [[nodiscard]] std::string toString() const;
 
-        friend std::ostream &operator<<(std::ostream &os, const Position &position) {
+        template<typename Writer>
+        friend Writer &operator<<(Writer &writer, const Position &position) {
+            writer.StartObject();
+            {
+                writer.String("x");
+                writer.Double(position.x);
+                writer.String("y");
+                writer.Double(position.y);
+                writer.String("z");
+                writer.Double(position.z);
+            }
+            writer.EndObject();
+        }
 
-            os << "{ "
-               << "\"position\" : "
-               << "\""
-               << position.x << " "
-               << position.y << " "
-               << position.z
-               << "\""
-               << " }";
+        bool Deserialize(const rapidjson::Value &obj) {
+
+            x = obj["x"].GetFloat();
+            y = obj["y"].GetFloat();
+            z = obj["z"].GetFloat();
+
+            return true;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const Position &position) {
             return os;
         }
 
 
         friend std::istream &operator>>(std::istream &in, Position &position) {
-
-            std::string _;
-
-            // The first value should be the open bracket
-            in >> _;
-            assert("{" == _);
-            {
-
-                // The next value should be the name
-                in >> std::quoted(_);
-                assert("position" == _);
-
-                // The next value should be the colon
-                in >> _;
-                assert(":" == _);
-
-                // Get the value
-                std::string value;
-                in >> std::quoted(value);
-                std::stringstream(value) >> position.x >> position.y >> position.z;
-
-            }
-            // The last value should be the close bracket
-            in >> _;
-            assert("}" == _);
-
             return in;
         }
     };
