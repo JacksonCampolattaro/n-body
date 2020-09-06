@@ -39,22 +39,18 @@ namespace Model {
             writer.EndObject();
         }
 
-        bool Deserialize(const rapidjson::Value &obj) {
+        friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Position &position) {
 
-            x = obj["x"].GetFloat();
-            y = obj["y"].GetFloat();
-            z = obj["z"].GetFloat();
+            position.x = obj["x"].GetFloat();
+            position.y = obj["y"].GetFloat();
+            position.z = obj["z"].GetFloat();
 
-            return true;
+            return obj;
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Position &position) {
+            os << "( " << position.x << " " << position.y << " " << position.z << " )";
             return os;
-        }
-
-
-        friend std::istream &operator>>(std::istream &in, Position &position) {
-            return in;
         }
     };
 
