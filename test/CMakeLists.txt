@@ -28,3 +28,28 @@ add_executable(test_activeElement
         ../src/Model/Physics/ActiveElement.h ../src/Model/Physics/ActiveElement.cpp
 
         testActiveElement.cpp)
+
+add_executable(test_entity
+
+        ../src/Model/Simulation.cpp ../src/Model/Simulation.h
+        ../src/Model/Entity.cpp ../src/Model/Entity.cpp
+        ../src/Model/Position.cpp ../src/Model/Position.h
+        ../src/Model/Velocity.cpp ../src/Model/Velocity.h
+        ../src/Model/Drawable/Drawable.cpp ../src/Model/Drawable/Drawable.h
+        ../src/Model/Physics/Physics.h
+        ../src/Model/Physics/Rule.cpp ../src/Model/Physics/Rule.h
+        ../src/Model/Physics/PassiveElement.cpp ../src/Model/Physics/PassiveElement.h
+        ../src/Model/Physics/ActiveElement.cpp ../src/Model/Physics/ActiveElement.h
+
+        testEntity.cpp)
+
+target_link_libraries(test_entity PRIVATE
+        ${GTKMM_LIBRARIES}
+        Magnum::GLContext
+        Magnum::GL
+        Magnum::Magnum
+        Magnum::MeshTools
+        Magnum::Primitives
+        Magnum::Shaders
+        spdlog::spdlog
+        )
