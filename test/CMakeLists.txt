@@ -22,3 +22,9 @@ add_executable(test_passiveElement
         ../src/Model/Physics/PassiveElement.h ../src/Model/Physics/PassiveElement.cpp
 
         testPassiveElement.cpp)
+
+add_executable(test_activeElement
+
+        ../src/Model/Physics/ActiveElement.h ../src/Model/Physics/ActiveElement.cpp
+
+        testActiveElement.cpp)

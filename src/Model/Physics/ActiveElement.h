@@ -21,6 +21,44 @@ namespace Model {
 
             float _mass;
             Position *_position;
+
+            friend std::ostream &operator<<(std::ostream &os, const ActiveElement &activeElement) {
+
+                os << "{ "
+                   << "\"activeElement\" : "
+                   << activeElement._mass
+                   << " }";
+                return os;
+            }
+
+
+            friend std::istream &operator>>(std::istream &in, ActiveElement &activeElement) {
+
+                std::string _;
+
+                // The first value should be the open bracket
+                in >> _;
+                assert("{" == _);
+                {
+
+                    // The next value should be the name
+                    in >> std::quoted(_);
+                    assert("activeElement" == _);
+
+                    // The next value should be the colon
+                    in >> _;
+                    assert(":" == _);
+
+                    // Get the value
+                    in >> activeElement._mass;
+
+                }
+                // The last value should be the close bracket
+                in >> _;
+                assert("}" == _);
+
+                return in;
+            }
         };
 
     }
