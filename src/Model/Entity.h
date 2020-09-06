@@ -11,9 +11,6 @@
 #include "Physics/PassiveElement.h"
 #include "Physics/ActiveElement.h"
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
-
 namespace Model {
 
     class Simulation;
@@ -35,8 +32,6 @@ namespace Model {
 
         Entity(Simulation &simulation);
 
-        Entity(Simulation &simulation, Position &position, Velocity &velocity);
-
         friend class Simulation;
 
         Simulation &_simulation;
@@ -48,24 +43,8 @@ namespace Model {
         Physics::PassiveElement *_passiveElement;
         Physics::ActiveElement *_activeElement;
 
-        friend std::ostream &operator<<(std::ostream &os, const Entity &entity) {
-
-            os << "{ \"entity\" : ";
-            {
-
-            }
-            os << " }";
-            return os;
-        }
-
-
-        friend std::istream &operator>>(std::istream &in, Entity &entity) {
-
-            return in;
-        }
     };
 };
-}
 
 
 #endif //N_BODY_ENTITY_H

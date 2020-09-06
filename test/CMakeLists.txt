@@ -1,13 +1,13 @@
 
 add_executable(test_position
 
-        ../src/Model/Position.h ../src/Model/Position.cpp
+        ../src/Model/Position.h
 
         testPosition.cpp)
 
 add_executable(test_velocity
 
-        ../src/Model/Velocity.h ../src/Model/Velocity.cpp
+        ../src/Model/Velocity.h
 
         testVelocity.cpp)
 
@@ -33,8 +33,8 @@ add_executable(test_entity
 
         ../src/Model/Simulation.cpp ../src/Model/Simulation.h
         ../src/Model/Entity.cpp ../src/Model/Entity.cpp
-        ../src/Model/Position.cpp ../src/Model/Position.h
-        ../src/Model/Velocity.cpp ../src/Model/Velocity.h
+        ../src/Model/Position.h
+        ../src/Model/Velocity.h
         ../src/Model/Drawable/Drawable.cpp ../src/Model/Drawable/Drawable.h
         ../src/Model/Physics/Physics.h
         ../src/Model/Physics/Rule.cpp ../src/Model/Physics/Rule.h
