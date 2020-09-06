@@ -80,7 +80,7 @@ void blender() {
             .setPassiveElement({180000000})
             .setActiveElement({180000000});
 
-    glm::vec3 dimensions{5, 5, 50};
+    glm::vec3 dimensions{5, 5, 100};
     Model::Position corner{-50, -100, -450};
     float spacing = 10;
     for (int x = 0; x < dimensions.x; ++x) {
@@ -89,10 +89,16 @@ void blender() {
 
                 Model::Position p = corner + (glm::vec3{x, y, z} * spacing);
 
+                Model::Drawable::Color color{
+                        y / dimensions.y + x / dimensions.x,
+                        x / dimensions.x,
+                        1 - y / dimensions.y + x / dimensions.x
+                };
+
                 simulation.newEntity()
                         .setPosition(p)
                         .setVelocity({0.8, 0.25, 0})
-                        .setDrawable({{0.0, 0.0, 0.9}, 3})
+                        .setDrawable({color, 3})
                         .setActiveElement({5000})
                         .setPassiveElement({5000});
             }
