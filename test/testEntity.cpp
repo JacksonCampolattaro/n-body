@@ -30,5 +30,9 @@ int main() {
     std::cout << "archive: \n" << saved << std::endl;
 
     auto copy = simulation.newEntity();
+    rapidjson::Document document;
+    document.Parse(saved.c_str());
+    document >> copy;
+    std::cout << "copy: " << copy << std::endl;
 
 }

@@ -61,12 +61,30 @@ namespace Model {
         friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Entity &entity) {
 
             Position position(0, 0, 0);
-            obj >> position;
+            obj["position"] >> position;
             entity.setPosition(position);
 
             Velocity velocity(0, 0, 0);
-            obj >> velocity;
+            obj["velocity"] >> velocity;
             entity.setVelocity(velocity);
+
+            if (obj.HasMember("drawable")) {
+                Drawable::Drawable drawable{{0, 0, 0}, 0};
+                obj["drawable"] >> drawable;
+                entity.setDrawable(drawable);
+            }
+
+            if (obj.HasMember("passiveElement")) {
+                Physics::PassiveElement passiveElement{0};
+                obj["passiveElement"] >> passiveElement;
+                entity.setPassiveElement(passiveElement);
+            }
+
+            if (obj.HasMember("activeElement")) {
+                Physics::ActiveElement activeElement{0};
+                obj["activeElement"] >> activeElement;
+                entity.setActiveElement(activeElement);
+            }
 
             return obj;
         }

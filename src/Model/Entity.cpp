@@ -6,7 +6,13 @@
 
 #include "Simulation.h"
 
-Model::Entity::Entity(Model::Simulation &simulation) : _simulation(simulation) {
+Model::Entity::Entity(Model::Simulation &simulation) :
+        _simulation(simulation),
+        _position(nullptr),
+        _velocity(nullptr),
+        _drawable(nullptr),
+        _passiveElement(nullptr),
+        _activeElement(nullptr) {
 
     setPosition({0, 0, 0});
     setVelocity({0, 0, 0});
