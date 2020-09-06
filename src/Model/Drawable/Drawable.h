@@ -40,6 +40,7 @@ namespace Model {
                     writer.Double(drawable._radius);
                 }
                 writer.EndObject();
+                return writer;
             }
 
             friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Drawable &drawable) {

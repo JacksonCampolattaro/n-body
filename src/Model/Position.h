@@ -33,6 +33,7 @@ namespace Model {
                 writer.Double(position.z);
             }
             writer.EndObject();
+            return writer;
         }
 
         friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Position &position) {

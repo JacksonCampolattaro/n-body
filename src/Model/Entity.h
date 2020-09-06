@@ -37,8 +37,25 @@ namespace Model {
 
                 writer.String("velocity");
                 writer << *entity._velocity;
+
+                if (entity._drawable) {
+                    writer.String("drawable");
+                    writer << *entity._drawable;
+                }
+
+                if (entity._passiveElement) {
+                    writer.String("passiveElement");
+                    writer << *entity._passiveElement;
+                }
+
+                if (entity._activeElement) {
+                    writer.String("activeElement");
+                    writer << *entity._activeElement;
+
+                }
             }
             writer.EndObject();
+            return writer;
         }
 
         friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Entity &entity) {
