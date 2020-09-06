@@ -62,6 +62,9 @@ namespace Model {
 
         friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Simulation &simulation) {
 
+            assert(obj.IsArray());
+            for (auto it = obj.Begin(); it != obj.End(); ++it)
+                *it >> simulation.newEntity();
             return obj;
         }
 
