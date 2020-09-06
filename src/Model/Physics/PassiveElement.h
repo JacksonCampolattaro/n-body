@@ -27,7 +27,7 @@ namespace Model {
             friend std::ostream &operator<<(std::ostream &os, const PassiveElement &passiveElement) {
 
                 os << "{ "
-                   << "\"passive\" : "
+                   << "\"passiveElement\" : "
                    << passiveElement._mass
                    << " }";
                 return os;
@@ -45,7 +45,7 @@ namespace Model {
 
                     // The next value should be the name
                     in >> std::quoted(_);
-                    assert("passive" == _);
+                    assert("passiveElement" == _);
 
                     // The next value should be the colon
                     in >> _;
