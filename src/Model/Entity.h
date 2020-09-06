@@ -90,20 +90,27 @@ namespace Model {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Entity &entity) {
-            char _ = ' ';
+
             os << "{ "
                << *entity._position << " "
                << *entity._velocity << " ";
             if (entity._drawable) { os << *entity._drawable << " "; }
             if (entity._passiveElement) { os << *entity._passiveElement << " "; }
             if (entity._activeElement) { os << *entity._activeElement << " "; }
-            os << " }";
+            os << "}";
 
             return os;
         }
 
         friend bool operator==(const Entity &left, const Entity &right) {
-            return *left._position == *right._position && *left._velocity == *right._velocity;
+
+            return (
+                    left._position == right._position &&
+                    left._velocity == right._velocity &&
+                    left._drawable == right._drawable &&
+                    left._passiveElement == right._passiveElement &&
+                    left._activeElement == right._activeElement
+            );
         }
 
     private:
