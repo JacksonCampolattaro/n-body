@@ -9,8 +9,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
         Model/Simulation.cpp Model/Simulation.h
         Model/Entity.cpp Model/Entity.cpp
-        Model/Position.cpp Model/Position.h
-        Model/Velocity.cpp Model/Velocity.h
+        Model/Position.h
+        Model/Velocity.h
 
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
         Model/Physics/Physics.h
