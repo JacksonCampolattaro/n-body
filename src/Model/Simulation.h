@@ -14,10 +14,8 @@
 #include "Physics/ActiveElement.h"
 #include "../Controller/Logger.h"
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/xml.hpp>
-#include <cereal/types/vector.hpp>
-#include <cereal/types/memory.hpp>
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 
 #include <sigc++/signal.h>
 
@@ -49,6 +47,34 @@ namespace Model {
         std::deque<Physics::PassiveElement> _passiveElements;
         std::deque<Physics::ActiveElement> _activeElements;
         std::deque<Drawable::Drawable> _drawables;
+
+        template<typename Writer>
+        friend Writer &operator<<(Writer &writer, const std::deque<Entity> &entitites) {
+            writer.StartArray();
+            {
+                for (auto entity : entitites) {
+                    writer << entity;
+                }
+            }
+            writer.EndArray();
+            return writer;
+        }
+
+        friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, std::deque<Entity> &entitites) {
+
+            return obj;
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const std::deque<Entity> &entitites) {
+
+            os << "{ "
+            for (auto entity : entitites) {
+                os << entity << std::endl;
+            }
+            os << "}";
+
+            return os;
+        }
     };
 
 }

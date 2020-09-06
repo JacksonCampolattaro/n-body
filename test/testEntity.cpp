@@ -29,6 +29,7 @@ int main() {
     std::string saved = buffer.GetString();
     std::cout << "archive: \n" << saved << std::endl;
 
+    simulation = Simulation();
     auto copy = simulation.newEntity();
     rapidjson::Document document;
     document.Parse(saved.c_str());
