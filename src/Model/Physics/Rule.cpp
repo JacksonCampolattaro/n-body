@@ -10,8 +10,8 @@
 #include "../../Controller/Logger.h"
 
 Model::Physics::Rule::Rule() :
-        _gravitationalConstant(1.0),
-        _timeIncrement(0.1) {
+        _gravitationalConstant(1),
+        _timeIncrement(1) {
 }
 
 void

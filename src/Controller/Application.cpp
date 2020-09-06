@@ -103,7 +103,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         _view = std::make_shared<View::InteractiveView>(*this, _simulation);
     }
 
-    assert(_simulation->loadBodiesFromPath("../../threeBody.bod"));
+    assert(_simulation->loadBodiesFromPath("../../scenarios/galaxy.bod"));
 
     // Run the program itself
     spdlog::debug("Running the program");

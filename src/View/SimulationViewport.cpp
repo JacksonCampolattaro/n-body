@@ -107,7 +107,7 @@ bool View::SimulationViewport::onRender(const Glib::RefPtr<Gdk::GLContext> &cont
 
     _projection =
             Matrix4::perspectiveProjection(
-                    35.0_degf, _aspectRatio, 0.01f, 100.0f) *
+                    35.0_degf, _aspectRatio, 0.01f, 100000.0f) *
             Matrix4::translation(Vector3::zAxis(-35.0f));
 
     _sphereInstanceBuffer.setData(_sphereInstanceData, GL::BufferUsage::DynamicDraw);
