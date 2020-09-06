@@ -6,6 +6,7 @@
 #define N_BODY_DRAWABLE_H
 
 #include "../Position.h"
+#include "Color.h"
 
 #include <Magnum/Magnum.h>
 #include <Magnum/Math/Color.h>
@@ -19,11 +20,11 @@ namespace Model {
         class Drawable {
         public:
 
-            Drawable(Color3 color, float radius);
+            Drawable(Color color, float radius);
 
             const Position &position() const;
 
-            Color3 _color;
+            Color _color;
             float _radius;
 
             const Position *_position;

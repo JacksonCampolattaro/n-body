@@ -4,7 +4,7 @@
 
 #include "Drawable.h"
 
-Model::Drawable::Drawable::Drawable(Color3 color, float radius) :
+Model::Drawable::Drawable::Drawable(Color color, float radius) :
         _position(nullptr),
         _color(color),
         _radius(radius) {

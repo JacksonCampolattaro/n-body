@@ -24,7 +24,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         View/InteractiveView.cpp View/InteractiveView.h
 
         View/SimulationViewport.cpp View/SimulationViewport.h
-        )
+        Model/Drawable/Color.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         ${GTKMM_LIBRARIES}
