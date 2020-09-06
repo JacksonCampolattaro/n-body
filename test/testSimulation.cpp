@@ -39,9 +39,11 @@ int main() {
     std::cout << "original: \n" << original;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
     writer << original;
+    original.saveBodiesToPath("test.bod");
 
     std::string saved = buffer.GetString();
     std::cout << "archive: \n" << saved << std::endl;
+
 
     auto copy = Simulation();
     rapidjson::Document document;
