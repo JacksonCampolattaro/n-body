@@ -3,6 +3,8 @@
 //
 
 #include <fstream>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/prettywriter.h>
 #include "Simulation.h"
 
 
@@ -46,4 +48,17 @@ bool Model::Simulation::loadBodiesFromPath(const std::string &path) {
    document >> *this;
 
    return true;
+}
+
+bool Model::Simulation::saveBodiesToPath(const std::string &path) {
+
+    std::ofstream file(path);
+
+    rapidjson::StringBuffer stream;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(stream);
+    writer << *this;
+    file << stream.GetString();
+
+    file.close();
+    return true;
 }
