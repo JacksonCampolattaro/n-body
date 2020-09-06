@@ -11,6 +11,12 @@ add_executable(test_velocity
 
         testVelocity.cpp)
 
+add_executable(test_color
+
+        ../src/Model/Drawable/Color.h
+
+        testColor.cpp)
+
 add_executable(test_drawable
 
         ../src/Model/Drawable/Drawable.h ../src/Model/Drawable/Drawable.cpp
