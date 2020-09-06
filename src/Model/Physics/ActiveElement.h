@@ -5,9 +5,11 @@
 #ifndef N_BODY_ACTIVEELEMENT_H
 #define N_BODY_ACTIVEELEMENT_H
 
-
 #include "../Position.h"
 #include "../Velocity.h"
+
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 
 namespace Model {
     namespace Physics {
@@ -22,42 +24,31 @@ namespace Model {
             float _mass;
             Position *_position;
 
-            friend std::ostream &operator<<(std::ostream &os, const ActiveElement &activeElement) {
+            template<typename Writer>
+            friend Writer &operator<<(Writer &writer, const ActiveElement &activeElement) {
+                writer.StartObject();
+                {
+                    writer.String("mass");
+                    writer.Double(activeElement._mass);
+                }
+                writer.EndObject();
+            }
 
-                os << "{ "
-                   << "\"activeElement\" : "
-                   << activeElement._mass
-                   << " }";
+            friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, ActiveElement &activeElement) {
+
+                activeElement._mass = obj["mass"].GetFloat();
+
+                return obj;
+            }
+
+            friend std::ostream &operator<<(std::ostream &os, const ActiveElement &activeElement) {
+                os << "<- " << activeElement._mass << " ->";
                 return os;
             }
 
-
-            friend std::istream &operator>>(std::istream &in, ActiveElement &activeElement) {
-
-                std::string _;
-
-                // The first value should be the open bracket
-                in >> _;
-                assert("{" == _);
-                {
-
-                    // The next value should be the name
-                    in >> std::quoted(_);
-                    assert("activeElement" == _);
-
-                    // The next value should be the colon
-                    in >> _;
-                    assert(":" == _);
-
-                    // Get the value
-                    in >> activeElement._mass;
-
-                }
-                // The last value should be the close bracket
-                in >> _;
-                assert("}" == _);
-
-                return in;
+            friend bool operator==(const ActiveElement &left, const ActiveElement &right) {
+                // TODO: This could be improved
+                return left._mass == right._mass;
             }
         };
 
