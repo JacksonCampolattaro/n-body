@@ -53,6 +53,15 @@ namespace Model {
 
         template<typename Writer>
         friend Writer &operator<<(Writer &writer, const Simulation &simulation) {
+            writer.StartObject();
+
+            writer.String("g");
+            writer.Double(simulation._rule._gravitationalConstant);
+
+            writer.String("t");
+            writer.Double(simulation._rule._timeIncrement);
+
+            writer.String("entities");
             writer.StartArray();
             {
                 for (auto entity : simulation._entities) {
@@ -60,19 +69,24 @@ namespace Model {
                 }
             }
             writer.EndArray();
+            writer.EndObject();
             return writer;
         }
 
         friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Simulation &simulation) {
 
-            assert(obj.IsArray());
-            for (auto it = obj.Begin(); it != obj.End(); ++it)
+            simulation._rule._gravitationalConstant = obj["g"].GetFloat();
+            simulation._rule._timeIncrement = obj["t"].GetFloat();
+
+            assert(obj["entities"].IsArray());
+            for (auto it = obj["entities"].Begin(); it != obj["entities"].End(); ++it)
                 *it >> simulation.newEntity();
             return obj;
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Simulation &simulation) {
 
+            os << "g=" << simulation._rule._gravitationalConstant << " t=" << simulation._rule._timeIncrement << " ";
             os << "{\n";
             for (auto entity : simulation._entities) {
                 os << "    " << entity << "\n";

@@ -61,9 +61,52 @@ void galaxy() {
     simulation.saveBodiesToPath("../../scenarios/galaxy.bod");
 }
 
+void blender() {
+
+    Simulation simulation{};
+    simulation._rule._gravitationalConstant = 0.01;
+    simulation._rule._timeIncrement = 0.05;
+
+    simulation.newEntity()
+            .setPosition({-60, 0, -500})
+            .setVelocity({0, -90, 0})
+            .setDrawable({{0.9, 0.9, 0.9}, 16.0})
+            .setPassiveElement({180000000})
+            .setActiveElement({180000000});
+    simulation.newEntity()
+            .setPosition({60, 0, -500})
+            .setVelocity({0, 90, 0})
+            .setDrawable({{0.9, 0.9, 0.9}, 16.0})
+            .setPassiveElement({180000000})
+            .setActiveElement({180000000});
+
+    glm::vec3 dimensions{5, 5, 50};
+    Model::Position corner{-50, -100, -450};
+    float spacing = 10;
+    for (int x = 0; x < dimensions.x; ++x) {
+        for (int y = 0; y < dimensions.y; ++y) {
+            for (int z = 0; z < dimensions.z; ++z) {
+
+                Model::Position p = corner + (glm::vec3{x, y, z} * spacing);
+
+                simulation.newEntity()
+                        .setPosition(p)
+                        .setVelocity({0.8, 0.25, 0})
+                        .setDrawable({{0.0, 0.0, 0.9}, 3})
+                        .setActiveElement({5000})
+                        .setPassiveElement({5000});
+            }
+        }
+    }
+
+    simulation.saveBodiesToPath("../../scenarios/blender.bod");
+}
+
 int main() {
 
     threeBody();
     galaxy();
+    blender();
+
     return 0;
 }
