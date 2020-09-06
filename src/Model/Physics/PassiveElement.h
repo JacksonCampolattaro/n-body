@@ -24,42 +24,31 @@ namespace Model {
             Velocity *_velocity;
             const Position *_position;
 
-            friend std::ostream &operator<<(std::ostream &os, const PassiveElement &passiveElement) {
+            template<typename Writer>
+            friend Writer &operator<<(Writer &writer, const PassiveElement &passiveElement) {
+                writer.StartObject();
+                {
+                    writer.String("mass");
+                    writer.Double(passiveElement._mass);
+                }
+                writer.EndObject();
+            }
 
-                os << "{ "
-                   << "\"passiveElement\" : "
-                   << passiveElement._mass
-                   << " }";
+            friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, PassiveElement &passiveElement) {
+
+                passiveElement._mass = obj["mass"].GetFloat();
+
+                return obj;
+            }
+
+            friend std::ostream &operator<<(std::ostream &os, const PassiveElement &passiveElement) {
+                os << "-> " << passiveElement._mass << " <-";
                 return os;
             }
 
-
-            friend std::istream &operator>>(std::istream &in, PassiveElement &passiveElement) {
-
-                std::string _;
-
-                // The first value should be the open bracket
-                in >> _;
-                assert("{" == _);
-                {
-
-                    // The next value should be the name
-                    in >> std::quoted(_);
-                    assert("passiveElement" == _);
-
-                    // The next value should be the colon
-                    in >> _;
-                    assert(":" == _);
-
-                    // Get the value
-                    in >> passiveElement._mass;
-
-                }
-                // The last value should be the close bracket
-                in >> _;
-                assert("}" == _);
-
-                return in;
+            friend bool operator==(const PassiveElement &left, const PassiveElement &right) {
+                // TODO: This could be improved
+                return left._mass == right._mass;
             }
         };
 
