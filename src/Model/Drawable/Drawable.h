@@ -33,6 +33,9 @@ namespace Model {
             friend Writer &operator<<(Writer &writer, const Drawable &drawable) {
                 writer.StartObject();
                 {
+                    writer.String("color");
+                    writer << drawable._color;
+
                     writer.String("radius");
                     writer.Double(drawable._radius);
                 }
@@ -41,13 +44,14 @@ namespace Model {
 
             friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Drawable &drawable) {
 
+                obj["color"] >> drawable._color;
                 drawable._radius = obj["radius"].GetFloat();
 
                 return obj;
             }
 
             friend std::ostream &operator<<(std::ostream &os, const Drawable &drawable) {
-                os << "* " << drawable._radius << "r " << " *";
+                os << "* " << drawable._color << " " << drawable._radius << "r" << " *";
                 return os;
             }
 
