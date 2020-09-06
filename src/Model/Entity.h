@@ -22,14 +22,19 @@ namespace Model {
     public:
 
         Entity &setPosition(const Position &position);
+
         Entity &setVelocity(const Velocity &velocity);
+
         Entity &setDrawable(const Drawable::Drawable &drawable);
+
         Entity &setPassiveElement(const Physics::PassiveElement &passiveElement);
+
         Entity &setActiveElement(const Physics::ActiveElement &activeElement);
 
     private:
 
         Entity(Simulation &simulation);
+
         Entity(Simulation &simulation, Position &position, Velocity &velocity);
 
         friend class Simulation;
@@ -42,7 +47,24 @@ namespace Model {
         Drawable::Drawable *_drawable;
         Physics::PassiveElement *_passiveElement;
         Physics::ActiveElement *_activeElement;
+
+        friend std::ostream &operator<<(std::ostream &os, const Entity &entity) {
+
+            os << "{ \"entity\" : ";
+            {
+
+            }
+            os << " }";
+            return os;
+        }
+
+
+        friend std::istream &operator>>(std::istream &in, Entity &entity) {
+
+            return in;
+        }
     };
+};
 }
 
 
