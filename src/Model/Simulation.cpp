@@ -2,6 +2,7 @@
 // Created by jackcamp on 4/17/20.
 //
 
+#include <fstream>
 #include "Simulation.h"
 
 
@@ -28,4 +29,21 @@ void Model::Simulation::update() {
 Model::Entity &Model::Simulation::newEntity() {
     _entities.push_back(Entity(*this));
     return _entities.back();
+}
+
+bool Model::Simulation::loadBodiesFromPath(const std::string &path) {
+
+    std::ifstream file(path);
+    std::stringstream stream;
+    stream << file.rdbuf();
+    file.close();
+
+   rapidjson::Document document;
+   document.Parse(path.c_str());
+   if (document.HasParseError())
+       return false;
+
+   document >> *this;
+
+   return true;
 }
