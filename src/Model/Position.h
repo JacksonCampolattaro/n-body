@@ -7,8 +7,6 @@
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/prettywriter.h>
 
 #include <glm/vec3.hpp>
 #include <iomanip>
@@ -22,8 +20,6 @@ namespace Model {
         Position(float x, float y, float z) : glm::vec3(x, y, z) {};
 
         Position(glm::vec3 vector) : glm::vec3(vector) {};
-
-        [[nodiscard]] std::string toString() const;
 
         template<typename Writer>
         friend Writer &operator<<(Writer &writer, const Position &position) {
