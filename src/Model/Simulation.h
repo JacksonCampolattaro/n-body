@@ -36,6 +36,8 @@ namespace Model {
 
         void update();
 
+        bool loadBodiesFromPath(const std::string &path);
+
         sigc::signal<void, const std::deque<Drawable::Drawable> &> signal_update_complete;
         sigc::signal<void, const std::deque<Drawable::Drawable> &> signal_num_drawables_changed;
 
