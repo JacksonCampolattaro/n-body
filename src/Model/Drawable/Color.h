@@ -33,6 +33,7 @@ namespace Model {
                     writer.Double(color.b());
                 }
                 writer.EndObject();
+                return writer;
             }
 
             friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Color &color) {

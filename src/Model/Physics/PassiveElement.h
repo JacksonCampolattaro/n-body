@@ -32,6 +32,7 @@ namespace Model {
                     writer.Double(passiveElement._mass);
                 }
                 writer.EndObject();
+                return writer;
             }
 
             friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, PassiveElement &passiveElement) {
