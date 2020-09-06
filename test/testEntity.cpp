@@ -7,6 +7,8 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/prettywriter.h>
 
+#include <iostream>
+
 using Model::Simulation;
 using Model::Entity;
 
