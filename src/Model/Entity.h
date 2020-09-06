@@ -72,13 +72,22 @@ namespace Model {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Entity &entity) {
-            os << "{ " << *entity._position << " " << *entity._velocity << " }";
+            char _ = ' ';
+            os << "{ "
+               << *entity._position << " "
+               << *entity._velocity << " ";
+            if (entity._drawable) { os << *entity._drawable << " "; }
+            if (entity._passiveElement) { os << *entity._passiveElement << " "; }
+            if (entity._activeElement) { os << *entity._activeElement << " "; }
+            os << " }";
+
             return os;
         }
 
         friend bool operator==(const Entity &left, const Entity &right) {
             return *left._position == *right._position && *left._velocity == *right._velocity;
         }
+
     private:
 
         Entity(Simulation &simulation);
