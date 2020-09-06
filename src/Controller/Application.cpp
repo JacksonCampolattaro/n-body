@@ -64,34 +64,8 @@ Controller::Application::Application() :
 int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
 
-    // Universal tasks
-    {
-        // Clear all sinks from the logger
-        Logger::reset();
-
-        // Create a new simulation
-        _simulation = std::make_shared<Model::Simulation>();
-
-        // Add a few entities to the simulation
-        _simulation->newEntity()
-                .setPosition({0, 5, 5})
-                .setVelocity({0, -0.1, 0})
-                .setDrawable({{0.8, 0.8, 0.8}, 1.0})
-                .setPassiveElement({0.5})
-                .setActiveElement({0.5});
-        _simulation->newEntity()
-                .setPosition({-5, 0, 0})
-                .setVelocity({0, 0.15, 0})
-                .setDrawable({{0.8, 0.8, 0.0}, 1.0})
-                .setPassiveElement({0.5})
-                .setActiveElement({0.5});
-        _simulation->newEntity()
-                .setPosition({5, 0, 0})
-                .setVelocity({0, -0.05, 0})
-                .setDrawable({{0.8, 0.0, 0.0}, 1.0})
-                .setPassiveElement({0.5})
-                .setActiveElement({0.5});
-    }
+    Logger::reset();
+    _simulation = std::make_shared<Model::Simulation>();
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))
@@ -128,6 +102,8 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Creating an interactive view");
         _view = std::make_shared<View::InteractiveView>(*this, _simulation);
     }
+
+    assert(_simulation->loadBodiesFromPath("../../threeBody.bod"));
 
     // Run the program itself
     spdlog::debug("Running the program");
