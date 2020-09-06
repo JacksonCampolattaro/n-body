@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 using Model::Position;
 
