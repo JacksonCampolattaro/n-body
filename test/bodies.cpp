@@ -2,10 +2,43 @@
 #include "../src/Model/Simulation.h"
 
 using Model::Simulation;
+using Model::Position;
+using Model::Velocity;
+using Model::Drawable::Color;
 
-void threeBody() {
+Simulation cubicGrid(Position cornerPosition, glm::vec3 size, Velocity velocity, float spacing, float mass) {
+    Simulation simulation{};
+
+    for (int x = 0; x < size.x; ++x) {
+        for (int y = 0; y < size.y; ++y) {
+            for (int z = 0; z < size.z; ++z) {
+
+                glm::vec3 coordinate(x, y, z);
+                Model::Position p = cornerPosition + (glm::vec3{x, y, z} * spacing);
+
+                Model::Drawable::Color color{
+                        y / size.y + x / size.x,
+                        x / size.x,
+                        1.0f - y / size.y + x / size.x
+                };
+
+                simulation.newEntity()
+                        .setPosition(p)
+                        .setVelocity({velocity})
+                        .setDrawable({color, 3})
+                        .setActiveElement({mass})
+                        .setPassiveElement({mass});
+            }
+        }
+    }
+
+    return simulation;
+}
+
+Simulation threeBody() {
 
     Simulation simulation{};
+
     simulation.newEntity()
             .setPosition({0, 5, 5})
             .setVelocity({0, -0.1, 0})
@@ -24,10 +57,11 @@ void threeBody() {
             .setDrawable({{0.8, 0.0, 0.0}, 1.0})
             .setPassiveElement({0.5})
             .setActiveElement({0.5});
-    simulation.saveBodiesToPath("../../scenarios/threeBody.bod");
+
+    return simulation;
 }
 
-void galaxy() {
+Simulation galaxy() {
 
     Simulation simulation{};
 
@@ -58,12 +92,18 @@ void galaxy() {
         }
     }
 
-    simulation.saveBodiesToPath("../../scenarios/galaxy.bod");
+    return simulation;
 }
 
-void blender() {
+Simulation blender() {
 
-    Simulation simulation{};
+    Simulation simulation =
+            cubicGrid(
+                    {-50, -100, -450},
+                    {5, 5, 100},
+                    {0.8, 0.25, 0},
+                    10, 5000);
+
     simulation._rule._gravitationalConstant = 0.01;
     simulation._rule._timeIncrement = 0.05;
 
@@ -80,39 +120,16 @@ void blender() {
             .setPassiveElement({180000000})
             .setActiveElement({180000000});
 
-    glm::vec3 dimensions{5, 5, 100};
-    Model::Position corner{-50, -100, -450};
-    float spacing = 10;
-    for (int x = 0; x < dimensions.x; ++x) {
-        for (int y = 0; y < dimensions.y; ++y) {
-            for (int z = 0; z < dimensions.z; ++z) {
-
-                Model::Position p = corner + (glm::vec3{x, y, z} * spacing);
-
-                Model::Drawable::Color color{
-                        y / dimensions.y + x / dimensions.x,
-                        x / dimensions.x,
-                        1 - y / dimensions.y + x / dimensions.x
-                };
-
-                simulation.newEntity()
-                        .setPosition(p)
-                        .setVelocity({0.8, 0.25, 0})
-                        .setDrawable({color, 3})
-                        .setActiveElement({5000})
-                        .setPassiveElement({5000});
-            }
-        }
-    }
-
-    simulation.saveBodiesToPath("../../scenarios/blender.bod");
+    return simulation;
 }
 
 int main() {
 
-    threeBody();
-    galaxy();
-    blender();
+    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
+
+    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
+
+    blender().saveBodiesToPath("../../scenarios/blender.bod");
 
     return 0;
 }
