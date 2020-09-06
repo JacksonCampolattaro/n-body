@@ -49,10 +49,10 @@ namespace Model {
         std::deque<Drawable::Drawable> _drawables;
 
         template<typename Writer>
-        friend Writer &operator<<(Writer &writer, const std::deque<Entity> &entitites) {
+        friend Writer &operator<<(Writer &writer, const Simulation &simulation) {
             writer.StartArray();
             {
-                for (auto entity : entitites) {
+                for (auto entity : simulation._entities) {
                     writer << entity;
                 }
             }
@@ -60,18 +60,18 @@ namespace Model {
             return writer;
         }
 
-        friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, std::deque<Entity> &entitites) {
+        friend const rapidjson::Value &operator>>(const rapidjson::Value &obj, Simulation &simulation) {
 
             return obj;
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const std::deque<Entity> &entitites) {
+        friend std::ostream &operator<<(std::ostream &os, const Simulation &simulation) {
 
-            os << "{ "
-            for (auto entity : entitites) {
-                os << entity << std::endl;
+            os << "{\n";
+            for (auto entity : simulation._entities) {
+                os << "    " << entity << "\n";
             }
-            os << "}";
+            os << "}" << std::endl;
 
             return os;
         }
