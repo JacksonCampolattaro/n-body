@@ -79,6 +79,12 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string logfilePath; options->lookup_value("logfile", logfilePath))
         Logger::attachFile(logfilePath);
 
+    // Load a file if one was provided
+    if (std::string filePath; options->lookup_value("file", filePath)) {
+
+        assert(_simulation->loadBodiesFromPath(filePath));
+    }
+
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
         spdlog::info("Program was run in headless mode");
@@ -102,8 +108,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Creating an interactive view");
         _view = std::make_shared<View::InteractiveView>(*this, _simulation);
     }
-
-    assert(_simulation->loadBodiesFromPath("../../scenarios/blender.bod"));
 
     // Run the program itself
     spdlog::debug("Running the program");
