@@ -18,10 +18,10 @@ void Model::Simulation::update() {
 
     // Kick
     #pragma omp parallel for default(none) shared(_passiveElements, _activeElements)
-    for (int p = 0; p < _passiveElements.size(); ++p) {
+    for (size_t p = 0; p < _passiveElements.size(); ++p) {
         auto &passive = _passiveElements[p];
 
-        for (int a = 0; a < _activeElements.size(); ++a) {
+        for (size_t a = 0; a < _activeElements.size(); ++a) {
             auto &active = _activeElements[a];
 
             _rule(active, passive);
@@ -30,7 +30,7 @@ void Model::Simulation::update() {
 
     // Drift
     #pragma omp simd
-    for (int i = 0; i < _positions.size(); ++i)
+    for (size_t i = 0; i < _positions.size(); ++i)
         _positions[i] = _positions[i] + (_velocities[i] * _rule._timeIncrement);
 
     // Alert the renderer
