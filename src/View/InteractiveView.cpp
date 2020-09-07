@@ -48,6 +48,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
 void View::InteractiveView::on_advance_clicked() {
 
     _viewport.signal_render_complete.clear();
+
     _simulation.update();
 }
 
