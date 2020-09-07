@@ -17,7 +17,8 @@ Model::Physics::Rule::Rule() :
 void
 Model::Physics::Rule::operator()(const Model::Physics::ActiveElement &active, Model::Physics::PassiveElement &passive) const {
 
-    spdlog::trace("Rule invoked");
+    if (active.position() == passive.position())
+        return;
 
     float forceMagnitude =
             (float) (_gravitationalConstant * passive._mass * active._mass) /

@@ -35,4 +35,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::Primitives
         Magnum::Shaders
         spdlog::spdlog
+        OpenMP::OpenMP_CXX
         )
