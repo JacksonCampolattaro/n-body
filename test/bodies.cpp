@@ -25,7 +25,7 @@ Simulation cubicGrid(Position cornerPosition, glm::vec3 size, Velocity velocity,
                 simulation.newEntity()
                         .setPosition(p)
                         .setVelocity({velocity})
-                        .setDrawable({color, 3})
+                        .setDrawable({color, 2})
                         .setActiveElement({mass})
                         .setPassiveElement({mass});
             }
@@ -63,34 +63,20 @@ Simulation threeBody() {
 
 Simulation galaxy() {
 
-    Simulation simulation{};
+    auto simulation = cubicGrid(
+            {-50, -150, -400},
+            {10, 10, 10},
+            {60, 20, 0},
+            10, 5000);
 
-    // "Sun"
+    simulation._rule._gravitationalConstant = 0.01;
+    simulation._rule._timeIncrement = 0.001;
+
     simulation.newEntity()
-            .setPosition({0, 0, -200})
+            .setPosition({0, 0, -500})
             .setVelocity({0, 0, 0})
-            .setDrawable({{0.9, 0.9, 0.9}, 10.0})
-            .setActiveElement({500});
-
-    // "Asteroids"
-    glm::vec3 dimensions{5, 5, 5};
-    Model::Position corner{-10, -10, -10};
-    float spacing = 2;
-    for (int x = 0; x < dimensions.x; ++x) {
-        for (int y = 0; y < dimensions.y; ++y) {
-            for (int z = 0; z < dimensions.z; ++z) {
-
-                Model::Position p = corner + (glm::vec3{x, y, z} * spacing);
-
-                simulation.newEntity()
-                        .setPosition(p)
-                        .setVelocity({0.8, 0.25, 0})
-                        .setDrawable({{0.0, 0.9, 0.9}, 1})
-                        .setActiveElement({0.5})
-                        .setPassiveElement({0.5});
-            }
-        }
-    }
+            .setDrawable({{0.9, 0.9, 0.9}, 16.0})
+            .setActiveElement({190000000.0f});
 
     return simulation;
 }

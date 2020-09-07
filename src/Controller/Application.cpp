@@ -82,7 +82,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     // Load a file if one was provided
     if (std::string filePath; options->lookup_value("file", filePath)) {
 
-        assert(_simulation->loadBodiesFromPath(filePath));
+        _simulation->loadBodiesFromPath(filePath);
     }
 
     // Run the program in headless mode if that flag is set

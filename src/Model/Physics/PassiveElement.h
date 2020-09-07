@@ -20,9 +20,9 @@ namespace Model {
 
             Velocity &velocity();
 
-            float _mass;
-            Velocity *_velocity;
             const Position *_position;
+            Velocity *_velocity;
+            float _mass;
 
             template<typename Writer>
             friend Writer &operator<<(Writer &writer, const PassiveElement &passiveElement) {

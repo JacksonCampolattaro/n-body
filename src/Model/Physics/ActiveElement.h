@@ -21,8 +21,8 @@ namespace Model {
 
             const Position &position() const;
 
-            float _mass;
             Position *_position;
+            float _mass;
 
             template<typename Writer>
             friend Writer &operator<<(Writer &writer, const ActiveElement &activeElement) {
