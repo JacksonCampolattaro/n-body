@@ -65,7 +65,7 @@ Simulation galaxy() {
 
     auto simulation = cubicGrid(
             {-50, -150, -400},
-            {10, 10, 10},
+            {5, 5, 100},
             {60, 20, 0},
             10, 5000);
 
