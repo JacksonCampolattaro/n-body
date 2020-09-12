@@ -67,6 +67,8 @@ void View::SimulationViewport::onRealize() {
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
+
+
     _shader = Shaders::Phong{
             Shaders::Phong::Flag::VertexColor |
             Shaders::Phong::Flag::InstancedTransformation

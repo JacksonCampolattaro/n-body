@@ -83,6 +83,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string filePath; options->lookup_value("file", filePath)) {
 
         _simulation->loadBodiesFromPath(filePath);
+        spdlog::debug("Loaded {} entities", _simulation->_entities.size());
     }
 
     // Run the program in headless mode if that flag is set

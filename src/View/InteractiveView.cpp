@@ -48,8 +48,10 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
 void View::InteractiveView::on_advance_clicked() {
 
     _viewport.signal_render_complete.clear();
-
-    _simulation.update();
+    _workerThread = new std::thread([this] {
+       _simulation.update();
+    });
+//    _simulation.update();
 }
 
 void View::InteractiveView::on_run_clicked() {
