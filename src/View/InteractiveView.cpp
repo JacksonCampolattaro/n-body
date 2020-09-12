@@ -45,6 +45,8 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
 
     simulation->signal_drawables_changed.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
     simulation->signal_update_progress.connect(sigc::mem_fun(this, &InteractiveView::on_update_progress));
+    simulation->signal_update_complete.connect(sigc::mem_fun(this, &InteractiveView::on_update_complete));
+
     simulation->signal_drawables_changed.emit(simulation->_drawables);
 }
 
@@ -59,10 +61,22 @@ void View::InteractiveView::on_advance_clicked() {
 void View::InteractiveView::on_run_clicked() {
 
     _viewport.signal_render_complete.connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
-    _simulation.update();
+    _workerThread = new std::thread([this] {
+        _simulation.update();
+    });
 }
 
 void View::InteractiveView::on_update_progress(float progress, const std::string &description) {
 
     _progressBar.set_fraction(progress);
+}
+
+void View::InteractiveView::on_update_complete() {
+
+//    if (_workerThread->joinable())
+//        _workerThread->join();
+//
+//    delete _workerThread;
+
+    _progressBar.set_fraction(0.0);
 }

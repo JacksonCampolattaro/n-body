@@ -40,6 +40,7 @@ namespace Model {
         bool saveBodiesToPath(const std::string &path);
 
         sigc::signal<void(float, const std::string &)> signal_update_progress;
+        sigc::signal<void()> signal_update_complete;
         sigc::signal<void(const std::deque<Drawable::Drawable> &)> signal_drawables_changed;
 
         Physics::Rule _rule;
