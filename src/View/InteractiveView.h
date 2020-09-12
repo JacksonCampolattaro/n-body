@@ -12,6 +12,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
+#include <gtkmm/progressbar.h>
 #include <thread>
 
 namespace View {
@@ -23,6 +24,8 @@ namespace View {
         void on_advance_clicked();
         void on_run_clicked();
 
+        void on_update_progress(float progress, const std::string &description);
+
     private:
 
         Model::Simulation &_simulation;
@@ -32,6 +35,7 @@ namespace View {
         Gtk::Box _vbox, _hbox;
         SimulationViewport _viewport;
         Gtk::Button _button_advance, _button_run;
+        Gtk::ProgressBar _progressBar;
     };
 
 }

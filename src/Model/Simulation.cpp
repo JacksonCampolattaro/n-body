@@ -15,6 +15,7 @@
 void Model::Simulation::update() {
 
     spdlog::trace("Simulation update invoked");
+    signal_update_progress.emit(0.0f, "kick");
 
     // Kick
     #pragma omp parallel for default(none) shared(_passiveElements, _activeElements)
@@ -28,13 +29,16 @@ void Model::Simulation::update() {
         }
     }
 
+    signal_update_progress.emit(0.5f, "drift");
+
     // Drift
     #pragma omp simd
     for (size_t i = 0; i < _positions.size(); ++i)
         _positions[i] = _positions[i] + (_velocities[i] * _rule._timeIncrement);
 
     // Alert the renderer
-    signal_update_complete.emit(_drawables);
+    signal_drawables_changed.emit(_drawables);
+    signal_update_progress.emit(1.0f, "render");
 }
 
 Model::Entity &Model::Simulation::newEntity() {
@@ -63,7 +67,7 @@ bool Model::Simulation::loadBodiesFromPath(const std::string &path) {
 
     document >> *this;
 
-    signal_num_drawables_changed.emit(_drawables);
+    signal_drawables_changed.emit(_drawables);
     return true;
 }
 

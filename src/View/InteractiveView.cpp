@@ -23,6 +23,8 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
 
     _vbox.pack_start(_viewport);
 
+    _vbox.pack_start(_progressBar, false, true);
+
     _vbox.pack_start(_hbox, false, true);
 
     _hbox.set_homogeneous();
@@ -32,6 +34,7 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
     _window.show();
     _vbox.show();
     _viewport.show();
+    _progressBar.show();
     _hbox.show();
     _button_advance.show();
     _button_run.show();
@@ -39,10 +42,10 @@ View::InteractiveView::InteractiveView(Controller::Application &application,
     application.add_window(_window);
 
     _button_advance.signal_clicked().connect(sigc::mem_fun(this, &InteractiveView::on_advance_clicked));
-    simulation->signal_update_complete.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
-    simulation->signal_num_drawables_changed.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
 
-    simulation->signal_update_complete.emit(simulation->_drawables);
+    simulation->signal_drawables_changed.connect(sigc::mem_fun(&_viewport, &SimulationViewport::draw));
+    simulation->signal_update_progress.connect(sigc::mem_fun(this, &InteractiveView::on_update_progress));
+    simulation->signal_drawables_changed.emit(simulation->_drawables);
 }
 
 void View::InteractiveView::on_advance_clicked() {
@@ -51,11 +54,15 @@ void View::InteractiveView::on_advance_clicked() {
     _workerThread = new std::thread([this] {
        _simulation.update();
     });
-//    _simulation.update();
 }
 
 void View::InteractiveView::on_run_clicked() {
 
     _viewport.signal_render_complete.connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
     _simulation.update();
+}
+
+void View::InteractiveView::on_update_progress(float progress, const std::string &description) {
+
+    _progressBar.set_fraction(progress);
 }
