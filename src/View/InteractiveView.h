@@ -12,6 +12,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
+#include <thread>
 
 namespace View {
 
@@ -25,6 +26,7 @@ namespace View {
     private:
 
         Model::Simulation &_simulation;
+        std::thread *_workerThread;
 
         Gtk::Window _window;
         Gtk::Box _vbox, _hbox;
