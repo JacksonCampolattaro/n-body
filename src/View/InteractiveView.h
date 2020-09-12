@@ -25,6 +25,7 @@ namespace View {
         void on_run_clicked();
 
         void on_update_progress(float progress, const std::string &description);
+        void on_update_complete();
 
     private:
 

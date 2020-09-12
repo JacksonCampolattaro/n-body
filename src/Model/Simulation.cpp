@@ -37,8 +37,10 @@ void Model::Simulation::update() {
         _positions[i] = _positions[i] + (_velocities[i] * _rule._timeIncrement);
 
     // Alert the renderer
+    signal_update_progress.emit(0.9f, "render");
     signal_drawables_changed.emit(_drawables);
-    signal_update_progress.emit(1.0f, "render");
+    signal_update_progress.emit(1.0f, "complete");
+    signal_update_complete.emit();
 }
 
 Model::Entity &Model::Simulation::newEntity() {
