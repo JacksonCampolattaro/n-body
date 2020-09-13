@@ -22,7 +22,8 @@ void Model::Simulation::update() {
     for (size_t p = 0; p < _passiveElements.size(); ++p) {
         auto &passive = _passiveElements[p];
 
-        signal_update_progress.emit((float) p / (float) _passiveElements.size(), "xx");
+        if (p % 20 == 0)
+            signal_update_progress.emit((float) p / (float) _passiveElements.size(), "kick");
 
         #pragma omp parallel for default(none) shared(passive, _activeElements)
         for (size_t a = 0; a < _activeElements.size(); ++a) {
