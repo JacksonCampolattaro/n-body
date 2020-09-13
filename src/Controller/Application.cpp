@@ -81,14 +81,14 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string filePath; options->lookup_value("file", filePath)) {
 
         _simulation.loadBodiesFromPath(filePath);
-        spdlog::debug("Loaded {} entities", _simulation._entities.size());
+        spdlog::info("Loaded {} entities", _simulation._entities.size());
     }
 
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
         spdlog::info("Program was run in headless mode");
 
-        spdlog::info("Creating a headless view");
+        spdlog::debug("Creating a headless view");
 //        _view = std::make_shared<View::HeadlessView>(*this, _simulation);
     }
 
@@ -96,7 +96,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (options->contains("viewer")) {
         spdlog::info("Program was run in viewer mode");
 
-        spdlog::info("Creating a viewer view");
+        spdlog::debug("Creating a viewer view");
 //        _view = std::make_shared<View::ViewerView>(*this, _simulation);
     }
 
@@ -104,7 +104,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (!_view) {
         spdlog::info("Program was run in interactive mode");
 
-        spdlog::info("Creating an interactive view");
+        spdlog::debug("Creating an interactive view");
         _view = std::make_shared<View::Interactive>(*this);
     }
 

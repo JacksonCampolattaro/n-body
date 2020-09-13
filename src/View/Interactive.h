@@ -23,9 +23,6 @@ namespace View {
 
         void on_simulation_complete() override;
 
-    private:
-
-        std::shared_ptr<Gtk::Builder> _builder;
     };
 
 }
