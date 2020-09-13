@@ -19,6 +19,9 @@ namespace View {
 
         void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) override;
 
+        void on_update_clicked();
+        void on_run_clicked();
+
     private:
 
         std::unique_ptr<Painter> _painter;

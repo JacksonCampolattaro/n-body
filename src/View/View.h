@@ -27,15 +27,12 @@ namespace View {
         // Sinks
         virtual void on_start_simulation() {
 
-            if (_worker.joinable())
-                _worker.join();
-
             _worker = std::thread([this] {
                 signal_start_simulation.emit();
             });
         }
 
-        virtual void on_simulation_progress(float progress, const std::string &status) {
+        void on_simulation_progress(float progress, const std::string &status) {
 
             //_progress = std::max(progress, _progress);
             _progress = progress;
@@ -46,13 +43,22 @@ namespace View {
             _progress_dispatcher.emit();
         }
 
-        virtual void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) = 0;
-
-        virtual void on_simulation_complete() {
+        void on_simulation_complete() {
             _complete_dispatcher.emit();
         }
 
+        virtual void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) = 0;
+
     protected:
+
+        View() {
+
+            _complete_dispatcher.connect([this] {
+
+                if (_worker.joinable())
+                    _worker.join();
+            });
+        }
 
         std::thread _worker;
 
