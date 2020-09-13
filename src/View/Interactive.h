@@ -17,11 +17,7 @@ namespace View {
 
         Interactive(Controller::Application &application);
 
-        void on_simulation_progress();
-
         void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) override;
-
-        void on_simulation_complete() override;
 
     private:
 

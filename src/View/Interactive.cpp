@@ -45,14 +45,9 @@ View::Interactive::Interactive(Controller::Application &application) {
 
     application.add_window(*window);
     window->show();
-
 }
 
 void View::Interactive::on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) {
 
     _painter->draw(drawables);
-}
-
-void View::Interactive::on_simulation_complete() {
-
 }
