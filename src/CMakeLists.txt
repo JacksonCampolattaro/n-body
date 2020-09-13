@@ -22,7 +22,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         View/Interactive.cpp View/Interactive.h
 
         View/SimulationViewport.cpp View/SimulationViewport.h
-        Model/Drawable/Color.h)
+        Model/Drawable/Color.h View/Painter.cpp View/Painter.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         ${GTKMM_LIBRARIES}
