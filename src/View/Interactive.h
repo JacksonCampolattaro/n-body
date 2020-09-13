@@ -27,7 +27,7 @@ namespace View {
 
     private:
 
-        Painter _painter;
+        std::unique_ptr<Painter> _painter;
 
     };
 
