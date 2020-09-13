@@ -17,6 +17,7 @@ View::Interactive::Interactive(Controller::Application &application) {
     Gtk::GLArea *viewport = nullptr;
     builder->get_widget("viewport", viewport);
     assert(viewport);
+    _painter.set_glarea(*viewport);
 
     Gtk::Button *stopButton = nullptr;
     builder->get_widget("stopButton", stopButton);

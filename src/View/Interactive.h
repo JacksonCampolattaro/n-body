@@ -6,6 +6,8 @@
 #define N_BODY_INTERACTIVE_H
 
 #include "View.h"
+#include "Painter.h"
+
 #include <gtkmm.h>
 
 namespace View {
@@ -22,6 +24,10 @@ namespace View {
         void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) override;
 
         void on_simulation_complete() override;
+
+    private:
+
+        Painter _painter;
 
     };
 

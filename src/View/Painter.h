@@ -32,6 +32,10 @@ namespace View {
         void on_resize(int width, int height);
 
         void on_unrealize();
+
+    private:
+
+
     };
 
 }
