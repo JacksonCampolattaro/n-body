@@ -19,9 +19,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Physics/ActiveElement.cpp Model/Physics/ActiveElement.h
 
         View/View.h
-        View/HeadlessView.cpp View/HeadlessView.h
-        View/ViewerView.cpp View/ViewerView.h
-        View/InteractiveView.cpp View/InteractiveView.h
+        View/Interactive.cpp View/Interactive.h
 
         View/SimulationViewport.cpp View/SimulationViewport.h
         Model/Drawable/Color.h)
