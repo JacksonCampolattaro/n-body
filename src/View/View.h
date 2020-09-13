@@ -25,16 +25,38 @@ namespace View {
         sigc::signal<void()> signal_start_simulation;
 
         // Sinks
-        virtual void on_start_simulation() = 0;
-        virtual void on_simulation_progress(float progress, const std::string &status) = 0;
+        virtual void on_start_simulation() {
+
+            if (_worker.joinable())
+                _worker.join();
+
+            _worker = std::thread([this] {
+                signal_start_simulation.emit();
+            });
+        }
+
+        virtual void on_simulation_progress(float progress, const std::string &status) {
+
+            //_progress = std::max(progress, _progress);
+            _progress = progress;
+            _status = status;
+
+            spdlog::trace("Progress updated to: {}", _progress);
+
+            _progress_dispatcher.emit();
+        }
+
         virtual void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) = 0;
+
         virtual void on_simulation_complete() = 0;
 
     protected:
 
-        Glib::Dispatcher _dispatcher;
         std::thread _worker;
 
+        Glib::Dispatcher _progress_dispatcher;
+        float _progress = 0.0;
+        std::string _status = "not started";
     };
 
 }

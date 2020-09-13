@@ -18,10 +18,13 @@ void Model::Simulation::update() {
     signal_update_progress.emit(0.0f, "kick");
 
     // Kick
-    #pragma omp parallel for default(none) shared(_passiveElements, _activeElements)
+    //#pragma omp parallel for default(none) shared(_passiveElements, _activeElements)
     for (size_t p = 0; p < _passiveElements.size(); ++p) {
         auto &passive = _passiveElements[p];
 
+        signal_update_progress.emit((float) p / (float) _passiveElements.size(), "xx");
+
+        #pragma omp parallel for default(none) shared(passive, _activeElements)
         for (size_t a = 0; a < _activeElements.size(); ++a) {
             auto &active = _activeElements[a];
 
@@ -39,6 +42,7 @@ void Model::Simulation::update() {
     // Alert the renderer
     signal_update_progress.emit(0.9f, "render");
     signal_drawables_changed.emit(_drawables);
+
     signal_update_progress.emit(1.0f, "complete");
     signal_update_complete.emit();
 }
