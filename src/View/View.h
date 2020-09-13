@@ -48,7 +48,9 @@ namespace View {
 
         virtual void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) = 0;
 
-        virtual void on_simulation_complete() = 0;
+        virtual void on_simulation_complete() {
+            _complete_dispatcher.emit();
+        }
 
     protected:
 
@@ -57,6 +59,8 @@ namespace View {
         Glib::Dispatcher _progress_dispatcher;
         float _progress = 0.0;
         std::string _status = "not started";
+
+        Glib::Dispatcher _complete_dispatcher;
     };
 
 }
