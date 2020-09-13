@@ -37,18 +37,14 @@ View::Interactive::Interactive(Controller::Application &application) {
     Gtk::ProgressBar *progressBar = nullptr;
     builder->get_widget("progressBar", progressBar);
     assert(progressBar);
+    _progress_dispatcher.connect([progressBar, this]{
+        progressBar->set_fraction(_progress);
+        progressBar->set_text(_status);
+    });
+    _progress_dispatcher.emit();
 
     application.add_window(*window);
     window->show();
-
-}
-
-void View::Interactive::on_start_simulation() {
-
-    signal_start_simulation.emit();
-}
-
-void View::Interactive::on_simulation_progress(float progress, const std::string &status) {
 
 }
 
