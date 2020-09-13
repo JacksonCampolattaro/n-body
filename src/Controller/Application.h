@@ -45,7 +45,7 @@ namespace Controller {
 
     private:
 
-        std::shared_ptr<Model::Simulation> _simulation;
+        Model::Simulation _simulation;
         std::shared_ptr<View::View> _view;
 
 

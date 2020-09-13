@@ -6,9 +6,7 @@
 
 #include "../Model/Simulation.h"
 
-#include "../View/HeadlessView.h"
-#include "../View/ViewerView.h"
-#include "../View/InteractiveView.h"
+#include "../View/Interactive.h"
 
 #include <giomm/notification.h>
 #include <fstream>
@@ -65,7 +63,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     auto options = command_line->get_options_dict();
 
     Logger::reset();
-    _simulation = std::make_shared<Model::Simulation>();
+    _simulation = Model::Simulation();
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))
@@ -82,8 +80,8 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     // Load a file if one was provided
     if (std::string filePath; options->lookup_value("file", filePath)) {
 
-        _simulation->loadBodiesFromPath(filePath);
-        spdlog::debug("Loaded {} entities", _simulation->_entities.size());
+        _simulation.loadBodiesFromPath(filePath);
+        spdlog::debug("Loaded {} entities", _simulation._entities.size());
     }
 
     // Run the program in headless mode if that flag is set
@@ -91,7 +89,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in headless mode");
 
         spdlog::info("Creating a headless view");
-        _view = std::make_shared<View::HeadlessView>(*this, _simulation);
+//        _view = std::make_shared<View::HeadlessView>(*this, _simulation);
     }
 
     // Run the program in viewer mode if that flag was set
@@ -99,7 +97,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in viewer mode");
 
         spdlog::info("Creating a viewer view");
-        _view = std::make_shared<View::ViewerView>(*this, _simulation);
+//        _view = std::make_shared<View::ViewerView>(*this, _simulation);
     }
 
     // Otherwise, run the program in interactive mode
@@ -107,7 +105,20 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in interactive mode");
 
         spdlog::info("Creating an interactive view");
-        _view = std::make_shared<View::InteractiveView>(*this, _simulation);
+        _view = std::make_shared<View::Interactive>(*this);
+    }
+
+    // Connect all the signals
+    {
+        _simulation.signal_update_progress
+                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_progress));
+        _simulation.signal_drawables_changed
+                .connect(sigc::mem_fun(_view.get(), &View::View::on_drawables_changed));
+        _simulation.signal_update_complete
+                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_complete));
+
+        _view->signal_start_simulation
+                .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
     }
 
     // Run the program itself
