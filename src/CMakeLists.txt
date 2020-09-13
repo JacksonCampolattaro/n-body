@@ -13,16 +13,17 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Velocity.h
 
         Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
+        Model/Drawable/Color.h
         Model/Physics/Physics.h
         Model/Physics/Rule.cpp Model/Physics/Rule.h
         Model/Physics/PassiveElement.cpp Model/Physics/PassiveElement.h
         Model/Physics/ActiveElement.cpp Model/Physics/ActiveElement.h
 
         View/View.h
+        View/Painter.cpp View/Painter.h
         View/Interactive.cpp View/Interactive.h
 
-        View/SimulationViewport.cpp View/SimulationViewport.h
-        Model/Drawable/Color.h View/Painter.cpp View/Painter.h)
+        )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         ${GTKMM_LIBRARIES}

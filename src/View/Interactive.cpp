@@ -17,7 +17,7 @@ View::Interactive::Interactive(Controller::Application &application) {
     Gtk::GLArea *viewport = nullptr;
     builder->get_widget("viewport", viewport);
     assert(viewport);
-    _painter.set_glarea(*viewport);
+    _painter = std::make_unique<Painter>(*viewport);
 
     Gtk::Button *stopButton = nullptr;
     builder->get_widget("stopButton", stopButton);
@@ -26,10 +26,13 @@ View::Interactive::Interactive(Controller::Application &application) {
     Gtk::Button *updateButton = nullptr;
     builder->get_widget("updateButton", updateButton);
     assert(updateButton);
+    updateButton->signal_clicked().connect(sigc::mem_fun(*this, &Interactive::on_start_simulation));
 
     Gtk::Button *runButton = nullptr;
     builder->get_widget("runButton", runButton);
     assert(runButton);
+    // TODO: Connect signals for looping
+    runButton->signal_clicked().connect(sigc::mem_fun(*this, &Interactive::on_start_simulation));
 
     Gtk::ProgressBar *progressBar = nullptr;
     builder->get_widget("progressBar", progressBar);
@@ -42,6 +45,7 @@ View::Interactive::Interactive(Controller::Application &application) {
 
 void View::Interactive::on_start_simulation() {
 
+    signal_start_simulation.emit();
 }
 
 void View::Interactive::on_simulation_progress(float progress, const std::string &status) {
@@ -50,6 +54,7 @@ void View::Interactive::on_simulation_progress(float progress, const std::string
 
 void View::Interactive::on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) {
 
+    _painter->draw(drawables);
 }
 
 void View::Interactive::on_simulation_complete() {
