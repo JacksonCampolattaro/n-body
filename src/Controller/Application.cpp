@@ -77,13 +77,6 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     if (std::string logfilePath; options->lookup_value("logfile", logfilePath))
         Logger::attachFile(logfilePath);
 
-    // Load a file if one was provided
-    if (std::string filePath; options->lookup_value("file", filePath)) {
-
-        _simulation.loadBodiesFromPath(filePath);
-        spdlog::info("Loaded {} entities", _simulation._entities.size());
-    }
-
     // Run the program in headless mode if that flag is set
     if (options->contains("headless")) {
         spdlog::info("Program was run in headless mode");
@@ -119,6 +112,13 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
 
         _view->signal_start_simulation
                 .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
+    }
+
+    // Load a file if one was provided
+    if (std::string filePath; options->lookup_value("file", filePath)) {
+
+        _simulation.loadBodiesFromPath(filePath);
+        spdlog::info("Loaded {} entities", _simulation._entities.size());
     }
 
     // Run the program itself
