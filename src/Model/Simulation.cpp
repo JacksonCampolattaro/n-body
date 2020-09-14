@@ -22,6 +22,8 @@ void Model::Simulation::update() {
     for (size_t p = 0; p < _passiveElements.size(); ++p) {
         auto &passive = _passiveElements[p];
 
+        //signal_update_progress.emit((float) p / (float) _passiveElements.size(), "kick");
+
         for (size_t a = 0; a < _activeElements.size(); ++a) {
             auto &active = _activeElements[a];
 
