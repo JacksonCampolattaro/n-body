@@ -23,7 +23,7 @@ add_executable(${CMAKE_PROJECT_NAME}
         View/Painter.cpp View/Painter.h
         View/Interactive.cpp View/Interactive.h
 
-        Model/Solver/Solver.h Model/Solver/Naive.cpp Model/Solver/Naive.h)
+        Model/Solver/Solver.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         ${GTKMM_LIBRARIES}
