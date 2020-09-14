@@ -12,7 +12,9 @@
 #include "Physics/Rule.h"
 #include "Physics/PassiveElement.h"
 #include "Physics/ActiveElement.h"
+#include "Solver/Solver.h"
 #include "../Controller/Logger.h"
+#include "Solver/Naive.h"
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
@@ -44,6 +46,7 @@ namespace Model {
         sigc::signal<void(const std::deque<Drawable::Drawable> &)> signal_drawables_changed;
 
         Physics::Rule _rule;
+        Solver::Naive _solver;
 
         std::deque<Entity> _entities;
         std::deque<Position> _positions;

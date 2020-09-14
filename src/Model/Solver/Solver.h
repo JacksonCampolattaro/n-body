@@ -13,13 +13,16 @@
 
 namespace Model {
 
-    class Solver {
-    public:
+    namespace Solver {
 
-        virtual void operator()(const std::deque<Model::Physics::ActiveElement> &activeElements) = 0;
+        class Solver {
+        public:
 
-        virtual glm::vec3 operator()(Model::Physics::PassiveElement passiveElement) const = 0;
-    };
+            virtual void operator()(std::deque<Model::Physics::ActiveElement> &activeElements) = 0;
+
+            virtual glm::vec3 operator()(Model::Physics::PassiveElement passiveElement) const = 0;
+        };
+    }
 }
 
 #endif //N_BODY_SOLVER_H
