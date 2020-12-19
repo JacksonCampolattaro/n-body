@@ -9,11 +9,11 @@ project(n_body)
 # Set C++ version
 set(CMAKE_CXX_STANDARD 17)
 
+# Make our modules available
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
+
 # Add Gtkmm's include files
-find_package(PkgConfig)
-pkg_check_modules(GTKMM gtkmm-4.0)
-link_directories(${GTKMM_LIBRARY_DIRS})
-include_directories(${GTKMM_INCLUDE_DIRS})
+find_package(Gtkmm)
 
 # Add spdlog's include files
 find_package(spdlog REQUIRED)
