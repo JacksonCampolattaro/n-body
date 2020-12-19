@@ -54,9 +54,4 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 # Add Doxygen target
-find_package(Doxygen REQUIRED)
-add_custom_target(documentation
-    COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating documentation"
-    )
+add_subdirectory(docs)
