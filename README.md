@@ -1,5 +1,5 @@
-# MINI
-### Modular Integrator for N-body Interaction
+# NB
+### A Modular Integrator for N-body Interaction
 
 An n-body Gravity Simulator by Jackson Campolattaro.
 

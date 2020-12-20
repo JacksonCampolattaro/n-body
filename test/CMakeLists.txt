@@ -75,13 +75,17 @@ add_executable(test_simulation
         testSimulation.cpp)
 
 target_link_libraries(test_simulation PRIVATE
+        Model
+
         ${GTKMM_LIBRARIES}
+
         Magnum::GLContext
         Magnum::GL
         Magnum::Magnum
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+
         spdlog::spdlog
         )
 

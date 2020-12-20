@@ -1,7 +1,7 @@
 
 
 # Set minimum CMake version
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 # Set project name
 project(n_body)

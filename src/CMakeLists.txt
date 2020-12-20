@@ -2,12 +2,6 @@
 # Add Gtkmm's include files
 find_package(Gtkmm REQUIRED)
 
-# Add openmp
-find_package(OpenMP REQUIRED)
-
-# Add spdlog's include files
-find_package(spdlog REQUIRED)
-
 # Add Magnum's include files
 find_package(Magnum REQUIRED
         GL
@@ -29,6 +23,8 @@ else ()
 endif ()
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
+add_subdirectory(Model)
+
 # Set files to be compiled
 add_executable(${CMAKE_PROJECT_NAME}
 
@@ -37,18 +33,6 @@ add_executable(${CMAKE_PROJECT_NAME}
         Controller/Logger.cpp Controller/Logger.h
         Controller/Application.cpp Controller/Application.h
 
-        Model/Simulation.cpp Model/Simulation.h
-        Model/Entity.cpp Model/Entity.cpp
-        Model/Position.h
-        Model/Velocity.h
-
-        Model/Drawable/Drawable.cpp Model/Drawable/Drawable.h
-        Model/Drawable/Color.h
-        Model/Physics/Physics.h
-        Model/Physics/Rule.cpp Model/Physics/Rule.h
-        Model/Physics/PassiveElement.cpp Model/Physics/PassiveElement.h
-        Model/Physics/ActiveElement.cpp Model/Physics/ActiveElement.h
-
         View/View.h
         View/Painter.cpp View/Painter.h
         View/Interactive.cpp View/Interactive.h
@@ -56,6 +40,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Solver/Solver.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+
+        Model
 
         ${GTKMM_LIBRARIES}
 
@@ -66,7 +52,4 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
         Magnum::Primitives
         Magnum::Shaders
 
-        spdlog::spdlog
-
-        OpenMP::OpenMP_CXX
         )
