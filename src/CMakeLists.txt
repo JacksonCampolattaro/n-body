@@ -1,6 +1,9 @@
 
 # Add Gtkmm's include files
-find_package(Gtkmm)
+find_package(Gtkmm REQUIRED)
+
+# Add openmp
+find_package(OpenMP REQUIRED)
 
 # Add spdlog's include files
 find_package(spdlog REQUIRED)
@@ -25,14 +28,6 @@ else ()
     message(FATAL_ERROR "Magnum context creation is not supported on this platform")
 endif ()
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
-
-# Enable openmp
-find_package(OpenMP REQUIRED)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
 
 # Set files to be compiled
 add_executable(${CMAKE_PROJECT_NAME}
@@ -61,13 +56,17 @@ add_executable(${CMAKE_PROJECT_NAME}
         Model/Solver/Solver.h)
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+
         ${GTKMM_LIBRARIES}
+
         Magnum::GLContext
         Magnum::GL
         Magnum::Magnum
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+
         spdlog::spdlog
+
         OpenMP::OpenMP_CXX
         )
