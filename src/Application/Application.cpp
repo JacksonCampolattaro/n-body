@@ -82,13 +82,17 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
         spdlog::debug("Creating a headless view");
     }
 
-//    // Run the program in viewer mode if that flag was set
-//    if (options->contains("viewer")) {
-//        spdlog::info("Program was run in viewer mode");
-//
-//        spdlog::debug("Creating a viewer view");
-//        _view = std::make_shared<View::ViewerView>(*this, _simulation);
-//    }
+    // Run the program in viewer mode if that flag was set
+    if (options->contains("viewer")) {
+        spdlog::info("Program was run in viewer mode");
+
+        spdlog::debug("Creating a viewer view");
+        //_view = std::make_shared<View::ViewerView>(*this, _simulation);
+        _window.add(_view);
+        _window.show();
+        _view.show();
+        this->add_window(_window);
+    }
 //
 //    // Otherwise, run the program in interactive mode
 //    if (!_view) {

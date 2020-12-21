@@ -12,6 +12,7 @@ add_executable(NBody
 target_link_libraries(NBody PUBLIC
 
         Model
+        View
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}
