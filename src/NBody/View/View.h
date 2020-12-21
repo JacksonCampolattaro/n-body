@@ -1,75 +1,36 @@
-//
-// Created by jackcamp on 9/1/20.
-//
-
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
-#include "../Model/Simulation.h"
-#include "../Model/Drawable/Drawable.h"
+#include <gtkmm/glarea.h>
 
-#include <spdlog/spdlog.h>
-#include <giomm.h>
-#include <thread>
+#include <Magnum/Platform/GLContext.h>
 
-namespace Controller {
-    class Application;
-}
+using namespace Magnum;
 
 namespace View {
 
-    class View {
+    class View : public Gtk::GLArea {
     public:
 
-        // Signals
-        sigc::signal<void()> signal_start_simulation;
+        View();
 
-        // Sinks
-        virtual void on_start_simulation() {
+        void draw();
 
-            _worker = std::thread([this] {
-                signal_start_simulation.emit();
-            });
-        }
+    private:
 
-        void on_simulation_progress(float progress, const std::string &status) {
+        void realize();
 
-            //_progress = std::max(progress, _progress);
-            _progress = progress;
-            _status = status;
+        bool render(const Glib::RefPtr<Gdk::GLContext> &context);
 
-            spdlog::trace("Progress updated to: {}", _progress);
+        void resize(int width, int height);
 
-            _progress_dispatcher.emit();
-        }
+        void unrealize();
 
-        void on_simulation_complete() {
-            _complete_dispatcher.emit();
-        }
+    private:
 
-        virtual void on_drawables_changed(const std::deque<Model::Drawable::Drawable> &drawables) = 0;
-
-    protected:
-
-        View() {
-
-            _complete_dispatcher.connect([this] {
-
-                if (_worker.joinable())
-                    _worker.join();
-            });
-        }
-
-        std::thread _worker;
-
-        Glib::Dispatcher _progress_dispatcher;
-        float _progress = 0.0;
-        std::string _status = "not started";
-
-        Glib::Dispatcher _complete_dispatcher;
+        Platform::GLContext _context{NoCreate};
     };
 
 }
-
 
 #endif //N_BODY_VIEW_H

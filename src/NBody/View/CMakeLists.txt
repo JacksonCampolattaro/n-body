@@ -31,7 +31,7 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_library(View
 
-        View.h
+        View.h View.cpp
         )
 
 target_include_directories(View PUBLIC
