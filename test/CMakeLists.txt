@@ -1,51 +1,51 @@
 
 add_executable(test_position
 
-        ../src/Model/Position.h
+        ../src/NBody/Model/Position.h
 
         testPosition.cpp)
 
 add_executable(test_velocity
 
-        ../src/Model/Velocity.h
+        ../src/NBody/Model/Velocity.h
 
         testVelocity.cpp)
 
 add_executable(test_color
 
-        ../src/Model/Drawable/Color.h
+        ../src/NBody/Model/Drawable/Color.h
 
         testColor.cpp)
 
 add_executable(test_drawable
 
-        ../src/Model/Drawable/Drawable.h ../src/Model/Drawable/Drawable.cpp
+        ../src/NBody/Model/Drawable/Drawable.h ../src/NBody/Model/Drawable/Drawable.cpp
 
         testDrawable.cpp)
 
 add_executable(test_passiveElement
 
-        ../src/Model/Physics/PassiveElement.h ../src/Model/Physics/PassiveElement.cpp
+        ../src/NBody/Model/Physics/PassiveElement.h ../src/NBody/Model/Physics/PassiveElement.cpp
 
         testPassiveElement.cpp)
 
 add_executable(test_activeElement
 
-        ../src/Model/Physics/ActiveElement.h ../src/Model/Physics/ActiveElement.cpp
+        ../src/NBody/Model/Physics/ActiveElement.h ../src/NBody/Model/Physics/ActiveElement.cpp
 
         testActiveElement.cpp)
 
 add_executable(test_entity
 
-        ../src/Model/Simulation.cpp ../src/Model/Simulation.h
-        ../src/Model/Entity.cpp ../src/Model/Entity.cpp
-        ../src/Model/Position.h
-        ../src/Model/Velocity.h
-        ../src/Model/Drawable/Drawable.cpp ../src/Model/Drawable/Drawable.h
-        ../src/Model/Physics/Physics.h
-        ../src/Model/Physics/Rule.cpp ../src/Model/Physics/Rule.h
-        ../src/Model/Physics/PassiveElement.cpp ../src/Model/Physics/PassiveElement.h
-        ../src/Model/Physics/ActiveElement.cpp ../src/Model/Physics/ActiveElement.h
+        ../src/NBody/Model/Simulation.cpp ../src/NBody/Model/Simulation.h
+        ../src/NBody/Model/Entity.cpp ../src/NBody/Model/Entity.cpp
+        ../src/NBody/Model/Position.h
+        ../src/NBody/Model/Velocity.h
+        ../src/NBody/Model/Drawable/Drawable.cpp ../src/NBody/Model/Drawable/Drawable.h
+        ../src/NBody/Model/Physics/Physics.h
+        ../src/NBody/Model/Physics/Rule.cpp ../src/NBody/Model/Physics/Rule.h
+        ../src/NBody/Model/Physics/PassiveElement.cpp ../src/NBody/Model/Physics/PassiveElement.h
+        ../src/NBody/Model/Physics/ActiveElement.cpp ../src/NBody/Model/Physics/ActiveElement.h
 
         testEntity.cpp)
 
@@ -62,15 +62,15 @@ target_link_libraries(test_entity PRIVATE
 
 add_executable(test_simulation
 
-        ../src/Model/Simulation.cpp ../src/Model/Simulation.h
-        ../src/Model/Entity.cpp ../src/Model/Entity.cpp
-        ../src/Model/Position.h
-        ../src/Model/Velocity.h
-        ../src/Model/Drawable/Drawable.cpp ../src/Model/Drawable/Drawable.h
-        ../src/Model/Physics/Physics.h
-        ../src/Model/Physics/Rule.cpp ../src/Model/Physics/Rule.h
-        ../src/Model/Physics/PassiveElement.cpp ../src/Model/Physics/PassiveElement.h
-        ../src/Model/Physics/ActiveElement.cpp ../src/Model/Physics/ActiveElement.h
+        ../src/NBody/Model/Simulation.cpp ../src/NBody/Model/Simulation.h
+        ../src/NBody/Model/Entity.cpp ../src/NBody/Model/Entity.cpp
+        ../src/NBody/Model/Position.h
+        ../src/NBody/Model/Velocity.h
+        ../src/NBody/Model/Drawable/Drawable.cpp ../src/NBody/Model/Drawable/Drawable.h
+        ../src/NBody/Model/Physics/Physics.h
+        ../src/NBody/Model/Physics/Rule.cpp ../src/NBody/Model/Physics/Rule.h
+        ../src/NBody/Model/Physics/PassiveElement.cpp ../src/NBody/Model/Physics/PassiveElement.h
+        ../src/NBody/Model/Physics/ActiveElement.cpp ../src/NBody/Model/Physics/ActiveElement.h
 
         testSimulation.cpp)
 
@@ -91,15 +91,15 @@ target_link_libraries(test_simulation PRIVATE
 
 add_executable(bodies
 
-        ../src/Model/Simulation.cpp ../src/Model/Simulation.h
-        ../src/Model/Entity.cpp ../src/Model/Entity.cpp
-        ../src/Model/Position.h
-        ../src/Model/Velocity.h
-        ../src/Model/Drawable/Drawable.cpp ../src/Model/Drawable/Drawable.h
-        ../src/Model/Physics/Physics.h
-        ../src/Model/Physics/Rule.cpp ../src/Model/Physics/Rule.h
-        ../src/Model/Physics/PassiveElement.cpp ../src/Model/Physics/PassiveElement.h
-        ../src/Model/Physics/ActiveElement.cpp ../src/Model/Physics/ActiveElement.h
+        ../src/NBody/Model/Simulation.cpp ../src/NBody/Model/Simulation.h
+        ../src/NBody/Model/Entity.cpp ../src/NBody/Model/Entity.cpp
+        ../src/NBody/Model/Position.h
+        ../src/NBody/Model/Velocity.h
+        ../src/NBody/Model/Drawable/Drawable.cpp ../src/NBody/Model/Drawable/Drawable.h
+        ../src/NBody/Model/Physics/Physics.h
+        ../src/NBody/Model/Physics/Rule.cpp ../src/NBody/Model/Physics/Rule.h
+        ../src/NBody/Model/Physics/PassiveElement.cpp ../src/NBody/Model/Physics/PassiveElement.h
+        ../src/NBody/Model/Physics/ActiveElement.cpp ../src/NBody/Model/Physics/ActiveElement.h
 
         bodies.cpp)
 

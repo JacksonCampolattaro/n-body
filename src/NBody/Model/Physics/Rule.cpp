@@ -7,7 +7,7 @@
 #include <glm/geometric.hpp>
 #include <cmath>
 
-#include "../../Controller/Logger.h"
+#include "../../../Application/Logger.h"
 
 Model::Physics::Rule::Rule() :
         _gravitationalConstant(1),

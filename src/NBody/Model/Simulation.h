@@ -13,7 +13,7 @@
 #include "Physics/PassiveElement.h"
 #include "Physics/ActiveElement.h"
 #include "Solver/Solver.h"
-#include "../Controller/Logger.h"
+#include "../../Application/Logger.h"
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>

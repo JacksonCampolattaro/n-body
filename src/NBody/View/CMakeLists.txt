@@ -32,8 +32,6 @@ endif ()
 add_library(View
 
         View.h
-        Painter.h Painter.cpp
-        Interactive.h Interactive.cpp
         )
 
 target_include_directories(View PUBLIC
