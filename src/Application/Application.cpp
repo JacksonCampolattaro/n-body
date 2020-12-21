@@ -122,6 +122,9 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
         spdlog::info("Loaded {} entities", _simulation._entities.size());
     }
 
+    // Give the view access to the drawables
+    _view.setDrawables(&_simulation._drawables);
+
     // Run the program itself
     spdlog::debug("Running the program");
     activate();
