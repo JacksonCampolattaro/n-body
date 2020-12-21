@@ -3,5 +3,5 @@
 
 int main(int argc, char *argv[]) {
 
-    return Controller::Application().run(argc, argv);
+    return Application().run(argc, argv);
 }
