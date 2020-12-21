@@ -52,6 +52,6 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
 
 void View::View::resize(int width, int height) {}
 
-void View::View::setDrawables(std::shared_ptr<std::deque<Drawable::Drawable>> drawables) {
-    _drawables = std::move(drawables);
+void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
+    _drawables = drawables;
 }

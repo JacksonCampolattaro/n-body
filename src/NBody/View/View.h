@@ -20,7 +20,7 @@ namespace View {
 
         View();
 
-        void setDrawables(std::shared_ptr<std::deque<Drawable::Drawable>> drawables);
+        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
 
     protected:
 
@@ -38,7 +38,7 @@ namespace View {
 
         Platform::GLContext _context{NoCreate};
 
-        std::shared_ptr<std::deque<Drawable::Drawable>> _drawables;
+        const std::deque<Drawable::Drawable> *_drawables = nullptr;
     };
 
 }
