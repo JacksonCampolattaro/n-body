@@ -7,8 +7,8 @@
 
 #include "Logger.h"
 
-#include "../View/View.h"
-#include "../Model/Simulation.h"
+#include "../NBody/View/View.h"
+#include "../NBody/Model/Simulation.h"
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>

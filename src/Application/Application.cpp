@@ -4,7 +4,7 @@
 
 #include "Application.h"
 
-#include "../Model/Simulation.h"
+#include "../NBody/Model/Simulation.h"
 
 #include "../View/Interactive.h"
 
