@@ -27,7 +27,7 @@ elseif (CORRADE_TARGET_UNIX)
 else ()
     message(FATAL_ERROR "Magnum context creation is not supported on this platform")
 endif ()
-#set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_library(View
 

@@ -1,8 +1,7 @@
 
-//#include "Controller/Application.h"
+#include "Application.h"
 
 int main(int argc, char *argv[]) {
 
-//  Controller::Application().run(argc, argv);
-    return 0;
+    return Controller::Application().run(argc, argv);
 }

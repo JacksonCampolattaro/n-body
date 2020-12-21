@@ -6,8 +6,6 @@
 
 #include "../NBody/Model/Simulation.h"
 
-#include "../View/Interactive.h"
-
 #include <giomm/notification.h>
 #include <fstream>
 
@@ -82,37 +80,36 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
         spdlog::info("Program was run in headless mode");
 
         spdlog::debug("Creating a headless view");
-//        _view = std::make_shared<View::HeadlessView>(*this, _simulation);
     }
 
-    // Run the program in viewer mode if that flag was set
-    if (options->contains("viewer")) {
-        spdlog::info("Program was run in viewer mode");
-
-        spdlog::debug("Creating a viewer view");
+//    // Run the program in viewer mode if that flag was set
+//    if (options->contains("viewer")) {
+//        spdlog::info("Program was run in viewer mode");
+//
+//        spdlog::debug("Creating a viewer view");
 //        _view = std::make_shared<View::ViewerView>(*this, _simulation);
-    }
-
-    // Otherwise, run the program in interactive mode
-    if (!_view) {
-        spdlog::info("Program was run in interactive mode");
-
-        spdlog::debug("Creating an interactive view");
-        _view = std::make_shared<View::Interactive>(*this);
-    }
-
-    // Connect all the signals
-    {
-        _simulation.signal_update_progress
-                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_progress));
-        _simulation.signal_drawables_changed
-                .connect(sigc::mem_fun(_view.get(), &View::View::on_drawables_changed));
-        _simulation.signal_update_complete
-                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_complete));
-
-        _view->signal_start_simulation
-                .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
-    }
+//    }
+//
+//    // Otherwise, run the program in interactive mode
+//    if (!_view) {
+//        spdlog::info("Program was run in interactive mode");
+//
+//        spdlog::debug("Creating an interactive view");
+//        _view = std::make_shared<View::Interactive>(*this);
+//    }
+//
+//    // Connect all the signals
+//    {
+//        _simulation.signal_update_progress
+//                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_progress));
+//        _simulation.signal_drawables_changed
+//                .connect(sigc::mem_fun(_view.get(), &View::View::on_drawables_changed));
+//        _simulation.signal_update_complete
+//                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_complete));
+//
+//        _view->signal_start_simulation
+//                .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
+//    }
 
     // Load a file if one was provided
     if (std::string filePath; options->lookup_value("file", filePath)) {

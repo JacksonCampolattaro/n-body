@@ -7,7 +7,6 @@
 
 #include "Logger.h"
 
-#include "../NBody/View/View.h"
 #include "../NBody/Model/Simulation.h"
 
 #include <gtkmm/application.h>
@@ -46,8 +45,6 @@ namespace Controller {
     private:
 
         Model::Simulation _simulation;
-        std::shared_ptr<View::View> _view;
-
 
     };
 
