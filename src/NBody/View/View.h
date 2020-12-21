@@ -7,7 +7,11 @@
 #include <Magnum/GL/Renderer.h>
 #include <Magnum/GL/Framebuffer.h>
 
+#include <NBody/Model/Drawable/Drawable.h>
+
 using namespace Magnum;
+
+using namespace Model;
 
 namespace View {
 
@@ -15,6 +19,8 @@ namespace View {
     public:
 
         View();
+
+        void setDrawables(std::shared_ptr<std::deque<Drawable::Drawable>> drawables);
 
     protected:
 
@@ -31,6 +37,8 @@ namespace View {
     private:
 
         Platform::GLContext _context{NoCreate};
+
+        std::shared_ptr<std::deque<Drawable::Drawable>> _drawables;
     };
 
 }

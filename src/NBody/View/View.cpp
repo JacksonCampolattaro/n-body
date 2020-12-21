@@ -4,6 +4,8 @@
 
 #include "View.h"
 
+#include <utility>
+
 View::View::View() : Gtk::GLArea() {
 
     set_auto_render();
@@ -48,6 +50,8 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
     return false;
 }
 
-void View::View::resize(int width, int height) {
+void View::View::resize(int width, int height) {}
 
+void View::View::setDrawables(std::shared_ptr<std::deque<Drawable::Drawable>> drawables) {
+    _drawables = std::move(drawables);
 }
