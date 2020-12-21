@@ -9,6 +9,8 @@
 
 #include "../NBody/Model/Simulation.h"
 
+#include <NBody/View/View.h>
+
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
@@ -43,6 +45,10 @@ protected:
 private:
 
     Model::Simulation _simulation;
+
+    Gtk::Window _window;
+    View::View _view;
+
 
 };
 

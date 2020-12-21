@@ -4,6 +4,8 @@
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
+#include <Magnum/GL/Renderer.h>
+#include <Magnum/GL/Framebuffer.h>
 
 using namespace Magnum;
 
@@ -14,17 +16,17 @@ namespace View {
 
         View();
 
-        void draw();
+    protected:
+
+        virtual void draw(GL::Framebuffer &framebuffer);
 
     private:
 
-        void realize();
+        void setupGL();
 
         bool render(const Glib::RefPtr<Gdk::GLContext> &context);
 
         void resize(int width, int height);
-
-        void unrealize();
 
     private:
 
