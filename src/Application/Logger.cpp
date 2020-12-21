@@ -4,12 +4,12 @@
 
 #include "Logger.h"
 
-void Controller::Logger::reset() {
+void Logger::reset() {
 
     spdlog::default_logger()->sinks().clear();
 }
 
-void Controller::Logger::attachConsole() {
+void Logger::attachConsole() {
 
     // The console supports color and can be thread-safe
     auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -21,7 +21,7 @@ void Controller::Logger::attachConsole() {
     spdlog::default_logger()->sinks().push_back(consoleSink);
 }
 
-void Controller::Logger::attachFile(std::string &filePath) {
+void Logger::attachFile(std::string &filePath) {
 
     // Configure the create a sink that writes to that file path
     auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(filePath);
@@ -31,7 +31,7 @@ void Controller::Logger::attachFile(std::string &filePath) {
     spdlog::info("Attached log file at path: \"{}\"", filePath);
 }
 
-void Controller::Logger::setVerbosity(std::string &level) {
+void Logger::setVerbosity(std::string &level) {
 
     // Set the log level according to the user's request
     spdlog::default_logger()->set_level(spdlog::level::from_str(level));

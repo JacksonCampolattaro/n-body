@@ -9,7 +9,7 @@
 #include <giomm/notification.h>
 #include <fstream>
 
-Controller::Application::Application() :
+Application::Application() :
         Gtk::Application{
                 "com.github.JacksonCampolattaro.nbody",
                 Gio::APPLICATION_HANDLES_COMMAND_LINE |
@@ -57,7 +57,7 @@ Controller::Application::Application() :
     );
 }
 
-int Controller::Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
+int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) {
     auto options = command_line->get_options_dict();
 
     Logger::reset();
@@ -124,7 +124,7 @@ int Controller::Application::on_command_line(const Glib::RefPtr<Gio::Application
     return Gtk::Application::on_command_line(command_line);
 }
 
-void Controller::Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
+void Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
 
     spdlog::trace("on_open invoked");
 }

@@ -17,38 +17,34 @@
 #include <iostream>
 #include <memory>
 
-namespace Controller {
+/**
+ * @brief An extension of Gtkmm's application class with project-specific features.
+ *
+ * This extension of Gtk::Application makes instancing my project easier.
+ * It parses extra command line instructions and uses them to determine which features to enable.
+ */
+class Application : public Gtk::Application {
+public:
 
     /**
-     * @brief An extension of Gtkmm's application class with project-specific features.
+     * @brief The default constructor defines a number of CLI options.
      *
-     * This extension of Gtk::Application makes instancing my project easier.
-     * It parses extra command line instructions and uses them to determine which features to enable.
+     * This constructor sets the application's name and
+     * provides descriptions for the program's various CLI options.
      */
-    class Application : public Gtk::Application {
-    public:
+    Application();
 
-        /**
-         * @brief The default constructor defines a number of CLI options.
-         *
-         * This constructor sets the application's name and
-         * provides descriptions for the program's various CLI options.
-         */
-        Application();
+protected:
 
-    protected:
+    int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
 
-        int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
+    void on_open(const type_vec_files &files, const Glib::ustring &hint) override;
 
-        void on_open(const type_vec_files &files, const Glib::ustring &hint) override;
+private:
 
-    private:
+    Model::Simulation _simulation;
 
-        Model::Simulation _simulation;
-
-    };
-
-}
+};
 
 
 #endif //N_BODY_APPLICATION_H
