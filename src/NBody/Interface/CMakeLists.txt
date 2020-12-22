@@ -1,4 +1,3 @@
-find_package(Gtkmm REQUIRED)
 
 add_library(Interface
 
