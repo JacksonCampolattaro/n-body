@@ -21,13 +21,31 @@ View::View::View() : Gtk::GLArea() {
 
 void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
     _drawables = drawables;
+
+    if (!_drawables) return;
+
+    _sphereInstances = Containers::Array<SphereInstanceData>{Containers::NoInit, _drawables->size()};
+    auto sphereInstance = _sphereInstances.begin();
+    for (auto &drawable : *_drawables) {
+
+        sphereInstance->transformation =
+                Matrix4::translation({drawable._position->x, drawable._position->y, drawable._position->z})
+                * Matrix4::scaling(Vector3{drawable._radius});
+
+        sphereInstance->normal = sphereInstance->transformation.normalMatrix();
+
+        sphereInstance->color = drawable._color;
+
+        sphereInstance++;
+    }
+
+    _sphereMesh.setInstanceCount(_sphereInstances.size());
+
+    queue_render();
 }
 
 void View::View::draw(GL::Framebuffer &framebuffer) {
     framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
-
-
-
 }
 
 void View::View::setupGL() {
