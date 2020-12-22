@@ -46,7 +46,7 @@ private:
 
     Model::Simulation _simulation;
 
-    ::Interface::Viewport _viewport;
+    NBody::Interface::Viewport _viewport;
 
 
 };

@@ -22,7 +22,7 @@ using namespace Math::Literals;
 
 using namespace Model;
 
-namespace View {
+namespace NBody::View {
 
     class View : public Gtk::GLArea {
     public:

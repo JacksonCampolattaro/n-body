@@ -11,7 +11,7 @@
 
 #include <gtkmm/window.h>
 
-namespace Interface {
+namespace NBody::Interface {
 
     class Viewport : public Interface {
     public:

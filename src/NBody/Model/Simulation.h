@@ -81,8 +81,8 @@ namespace Model {
             simulation._rule._timeIncrement = obj["t"].GetFloat();
 
             assert(obj["entities"].IsArray());
-            for (auto it = obj["entities"].Begin(); it != obj["entities"].End(); ++it)
-                *it >> simulation.newEntity();
+            for (const auto &it : obj["entities"].GetArray())
+                it >> simulation.newEntity();
             return obj;
         }
 
