@@ -46,6 +46,15 @@ void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
 
 void View::View::draw(GL::Framebuffer &framebuffer) {
     framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
+    _projection =
+            Matrix4::perspectiveProjection(
+                    35.0_degf, _aspectRatio, 0.01f, 100000.0f) *
+            Matrix4::translation(Vector3::zAxis(-35.0f));
+
+    _sphereInstanceBuffer.setData(_sphereInstances, GL::BufferUsage::DynamicDraw);
+    _shader.setProjectionMatrix(_projection)
+            .draw(_sphereMesh);
 }
 
 void View::View::setupGL() {
@@ -92,4 +101,7 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
     return false;
 }
 
-void View::View::resize(int width, int height) {}
+void View::View::resize(int width, int height) {
+
+    _aspectRatio = (float) width / (float) height;
+}
