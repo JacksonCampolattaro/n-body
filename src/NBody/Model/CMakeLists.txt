@@ -27,7 +27,7 @@ add_library(Model
 
         Drawable/Color.h
         Drawable/Drawable.h Drawable/Drawable.cpp
-        )
+        ../Interface/Interface.h)
 
 target_include_directories(Model PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
