@@ -38,7 +38,7 @@ target_include_directories(View PUBLIC
 
 target_link_libraries(View PUBLIC
 
-        Model
+        NBody::Model
 
         ${GTKMM_LIBRARIES}
 
@@ -51,3 +51,5 @@ target_link_libraries(View PUBLIC
         Magnum::Primitives
         Magnum::Shaders
         )
+
+add_library(NBody::View ALIAS View)

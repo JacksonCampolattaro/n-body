@@ -17,3 +17,5 @@ target_include_directories(Simulation PUBLIC
 target_link_libraries(Simulation PUBLIC
         EnTT::EnTT
         )
+
+add_library(NBody::Simulation ALIAS Simulation)

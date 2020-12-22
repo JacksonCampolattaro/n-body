@@ -10,7 +10,9 @@ target_include_directories(Interface PUBLIC
 
 target_link_libraries(Interface PUBLIC
 
-        View
+        NBody::View
 
         ${GTKMM_LIBRARIES}
         )
+
+add_library(NBody::Interface ALIAS Interface)
