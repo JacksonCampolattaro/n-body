@@ -43,3 +43,5 @@ target_link_libraries(Model PUBLIC
         #RapidJSON::rapidjson
         ${RapidJSON_LIBRARIES}
         )
+
+add_library(NBody::Model ALIAS Model)
