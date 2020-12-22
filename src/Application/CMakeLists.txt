@@ -13,6 +13,7 @@ target_link_libraries(NBody PUBLIC
 
         Model
         View
+        Interface
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}
