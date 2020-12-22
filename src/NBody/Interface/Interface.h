@@ -11,7 +11,7 @@
 
 using namespace Model;
 
-namespace Interface {
+namespace NBody::Interface {
 
     class Interface {
     public:

@@ -6,7 +6,7 @@
 
 #include <utility>
 
-View::View::View() : Gtk::GLArea() {
+NBody::View::View::View() : Gtk::GLArea() {
 
     set_size_request(400, 400);
 
@@ -19,7 +19,7 @@ View::View::View() : Gtk::GLArea() {
     signal_resize().connect(sigc::mem_fun(this, &View::resize));
 }
 
-void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
+void NBody::View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
     _drawables = drawables;
 
     if (!_drawables) return;
@@ -44,7 +44,7 @@ void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
     queue_render();
 }
 
-void View::View::draw(GL::Framebuffer &framebuffer) {
+void NBody::View::View::draw(GL::Framebuffer &framebuffer) {
     framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
     _projection =
@@ -57,7 +57,7 @@ void View::View::draw(GL::Framebuffer &framebuffer) {
             .draw(_sphereMesh);
 }
 
-void View::View::setupGL() {
+void NBody::View::View::setupGL() {
     Widget::realize();
 
     make_current();
@@ -84,7 +84,7 @@ void View::View::setupGL() {
                                          Shaders::Phong::Color3{});
 }
 
-bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
+bool NBody::View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
 
     GL::Context::current().resetState(GL::Context::State::ExitExternal);
 
@@ -101,7 +101,7 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
     return false;
 }
 
-void View::View::resize(int width, int height) {
+void NBody::View::View::resize(int width, int height) {
 
     _aspectRatio = (float) width / (float) height;
 }

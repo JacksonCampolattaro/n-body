@@ -4,7 +4,7 @@
 
 #include "Viewport.h"
 
-Interface::Viewport::Viewport() {
+NBody::Interface::Viewport::Viewport() {
 
     _window.add(_view);
     _window.show();
@@ -13,6 +13,6 @@ Interface::Viewport::Viewport() {
     slot_setDrawables = sigc::mem_fun(&_view, &View::View::setDrawables);
 }
 
-Gtk::Window &Interface::Viewport::window() {
+Gtk::Window &NBody::Interface::Viewport::window() {
     return _window;
 }
