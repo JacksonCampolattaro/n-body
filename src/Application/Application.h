@@ -10,11 +10,11 @@
 #include "../NBody/Model/Simulation.h"
 
 #include <NBody/View/View.h>
+#include <NBody/Interface/Viewport.h>
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
-#include <gtkmm/builder.h>
 
 #include <iostream>
 #include <memory>
@@ -46,8 +46,7 @@ private:
 
     Model::Simulation _simulation;
 
-    Gtk::Window _window;
-    View::View _view;
+    ::Interface::Viewport _viewport;
 
 
 };

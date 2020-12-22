@@ -88,10 +88,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 
         spdlog::debug("Creating a viewer view");
         //_view = std::make_shared<View::ViewerView>(*this, _simulation);
-        _window.add(_view);
-        _window.show();
-        _view.show();
-        this->add_window(_window);
+        this->add_window(_viewport.window());
     }
 //
 //    // Otherwise, run the program in interactive mode
@@ -123,7 +120,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     }
 
     // Give the view access to the drawables
-    _view.setDrawables(&_simulation._drawables);
+    _viewport.slot_setDrawables(&_simulation._drawables);
 
     // Run the program itself
     spdlog::debug("Running the program");
