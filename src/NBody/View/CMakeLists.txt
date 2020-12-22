@@ -4,7 +4,6 @@ find_package(spdlog REQUIRED)
 # Add rapidjson
 find_package(RapidJSON REQUIRED)
 
-
 # Add Gtkmm's include files
 find_package(Gtkmm REQUIRED)
 
