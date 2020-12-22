@@ -60,7 +60,7 @@ namespace View {
         Containers::Array<SphereInstanceData> _sphereInstances;
         Shaders::Phong _shader{NoCreate};
         Matrix4 _projection;
-        float _aspectRatio;
+        float _aspectRatio = 1;
     };
 
 }
