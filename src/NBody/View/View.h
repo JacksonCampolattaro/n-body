@@ -18,6 +18,7 @@
 #include <NBody/Model/Drawable/Drawable.h>
 
 using namespace Magnum;
+using namespace Math::Literals;
 
 using namespace Model;
 

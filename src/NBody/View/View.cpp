@@ -57,6 +57,22 @@ void View::View::setupGL() {
     set_has_depth_buffer();
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+
+    _shader = Shaders::Phong{
+            Shaders::Phong::Flag::VertexColor |
+            Shaders::Phong::Flag::InstancedTransformation
+    };
+    _shader
+            .setAmbientColor(0x505050_rgbf)
+            .setSpecularColor(0x000000_rgbf)
+            .setLightPosition({0.0, 20.0, 35.0});
+
+    _sphereInstanceBuffer = GL::Buffer{};
+    _sphereMesh = MeshTools::compile(Primitives::icosphereSolid(3));
+    _sphereMesh.addVertexBufferInstanced(_sphereInstanceBuffer, 1, 0,
+                                         Shaders::Phong::TransformationMatrix{},
+                                         Shaders::Phong::NormalMatrix{},
+                                         Shaders::Phong::Color3{});
 }
 
 bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
@@ -66,7 +82,8 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
     GLint framebufferID;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &framebufferID);
     auto framebuffer =
-            GL::Framebuffer::wrap(framebufferID, {{}, {get_width(), get_height()}});
+            GL::Framebuffer::wrap(framebufferID, {{},
+                                                  {get_width(), get_height()}});
 
     draw(framebuffer);
 
