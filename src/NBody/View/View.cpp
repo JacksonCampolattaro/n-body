@@ -8,6 +8,8 @@
 
 View::View::View() : Gtk::GLArea() {
 
+    set_size_request(400, 400);
+
     set_auto_render();
 
     set_required_version(4, 5);
@@ -17,9 +19,14 @@ View::View::View() : Gtk::GLArea() {
     signal_resize().connect(sigc::mem_fun(this, &View::resize));
 }
 
-void View::View::draw(GL::Framebuffer &framebuffer) {
+void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
+    _drawables = drawables;
+}
 
+void View::View::draw(GL::Framebuffer &framebuffer) {
     framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
+
 
 }
 
@@ -51,7 +58,3 @@ bool View::View::render(const Glib::RefPtr<Gdk::GLContext> &context) {
 }
 
 void View::View::resize(int width, int height) {}
-
-void View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
-    _drawables = drawables;
-}
