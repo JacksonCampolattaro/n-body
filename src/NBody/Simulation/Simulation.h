@@ -5,28 +5,24 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
-#include <entt/entity/registry.hpp>
+#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
+#include <CGAL/Point_set_3.h>
 
-#include <nlohmann/json.hpp>
-
-using nlohmann::json;
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef Kernel::FT FT;
+typedef Kernel::Point_3 Point;
+typedef Kernel::Vector_3 Vector;
+typedef CGAL::Point_set_3<Point> Point_set;
 
 namespace NBody::Simulation {
 
     class Simulation {
     public:
 
-        friend void to_json(json& j, const Simulation& s) {
-
-        }
-
-        friend void from_json(const json& j, Simulation& s) {
-
-        }
-
     private:
 
-        entt::registry _registry;
+        Point_set _bodies;
+
     };
 
 }
