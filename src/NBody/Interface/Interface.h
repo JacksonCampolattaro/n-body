@@ -5,11 +5,7 @@
 #ifndef N_BODY_INTERFACE_H
 #define N_BODY_INTERFACE_H
 
-#include <NBody/Model/Drawable/Drawable.h>
-
 #include <giomm.h>
-
-using namespace Model;
 
 namespace NBody::Interface {
 
@@ -18,7 +14,7 @@ namespace NBody::Interface {
 
         sigc::signal<void()> signal_incrementSimulation;
 
-        sigc::slot<void(const std::deque<Drawable::Drawable> *drawables)> slot_setDrawables;
+//        sigc::slot<void(const std::deque<Drawable::Drawable> *drawables)> slot_setDrawables;
 
 
     };

@@ -7,8 +7,7 @@
 
 #include "Logger.h"
 
-#include "../NBody/Model/Simulation.h"
-
+#include <NBody/Simulation/Simulation.h>
 #include <NBody/View/View.h>
 #include <NBody/Interface/Viewport.h>
 
@@ -44,7 +43,7 @@ protected:
 
 private:
 
-    Model::Simulation _simulation;
+    NBody::Simulation::Simulation _simulation;
 
     NBody::Interface::Viewport _viewport;
 

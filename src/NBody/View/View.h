@@ -1,6 +1,8 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
+//#include <NBody/Model/Drawable/Drawable.h>
+
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
@@ -15,12 +17,8 @@
 #include <Magnum/Shaders/Flat.h>
 #include <Magnum/Trade/MeshData.h>
 
-#include <NBody/Model/Drawable/Drawable.h>
-
 using namespace Magnum;
 using namespace Math::Literals;
-
-using namespace Model;
 
 namespace NBody::View {
 
@@ -28,8 +26,8 @@ namespace NBody::View {
     public:
 
         View();
-
-        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
+//
+//        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
 
     protected:
 
@@ -47,7 +45,7 @@ namespace NBody::View {
 
         Platform::GLContext _context{NoCreate};
 
-        const std::deque<Drawable::Drawable> *_drawables = nullptr;
+//        const std::deque<Drawable::Drawable> *_drawables = nullptr;
 
         struct SphereInstanceData {
             Matrix4 transformation;

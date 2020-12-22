@@ -61,7 +61,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     auto options = command_line->get_options_dict();
 
     Logger::reset();
-    _simulation = Model::Simulation();
+//    _simulation = Model::Simulation();
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))
@@ -115,12 +115,12 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     // Load a file if one was provided
     if (std::string filePath; options->lookup_value("file", filePath)) {
 
-        _simulation.loadBodiesFromPath(filePath);
-        spdlog::info("Loaded {} entities", _simulation._entities.size());
+//        _simulation.loadBodiesFromPath(filePath);
+//        spdlog::info("Loaded {} entities", _simulation._entities.size());
     }
 
     // Give the view access to the drawables
-    _viewport.slot_setDrawables(&_simulation._drawables);
+//    _viewport.slot_setDrawables(&_simulation._drawables);
 
     // Run the program itself
     spdlog::debug("Running the program");

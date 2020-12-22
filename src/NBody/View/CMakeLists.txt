@@ -1,20 +1,10 @@
-# Add spdlog's include files
-find_package(spdlog REQUIRED)
 
-# Add rapidjson
-find_package(RapidJSON REQUIRED)
-
-# Add Gtkmm's include files
-find_package(Gtkmm REQUIRED)
-
-# Add Magnum's include files
 find_package(Magnum REQUIRED
         GL
         MeshTools
         Primitives
         Shaders
         )
-
 if (MAGNUM_TARGET_GLES AND NOT MAGNUM_TARGET_DESKTOP_GLES)
     find_package(Magnum REQUIRED EglContext)
 elseif (CORRADE_TARGET_WINDOWS)
@@ -38,7 +28,7 @@ target_include_directories(View PUBLIC
 
 target_link_libraries(View PUBLIC
 
-        NBody::Model
+        NBody::Simulation
 
         ${GTKMM_LIBRARIES}
 
