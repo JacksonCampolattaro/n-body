@@ -1,4 +1,9 @@
 
+#include <NBody/Simulation/Simulation.h>
+
+using namespace NBody;
+
+/*
 #include "../src/Model/Simulation.h"
 
 using Model::Simulation;
@@ -108,14 +113,22 @@ Simulation blender() {
 
     return simulation;
 }
+*/
 
 int main() {
 
-    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
 
-    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
+    Simulation::Simulation s;
+    auto e = s.newEntity();
 
-    blender().saveBodiesToPath("../../scenarios/blender.bod");
+    std::cout << s;
+
+
+//    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
+//
+//    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
+//
+//    blender().saveBodiesToPath("../../scenarios/blender.bod");
 
     return 0;
 }

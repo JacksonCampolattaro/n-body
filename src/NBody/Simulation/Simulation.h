@@ -6,6 +6,7 @@
 #define N_BODY_SIMULATION_H
 
 #include <NBody/Simulation/EntityCollection.h>
+#include <NBody/Simulation/Position.h>
 
 #include <nlohmann/json.hpp>
 
@@ -20,10 +21,14 @@ namespace NBody::Simulation {
     class Simulation {
     public:
 
+        Entity newEntity();
+
+    public:
+
         friend ostream &operator<<(ostream &out, const Simulation &s) {
 
             json j;
-//            to_json(j, s);
+            to_json(j, s);
             out << j;
             return out;
         }
@@ -32,17 +37,16 @@ namespace NBody::Simulation {
 
             json j;
             in >> j;
-//            from_json(j, s);
+            from_json(j, s);
             return in;
         }
 
         friend void to_json(json &j, const Simulation &s) {
-//            j["bodies"] = {s._entityCollection};
+            j["bodies"] = {s._entityCollection};
         }
 
         friend void from_json(const json &j, Simulation &s) {
-//            j.at("bodies").get_to(s._entityCollection);
-            s._entityCollection = j.at("bodies").get<NBody::Simulation::EntityCollection>();
+            j.at("bodies").get_to(s._entityCollection);
         }
 
     private:
