@@ -5,6 +5,8 @@
 #ifndef N_BODY_ENTITYCOLLECTION_H
 #define N_BODY_ENTITYCOLLECTION_H
 
+#include <NBody/Simulation/Position.h>
+
 #include <nlohmann/json.hpp>
 #include <entt/entity/registry.hpp>
 
