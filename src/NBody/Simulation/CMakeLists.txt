@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(entt)
 add_library(Simulation
 
         Simulation.h Simulation.cpp
-        )
+        EntityCollection.cpp EntityCollection.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

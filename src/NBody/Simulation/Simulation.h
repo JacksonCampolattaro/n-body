@@ -5,28 +5,49 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
-#include <entt/entity/registry.hpp>
+#include <NBody/Simulation/EntityCollection.h>
 
 #include <nlohmann/json.hpp>
 
+#include <iostream>
+
 using nlohmann::json;
+using std::istream;
+using std::ostream;
 
 namespace NBody::Simulation {
 
     class Simulation {
     public:
 
-        friend void to_json(json& j, const Simulation& s) {
+        friend ostream &operator<<(ostream &out, const Simulation &s) {
 
+            json j;
+//            to_json(j, s);
+            out << j;
+            return out;
         }
 
-        friend void from_json(const json& j, Simulation& s) {
+        friend istream &operator>>(istream &in, Simulation &s) {
 
+            json j;
+            in >> j;
+//            from_json(j, s);
+            return in;
+        }
+
+        friend void to_json(json &j, const Simulation &s) {
+//            j["bodies"] = {s._entityCollection};
+        }
+
+        friend void from_json(const json &j, Simulation &s) {
+//            j.at("bodies").get_to(s._entityCollection);
+            s._entityCollection = j.at("bodies").get<NBody::Simulation::EntityCollection>();
         }
 
     private:
 
-        entt::registry _registry;
+        EntityCollection _entityCollection;
     };
 
 }
