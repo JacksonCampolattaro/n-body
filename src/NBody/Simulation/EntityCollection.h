@@ -12,6 +12,8 @@ using nlohmann::json;
 
 namespace NBody::Simulation {
 
+    typedef entt::entity Entity;
+
     class EntityCollection : public entt::registry {};
 
     void to_json(json &j, const EntityCollection &entityCollection);
