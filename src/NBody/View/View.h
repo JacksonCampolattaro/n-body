@@ -1,7 +1,7 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
-//#include <NBody/Model/Drawable/Drawable.h>
+#include <NBody/Simulation/Simulation.h>
 
 #include <gtkmm/glarea.h>
 
@@ -26,8 +26,8 @@ namespace NBody::View {
     public:
 
         View();
-//
-//        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
+
+        void setDrawables(const Simulation::Point_set &points);
 
     protected:
 
@@ -44,8 +44,6 @@ namespace NBody::View {
     private:
 
         Platform::GLContext _context{NoCreate};
-
-//        const std::deque<Drawable::Drawable> *_drawables = nullptr;
 
         struct SphereInstanceData {
             Matrix4 transformation;

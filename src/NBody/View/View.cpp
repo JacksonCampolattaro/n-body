@@ -19,30 +19,52 @@ NBody::View::View::View() : Gtk::GLArea() {
     signal_resize().connect(sigc::mem_fun(this, &View::resize));
 }
 
-//void NBody::View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
+void NBody::View::View::setDrawables(const Simulation::Point_set &points) {
+    typedef Simulation::Point_set ::Property_map<CGAL::Color> Color_map;
+
+    if (points.empty()) return;
+
+    auto colors = points.property_map<CGAL::Color>("color").first;
+
+    _sphereInstances = Containers::Array<SphereInstanceData>{Containers::NoInit, points.size()};
+    auto sphereInstance = _sphereInstances.begin();
+    for (auto &index : points) {
+
+        auto color = colors[index];
+
+        sphereInstance++;
+    }
+
 //    _drawables = drawables;
 //
 //    if (!_drawables) return;
 //
 //    _sphereInstances = Containers::Array<SphereInstanceData>{Containers::NoInit, _drawables->size()};
 //    auto sphereInstance = _sphereInstances.begin();
-//    for (auto &drawable : *_drawables) {
+//    for (
+//        auto &drawable
+//            : *_drawables) {
 //
-//        sphereInstance->transformation =
+//        sphereInstance->
+//                transformation =
 //                Matrix4::translation({drawable._position->x, drawable._position->y, drawable._position->z})
 //                * Matrix4::scaling(Vector3{drawable._radius});
 //
-//        sphereInstance->normal = sphereInstance->transformation.normalMatrix();
+//        sphereInstance->
+//                normal = sphereInstance->transformation.normalMatrix();
 //
-//        sphereInstance->color = drawable._color;
+//        sphereInstance->
+//                color = drawable._color;
 //
 //        sphereInstance++;
 //    }
 //
-//    _sphereMesh.setInstanceCount(_sphereInstances.size());
-//
-//    queue_render();
-//}
+
+    _sphereMesh.setInstanceCount(_sphereInstances.size());
+
+    queue_render();
+
+}
 
 void NBody::View::View::draw(GL::Framebuffer &framebuffer) {
     framebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
