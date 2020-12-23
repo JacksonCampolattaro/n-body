@@ -11,6 +11,7 @@
 #include <nlohmann/json.hpp>
 
 #include <iostream>
+#include <iomanip>
 
 using nlohmann::json;
 using std::istream;
@@ -29,7 +30,7 @@ namespace NBody::Simulation {
 
             json j;
             to_json(j, s);
-            out << j;
+            out << std::setw(4) << j;
             return out;
         }
 
@@ -42,7 +43,7 @@ namespace NBody::Simulation {
         }
 
         friend void to_json(json &j, const Simulation &s) {
-            j["bodies"] = {s._entityCollection};
+            j["bodies"] = s._entityCollection;
         }
 
         friend void from_json(const json &j, Simulation &s) {

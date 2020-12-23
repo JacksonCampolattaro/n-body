@@ -6,6 +6,7 @@
 #define N_BODY_ENTITYCOLLECTION_H
 
 #include <NBody/Simulation/Position.h>
+#include <NBody/Simulation/Velocity.h>
 
 #include <nlohmann/json.hpp>
 #include <entt/entity/registry.hpp>
