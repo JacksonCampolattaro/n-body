@@ -113,11 +113,8 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 //    }
 
     // Load a file if one was provided
-    if (std::string filePath; options->lookup_value("file", filePath)) {
-
-//        _simulation.loadBodiesFromPath(filePath);
-//        spdlog::info("Loaded {} entities", _simulation._entities.size());
-    }
+    if (std::string filePath; options->lookup_value("file", filePath))
+        std::ifstream(filePath) >> _simulation;
 
     // Give the view access to the drawables
 //    _viewport.slot_setDrawables(&_simulation._drawables);

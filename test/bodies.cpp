@@ -1,6 +1,9 @@
 
-#include "../src/Model/Simulation.h"
+#include <NBody/Simulation/Simulation.h>
 
+#include <fstream>
+
+/*
 using Model::Simulation;
 using Model::Position;
 using Model::Velocity;
@@ -108,14 +111,16 @@ Simulation blender() {
 
     return simulation;
 }
+*/
 
 int main() {
 
-    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
+//    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
+//    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
+//    blender().saveBodiesToPath("../../scenarios/blender.bod");
 
-    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
-
-    blender().saveBodiesToPath("../../scenarios/blender.bod");
+    NBody::Simulation::Simulation s;
+    std::ofstream("../../scenarios/empty.ply") << s;
 
     return 0;
 }
