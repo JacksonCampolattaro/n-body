@@ -23,7 +23,14 @@ namespace NBody::Simulation {
 
         Entity newEntity();
 
+        EntityCollection &data();
+
+        const EntityCollection &data() const;
+
     public:
+
+        friend void to_json(json &j, const Simulation &s);
+        friend void from_json(const json &j, Simulation &s);
 
         friend ostream &operator<<(ostream &out, const Simulation &s) {
 
@@ -41,18 +48,14 @@ namespace NBody::Simulation {
             return in;
         }
 
-        friend void to_json(json &j, const Simulation &s) {
-            j["bodies"] = {s._entityCollection};
-        }
-
-        friend void from_json(const json &j, Simulation &s) {
-            j.at("bodies").get_to(s._entityCollection);
-        }
-
     private:
 
         EntityCollection _entityCollection;
     };
+
+    void to_json(json &j, const Simulation &s);
+
+    void from_json(const json &j, Simulation &s);
 
 }
 
