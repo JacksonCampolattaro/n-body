@@ -1,5 +1,6 @@
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Drawable.h>
 
 using namespace NBody;
 
@@ -122,7 +123,9 @@ int main() {
     s.create();
     s.create();
     s.create();
+
     auto e = s.create();
+    s.emplace<Simulation::Drawable>(e, Simulation::Color{0.1, 0.2, 0.3, 0.5}, 23.0);
 
     std::cout << s;
 
