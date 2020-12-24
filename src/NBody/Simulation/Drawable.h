@@ -18,6 +18,10 @@ namespace NBody::Simulation {
     class Drawable {
     public:
 
+        Drawable(Color color, float radius);
+
+    private:
+
         Color _color;
         float _radius;
     };
