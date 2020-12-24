@@ -13,7 +13,13 @@ using nlohmann::json;
 
 namespace NBody::Simulation {
 
-    class Position : public glm::vec3 {};
+    class Position : public glm::vec3 {
+    public:
+
+        Position(float x, float y, float z) : glm::vec3(x, y, z) {};
+
+        Position(glm::vec3 vector) : glm::vec3(vector) {};
+    };
 
     void to_json(json &j, const Position &position);
 

@@ -4,6 +4,13 @@
 
 #include "Simulation.h"
 
+NBody::Simulation::Entity NBody::Simulation::Simulation::createBody() {
+    auto entity = create();
+    emplace<Position>(entity, 0, 0, 0);
+    emplace<Velocity>(entity, 0, 0, 0);
+    return entity;
+}
+
 void NBody::Simulation::to_json(json &j, const NBody::Simulation::Simulation &s) {
 
     auto view = s.view<const Position>();

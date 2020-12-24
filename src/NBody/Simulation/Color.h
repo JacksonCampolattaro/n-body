@@ -13,7 +13,13 @@ using nlohmann::json;
 
 namespace NBody::Simulation {
 
-    class Color : public glm::vec4 {};
+    class Color : public glm::vec4 {
+    public:
+
+        Color(float r, float g, float b, float a) : glm::vec4(r, g, b, a) {};
+
+        Color(glm::vec4 vector) : glm::vec4(vector) {};
+    };
 
     void to_json(json &j, const Color &color);
 
