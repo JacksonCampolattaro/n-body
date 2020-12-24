@@ -27,7 +27,7 @@ namespace NBody::View {
 
         View();
 
-        void setDrawables(const Simulation::Simulation &simulation);
+        void setSimulation(const Simulation::Simulation &simulation);
 
     protected:
 

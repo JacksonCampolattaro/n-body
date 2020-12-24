@@ -120,7 +120,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     }
 
     // Give the view access to the drawables
-    _viewport.slot_setDrawables(_simulation.data());
+    _viewport.slot_setSimulation(_simulation);
 
     // Run the program itself
     spdlog::debug("Running the program");
