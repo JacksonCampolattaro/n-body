@@ -29,8 +29,6 @@ namespace NBody::View {
 
         void setDrawables(const Simulation::EntityCollection &entityCollection);
 
-//        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
-
     protected:
 
         virtual void draw(GL::Framebuffer &framebuffer);
