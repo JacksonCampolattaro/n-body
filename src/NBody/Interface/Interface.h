@@ -5,6 +5,8 @@
 #ifndef N_BODY_INTERFACE_H
 #define N_BODY_INTERFACE_H
 
+#include <NBody/Simulation/EntityCollection.h>
+
 #include <giomm.h>
 
 namespace NBody::Interface {
@@ -14,7 +16,7 @@ namespace NBody::Interface {
 
         sigc::signal<void()> signal_incrementSimulation;
 
-//        sigc::slot<void(const std::deque<Drawable::Drawable> *drawables)> slot_setDrawables;
+        sigc::slot<void(const Simulation::EntityCollection &)> slot_setDrawables;
 
 
     };
