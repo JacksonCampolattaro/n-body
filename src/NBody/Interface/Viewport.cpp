@@ -10,7 +10,7 @@ NBody::Interface::Viewport::Viewport() {
     _window.show();
     _view.show();
 
-    slot_setDrawables = sigc::mem_fun(&_view, &View::View::setDrawables);
+    slot_setSimulation = sigc::mem_fun(&_view, &View::View::setSimulation);
 }
 
 Gtk::Window &NBody::Interface::Viewport::window() {
