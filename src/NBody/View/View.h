@@ -26,7 +26,7 @@ namespace NBody::View {
     public:
 
         View();
-//
+
 //        void setDrawables(const std::deque<Drawable::Drawable> *drawables);
 
     protected:
