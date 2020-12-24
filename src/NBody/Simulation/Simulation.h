@@ -21,7 +21,12 @@ using std::ostream;
 
 namespace NBody::Simulation {
 
+    typedef entt::entity Entity;
+
     class Simulation : public entt::registry {
+    public:
+
+        Entity createBody();
 
     public:
 

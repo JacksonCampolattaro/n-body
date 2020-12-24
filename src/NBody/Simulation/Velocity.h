@@ -13,7 +13,13 @@ using nlohmann::json;
 
 namespace NBody::Simulation {
 
-    class Velocity : public glm::vec3 {};
+    class Velocity : public glm::vec3 {
+    public:
+
+        Velocity(float x, float y, float z) : glm::vec3(x, y, z) {};
+
+        Velocity(glm::vec3 vector) : glm::vec3(vector) {};
+    };
 
     void to_json(json &j, const Velocity &velocity);
 
