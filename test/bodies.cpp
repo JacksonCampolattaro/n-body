@@ -119,10 +119,10 @@ int main() {
 
 
     Simulation::Simulation s;
-    s.newEntity();
-    s.newEntity();
-    s.newEntity();
-    auto e = s.newEntity();
+    s.create();
+    s.create();
+    s.create();
+    auto e = s.create();
 
     std::cout << s;
 

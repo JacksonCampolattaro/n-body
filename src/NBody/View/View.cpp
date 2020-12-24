@@ -5,7 +5,6 @@
 #include "View.h"
 
 #include <utility>
-#include <NBody/Simulation/EntityCollection.h>
 
 NBody::View::View::View() : Gtk::GLArea() {
 
@@ -20,7 +19,7 @@ NBody::View::View::View() : Gtk::GLArea() {
     signal_resize().connect(sigc::mem_fun(this, &View::resize));
 }
 
-void NBody::View::View::setDrawables(const NBody::Simulation::EntityCollection &entityCollection) {
+void NBody::View::View::setDrawables(const NBody::Simulation::Simulation &simulation) {
 
 }
 

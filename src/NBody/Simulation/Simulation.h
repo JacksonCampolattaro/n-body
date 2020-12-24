@@ -5,10 +5,12 @@
 #ifndef N_BODY_SIMULATION_H
 #define N_BODY_SIMULATION_H
 
-#include <NBody/Simulation/EntityCollection.h>
 #include <NBody/Simulation/Position.h>
+#include <NBody/Simulation/Velocity.h>
 
 #include <nlohmann/json.hpp>
+
+#include <entt/entity/registry.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -19,18 +21,12 @@ using std::ostream;
 
 namespace NBody::Simulation {
 
-    class Simulation {
-    public:
-
-        Entity newEntity();
-
-        EntityCollection &data();
-
-        const EntityCollection &data() const;
+    class Simulation : public entt::registry {
 
     public:
 
         friend void to_json(json &j, const Simulation &s);
+
         friend void from_json(const json &j, Simulation &s);
 
         friend ostream &operator<<(ostream &out, const Simulation &s) {
@@ -48,10 +44,6 @@ namespace NBody::Simulation {
             from_json(j, s);
             return in;
         }
-
-    private:
-
-        EntityCollection _entityCollection;
     };
 
     void to_json(json &j, const Simulation &s);
