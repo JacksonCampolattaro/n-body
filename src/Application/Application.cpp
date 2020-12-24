@@ -4,7 +4,7 @@
 
 #include "Application.h"
 
-#include "../NBody/Model/Simulation.h"
+#include <NBody/Model/Simulation.h>
 
 #include <giomm/notification.h>
 #include <fstream>
@@ -120,7 +120,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     }
 
     // Give the view access to the drawables
-//    _viewport.slot_setDrawables(&_simulation._drawables);
+    _viewport.slot_setDrawables(_simulation.data());
 
     // Run the program itself
     spdlog::debug("Running the program");
