@@ -1,7 +1,7 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
-#include <NBody/Simulation/EntityCollection.h>
+#include <NBody/Simulation/Simulation.h>
 
 #include <gtkmm/glarea.h>
 
@@ -27,7 +27,7 @@ namespace NBody::View {
 
         View();
 
-        void setDrawables(const Simulation::EntityCollection &entityCollection);
+        void setDrawables(const Simulation::Simulation &simulation);
 
     protected:
 
