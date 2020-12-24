@@ -120,11 +120,11 @@ int main() {
 
 
     Simulation::Simulation s;
-    s.create();
-    s.create();
-    s.create();
+    s.createBody();
+    s.createBody();
+    s.createBody();
 
-    auto e = s.create();
+    auto e = s.createBody();
     s.emplace<Simulation::Drawable>(e, Simulation::Color{0.1, 0.2, 0.3, 0.5}, 23.0);
 
     std::cout << s;

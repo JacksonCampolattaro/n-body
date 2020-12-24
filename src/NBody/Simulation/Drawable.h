@@ -20,6 +20,14 @@ namespace NBody::Simulation {
 
         Drawable(Color color, float radius);
 
+        Color &color();
+
+        const Color &color() const;
+
+        float &radius();
+
+        const float &radius() const;
+
     private:
 
         Color _color;
