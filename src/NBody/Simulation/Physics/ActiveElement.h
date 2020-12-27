@@ -18,12 +18,12 @@ namespace NBody::Simulation::Physics {
         [[nodiscard]] float &mass();
         [[nodiscard]] const float &mass() const;
 
-        friend bool operator==(const ActiveElement &left, const ActiveElement &right);
-
     private:
 
         float _mass;
     };
+
+    bool operator==(const ActiveElement &left, const ActiveElement &right);
 
     void to_json(json &j, const ActiveElement &activeElement);
 
