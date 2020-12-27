@@ -17,7 +17,8 @@ add_library(Simulation
         Position.cpp Position.h
         Velocity.cpp Velocity.h
         Drawable.cpp Drawable.h
-        Color.cpp Color.h)
+        Color.cpp Color.h
+        Physics/ActiveElement.h Physics/ActiveElement.cpp)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
