@@ -30,13 +30,14 @@ namespace NBody::Simulation {
 
     public:
 
-        json to_json() const;
+        friend void to_json(json &j, const Simulation &s);
 
-        void from_json(const json &j);
+        friend void from_json(const json &j, Simulation &s);
 
         friend ostream &operator<<(ostream &out, const Simulation &s) {
 
-            json j = s.to_json();
+            json j;
+            to_json(j, s);
             out << std::setw(4) << j;
             return out;
         }
@@ -45,7 +46,7 @@ namespace NBody::Simulation {
 
             json j;
             in >> j;
-            s.from_json(j);
+            from_json(j, s);
             return in;
         }
     };

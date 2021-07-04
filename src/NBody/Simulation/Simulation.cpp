@@ -11,31 +11,30 @@ NBody::Simulation::Entity NBody::Simulation::Simulation::createBody() {
     return entity;
 }
 
-json NBody::Simulation::Simulation::to_json() const {
-    json j;
+void NBody::Simulation::to_json(json &j, const NBody::Simulation::Simulation &s) {
 
-    this->each([&](const auto &entity) {
+    s.each([&](const auto &entity) {
         json e;
 
-        if (this->has<NBody::Simulation::Position>(entity))
-            e["position"] = this->get<NBody::Simulation::Position>(entity);
+        if (s.has<NBody::Simulation::Position>(entity))
+            e["position"] = s.get<NBody::Simulation::Position>(entity);
 
-        if (this->has<NBody::Simulation::Velocity>(entity))
-            e["velocity"] = this->get<NBody::Simulation::Velocity>(entity);
+        if (s.has<NBody::Simulation::Velocity>(entity))
+            e["velocity"] = s.get<NBody::Simulation::Velocity>(entity);
 
         j["bodies"].push_back(e);
     });
-
-    return j;
 }
 
-void NBody::Simulation::Simulation::from_json(const json &j) {
+void NBody::Simulation::from_json(const json &j, NBody::Simulation::Simulation &s) {
 
     for (const auto &b : j["bodies"]) {
-        auto body = createBody();
+        auto body = s.createBody();
 
         if (b.contains("position"))
-            emplace_or_replace<Position>(body, 0.0f, 0.0f, 0.0f);
+            s.emplace_or_replace<Position>(body, b["position"].get<Position>());
 
+        if (b.contains("velocity"))
+            s.emplace_or_replace<Velocity>(body, b["velocity"].get<Velocity>());
     }
 }
