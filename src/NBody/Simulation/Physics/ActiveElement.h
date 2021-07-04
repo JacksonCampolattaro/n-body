@@ -5,8 +5,8 @@
 #ifndef N_BODY_ACTIVEELEMENT_H
 #define N_BODY_ACTIVEELEMENT_H
 
-#include <NBody/Simulation/Position.h>
-#include <NBody/Simulation/Velocity.h>
+#include <NBody/Physics/Position.h>
+#include <NBody/Physics/Velocity.h>
 
 namespace NBody::Simulation::Physics {
 

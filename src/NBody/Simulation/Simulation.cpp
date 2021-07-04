@@ -31,4 +31,11 @@ json NBody::Simulation::Simulation::to_json() const {
 
 void NBody::Simulation::Simulation::from_json(const json &j) {
 
+    for (const auto &b : j["bodies"]) {
+        auto body = createBody();
+
+        if (b.contains("position"))
+            emplace_or_replace<Position>(body, 0.0f, 0.0f, 0.0f);
+
+    }
 }

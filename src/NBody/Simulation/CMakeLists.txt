@@ -14,8 +14,6 @@ FetchContent_MakeAvailable(entt)
 add_library(Simulation
 
         Simulation.h Simulation.cpp
-        Position.cpp Position.h
-        Velocity.cpp Velocity.h
         Drawable.cpp Drawable.h
         Color.cpp Color.h
         Physics/ActiveElement.h Physics/ActiveElement.cpp
@@ -25,6 +23,7 @@ target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(Simulation PUBLIC
+        NBody::Physics
         EnTT::EnTT
         nlohmann_json::nlohmann_json
         )
