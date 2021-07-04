@@ -8,8 +8,8 @@
 #include "Logger.h"
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/View/View.h>
-#include <NBody/Interface/Viewport.h>
+//#include <NBody/View/View.h>
+//#include <NBody/Interface/Viewport.h>
 
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
@@ -43,9 +43,9 @@ protected:
 
 private:
 
-    NBody::Simulation::Simulation _simulation;
+//    NBody::Simulation::Simulation _simulation;
 
-    NBody::Interface::Viewport _viewport;
+//    NBody::Interface::Viewport _viewport;
 
 
 };

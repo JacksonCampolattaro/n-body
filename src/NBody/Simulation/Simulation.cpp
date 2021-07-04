@@ -3,7 +3,6 @@
 //
 
 #include "Simulation.h"
-#include "Drawable.h"
 
 NBody::Simulation::Entity NBody::Simulation::Simulation::createBody() {
     auto entity = create();
@@ -23,12 +22,13 @@ void NBody::Simulation::to_json(json &j, const NBody::Simulation::Simulation &s)
         if (s.has<NBody::Simulation::Velocity>(entity))
             e["velocity"] = s.get<NBody::Simulation::Velocity>(entity);
 
-        if (s.has<NBody::Simulation::Drawable>(entity))
-            e["drawable"] = s.get<NBody::Simulation::Drawable>(entity);
+//        if (s.has<NBody::Simulation::Drawable>(entity))
+//            e["drawable"] = s.get<NBody::Simulation::Drawable>(entity);
 
         j["bodies"].push_back(e);
     });
 }
 
 void NBody::Simulation::from_json(const json &j, NBody::Simulation::Simulation &s) {
+    // TODO
 }

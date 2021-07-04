@@ -4,3 +4,4 @@ glm-devel
 gtkmm30-devel
 magnum
 doxygen
+python3-pygments
