@@ -3,7 +3,6 @@ include(ExternalProject)
 
 find_package(OpenMP REQUIRED)
 find_package(spdlog REQUIRED)
-find_package(RapidJSON REQUIRED)
 find_package(glm REQUIRED)
 find_package(Gtkmm REQUIRED)
 

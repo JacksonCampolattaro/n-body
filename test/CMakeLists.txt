@@ -19,8 +19,9 @@ if (NOT Catch2_FOUND)
 endif ()
 
 add_executable(test main.cpp
-        # TODO
+        testSimulation.cpp
         )
 
 target_link_libraries(test LINK_PUBLIC
+        NBody::Simulation
         Catch2::Catch2)
