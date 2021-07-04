@@ -11,24 +11,24 @@ NBody::Simulation::Entity NBody::Simulation::Simulation::createBody() {
     return entity;
 }
 
-void NBody::Simulation::to_json(json &j, const NBody::Simulation::Simulation &s) {
+json NBody::Simulation::Simulation::to_json() const {
+    json j;
 
-    s.each([&](const auto &entity) {
+    this->each([&](const auto &entity) {
         json e;
 
-        if (s.has<NBody::Simulation::Position>(entity))
-            e["position"] = s.get<NBody::Simulation::Position>(entity);
+        if (this->has<NBody::Simulation::Position>(entity))
+            e["position"] = this->get<NBody::Simulation::Position>(entity);
 
-        if (s.has<NBody::Simulation::Velocity>(entity))
-            e["velocity"] = s.get<NBody::Simulation::Velocity>(entity);
-
-//        if (s.has<NBody::Simulation::Drawable>(entity))
-//            e["drawable"] = s.get<NBody::Simulation::Drawable>(entity);
+        if (this->has<NBody::Simulation::Velocity>(entity))
+            e["velocity"] = this->get<NBody::Simulation::Velocity>(entity);
 
         j["bodies"].push_back(e);
     });
+
+    return j;
 }
 
-void NBody::Simulation::from_json(const json &j, NBody::Simulation::Simulation &s) {
-    // TODO
+void NBody::Simulation::Simulation::from_json(const json &j) {
+
 }
