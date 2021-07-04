@@ -8,8 +8,8 @@ add_executable(NBody
 target_link_libraries(NBody PUBLIC
 
         NBody::Simulation
-        NBody::View
-        NBody::Interface
+#        NBody::View
+#        NBody::Interface
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}

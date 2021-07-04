@@ -4,7 +4,7 @@
 
 #include "Application.h"
 
-#include <NBody/Model/Simulation.h>
+//#include <NBody/Model/Simulation.h>
 
 #include <giomm/notification.h>
 #include <fstream>
@@ -88,7 +88,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 
         spdlog::debug("Creating a viewer view");
         //_view = std::make_shared<View::ViewerView>(*this, _simulation);
-        this->add_window(_viewport.window());
+//        this->add_window(_viewport.window());
     }
 //
 //    // Otherwise, run the program in interactive mode
@@ -120,7 +120,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     }
 
     // Give the view access to the drawables
-    _viewport.slot_setSimulation(_simulation);
+//    _viewport.slot_setSimulation(_simulation);
 
     // Run the program itself
     spdlog::debug("Running the program");
