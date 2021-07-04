@@ -1,0 +1,6 @@
+spdlog-devel
+rapidjson-devel
+glm-devel
+gtkmm30-devel
+magnum
+doxygen
