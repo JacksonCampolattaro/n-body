@@ -1,54 +1,40 @@
-#include <cassert>
+#include <catch2/catch.hpp>
 
-#include "../src/Model/Simulation.h"
-#include "../src/Model/Entity.h"
+#include <NBody/Simulation/Simulation.h>
 
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
+using namespace NBody::Simulation;
 
-#include <iostream>
+TEST_CASE("Serialization", "[Simulation]") {
 
-using Model::Simulation;
-using Model::Entity;
+    // Create a simple simulation scenario
 
-int main() {
+    Simulation original;
 
-    rapidjson::StringBuffer buffer;
+    Entity a = original.createBody();
+    original.emplace_or_replace<Position>(a, 0.0f, 5.0f, 5.0f);
+    original.emplace_or_replace<Velocity>(a, 0.0f, -0.1f, 5.0f);
 
-    Simulation original{};
+    Entity b = original.createBody();
+    original.emplace_or_replace<Position>(b, 0.0f, 5.0f, 4.0f);
+    original.emplace_or_replace<Velocity>(b, 0.0f, -0.2f, 5.0f);
 
-    original.newEntity()
-            .setPosition({0, 5, 5})
-            .setVelocity({0, -0.1, 0})
-            .setDrawable({{0.8, 0.8, 0.8}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    original.newEntity()
-            .setPosition({-5, 0, 0})
-            .setVelocity({0, 0.15, 0})
-            .setDrawable({{0.8, 0.8, 0.0}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    original.newEntity()
-            .setPosition({5, 0, 0})
-            .setVelocity({0, -0.05, 0})
-            .setDrawable({{0.8, 0.0, 0.0}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    std::cout << "original: \n" << original;
-    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-    writer << original;
-    original.saveBodiesToPath("test.bod");
+    Entity c = original.createBody();
+    original.emplace_or_replace<Position>(c, 0.0f, 5.0f, 3.0f);
+    original.emplace_or_replace<Velocity>(c, 1.0f, -0.3f, 5.0f);
 
-    std::string saved = buffer.GetString();
-    std::cout << "archive: \n" << saved << std::endl;
+    // Serialize it
+    std::stringstream stream;
+    stream << original;
+    std::cout << stream.str();
 
+    // Load it again
+    Simulation deserialized;
+    stream >> deserialized;
 
-    auto copy = Simulation();
-    rapidjson::Document document;
-    document.Parse(saved.c_str());
-    document >> copy;
-    std::cout << "copy: " << copy << std::endl;
-
+    // Make sure the new one is identical
+    // (The easiest way of doing that is to compare their serialized data)
+    std::stringstream stream_copy, stream_original;
+    stream_original << original;
+    stream_copy << deserialized;
+    CHECK(stream_copy.str() == stream_original.str());
 }
