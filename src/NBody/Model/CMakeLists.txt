@@ -13,7 +13,6 @@ add_library(Model
         Physics/ActiveElement.h Physics/ActiveElement.cpp
         Physics/PassiveElement.h Physics/PassiveElement.cpp
 
-        Drawable/Color.h
         Drawable/Drawable.h Drawable/Drawable.cpp)
 
 target_include_directories(Model PUBLIC

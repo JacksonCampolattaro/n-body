@@ -23,7 +23,10 @@ target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(Simulation PUBLIC
+
         NBody::Physics
+        NBody::Graphics
+
         EnTT::EnTT
         nlohmann_json::nlohmann_json
         )

@@ -10,7 +10,7 @@ using namespace NBody;
 using Model::Simulation;
 using Model::Position;
 using Model::Velocity;
-using Model::Drawable::Color;
+using Model::Graphics::Color;
 
 Simulation cubicGrid(Position cornerPosition, glm::vec3 size, Velocity velocity, float spacing, float mass) {
     Simulation simulation{};
@@ -22,7 +22,7 @@ Simulation cubicGrid(Position cornerPosition, glm::vec3 size, Velocity velocity,
                 glm::vec3 coordinate(x, y, z);
                 Model::Position p = cornerPosition + (glm::vec3{x, y, z} * spacing);
 
-                Model::Drawable::Color color{
+                Model::Graphics::Color color{
                         y / size.y + x / size.x,
                         x / size.x,
                         1.0f - y / size.y + x / size.x

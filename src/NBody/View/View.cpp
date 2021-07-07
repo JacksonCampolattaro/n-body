@@ -23,7 +23,7 @@ void NBody::View::View::setSimulation(const Simulation::Simulation &simulation) 
 
 }
 
-//void NBody::View::View::setDrawables(const std::deque<Drawable::Drawable> *drawables) {
+//void NBody::View::View::setDrawables(const std::deque<Graphics::Graphics> *drawables) {
 //    _drawables = drawables;
 //
 //    if (!_drawables) return;

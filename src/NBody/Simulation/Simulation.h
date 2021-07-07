@@ -7,6 +7,8 @@
 
 #include <NBody/Physics/Position.h>
 #include <NBody/Physics/Velocity.h>
+#include <NBody/Graphics/Color.h>
+#include <NBody/Graphics/Sphere.h>
 
 #include <nlohmann/json.hpp>
 
