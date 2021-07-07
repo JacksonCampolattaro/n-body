@@ -45,7 +45,7 @@ namespace NBody::View {
 
         Platform::GLContext _context{NoCreate};
 
-//        const std::deque<Drawable::Drawable> *_drawables = nullptr;
+//        const std::deque<Graphics::Graphics> *_drawables = nullptr;
 
         struct SphereInstanceData {
             Matrix4 transformation;
