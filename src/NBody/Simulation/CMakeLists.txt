@@ -12,12 +12,8 @@ FetchContent_Declare(entt
 FetchContent_MakeAvailable(entt)
 
 add_library(Simulation
-
         Simulation.h Simulation.cpp
-        Drawable.cpp Drawable.h
-        Color.cpp Color.h
-        Physics/ActiveElement.h Physics/ActiveElement.cpp
-        Physics/PassiveElement.h Physics/PassiveElement.cpp)
+        )
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

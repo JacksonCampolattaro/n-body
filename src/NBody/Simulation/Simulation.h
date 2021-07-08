@@ -7,6 +7,7 @@
 
 #include <NBody/Physics/Position.h>
 #include <NBody/Physics/Velocity.h>
+#include <NBody/Physics/ActiveMass.h>
 #include <NBody/Graphics/Color.h>
 #include <NBody/Graphics/Sphere.h>
 

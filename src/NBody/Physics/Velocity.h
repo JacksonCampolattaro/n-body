@@ -11,7 +11,7 @@
 
 using nlohmann::json;
 
-namespace NBody::Simulation {
+namespace NBody::Physics {
 
     class Velocity : public glm::vec3 {
     public:

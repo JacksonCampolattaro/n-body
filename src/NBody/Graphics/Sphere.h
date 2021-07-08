@@ -24,6 +24,8 @@ namespace NBody::Graphics {
 
     public:
 
+        explicit Sphere(float radius = 1.0f) : _radius(radius) {}
+
         [[nodiscard]] const float &radius() const { return _radius; }
 
         float &radius() { return _radius; }
