@@ -1,16 +1,50 @@
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Simulation/Drawable.h>
 
 using namespace NBody;
 
+void cubicGrid(Simulation::Simulation &simulation,
+               Physics::Position corner, glm::ivec3 size, float spacing,
+               Physics::Velocity velocity, float mass) {
+
+    glm::vec3 fsize = size;
+
+    for (int x = 0; x < size.x; ++x) {
+        for (int y = 0; y < size.y; ++y) {
+            for (int z = 0; z < size.z; ++z) {
+
+                Physics::Position position{
+                        corner +
+                        (Physics::Position{static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)}
+                         * spacing)
+                };
+
+                Graphics::Color color{
+                        y / fsize.y + x / fsize.x,
+                        x / fsize.x,
+                        1.0f - y / fsize.y + x / fsize.x
+                };
+
+                auto body = simulation.createBody();
+                simulation.emplace_or_replace<Physics::Position>(body, position);
+                simulation.emplace_or_replace<Physics::Velocity>(body, velocity);
+                simulation.emplace_or_replace<Physics::ActiveMass>(body, mass);
+                simulation.emplace_or_replace<Graphics::Color>(body, color);
+                simulation.emplace_or_replace<Graphics::Sphere>(body, 2.0f);
+            }
+        }
+    }
+}
+
+int main() {
+
+    Simulation::Simulation simulation;
+    cubicGrid(simulation, {0, 0, 0}, {3, 3, 3}, 10.0, {0, 0, 0}, 1.0);
+    std::cout << simulation << std::endl;
+}
+
 /*
 #include "../src/Model/Simulation.h"
-
-using Model::Simulation;
-using Model::Position;
-using Model::Velocity;
-using Model::Graphics::Color;
 
 Simulation cubicGrid(Position cornerPosition, glm::vec3 size, Velocity velocity, float spacing, float mass) {
     Simulation simulation{};
@@ -115,26 +149,3 @@ Simulation blender() {
     return simulation;
 }
 */
-
-int main() {
-
-
-    Simulation::Simulation s;
-    s.createBody();
-    s.createBody();
-    s.createBody();
-
-    auto e = s.createBody();
-    s.emplace<Simulation::Drawable>(e, Simulation::Color{0.1, 0.2, 0.3, 0.5}, 23.0);
-
-    std::cout << s;
-
-
-//    threeBody().saveBodiesToPath("../../scenarios/threeBody.bod");
-//
-//    galaxy().saveBodiesToPath("../../scenarios/galaxy.bod");
-//
-//    blender().saveBodiesToPath("../../scenarios/blender.bod");
-
-    return 0;
-}

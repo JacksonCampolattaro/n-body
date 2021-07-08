@@ -1,9 +1,9 @@
 
-#add_executable(bodies
-#        bodies.cpp)
-#
-#target_link_libraries(bodies
-#        NBody::Simulation)
+add_executable(bodies
+        bodies.cpp)
+
+target_link_libraries(bodies
+        NBody::Simulation)
 
 
 find_package(Catch2 QUIET)

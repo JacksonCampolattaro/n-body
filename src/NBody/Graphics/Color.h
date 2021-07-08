@@ -10,12 +10,13 @@ using nlohmann::json;
 
 namespace NBody::Graphics {
 
-    class Color : public Magnum::Color3 {};
+    class Color : public Magnum::Color3 {
+        using Magnum::Color3::Color3;
+    };
 
     void to_json(json &j, const Color &c);
 
     void from_json(const json &j, Color &c);
-
 }
 
 #endif //N_BODY_COLOR_H
