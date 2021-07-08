@@ -24,4 +24,6 @@ add_executable(test main.cpp
 
 target_link_libraries(test LINK_PUBLIC
         NBody::Simulation
+        NBody::Physics
+        NBody::Graphics
         Catch2::Catch2)

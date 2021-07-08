@@ -8,7 +8,7 @@ FetchContent_MakeAvailable(json)
 add_library(Physics
         Position.h Position.cpp
         Velocity.h Velocity.cpp
-        )
+        ActiveMass.cpp ActiveMass.h)
 
 target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

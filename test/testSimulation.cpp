@@ -3,6 +3,8 @@
 #include <NBody/Simulation/Simulation.h>
 
 using namespace NBody::Simulation;
+using namespace NBody::Physics;
+using namespace NBody::Graphics;
 
 TEST_CASE("Serialization of a single body", "[Simulation]") {
 
@@ -39,14 +41,19 @@ TEST_CASE("Serialization of a small scenario", "[Simulation]") {
     Entity b = original.createBody();
     original.emplace_or_replace<Position>(b, 0.0f, 5.0f, 4.0f);
     original.emplace_or_replace<Velocity>(b, 0.0f, -0.2f, 5.0f);
+    original.emplace_or_replace<Color>(b, Magnum::Color3::red());
+    original.emplace_or_replace<Sphere>(b, 4.0f);
 
     Entity c = original.createBody();
     original.emplace_or_replace<Position>(c, 0.0f, 5.0f, 3.0f);
     original.emplace_or_replace<Velocity>(c, 1.0f, -0.3f, 5.0f);
+    original.emplace_or_replace<ActiveMass>(c, 5.0f);
 
     // Serialize the scenario
     std::stringstream stream;
     stream << original;
+
+    std::cout << stream.str() << std::endl;
 
     // Deserialize that data
     Simulation intermediate;
