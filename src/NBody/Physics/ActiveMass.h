@@ -14,7 +14,7 @@ namespace NBody::Physics {
 
     public:
 
-        explicit ActiveMass(float mass = 1.0f) : _mass(mass) {}
+        ActiveMass(float mass = 1.0f) : _mass(mass) {}
 
         [[nodiscard]] const float &mass() const { return _mass; };
 
