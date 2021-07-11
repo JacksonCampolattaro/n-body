@@ -29,7 +29,26 @@ namespace NBody::Simulation {
     class Simulation : public entt::registry {
     public:
 
-        Entity createBody();
+        class Body {
+        private:
+            const Entity _entity;
+            Simulation &_simulation;
+        public:
+            Body(const Entity &entity, Simulation &simulation) : _entity(entity), _simulation(simulation) {}
+
+            Body &setPosition(const Physics::Position &position);
+
+            Body &setVelocity(const Physics::Velocity &velocity);
+
+            Body &setMass(const Physics::ActiveMass &mass);
+
+            Body &setColor(const Graphics::Color &color);
+
+            Body &setSphere(const Graphics::Sphere &sphere);
+
+        };
+
+        Body createBody();
 
     public:
 
