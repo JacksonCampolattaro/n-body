@@ -60,6 +60,48 @@ void threeBody(Simulation::Simulation &simulation) {
             .setMass({0.5});
 }
 
+void galaxy(Simulation::Simulation &simulation) {
+
+//    simulation._rule._gravitationalConstant = 0.01;
+//    simulation._rule._timeIncrement = 0.001;
+
+    cubicGrid(simulation,
+              {-50, -150, -400},
+              {5, 5, 500}, 10,
+              {60, 20, 0}, 5000);
+
+    simulation.createBody()
+            .setPosition({0, 0, -500})
+            .setVelocity({0, 0, 0})
+            .setColor({0.9, 0.9, 0.9})
+            .setSphere({16.0})
+            .setMass(190000000.0f);
+}
+
+void blender(Simulation::Simulation &simulation) {
+
+//    simulation._rule._gravitationalConstant = 0.01;
+//    simulation._rule._timeIncrement = 0.05;
+
+    cubicGrid(simulation,
+              {-50, -100, -450},
+              {5, 5, 100},10,
+              {0.8, 0.25, 0}, 5000);
+
+    simulation.createBody()
+            .setPosition({-60, 0, -500})
+            .setVelocity({0, -90, 0})
+            .setColor({0.9, 0.9, 0.9})
+            .setSphere({16.0})
+            .setMass({180000000});
+    simulation.createBody()
+            .setPosition({60, 0, -500})
+            .setVelocity({0, 90, 0})
+            .setColor({0.9, 0.9, 0.9})
+            .setSphere({16.0})
+            .setMass({180000000});
+}
+
 int main(int argc, char **argv) {
 
     // Set the directory to place the files in
@@ -82,6 +124,26 @@ int main(int argc, char **argv) {
         if (!file.is_open()) return EXIT_FAILURE;
         Simulation::Simulation simulation;
         threeBody(simulation);
+        file << simulation << std::endl;
+        file.close();
+    }
+
+    // Generate a galaxy scenario
+    {
+        std::ofstream file((directory / "galaxy.json").native());
+        if (!file.is_open()) return EXIT_FAILURE;
+        Simulation::Simulation simulation;
+        galaxy(simulation);
+        file << simulation << std::endl;
+        file.close();
+    }
+
+    // Generate a blender scenario
+    {
+        std::ofstream file((directory / "blender.json").native());
+        if (!file.is_open()) return EXIT_FAILURE;
+        Simulation::Simulation simulation;
+        blender(simulation);
         file << simulation << std::endl;
         file.close();
     }
