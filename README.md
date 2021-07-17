@@ -49,7 +49,7 @@ Eventually, even that became an issue, and the pre-2.0 OpenGL became a major per
 
 <!---
 ![Physics panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/physics.png) 
-![View panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/view.png) 
+![Interface panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/view.png) 
 ![Solver panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/solver.png)
 --->
 
