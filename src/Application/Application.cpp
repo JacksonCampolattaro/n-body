@@ -4,7 +4,8 @@
 
 #include "Application.h"
 
-//#include <NBody/Model/Simulation.h>
+#include "Interface/Interface.h"
+#include "Interface/Simple.h"
 
 #include <giomm/notification.h>
 #include <fstream>
@@ -61,7 +62,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     auto options = command_line->get_options_dict();
 
     Logger::reset();
-//    _simulation = Model::Simulation();
+    _simulation = NBody::Simulation::Simulation();
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))
@@ -80,6 +81,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
         spdlog::info("Program was run in headless mode");
 
         spdlog::debug("Creating a headless view");
+        // TODO
     }
 
     // Run the program in viewer mode if that flag was set
@@ -87,26 +89,27 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
         spdlog::info("Program was run in viewer mode");
 
         spdlog::debug("Creating a viewer view");
-        //_view = std::make_shared<View::ViewerView>(*this, _simulation);
-//        this->add_window(_viewport.window());
+        _interface = std::make_unique<::Interface::Simple>(_simulation);
+        _interface->show();
+        this->add_window(*_interface);
     }
-//
-//    // Otherwise, run the program in interactive mode
-//    if (!_view) {
-//        spdlog::info("Program was run in interactive mode");
-//
-//        spdlog::debug("Creating an interactive view");
-//        _view = std::make_shared<View::Interactive>(*this);
-//    }
+
+    // Otherwise, run the program in interactive mode
+    if (!_interface) {
+        spdlog::info("Program was run in interactive mode");
+
+        spdlog::debug("Creating an interactive view");
+        // TODO
+    }
 //
 //    // Connect all the signals
 //    {
 //        _simulation.signal_update_progress
-//                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_progress));
+//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_simulation_progress));
 //        _simulation.signal_drawables_changed
-//                .connect(sigc::mem_fun(_view.get(), &View::View::on_drawables_changed));
+//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_drawables_changed));
 //        _simulation.signal_update_complete
-//                .connect(sigc::mem_fun(_view.get(), &View::View::on_simulation_complete));
+//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_simulation_complete));
 //
 //        _view->signal_start_simulation
 //                .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
@@ -114,13 +117,19 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 
     // Load a file if one was provided
     if (std::string filePath; options->lookup_value("file", filePath)) {
+        spdlog::debug("Opening file at path {}", filePath);
 
-//        _simulation.loadBodiesFromPath(filePath);
-//        spdlog::info("Loaded {} entities", _simulation._entities.size());
+        std::ifstream file(filePath);
+        if (!file.is_open()) {
+            spdlog::error("File could not be opened");
+            return EXIT_FAILURE;
+        }
+
+        spdlog::debug("Loading data into a simulation");
+        file >> _simulation;
+        // TODO report errors when loading data
+        spdlog::info("loaded {} entities", _simulation.size());
     }
-
-    // Give the view access to the drawables
-//    _viewport.slot_setSimulation(_simulation);
 
     // Run the program itself
     spdlog::debug("Running the program");
@@ -130,5 +139,6 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 
 void Application::on_open(const Gio::Application::type_vec_files &files, const Glib::ustring &hint) {
 
-    spdlog::trace("on_open invoked");
+    // TODO Why isn't this being called?
+    spdlog::info("on_open invoked");
 }

@@ -20,46 +20,9 @@
 using namespace Magnum;
 using namespace Math::Literals;
 
-namespace NBody::View {
+namespace NBody {
 
-    class View : public Gtk::GLArea {
-    public:
-
-        View();
-
-        void setSimulation(const Simulation::Simulation &simulation);
-
-    protected:
-
-        virtual void draw(GL::Framebuffer &framebuffer);
-
-    private:
-
-        void setupGL();
-
-        bool render(const Glib::RefPtr<Gdk::GLContext> &context);
-
-        void resize(int width, int height);
-
-    private:
-
-        Platform::GLContext _context{NoCreate};
-
-//        const std::deque<Graphics::Graphics> *_drawables = nullptr;
-
-        struct SphereInstanceData {
-            Matrix4 transformation;
-            Matrix3x3 normal;
-            Color3 color;
-        };
-
-        GL::Mesh _sphereMesh{NoCreate};
-        GL::Buffer _sphereInstanceBuffer{NoCreate};
-        Containers::Array<SphereInstanceData> _sphereInstances;
-        Shaders::Phong _shader{NoCreate};
-        Matrix4 _projection;
-        float _aspectRatio = 1;
-    };
+    class View : public Gtk::GLArea {};
 
 }
 

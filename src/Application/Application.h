@@ -6,17 +6,16 @@
 #define N_BODY_APPLICATION_H
 
 #include "Logger.h"
+#include "Interface/Interface.h"
+#include "Interface/Simple.h"
 
 #include <NBody/Simulation/Simulation.h>
-//#include <NBody/View/View.h>
-//#include <NBody/Interface/Viewport.h>
 
 #include <gtkmm/application.h>
-#include <gtkmm/window.h>
-#include <gtkmm/button.h>
 
 #include <iostream>
 #include <memory>
+#include <optional>
 
 /**
  * @brief An extension of Gtkmm's application class with project-specific features.
@@ -35,6 +34,7 @@ public:
      */
     Application();
 
+
 protected:
 
     int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine> &command_line) override;
@@ -43,7 +43,8 @@ protected:
 
 private:
 
-//    NBody::Simulation::Simulation _simulation;
+    NBody::Simulation::Simulation _simulation;
+    std::unique_ptr<::Interface::Interface> _interface;
 
 //    NBody::Interface::Viewport _viewport;
 
