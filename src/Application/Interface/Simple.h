@@ -14,11 +14,11 @@ namespace Interface {
     class Simple : public Interface {
     private:
 
-        NBody::View _view{};
+        NBody::View _view;
 
     public:
 
-        Simple(Simulation &simulation) : Interface(simulation) {
+        Simple(Simulation &simulation) : Interface(simulation), _view() {
             add(_view);
             _view.show();
         }
