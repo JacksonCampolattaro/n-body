@@ -1,4 +1,8 @@
 
+find_package(Magnum REQUIRED
+        GL
+        )
+
 add_executable(NBody
         main.cpp
         Logger.h Logger.cpp
@@ -10,6 +14,7 @@ add_executable(NBody
 target_link_libraries(NBody PUBLIC
 
         NBody::Simulation
+        NBody::View
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}

@@ -33,9 +33,9 @@ target_link_libraries(View PUBLIC
 
         spdlog::spdlog
 
+        Magnum::Magnum
         Magnum::GLContext
         Magnum::GL
-        Magnum::Magnum
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
