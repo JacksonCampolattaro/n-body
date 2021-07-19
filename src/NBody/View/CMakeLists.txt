@@ -20,7 +20,7 @@ endif ()
 
 add_library(View
         View.cpp View.h
-        )
+        Camera.cpp Camera.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -40,5 +40,11 @@ target_link_libraries(View PUBLIC
         Magnum::Primitives
         Magnum::Shaders
         )
+
+
+#target_compile_options(View PRIVATE
+#        -Werror
+#        -Wall
+#        -Wextra)
 
 add_library(NBody::View ALIAS View)
