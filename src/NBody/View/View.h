@@ -38,6 +38,7 @@ namespace NBody {
             signal_realize().connect(sigc::mem_fun(this, &View::onRealize));
             signal_unrealize().connect(sigc::mem_fun(this, &View::onUnrealize));
             signal_render().connect(sigc::mem_fun(this, &View::onRender));
+            signal_resize().connect(sigc::mem_fun(this, &View::onResize));
         };
 
         void onRealize() {
@@ -82,6 +83,10 @@ namespace NBody {
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
             return true;
+        }
+
+        void onResize(int width, int height) {
+            _camera.setAspectRatio((float) width / (float) height);
         }
 
     };

@@ -30,7 +30,7 @@ namespace NBody {
         // TODO projection needs to be driven by information about the window
         Matrix4 _projection{
                 Matrix4::perspectiveProjection(35.0_degf, 1.0, 0.01f, 1000.0f) *
-                Matrix4::translation(Vector3::zAxis(-35.0f))
+                Matrix4::translation(Vector3::zAxis(-50.0f))
         };
 
         // FIXME temporary
@@ -38,6 +38,8 @@ namespace NBody {
         Containers::Array<Graphics::Sphere::InstanceData> _sphereInstanceData;
 
     public:
+
+        void setAspectRatio(float aspectRatio);
 
         void draw(const Simulation::Simulation &simulation);
     };
