@@ -5,6 +5,8 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
+#include "Camera.h"
+
 #include <gtkmm/glarea.h>
 
 #include <Magnum/Platform/GLContext.h>
@@ -22,10 +24,12 @@ namespace NBody {
     private:
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
+        const Simulation::Simulation &_simulation;
+        Camera _camera;
 
     public:
 
-        View() : Gtk::GLArea() {
+        View(const Simulation::Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
 
             set_auto_render();
 
@@ -47,14 +51,14 @@ namespace NBody {
             GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
             // Set the background color
-            GL::Renderer::setClearColor(Math::Color4<float>::red());
+            GL::Renderer::setClearColor({0.1, 0.2, 0.2, 1.0});
         }
 
         void onUnrealize() {
 
         }
 
-        bool onRender(const Glib::RefPtr<Gdk::GLContext> &context) {
+        bool onRender(const Glib::RefPtr<Gdk::GLContext> &) {
 
             // Eliminate outside effects on GL state
             GL::Context::current().resetState(GL::Context::State::ExitExternal);
@@ -73,10 +77,11 @@ namespace NBody {
             gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
             // TODO: This is where actual rendering code goes!
+            _camera.draw(_simulation);
 
             // Restore external GL state
-            GL::Context::current().resetState(GL::Context::State::ExitExternal);
-            return false;
+            GL::Context::current().resetState(GL::Context::State::EnterExternal);
+            return true;
         }
 
     };
