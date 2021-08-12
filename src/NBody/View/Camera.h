@@ -25,14 +25,16 @@ namespace NBody {
     class Camera {
     private:
 
-        // TODO projection needs to be driven by information about the window
-        Matrix4 _projection{};
+        Matrix4 _projection;
+        Matrix4 _transformation{Matrix4::translation(Vector3::zAxis(-50.0f))};
 
     public:
 
         void setAspectRatio(float aspectRatio);
 
         void draw(const Simulation::Simulation &simulation);
+
+        void move(Matrix4 matrix);
 
 //        void draw(const entt::basic_view<
 //                const NBody::Physics::Position,
