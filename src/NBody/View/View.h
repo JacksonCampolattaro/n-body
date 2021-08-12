@@ -28,6 +28,11 @@ namespace NBody {
         Camera _camera;
 
     public:
+        // slots
+
+        sigc::slot<void(Matrix4)> slot_moveCamera;
+
+    public:
 
         View(const Simulation::Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
 
@@ -39,6 +44,8 @@ namespace NBody {
             signal_unrealize().connect(sigc::mem_fun(this, &View::onUnrealize));
             signal_render().connect(sigc::mem_fun(this, &View::onRender));
             signal_resize().connect(sigc::mem_fun(this, &View::onResize));
+
+            slot_moveCamera = sigc::mem_fun(&_camera, &Camera::move);
         };
 
         void onRealize() {
@@ -82,6 +89,7 @@ namespace NBody {
 
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
+            queue_render();
             return true;
         }
 

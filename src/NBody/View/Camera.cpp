@@ -26,7 +26,7 @@ void NBody::Camera::draw(const NBody::Simulation::Simulation &simulation) {
                 .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.5f}))
                 .setTransformationMatrix(transformationMatrix)
                 .setNormalMatrix(transformationMatrix.normalMatrix())
-                .setProjectionMatrix(_projection)
+                .setProjectionMatrix(_projection * _transformation)
                 .draw(mesh);
     });
 
@@ -54,11 +54,11 @@ void NBody::Camera::draw(const NBody::Simulation::Simulation &simulation) {
 //}
 
 void NBody::Camera::setAspectRatio(float aspectRatio) {
+    _projection = Matrix4::perspectiveProjection(35.0_degf, aspectRatio, 0.01f, 1000.0f);
+}
 
-    _projection = Matrix4{
-            Matrix4::perspectiveProjection(35.0_degf, aspectRatio, 0.01f, 1000.0f) *
-            Matrix4::translation(Vector3::zAxis(-50.0f))
-    };
+void NBody::Camera::move(Matrix4 matrix) {
+    _transformation = _transformation * matrix;
 }
 
 //void NBody::Camera::draw(const NBody::Simulation::Simulation &simulation) {
