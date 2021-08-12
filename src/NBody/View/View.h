@@ -52,7 +52,7 @@ namespace NBody {
             GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
 
             // Set the background color
-            GL::Renderer::setClearColor({0.1, 0.2, 0.2, 1.0});
+            GL::Renderer::setClearColor({0.12, 0.12, 0.1, 1.0});
         }
 
         void onUnrealize() {
