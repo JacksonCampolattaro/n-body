@@ -9,7 +9,7 @@ add_executable(NBody
         Application.h Application.cpp
         Interface/Interface.cpp Interface/Interface.h
         Interface/Simple.cpp Interface/Simple.h
-        )
+        Interface/Interactive.cpp Interface/Interactive.h)
 
 target_link_libraries(NBody PUBLIC
 
