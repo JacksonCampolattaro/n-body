@@ -25,17 +25,8 @@ namespace NBody {
     class Camera {
     private:
 
-        Shaders::PhongGL _shader{NoCreate};
-
         // TODO projection needs to be driven by information about the window
-        Matrix4 _projection{
-                Matrix4::perspectiveProjection(35.0_degf, 1.0, 0.01f, 1000.0f) *
-                Matrix4::translation(Vector3::zAxis(-50.0f))
-        };
-
-        // FIXME temporary
-        GL::Buffer _sphereInstanceBuffer{NoCreate};
-        Containers::Array<Graphics::Sphere::InstanceData> _sphereInstanceData;
+        Matrix4 _projection{};
 
     public:
 
@@ -43,13 +34,10 @@ namespace NBody {
 
         void draw(const Simulation::Simulation &simulation);
 
-    private:
-
-        void draw(const entt::view<
-                const NBody::Physics::Position,
-                const NBody::Graphics::Color,
-                const NBody::Graphics::Sphere
-        > &view);
+//        void draw(const entt::basic_view<
+//                const NBody::Physics::Position,
+//                const NBody::Graphics::Color,
+//                const NBody::Graphics::Sphere> &view);
     };
 }
 
