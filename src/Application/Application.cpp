@@ -6,6 +6,7 @@
 
 #include "Interface/Interface.h"
 #include "Interface/Simple.h"
+#include "Interface/Interactive.h"
 
 #include <giomm/notification.h>
 #include <fstream>
@@ -99,7 +100,9 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
         spdlog::info("Program was run in interactive mode");
 
         spdlog::debug("Creating an interactive view");
-        // TODO
+        _interface = std::make_unique<::Interface::Interactive>(_simulation);
+        _interface->show();
+        this->add_window(*_interface);
     }
 //
 //    // Connect all the signals
