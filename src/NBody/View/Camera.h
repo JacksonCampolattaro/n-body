@@ -42,6 +42,14 @@ namespace NBody {
         void setAspectRatio(float aspectRatio);
 
         void draw(const Simulation::Simulation &simulation);
+
+    private:
+
+        void draw(const entt::view<
+                const NBody::Physics::Position,
+                const NBody::Graphics::Color,
+                const NBody::Graphics::Sphere
+        > &view);
     };
 }
 
