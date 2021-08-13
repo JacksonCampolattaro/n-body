@@ -16,6 +16,7 @@
 #include <gtkmm/paned.h>
 
 #include "Interface.h"
+#include "ConfigurationPanel/ConfigurationPanel.h"
 
 namespace Interface {
 
@@ -27,16 +28,13 @@ namespace Interface {
         Gtk::Paned _paned;
 
         NBody::View _view;
-        Gtk::Notebook _notebook;
-
-        Gtk::Label _placeholder1, _placeholder2;
+        ConfigurationPanel _configurationPanel;
 
     public:
 
         Interactive(Simulation &simulation) : Interface(simulation),
                                               _view(simulation),
-                                              _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL),
-                                              _placeholder1("1"), _placeholder2("2") {
+                                              _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
 
             add(_paned);
             _paned.show();
@@ -44,15 +42,9 @@ namespace Interface {
             _paned.add(_view);
             _view.show();
 
-            _paned.add(_notebook);
-            _notebook.set_tab_pos(Gtk::POS_LEFT);
-            _notebook.show();
+            _paned.add(_configurationPanel);
+            _configurationPanel.show();
 
-            _notebook.append_page(_placeholder1, "1");
-            _placeholder1.show();
-
-            _notebook.append_page(_placeholder2, "2");
-            _placeholder2.show();
 
             signal_key_press_event().connect(sigc::mem_fun(*this, &Interactive::on_keyPressEvent), false);
 
