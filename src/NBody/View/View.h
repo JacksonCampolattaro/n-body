@@ -36,6 +36,8 @@ namespace NBody {
 
         View(const Simulation::Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
 
+            set_size_request(400, 400);
+
             set_auto_render();
 
             set_required_version(4, 5);
@@ -62,9 +64,7 @@ namespace NBody {
             GL::Renderer::setClearColor({0.12, 0.12, 0.1, 1.0});
         }
 
-        void onUnrealize() {
-
-        }
+        void onUnrealize() {}
 
         bool onRender(const Glib::RefPtr<Gdk::GLContext> &) {
 

@@ -26,7 +26,7 @@ namespace NBody {
     private:
 
         Matrix4 _projection;
-        Matrix4 _transformation{Matrix4::translation(Vector3::zAxis(-50.0f))};
+        Matrix4 _transformation{Matrix4::translation(Vector3::zAxis(-100.0f))};
 
     public:
 
