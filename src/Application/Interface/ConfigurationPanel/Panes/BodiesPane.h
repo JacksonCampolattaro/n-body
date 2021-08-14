@@ -10,13 +10,14 @@
 
 #include <NBody/Simulation/Simulation.h>
 
+#include "Pane.h"
 #include "../LabeledWidget.h"
 
 using NBody::Simulation::Simulation;
 
 namespace Interface::Panes {
 
-    class BodiesPane : public Gtk::ScrolledWindow {
+    class BodiesPane : public Pane {
     private:
 
         Simulation &_simulation;
@@ -25,7 +26,7 @@ namespace Interface::Panes {
 
         Gtk::Label _label{"Bodies"};
         Gtk::Frame _frame;
-        Gtk::ListBox _listBox{};
+        Gtk::ListBox _listBox;
 
         LabeledWidget<Gtk::Label> _bodyCount;
         Gtk::Separator _separator;
@@ -33,15 +34,12 @@ namespace Interface::Panes {
 
     public:
 
-        BodiesPane(Simulation &simulation) : Gtk::ScrolledWindow(),
+        BodiesPane(Simulation &simulation) : Pane(),
                                              _box(Gtk::Orientation::ORIENTATION_VERTICAL),
                                              _simulation(simulation),
                                              _bodyCount("Number of Bodies", std::to_string(_simulation.size())),
                                              _placeholder3("its a button", "im a button!") {
-
-            override_background_color(
-                    Gtk::ListBoxRow().get_style_context()->get_background_color(Gtk::StateFlags::STATE_FLAG_PRELIGHT)
-            );
+            _icon->set_from_resource("/NBody/icons/outliner_ob_pointcloud.svg");
 
             add(_box);
             _box.set_margin_top(12);

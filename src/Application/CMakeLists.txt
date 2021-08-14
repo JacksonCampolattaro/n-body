@@ -62,7 +62,7 @@ add_executable(NBody
         Interface/Simple.cpp Interface/Simple.h
         Interface/Interactive.cpp Interface/Interactive.h
         Interface/ConfigurationPanel/ConfigurationPanel.cpp Interface/ConfigurationPanel/ConfigurationPanel.h
-        Interface/ConfigurationPanel/LabeledWidget.h)
+        Interface/ConfigurationPanel/LabeledWidget.h Interface/ConfigurationPanel/Panes/Pane.cpp Interface/ConfigurationPanel/Panes/Pane.h)
 
 target_link_libraries(NBody PUBLIC
 
