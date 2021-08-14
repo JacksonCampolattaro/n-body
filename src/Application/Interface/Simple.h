@@ -18,10 +18,7 @@ namespace Interface {
 
     public:
 
-        Simple(Simulation &simulation) : Interface(simulation), _view(simulation) {
-            add(_view);
-            _view.show();
-        }
+        Simple(Simulation &simulation);
     };
 
 }
