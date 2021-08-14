@@ -10,12 +10,10 @@ Interface::ConfigurationPanel::ConfigurationPanel(Simulation &simulation) : Gtk:
     set_tab_pos(Gtk::POS_LEFT);
 
     append_page(_bodiesPane, _bodiesPane.icon());
-    _bodiesIcon.set_from_resource("/NBody/icons/outliner_ob_pointcloud.svg");
     _bodiesPane.show();
 
-    append_page(_physicsPlaceholder, _physicsIcon);
-    _physicsIcon.set_from_resource("/NBody/icons/physics.svg");
-    _physicsPlaceholder.show();
+    append_page(_physicsPane, _physicsPane.icon());
+    _physicsPane.show();
 
     append_page(_solverPlaceholder, _solverIcon);
     _solverIcon.set_from_resource("/NBody/icons/memory.svg");
