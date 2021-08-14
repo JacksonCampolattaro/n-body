@@ -45,7 +45,7 @@ namespace Interface {
 
             set_tab_pos(Gtk::POS_LEFT);
 
-            append_page(_bodiesPane, _bodiesIcon);
+            append_page(_bodiesPane, _bodiesPane.icon());
             _bodiesIcon.set_from_resource("/NBody/icons/outliner_ob_pointcloud.svg");
             _bodiesPane.show();
 
