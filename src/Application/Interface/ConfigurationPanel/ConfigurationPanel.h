@@ -14,6 +14,8 @@ namespace Interface {
     class ConfigurationPanel : public Gtk::Notebook {
     private:
 
+        Gtk::Image _cameraIcon;
+
         Gtk::Label _placeholder1, _placeholder2;
 
     public:
@@ -25,7 +27,9 @@ namespace Interface {
             append_page(_placeholder1, "1");
             _placeholder1.show();
 
-            append_page(_placeholder2, "2");
+            append_page(_placeholder2, _cameraIcon);
+            _cameraIcon.set_from_resource("/NBody/icons/view_camera.svg");
+            _cameraIcon.show();
             _placeholder2.show();
         }
 
