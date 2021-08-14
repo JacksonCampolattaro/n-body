@@ -10,6 +10,7 @@
 #include <gtkmm/notebook.h>
 
 #include "Panes/BodiesPane.h"
+#include "Panes/PhysicsPane.h"
 
 #include <NBody/Simulation/Simulation.h>
 
@@ -21,22 +22,20 @@ namespace Interface {
     private:
 
         Gtk::Image
-                _bodiesIcon,
-                _physicsIcon,
                 _solverIcon,
                 _positionIcon,
                 _recordingIcon,
                 _runIcon;
 
         Gtk::Label
-                _bodiesPlaceholder{"bodies"},
-                _physicsPlaceholder{"physics"},
                 _solverPlaceholder{"solver"},
                 _positionPlaceholder{"position"},
                 _recordingPlaceholder{"recording"},
                 _runPlaceholder{"Some long text, to make the window wide"};
 
         Panes::BodiesPane _bodiesPane;
+        Panes::PhysicsPane _physicsPane;
+
 
     public:
 
