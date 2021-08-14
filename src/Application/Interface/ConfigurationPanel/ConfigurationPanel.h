@@ -9,6 +9,12 @@
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 
+#include "Panes/BodiesPane.h"
+
+#include <NBody/Simulation/Simulation.h>
+
+using NBody::Simulation::Simulation;
+
 namespace Interface {
 
     class ConfigurationPanel : public Gtk::Notebook {
@@ -30,15 +36,18 @@ namespace Interface {
                 _recordingPlaceholder{"recording"},
                 _runPlaceholder{"run"};
 
+        Panes::BodiesPane _bodiesPane;
+
     public:
 
-        ConfigurationPanel() {
+        ConfigurationPanel(Simulation &simulation) : Gtk::Notebook(),
+                                                     _bodiesPane(simulation) {
 
             set_tab_pos(Gtk::POS_LEFT);
 
-            append_page(_bodiesPlaceholder, _bodiesIcon);
+            append_page(_bodiesPane, _bodiesIcon);
             _bodiesIcon.set_from_resource("/NBody/icons/outliner_ob_pointcloud.svg");
-            _bodiesPlaceholder.show();
+            _bodiesPane.show();
 
             append_page(_physicsPlaceholder, _physicsIcon);
             _physicsIcon.set_from_resource("/NBody/icons/physics.svg");
