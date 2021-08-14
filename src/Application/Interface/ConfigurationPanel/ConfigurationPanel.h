@@ -34,7 +34,7 @@ namespace Interface {
                 _solverPlaceholder{"solver"},
                 _positionPlaceholder{"position"},
                 _recordingPlaceholder{"recording"},
-                _runPlaceholder{"run"};
+                _runPlaceholder{"Some long text, to make the window wide"};
 
         Panes::BodiesPane _bodiesPane;
 
