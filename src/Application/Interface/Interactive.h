@@ -34,15 +34,16 @@ namespace Interface {
 
         Interactive(Simulation &simulation) : Interface(simulation),
                                               _view(simulation),
+                                              _configurationPanel(simulation),
                                               _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
 
             add(_paned);
             _paned.show();
 
-            _paned.add(_view);
+            _paned.pack1(_view, true, false);
             _view.show();
 
-            _paned.add(_configurationPanel);
+            _paned.pack2(_configurationPanel, false, false);
             _configurationPanel.show();
 
 
