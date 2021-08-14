@@ -3,3 +3,8 @@
 //
 
 #include "Simple.h"
+
+Interface::Simple::Simple(Simulation &simulation) : Interface(simulation), _view(simulation) {
+    add(_view);
+    _view.show();
+}
