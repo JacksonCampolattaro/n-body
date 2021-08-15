@@ -16,6 +16,8 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/headerbar.h>
 #include <gtkmm/menubutton.h>
+#include <gtkmm/popovermenu.h>
+#include <gtkmm/builder.h>
 
 #include "Interface.h"
 #include "ConfigurationPanel/ConfigurationPanel.h"
@@ -29,8 +31,10 @@ namespace Interface {
 
         Gtk::HeaderBar _headerbar;
         Gtk::MenuButton _menubutton;
-        Gtk::MenuItem _menuItem;
-        Gtk::Label _example{"example text"};
+        Gtk::PopoverMenu _popoverMenu;
+        Gtk::Box _menuBox{Gtk::Orientation::ORIENTATION_VERTICAL};
+        Gtk::Button _example{"example text"};
+        Gtk::Button _example2{"more example text"};
 
         Gtk::Paned _paned;
 

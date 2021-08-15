@@ -31,6 +31,10 @@ void NBody::Camera::draw(entt::basic_view<entt::entity, entt::exclude_t<>,
 
     auto mesh = Graphics::Sphere::mesh();
 
+    Shaders::PhongGL shader{{}, 1};
+    shader.setLightPositions({{24.0f, 50.0f, -50, 0.0f}})
+            .setProjectionMatrix(_projection * _transformation);
+
     view.each([&](
             const NBody::Physics::Position &position,
             const NBody::Graphics::Color &color,
@@ -40,13 +44,10 @@ void NBody::Camera::draw(entt::basic_view<entt::entity, entt::exclude_t<>,
                 Matrix4::translation({position.x, position.y, position.z}) *
                 Matrix4::scaling(Vector3{sphere.radius()});
 
-        Shaders::PhongGL shader{{}, 1};
-        shader.setLightPositions({{24.0f, 50.0f, -50, 0.0f}})
-                .setDiffuseColor(color)
+        shader.setDiffuseColor(color)
                 .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.5f}))
                 .setTransformationMatrix(transformationMatrix)
                 .setNormalMatrix(transformationMatrix.normalMatrix())
-                .setProjectionMatrix(_projection * _transformation)
                 .draw(mesh);
     });
 }
