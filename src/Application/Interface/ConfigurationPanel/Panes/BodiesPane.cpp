@@ -33,10 +33,6 @@ Interface::Panes::BodiesPane::BodiesPane(Simulation &simulation) : Pane(),
                 _listBox.append(_bodyCount);
                 _bodyCount.show();
 
-                _listBox.append(_separator);
-                _separator.set_can_focus(false);
-                _separator.set_sensitive(false);
-
                 _listBox.append(_placeholder3);
                 _placeholder3.show();
             }
@@ -46,4 +42,21 @@ Interface::Panes::BodiesPane::BodiesPane(Simulation &simulation) : Pane(),
 
     }
     _box.show();
+
+    _simulation.on_construct<NBody::Physics::Position>().connect<&BodiesPane::on_bodyAdded>(*this);
+}
+
+void Interface::Panes::BodiesPane::on_bodyAdded(entt::basic_registry<Entity> &, Entity) {
+
+    _bodyCount.widget().set_text(std::to_string(_simulation.size()));
+}
+
+void Interface::Panes::BodiesPane::on_bodyRemoved(const Entity &_) {
+
+    _bodyCount.widget().set_text(std::to_string(_simulation.size()));
+}
+
+template<typename... T>
+void Interface::Panes::BodiesPane::test(T...) {
+    _bodyCount.widget().set_text(std::to_string(_simulation.size()));
 }

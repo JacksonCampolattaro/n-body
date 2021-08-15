@@ -7,7 +7,7 @@
 
 namespace Interface {
 
-    using NBody::Simulation::Simulation;
+    using NBody::Simulation;
 
     class Interface : public Gtk::Window {
     private:

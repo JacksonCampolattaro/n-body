@@ -14,16 +14,23 @@
 #include <gtkmm/box.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/paned.h>
+#include <gtkmm/headerbar.h>
+#include <gtkmm/menubutton.h>
 
 #include "Interface.h"
 #include "ConfigurationPanel/ConfigurationPanel.h"
 
 namespace Interface {
 
-    using NBody::Simulation::Simulation;
+    using NBody::Simulation;
 
     class Interactive : public Interface {
     private:
+
+        Gtk::HeaderBar _headerbar;
+        Gtk::MenuButton _menubutton;
+        Gtk::MenuItem _menuItem;
+        Gtk::Label _example{"example text"};
 
         Gtk::Paned _paned;
 

@@ -24,7 +24,7 @@ namespace NBody {
     private:
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
-        const Simulation::Simulation &_simulation;
+        const Simulation &_simulation;
         Camera _camera;
 
     public:
@@ -34,7 +34,7 @@ namespace NBody {
 
     public:
 
-        View(const Simulation::Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
+        View(const Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
 
             set_size_request(400, 400);
 

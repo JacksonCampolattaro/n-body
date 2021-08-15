@@ -18,7 +18,7 @@
 #include "Pane.h"
 #include "../LabeledWidget.h"
 
-using NBody::Simulation::Simulation;
+using NBody::Simulation;
 
 namespace Interface::Panes {
 
