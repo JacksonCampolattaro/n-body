@@ -34,10 +34,12 @@ namespace NBody {
 
         void move(Matrix4 matrix);
 
-//        void draw(const entt::basic_view<
-//                const NBody::Physics::Position,
-//                const NBody::Graphics::Color,
-//                const NBody::Graphics::Sphere> &view);
+    private:
+
+        void draw(entt::basic_view<entt::entity, entt::exclude_t<>,
+                const NBody::Physics::Position,
+                const NBody::Graphics::Color,
+                const NBody::Graphics::Sphere> view);
     };
 }
 
