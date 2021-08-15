@@ -9,5 +9,6 @@
         <file>icons/view_camera.svg</file>
         <file>icons/tria_right.svg</file>
         <file>icons/frame_next.svg</file>
+        <file>ui/menu.xml</file>
     </gresource>
 </gresources>

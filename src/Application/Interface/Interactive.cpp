@@ -12,8 +12,12 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
 
     set_titlebar(_headerbar);
     _headerbar.set_show_close_button(true);
-    _headerbar.add(_menubutton);
-    _menubutton.show();
+    {
+        _headerbar.pack_end(_menubutton);
+        _menubutton.set_direction(Gtk::ArrowType::ARROW_NONE);
+        // todo
+        _menubutton.show();
+    }
     _headerbar.show();
 
     add(_paned);
@@ -24,7 +28,6 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
 
     _paned.pack2(_configurationPanel, false, false);
     _configurationPanel.show();
-
 
     signal_key_press_event().connect(sigc::mem_fun(*this, &Interactive::on_keyPressEvent), false);
 
