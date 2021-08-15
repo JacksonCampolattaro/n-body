@@ -63,7 +63,7 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
     auto options = command_line->get_options_dict();
 
     Logger::reset();
-    _simulation = NBody::Simulation::Simulation();
+    _simulation = NBody::Simulation();
 
     // Only attach the console to the logger if the silent flag isn't set
     if (!options->contains("silent"))

@@ -13,7 +13,8 @@
 #include "Pane.h"
 #include "../LabeledWidget.h"
 
-using NBody::Simulation::Simulation;
+using NBody::Simulation;
+using NBody::Entity;
 
 namespace Interface::Panes {
 
@@ -36,6 +37,16 @@ namespace Interface::Panes {
 
         BodiesPane(Simulation &simulation);
 
+        void on_bodyAdded(entt::basic_registry<Entity> &, Entity);
+
+        void on_bodyRemoved(const Entity&_);
+
+        template <typename ...T>
+        void test(T...);
+
+        void operator()(Simulation &, Entity) {
+
+        }
     };
 }
 

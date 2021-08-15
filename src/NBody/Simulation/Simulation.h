@@ -22,11 +22,11 @@ using nlohmann::json;
 using std::istream;
 using std::ostream;
 
-namespace NBody::Simulation {
+namespace NBody {
 
     typedef entt::entity Entity;
 
-    class Simulation : public entt::registry {
+    class Simulation : public entt::basic_registry<Entity> {
     public:
 
         class Body {

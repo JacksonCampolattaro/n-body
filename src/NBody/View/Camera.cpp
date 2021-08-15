@@ -8,7 +8,7 @@
 
 using namespace Magnum::Math::Literals;
 
-void NBody::Camera::draw(const NBody::Simulation::Simulation &simulation) {
+void NBody::Camera::draw(const NBody::Simulation &simulation) {
 
     auto view = simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
     auto mesh = Graphics::Sphere::mesh();

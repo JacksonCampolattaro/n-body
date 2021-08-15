@@ -43,7 +43,7 @@ protected:
 
 private:
 
-    NBody::Simulation::Simulation _simulation;
+    NBody::Simulation _simulation;
     std::unique_ptr<::Interface::Interface> _interface;
 
 //    NBody::Interface::Viewport _viewport;

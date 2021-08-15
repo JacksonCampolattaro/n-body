@@ -14,7 +14,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 
-using NBody::Simulation::Simulation;
+using NBody::Simulation;
 
 namespace Interface {
 

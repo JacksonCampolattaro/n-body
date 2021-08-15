@@ -18,8 +18,6 @@
 using namespace Magnum;
 using namespace Math::Literals;
 
-using namespace NBody::Simulation;
-
 namespace NBody {
 
     class Camera {
@@ -32,7 +30,7 @@ namespace NBody {
 
         void setAspectRatio(float aspectRatio);
 
-        void draw(const Simulation::Simulation &simulation);
+        void draw(const Simulation &simulation);
 
         void move(Matrix4 matrix);
 

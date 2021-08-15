@@ -5,9 +5,16 @@
 #include "Interactive.h"
 
 Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulation),
+                                                              _headerbar(),
                                                               _view(simulation),
                                                               _configurationPanel(simulation),
                                                               _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
+
+    set_titlebar(_headerbar);
+    _headerbar.set_show_close_button(true);
+    _headerbar.add(_menubutton);
+    _menubutton.show();
+    _headerbar.show();
 
     add(_paned);
     _paned.show();
