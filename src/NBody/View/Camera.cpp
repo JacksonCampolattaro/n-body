@@ -10,11 +10,31 @@ using namespace Magnum::Math::Literals;
 
 void NBody::Camera::draw(const NBody::Simulation &simulation) {
 
-    auto view = simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
+    draw(simulation.view<
+            const NBody::Physics::Position,
+            const NBody::Graphics::Color,
+            const NBody::Graphics::Sphere>());
+}
+
+void NBody::Camera::setAspectRatio(float aspectRatio) {
+    _projection = Matrix4::perspectiveProjection(35.0_degf, aspectRatio, 0.01f, 1000.0f);
+}
+
+void NBody::Camera::move(Matrix4 matrix) {
+    _transformation = _transformation * matrix;
+}
+
+void NBody::Camera::draw(entt::basic_view<entt::entity, entt::exclude_t<>,
+        const NBody::Physics::Position,
+        const NBody::Graphics::Color,
+        const NBody::Graphics::Sphere> view) {
+
     auto mesh = Graphics::Sphere::mesh();
 
-    view.each([&](const NBody::Physics::Position &position, const NBody::Graphics::Color &color,
-                  const NBody::Graphics::Sphere &sphere) {
+    view.each([&](
+            const NBody::Physics::Position &position,
+            const NBody::Graphics::Color &color,
+            const NBody::Graphics::Sphere &sphere) {
 
         auto transformationMatrix =
                 Matrix4::translation({position.x, position.y, position.z}) *
@@ -29,36 +49,6 @@ void NBody::Camera::draw(const NBody::Simulation &simulation) {
                 .setProjectionMatrix(_projection * _transformation)
                 .draw(mesh);
     });
-
-}
-
-//void NBody::Camera::draw(const entt::basic_view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere> &view) {
-//
-//    auto mesh = Graphics::Sphere::mesh();
-//    view.each([&](const NBody::Physics::Position &position, const NBody::Graphics::Color &color,
-//                  const NBody::Graphics::Sphere &sphere) {
-//
-//        auto transformationMatrix =
-//                Matrix4::translation({position.x, position.y, position.z}) *
-//                Matrix4::scaling(Vector3{sphere.radius()});
-//
-//        Shaders::PhongGL shader{{}, 1};
-//        shader.setLightPositions({{24.0f, 50.0f, -50, 0.0f}})
-//                .setDiffuseColor(color)
-//                .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.5f}))
-//                .setTransformationMatrix(transformationMatrix)
-//                .setNormalMatrix(transformationMatrix.normalMatrix())
-//                .setProjectionMatrix(_projection)
-//                .draw(mesh);
-//    });
-//}
-
-void NBody::Camera::setAspectRatio(float aspectRatio) {
-    _projection = Matrix4::perspectiveProjection(35.0_degf, aspectRatio, 0.01f, 1000.0f);
-}
-
-void NBody::Camera::move(Matrix4 matrix) {
-    _transformation = _transformation * matrix;
 }
 
 //void NBody::Camera::draw(const NBody::Simulation::Simulation &simulation) {
