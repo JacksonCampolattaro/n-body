@@ -52,7 +52,7 @@ namespace Magnum::Examples {
     using namespace Math::Literals;
 
     /* Arcball camera implementation integrated into the SceneGraph */
-    class ArcBallCamera : public ArcBall {
+    class ArcBallCamera : public ArcBall, public NBody::Camera {
     public:
         ArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
@@ -60,9 +60,9 @@ namespace Magnum::Examples {
                 const Vector2i &viewportSize) :
                 ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
-            _camera._projection = Matrix4::perspectiveProjection(
+            _projection = Matrix4::perspectiveProjection(
                     fov, Vector2{windowSize}.aspectRatio(), 0.01f, 100.0f);
-            _camera._transformation = transformationMatrix();
+            _transformation = transformationMatrix();
 //                    Matrix4::translation(transformation().translation()) *
 //                    Matrix4::from((transformationMatrix()).rotationScaling().inverted(), {0, 0, 0});
         }
@@ -71,9 +71,9 @@ namespace Magnum::Examples {
         void reshape(const Vector2i &windowSize, const Vector2i &viewportSize) {
             _windowSize = windowSize;
 
-            _camera._projection = Matrix4::perspectiveProjection(35.0_degf,
-                                                                 Vector2{_windowSize}.aspectRatio(),
-                                                                 0.01f,100.0f);
+            _projection = Matrix4::perspectiveProjection(35.0_degf,
+                                                         Vector2{_windowSize}.aspectRatio(),
+                                                         0.01f, 100.0f);
         }
 
         /* Update the SceneGraph camera if arcball has been changed */
@@ -81,14 +81,14 @@ namespace Magnum::Examples {
             /* call the internal update */
             if (!updateTransformation()) return false;
 
-            _camera._transformation = Matrix4::translation(transformation().translation());
+            _transformation = Matrix4::translation(transformation().translation());
             return true;
         }
 
         void draw() {
 
             auto transformation =
-                    _camera._transformation
+                    _transformation
                     * Matrix4::rotationX(30.0_degf) * Matrix4::rotationY(40.0_degf);
 
             auto mesh = MeshTools::compile(Primitives::cubeSolid());
@@ -101,15 +101,9 @@ namespace Magnum::Examples {
                     .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
                     .setTransformationMatrix(transformation)
                     .setNormalMatrix(transformation.normalMatrix())
-                    .setProjectionMatrix(_camera._projection)
+                    .setProjectionMatrix(_projection)
                     .draw(mesh);
         };
-
-        NBody::Camera &camera() { return _camera; }
-
-    private:
-
-        NBody::Camera _camera;
     };
 
 }
