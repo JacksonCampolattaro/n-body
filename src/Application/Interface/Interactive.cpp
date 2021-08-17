@@ -5,15 +5,16 @@
 #include "Interactive.h"
 
 Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulation),
-                                                              _headerbar(),
                                                               _camera{
-                                                                      Vector3::zAxis(-10.0f),
-                                                                      {}, Vector3::yAxis(),
+                                                                      Vector3::zAxis(11.0f),
+                                                                      Vector3::zAxis(0.0f),
+                                                                      Vector3::yAxis(),
                                                                       45.0_degf,
                                                                       Vector2i{400, 400},
                                                                       Vector2i{400, 400}
                                                               },
                                                               _view(_camera, simulation),
+                                                              _headerbar(),
                                                               _configurationPanel(simulation),
                                                               _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
 
