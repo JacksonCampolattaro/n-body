@@ -60,7 +60,6 @@ namespace Magnum::Examples {
                 const Vector2i &viewportSize) :
                 ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
-            _camera._windowDimensions = viewportSize;
             _camera._projection = Matrix4::perspectiveProjection(
                     fov, Vector2{windowSize}.aspectRatio(), 0.01f, 100.0f);
             _camera._transformation = transformationMatrix();
@@ -71,7 +70,6 @@ namespace Magnum::Examples {
         /* Update screen and viewport size after the window has been resized */
         void reshape(const Vector2i &windowSize, const Vector2i &viewportSize) {
             _windowSize = windowSize;
-            _camera._windowDimensions = viewportSize;
 
             _camera._projection = Matrix4::perspectiveProjection(35.0_degf,
                                                                  Vector2{_windowSize}.aspectRatio(),

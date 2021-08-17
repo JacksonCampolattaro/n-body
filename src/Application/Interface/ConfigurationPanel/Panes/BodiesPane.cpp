@@ -55,8 +55,3 @@ void Interface::Panes::BodiesPane::on_bodyRemoved(const Entity &_) {
 
     _bodyCount.widget().set_text(std::to_string(_simulation.size()));
 }
-
-template<typename... T>
-void Interface::Panes::BodiesPane::test(T...) {
-    _bodyCount.widget().set_text(std::to_string(_simulation.size()));
-}

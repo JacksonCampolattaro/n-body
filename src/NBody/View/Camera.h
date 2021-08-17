@@ -14,6 +14,8 @@
 #include <Magnum/Math/Color.h>
 
 #include <Magnum/GL/Mesh.h>
+#include <Magnum/Primitives/Cube.h>
+#include <Magnum/Math/Quaternion.h>
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -21,25 +23,21 @@ using namespace Math::Literals;
 namespace NBody {
 
     class Camera {
-    private:
-
-        Matrix4 _projection;
-        Matrix4 _transformation{Matrix4::translation(Vector3::zAxis(-100.0f))};
-
     public:
 
-        void setAspectRatio(float aspectRatio);
-
-        void draw(const Simulation &simulation);
-
-        void move(Matrix4 matrix);
+        Matrix4 _projection;
+        Matrix4 _transformation;
 
     private:
+
+        void draw(const Simulation &simulation);
 
         void draw(entt::basic_view<entt::entity, entt::exclude_t<>,
                 const NBody::Physics::Position,
                 const NBody::Graphics::Color,
                 const NBody::Graphics::Sphere> view);
+
+        void draw();
     };
 }
 
