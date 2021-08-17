@@ -6,7 +6,14 @@
 
 Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulation),
                                                               _headerbar(),
-                                                              _view(simulation),
+                                                              _camera{
+                                                                      Vector3::zAxis(-10.0f),
+                                                                      {}, Vector3::yAxis(),
+                                                                      45.0_degf,
+                                                                      Vector2i{400, 400},
+                                                                      Vector2i{400, 400}
+                                                              },
+                                                              _view(_camera, simulation),
                                                               _configurationPanel(simulation),
                                                               _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
 
@@ -29,36 +36,33 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
     _paned.pack2(_configurationPanel, false, false);
     _configurationPanel.show();
 
-    signal_key_press_event().connect(sigc::mem_fun(*this, &Interactive::on_keyPressEvent), false);
-
-    signal_moveCamera.connect(_view.slot_moveCamera);
 }
 
-bool Interface::Interactive::on_keyPressEvent(GdkEventKey *event) {
-
-    float stepSize = 2.0;
-
-    if (event->keyval == GDK_KEY_Left) {
-        signal_moveCamera.emit(Matrix4::translation(Vector3::xAxis(stepSize)));
-    }
-
-    if (event->keyval == GDK_KEY_Right) {
-        signal_moveCamera.emit(Matrix4::translation(Vector3::xAxis(-stepSize)));
-    }
-
-    if (event->keyval == GDK_KEY_Up) {
-        if (event->state & GDK_CONTROL_MASK)
-            signal_moveCamera.emit(Matrix4::translation(Vector3::yAxis(-stepSize)));
-        else
-            signal_moveCamera.emit(Matrix4::translation(Vector3::zAxis(stepSize)));
-    }
-
-    if (event->keyval == GDK_KEY_Down) {
-        if (event->state & GDK_CONTROL_MASK)
-            signal_moveCamera.emit(Matrix4::translation(Vector3::yAxis(stepSize)));
-        else
-            signal_moveCamera.emit(Matrix4::translation(Vector3::zAxis(-stepSize)));
-    }
-
-    return false;
-}
+//bool Interface::Interactive::on_keyPressEvent(GdkEventKey *event) {
+//
+//    float stepSize = 2.0;
+//
+//    if (event->keyval == GDK_KEY_Left) {
+//        signal_moveCamera.emit(Matrix4::translation(Vector3::xAxis(stepSize)));
+//    }
+//
+//    if (event->keyval == GDK_KEY_Right) {
+//        signal_moveCamera.emit(Matrix4::translation(Vector3::xAxis(-stepSize)));
+//    }
+//
+//    if (event->keyval == GDK_KEY_Up) {
+//        if (event->state & GDK_CONTROL_MASK)
+//            signal_moveCamera.emit(Matrix4::translation(Vector3::yAxis(-stepSize)));
+//        else
+//            signal_moveCamera.emit(Matrix4::translation(Vector3::zAxis(stepSize)));
+//    }
+//
+//    if (event->keyval == GDK_KEY_Down) {
+//        if (event->state & GDK_CONTROL_MASK)
+//            signal_moveCamera.emit(Matrix4::translation(Vector3::yAxis(stepSize)));
+//        else
+//            signal_moveCamera.emit(Matrix4::translation(Vector3::zAxis(-stepSize)));
+//    }
+//
+//    return false;
+//}

@@ -5,7 +5,7 @@
 #ifndef N_BODY_VIEW_H
 #define N_BODY_VIEW_H
 
-#include "Camera.h"
+#include <optional>
 
 #include <gtkmm/glarea.h>
 
@@ -15,26 +15,37 @@
 #include <Magnum/GL/Framebuffer.h>
 #include <Magnum/GL/Renderer.h>
 
+#include <Magnum/SceneGraph/Camera.h>
+#include <Magnum/SceneGraph/Drawable.h>
+#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/Object.h>
+#include <Magnum/SceneGraph/Scene.h>
+
+#include <NBody/Simulation/Simulation.h>
+
+#include "ArcBallCamera.h"
+
 using namespace Magnum;
 using namespace Math::Literals;
+
+using Object3D = SceneGraph::Object<SceneGraph::MatrixTransformation3D>;
+using Scene3D = SceneGraph::Scene<SceneGraph::MatrixTransformation3D>;
 
 namespace NBody {
 
     class View : public Gtk::GLArea {
-    private:
+    protected:
+
+        const Simulation &_simulation;
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
-        const Simulation &_simulation;
-        Camera _camera;
 
-    public:
-        // slots
-
-        sigc::slot<void(Matrix4)> slot_moveCamera;
+        Magnum::Examples::ArcBallCamera &_camera;
 
     public:
 
-        View(const Simulation &simulation) : Gtk::GLArea(), _simulation(simulation), _camera() {
+        View(Magnum::Examples::ArcBallCamera &camera, const Simulation &simulation) :
+                Gtk::GLArea(), _simulation(simulation), _camera(camera) {
 
             set_size_request(400, 400);
 
@@ -47,7 +58,6 @@ namespace NBody {
             signal_render().connect(sigc::mem_fun(this, &View::onRender));
             signal_resize().connect(sigc::mem_fun(this, &View::onResize));
 
-            slot_moveCamera = sigc::mem_fun(&_camera, &Camera::move);
         };
 
         void onRealize() {
@@ -78,14 +88,16 @@ namespace NBody {
             // Attach Magnum's framebuffer manager to the framebuffer provided by Gtkmm
             auto gtkmmDefaultFramebuffer = GL::Framebuffer::wrap(
                     framebufferID,
-                    {{},{get_width(), get_height()}}
+                    {{},
+                     {get_width(), get_height()}}
             );
 
             // Reset color and depth buffers
             gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
             // TODO: This is where actual rendering code goes!
-            _camera.draw(_simulation);
+            _camera.update();
+            _camera.draw();
 
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
@@ -94,7 +106,7 @@ namespace NBody {
         }
 
         void onResize(int width, int height) {
-            _camera.setAspectRatio((float) width / (float) height);
+            _camera.reshape(Vector2i{width, height}, Vector2i{width, height});
         }
 
     };

@@ -6,7 +6,8 @@
 #define N_BODY_INTERACTIVE_H
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/View/View.h>
+#include <NBody/View/InteractiveView.h>
+#include <NBody/View/GtkmmArcBallCamera.h>
 
 #include <Magnum/Math/Matrix4.h>
 
@@ -38,7 +39,8 @@ namespace Interface {
 
         Gtk::Paned _paned;
 
-        NBody::View _view;
+        NBody::GtkmmArcBallCamera _camera;
+        NBody::InteractiveView _view;
         ConfigurationPanel _configurationPanel;
 
     public:
@@ -48,12 +50,9 @@ namespace Interface {
     public:
         // Signals
 
-        sigc::signal<void(Magnum::Matrix4)> signal_moveCamera;
-
     public:
         // Slots
 
-        bool on_keyPressEvent(GdkEventKey *event);
 
     };
 }
