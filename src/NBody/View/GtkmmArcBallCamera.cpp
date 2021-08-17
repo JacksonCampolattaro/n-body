@@ -25,6 +25,6 @@ bool NBody::GtkmmArcBallCamera::on_mouseMotion(GdkEventMotion *event) {
 }
 
 bool NBody::GtkmmArcBallCamera::on_scroll(GdkEventScroll *event) {
-    zoom(event->delta_y);
+    zoom((float) -event->delta_y);
     return false;
 }

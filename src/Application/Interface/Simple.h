@@ -15,7 +15,7 @@ namespace Interface {
     class Simple : public Interface {
     private:
 
-        Magnum::Examples::ArcBallCamera _camera;
+        NBody::ArcBallCamera _camera;
         NBody::View _view;
 
     public:

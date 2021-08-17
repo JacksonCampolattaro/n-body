@@ -11,7 +11,6 @@ Interface::Simple::Simple(Simulation &simulation) :
                 {}, Vector3::yAxis(),
                 45.0_degf,
                 Vector2i{400, 400},
-                Vector2i{400, 400}
         },
         _view(_camera, simulation) {
 

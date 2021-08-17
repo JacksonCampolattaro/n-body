@@ -20,7 +20,6 @@ endif ()
 
 add_library(View
         View.cpp View.h
-        Camera.cpp Camera.h
         InteractiveView.cpp InteractiveView.h ArcBall.cpp ArcBall.h ArcBallCamera.cpp ArcBallCamera.h GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h)
 
 target_include_directories(View PUBLIC

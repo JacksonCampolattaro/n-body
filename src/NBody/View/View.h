@@ -40,11 +40,11 @@ namespace NBody {
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
 
-        Magnum::Examples::ArcBallCamera &_camera;
+        ArcBallCamera &_camera;
 
     public:
 
-        View(Magnum::Examples::ArcBallCamera &camera, const Simulation &simulation) :
+        View(ArcBallCamera &camera, const Simulation &simulation) :
                 Gtk::GLArea(), _simulation(simulation), _camera(camera) {
 
             set_size_request(400, 400);
@@ -96,8 +96,8 @@ namespace NBody {
             gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
             // TODO: This is where actual rendering code goes!
-            _camera.update();
-            _camera.draw();
+            _camera.updateTransformation();
+            _camera.draw(_simulation);
 
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
@@ -106,7 +106,7 @@ namespace NBody {
         }
 
         void onResize(int width, int height) {
-            _camera.reshape(Vector2i{width, height}, Vector2i{width, height});
+            _camera.reshape(Vector2i{width, height});
         }
 
     };

@@ -15,7 +15,7 @@ using namespace Magnum;
 
 namespace NBody {
 
-    class GtkmmArcBallCamera : public Magnum::Examples::ArcBallCamera {
+    class GtkmmArcBallCamera : public ArcBallCamera {
     public:
         // Slots
 
@@ -29,9 +29,8 @@ namespace NBody {
 
         GtkmmArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
-                const Vector3 &upDir, Deg fov, const Vector2i &windowSize,
-                const Vector2i &viewportSize) :
-                Examples::ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize, viewportSize} {
+                const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
+                ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
             slot_buttonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonPress);
             slot_buttonRelease = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonRelease);
