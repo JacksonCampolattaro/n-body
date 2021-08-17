@@ -10,7 +10,6 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
                                                                       Vector3::zAxis(0.0f),
                                                                       Vector3::yAxis(),
                                                                       45.0_degf,
-                                                                      Vector2i{400, 400},
                                                                       Vector2i{400, 400}
                                                               },
                                                               _view(_camera, simulation),
