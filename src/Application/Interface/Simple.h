@@ -8,12 +8,14 @@
 #include "Interface.h"
 
 #include <NBody/View/View.h>
+#include <NBody/View/ArcBallCamera.h>
 
 namespace Interface {
 
     class Simple : public Interface {
     private:
 
+        Magnum::Examples::ArcBallCamera _camera;
         NBody::View _view;
 
     public:
