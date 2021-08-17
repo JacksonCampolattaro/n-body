@@ -5,7 +5,6 @@
 #include "GtkmmArcBallCamera.h"
 
 bool NBody::GtkmmArcBallCamera::on_buttonPress(GdkEventButton *event) {
-    std::cout << "test" << std::endl;
     return false;
 }
 
