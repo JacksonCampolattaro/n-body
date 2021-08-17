@@ -41,12 +41,6 @@ namespace Interface::Panes {
 
         void on_bodyRemoved(const Entity&_);
 
-        template <typename ...T>
-        void test(T...);
-
-        void operator()(Simulation &, Entity) {
-
-        }
     };
 }
 
