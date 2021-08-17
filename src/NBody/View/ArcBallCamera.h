@@ -58,22 +58,13 @@ namespace Magnum::Examples {
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize,
                 const Vector2i &viewportSize) :
-                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
-
-            _projection = Matrix4::perspectiveProjection(
-                    fov, Vector2{windowSize}.aspectRatio(), 0.01f, 100.0f);
-            _transformation = transformationMatrix();
-//                    Matrix4::translation(transformation().translation()) *
-//                    Matrix4::from((transformationMatrix()).rotationScaling().inverted(), {0, 0, 0});
-        }
+                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {}
 
         /* Update screen and viewport size after the window has been resized */
         void reshape(const Vector2i &windowSize, const Vector2i &viewportSize) {
-            _windowSize = windowSize;
-
-            _projection = Matrix4::perspectiveProjection(35.0_degf,
-                                                         Vector2{_windowSize}.aspectRatio(),
-                                                         0.01f, 100.0f);
+            ArcBall::reshape(windowSize);
+            _projection = Matrix4::perspectiveProjection(
+                    fov(), Vector2{windowSize}.aspectRatio(), 0.01f, 100.0f);
         }
 
         /* Update the SceneGraph camera if arcball has been changed */
@@ -81,27 +72,23 @@ namespace Magnum::Examples {
             /* call the internal update */
             if (!updateTransformation()) return false;
 
-            _transformation = Matrix4::translation(transformation().translation());
+            _transformation = viewMatrix();
             return true;
         }
 
         void draw() {
 
-            auto transformation =
-                    _transformation
-                    * Matrix4::rotationX(30.0_degf) * Matrix4::rotationY(40.0_degf);
-
             auto mesh = MeshTools::compile(Primitives::cubeSolid());
             auto color = Color3::fromHsv({35.0_degf, 1.0, 1.0});
 
-            auto shader = Shaders::PhongGL{{}, 1};
+            auto shader = Shaders::PhongGL{};
             shader
-                    .setLightPositions({{24.0f, 50.0f, -50, 0.0f}})
-                    .setDiffuseColor(color)
-                    .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
-                    .setTransformationMatrix(transformation)
-                    .setNormalMatrix(transformation.normalMatrix())
+//                    .setLightPositions({{24.0f, 50.0f, -50, 0.0f}})
+//                    .setDiffuseColor(color)
+//                    .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.3f}))
                     .setProjectionMatrix(_projection)
+                    .setTransformationMatrix(viewMatrix())
+                    .setNormalMatrix(viewMatrix().normalMatrix())
                     .draw(mesh);
         };
     };
