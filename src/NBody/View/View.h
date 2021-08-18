@@ -44,73 +44,20 @@ namespace NBody {
 
     public:
 
-        View(ArcBallCamera &camera, const Simulation &simulation) :
-                Gtk::GLArea(), _simulation(simulation), _camera(camera) {
+        View(ArcBallCamera &camera, const Simulation &simulation);
 
-            set_size_request(400, 400);
-
-            set_auto_render();
-
-            set_required_version(4, 5);
-            set_has_depth_buffer(true);
-
-            signal_realize().connect(sigc::mem_fun(this, &View::onRealize));
-            signal_unrealize().connect(sigc::mem_fun(this, &View::onUnrealize));
-            signal_render().connect(sigc::mem_fun(this, &View::onRender));
-            signal_resize().connect(sigc::mem_fun(this, &View::onResize));
-
-        };
-
-        void onRealize() {
-
-            // Initialize the GL context
-            make_current();
-            _context.create();
-
-            // Configure the graphics features
-            GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
-            GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
-
-            // Set the background color
-            GL::Renderer::setClearColor({0.12, 0.12, 0.1, 1.0});
-        }
+        void onRealize();
 
         void onUnrealize() {}
 
-        bool onRender(const Glib::RefPtr<Gdk::GLContext> &) {
+        bool onRender(const Glib::RefPtr<Gdk::GLContext> &);
 
-            // Eliminate outside effects on GL state
-            GL::Context::current().resetState(GL::Context::State::ExitExternal);
+        void onResize(int width, int height);
 
-            // Determine the relevant framebuffer by getting its ID
-            GLint framebufferID;
-            glGetIntegerv(GL_FRAMEBUFFER_BINDING, &framebufferID);
+    public:
+        // Slots
 
-            // Attach Magnum's framebuffer manager to the framebuffer provided by Gtkmm
-            auto gtkmmDefaultFramebuffer = GL::Framebuffer::wrap(
-                    framebufferID,
-                    {{},
-                     {get_width(), get_height()}}
-            );
-
-            // Reset color and depth buffers
-            gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
-
-            // TODO: This is where actual rendering code goes!
-//            _camera.initTransformation({10, 10});
-//            _camera.rotate({10, 11});
-            _camera.updateTransformation();
-            _camera.draw(_simulation);
-
-            // Restore external GL state
-            GL::Context::current().resetState(GL::Context::State::EnterExternal);
-            queue_render();
-            return true;
-        }
-
-        void onResize(int width, int height) {
-            _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
-        }
+        sigc::slot<void()> slot_renderNeeded;
 
     };
 }
