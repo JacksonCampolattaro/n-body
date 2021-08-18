@@ -100,7 +100,7 @@ namespace NBody {
 //            _camera.initTransformation({10, 10});
 //            _camera.rotate({10, 11});
             _camera.updateTransformation();
-            _camera.draw();
+            _camera.draw(_simulation);
 
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
