@@ -44,6 +44,18 @@ namespace NBody {
                 const NBody::Graphics::Color,
                 const NBody::Graphics::Sphere> view);
 
+
+        struct SphereInstanceData {
+            Matrix4 transformationMatrix;
+            Matrix3x3 normalMatrix;
+            Color3 color;
+        };
+
+        void _draw(entt::basic_view<entt::entity, entt::exclude_t<>,
+                const NBody::Physics::Position,
+                const NBody::Graphics::Color,
+                const NBody::Graphics::Sphere> view);
+
         void draw();
     };
 

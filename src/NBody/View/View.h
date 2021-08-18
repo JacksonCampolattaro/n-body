@@ -53,6 +53,8 @@ namespace NBody {
 
             set_required_version(4, 5);
 
+            set_has_depth_buffer(true);
+
             signal_realize().connect(sigc::mem_fun(this, &View::onRealize));
             signal_unrealize().connect(sigc::mem_fun(this, &View::onUnrealize));
             signal_render().connect(sigc::mem_fun(this, &View::onRender));
