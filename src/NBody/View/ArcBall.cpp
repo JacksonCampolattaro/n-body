@@ -31,6 +31,7 @@
 #include "ArcBall.h"
 
 #include <Magnum/Math/Matrix3.h>
+#include <iostream>
 
 namespace Magnum::Examples {
 
@@ -170,8 +171,8 @@ namespace Magnum::Examples {
     }
 
     Vector2 ArcBall::screenCoordToNDC(const Vector2i &mousePos) const {
-        return {mousePos.x() * 2.0f / _windowSize.x() - 1.0f,
-                1.0f - 2.0f * mousePos.y() / _windowSize.y()};
+        return {mousePos.x()*2.0f/_windowSize.x() - 1.0f,
+                1.0f - 2.0f*mousePos.y()/ _windowSize.y()};
     }
 
 }

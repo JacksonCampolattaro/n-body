@@ -52,7 +52,6 @@ namespace NBody {
             set_auto_render();
 
             set_required_version(4, 5);
-
             set_has_depth_buffer(true);
 
             signal_realize().connect(sigc::mem_fun(this, &View::onRealize));
@@ -98,8 +97,10 @@ namespace NBody {
             gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
             // TODO: This is where actual rendering code goes!
+//            _camera.initTransformation({10, 10});
+//            _camera.rotate({10, 11});
             _camera.updateTransformation();
-            _camera.draw(_simulation);
+            _camera.draw();
 
             // Restore external GL state
             GL::Context::current().resetState(GL::Context::State::EnterExternal);
@@ -108,7 +109,7 @@ namespace NBody {
         }
 
         void onResize(int width, int height) {
-            _camera.reshape(Vector2i{width, height});
+            _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
         }
 
     };
