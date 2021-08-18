@@ -13,6 +13,8 @@
 #include <Magnum/Shaders/PhongGL.h>
 #include <Magnum/Math/Color.h>
 
+#include <sigc++/sigc++.h>
+
 #include <iostream>
 
 #include <NBody/Simulation/Simulation.h>
@@ -57,6 +59,11 @@ namespace NBody {
                 const NBody::Graphics::Sphere> view);
 
         void draw();
+
+    public:
+        // Signals
+
+        sigc::signal<void()> signal_changed;
     };
 
 }
