@@ -14,7 +14,7 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
                                                               },
                                                               _view(_camera, simulation),
                                                               _headerbar(),
-                                                              _configurationPanel(simulation),
+                                                              _configurationPanel(simulation, _camera),
                                                               _paned(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
 
     set_titlebar(_headerbar);

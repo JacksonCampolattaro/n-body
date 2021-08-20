@@ -64,7 +64,7 @@ add_executable(NBody
         Interface/ConfigurationPanel/ConfigurationPanel.cpp Interface/ConfigurationPanel/ConfigurationPanel.h
         Interface/ConfigurationPanel/LabeledWidget.h
         Interface/ConfigurationPanel/Panes/BodiesPane.cpp Interface/ConfigurationPanel/Panes/BodiesPane.h
-        Interface/ConfigurationPanel/Panes/Pane.cpp Interface/ConfigurationPanel/Panes/Pane.h Interface/ConfigurationPanel/Panes/PhysicsPane.cpp Interface/ConfigurationPanel/Panes/PhysicsPane.h)
+        Interface/ConfigurationPanel/Panes/Pane.cpp Interface/ConfigurationPanel/Panes/Pane.h Interface/ConfigurationPanel/Panes/PhysicsPane.cpp Interface/ConfigurationPanel/Panes/PhysicsPane.h Interface/ConfigurationPanel/Panes/CameraPane.cpp Interface/ConfigurationPanel/Panes/CameraPane.h Interface/ConfigurationPanel/PositionWidget.h)
 
 target_link_libraries(NBody PUBLIC
 

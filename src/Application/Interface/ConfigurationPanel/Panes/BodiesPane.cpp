@@ -28,12 +28,15 @@ Interface::Panes::BodiesPane::BodiesPane(Simulation &simulation) : Pane(),
         _frame.set_shadow_type(Gtk::SHADOW_ETCHED_IN);
         {
             _frame.add(_listBox);
+            _listBox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
             {
 
                 _listBox.append(_bodyCount);
+                _listBox.get_row_at_index(_listBox.get_children().size() - 1)->set_activatable(false);
                 _bodyCount.show();
 
                 _listBox.append(_placeholder3);
+                _listBox.get_row_at_index(_listBox.get_children().size() - 1)->set_activatable(false);
                 _placeholder3.show();
             }
             _listBox.show();
