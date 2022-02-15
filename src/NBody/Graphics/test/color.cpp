@@ -1,14 +1,14 @@
 #include <catch2/catch.hpp>
 
-#include <NBody/Physics/Position.h>
+#include <NBody/Graphics/Color.h>
 
 #include <iostream>
 
-using Position = NBody::Physics::Position;
+using Color = NBody::Graphics::Color;
 
-TEST_CASE("Position can be serialized and deserialized", "[Position]") {
+TEST_CASE("Color can be serialized and deserialized", "[Color]") {
 
-    Position in = {1.0f, 2.0f, 3.0f};
+    Color in = {1.0f, 0.5f, 0.0f};
 
     // Convert the value to a json DOM
     json json_in = in;
@@ -20,8 +20,9 @@ TEST_CASE("Position can be serialized and deserialized", "[Position]") {
     json json_out = json::parse(serialized);
 
     // Load the value
-    Position out = json_out.get<Position>();
+    Color out = json_out.get<Color>();
 
     // The new value should be the same as the one that was serialized.
     REQUIRE(in == out);
 }
+

@@ -1,27 +1,29 @@
 #include <catch2/catch.hpp>
 
-#include <NBody/Physics/Position.h>
+#include <NBody/Graphics/Sphere.h>
 
 #include <iostream>
 
-using Position = NBody::Physics::Position;
+using Sphere = NBody::Graphics::Sphere;
 
-TEST_CASE("Position can be serialized and deserialized", "[Position]") {
+TEST_CASE("Sphere can be serialized and deserialized", "[Sphere]") {
 
-    Position in = {1.0f, 2.0f, 3.0f};
+    Sphere in = {2.0f};
 
     // Convert the value to a json DOM
     json json_in = in;
 
     // Convert the json object to a string
     std::string serialized = to_string(json_in);
+    std::cout << serialized << std::endl;
 
     // Convert from the string to another json DOM
     json json_out = json::parse(serialized);
 
     // Load the value
-    Position out = json_out.get<Position>();
+    Sphere out = json_out.get<Sphere>();
 
     // The new value should be the same as the one that was serialized.
-    REQUIRE(in == out);
+    REQUIRE(in.radius() == out.radius());
 }
+

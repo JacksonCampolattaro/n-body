@@ -1,4 +1,6 @@
 
+find_package(nlohmann_json REQUIRED)
+
 find_package(Magnum REQUIRED
         GL
         MeshTools
@@ -36,3 +38,5 @@ target_link_libraries(Graphics PUBLIC
         )
 
 add_library(NBody::Graphics ALIAS Graphics)
+
+add_subdirectory(test)
