@@ -20,6 +20,8 @@ namespace NBody::Physics {
 
         float &mass() { return _mass; };
 
+        bool operator==(const ActiveMass &other) const;
+
         friend void to_json(json &j, const ActiveMass &m);
 
         friend void from_json(const json &j, ActiveMass &m);
