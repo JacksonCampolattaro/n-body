@@ -1,11 +1,8 @@
 include(FetchContent)
 include(ExternalProject)
 
-find_package(OpenMP REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(glm REQUIRED)
-find_package(Gtkmm REQUIRED)
+#find_package(OpenMP REQUIRED)
 
-#add_subdirectory(Application)
+add_subdirectory(Application4)
 add_subdirectory(NBody)
 
