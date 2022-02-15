@@ -4,11 +4,39 @@
 
 #include "Simulation.h"
 
-NBody::Simulation::Body NBody::Simulation::createBody() {
-    auto body = Body(create(), *this);
-    body.setPosition({0, 0, 0});
-    body.setVelocity({0, 0, 0});
-    return body;
+NBody::Simulation::Particle NBody::Simulation::newParticle() {
+
+    // Create a new empty particle
+    Particle particle = {*this, create()};
+    particle.setPosition({0, 0, 0})
+            .setVelocity({0, 0, 0});
+
+    return particle;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setPosition(const NBody::Physics::Position &position) {
+    emplace_or_replace<NBody::Physics::Position>(position);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setVelocity(const NBody::Physics::Velocity &velocity) {
+    emplace_or_replace<NBody::Physics::Velocity>(velocity);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const NBody::Physics::ActiveMass &mass) {
+    emplace_or_replace<NBody::Physics::ActiveMass>(mass);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setColor(const NBody::Graphics::Color &color) {
+    emplace_or_replace<NBody::Graphics::Color>(color);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setSphere(const NBody::Graphics::Sphere &sphere) {
+    emplace_or_replace<NBody::Graphics::Sphere>(sphere);
+    return *this;
 }
 
 void NBody::to_json(json &j, const NBody::Simulation &s) {
@@ -31,58 +59,28 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Graphics::Sphere>(entity))
             e["sphere"] = s.get<NBody::Graphics::Sphere>(entity);
 
-        j["bodies"].push_back(e);
+        j["particles"].push_back(e);
     });
 }
 
 void NBody::from_json(const json &j, NBody::Simulation &s) {
 
-    for (const auto &b : j["bodies"]) {
-        auto body = s.createBody();
+    for (const auto &p: j["particles"]) {
+        auto particle = s.newParticle();
 
-        if (b.contains("position"))
-            body.setPosition(b["position"].get<NBody::Physics::Position>());
+        if (p.contains("position"))
+            particle.setPosition(p["position"].get<NBody::Physics::Position>());
 
-        if (b.contains("velocity"))
-            body.setVelocity(b["velocity"].get<NBody::Physics::Velocity>());
+        if (p.contains("velocity"))
+            particle.setVelocity(p["velocity"].get<NBody::Physics::Velocity>());
 
-        if (b.contains("mass"))
-            body.setMass(b["mass"].get<NBody::Physics::ActiveMass>());
+        if (p.contains("mass"))
+            particle.setMass(p["mass"].get<NBody::Physics::ActiveMass>());
 
-        if (b.contains("color"))
-            body.setColor(b["color"].get<NBody::Graphics::Color>());
+        if (p.contains("color"))
+            particle.setColor(p["color"].get<NBody::Graphics::Color>());
 
-        if (b.contains("sphere"))
-            body.setSphere(b["sphere"].get<NBody::Graphics::Sphere>());
+        if (p.contains("sphere"))
+            particle.setSphere(p["sphere"].get<NBody::Graphics::Sphere>());
     }
-}
-
-NBody::Simulation::Body &
-NBody::Simulation::Body::setPosition(const NBody::Physics::Position &position) {
-    _simulation.emplace_or_replace<NBody::Physics::Position>(_entity, position);
-    return *this;
-}
-
-NBody::Simulation::Body &
-NBody::Simulation::Body::setVelocity(const NBody::Physics::Velocity &velocity) {
-    _simulation.emplace_or_replace<NBody::Physics::Velocity>(_entity, velocity);
-    return *this;
-}
-
-NBody::Simulation::Body &
-NBody::Simulation::Body::setMass(const NBody::Physics::ActiveMass &mass) {
-    _simulation.emplace_or_replace<NBody::Physics::ActiveMass>(_entity, mass);
-    return *this;
-}
-
-NBody::Simulation::Body &
-NBody::Simulation::Body::setColor(const NBody::Graphics::Color &color) {
-    _simulation.emplace_or_replace<NBody::Graphics::Color>(_entity, color);
-    return *this;
-}
-
-NBody::Simulation::Body &
-NBody::Simulation::Body::setSphere(const NBody::Graphics::Sphere &sphere) {
-    _simulation.emplace_or_replace<NBody::Graphics::Sphere>(_entity, sphere);
-    return *this;
 }

@@ -1,13 +1,8 @@
 
+find_package(nlohmann_json REQUIRED)
+
+
 include(FetchContent)
-
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-
-FetchContent_Declare(json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.9.1)
-FetchContent_MakeAvailable(json)
-
 FetchContent_Declare(entt
         GIT_REPOSITORY https://github.com/skypjack/entt.git
         GIT_TAG v3.8.1)
@@ -30,3 +25,5 @@ target_link_libraries(Simulation PUBLIC
         )
 
 add_library(NBody::Simulation ALIAS Simulation)
+
+add_subdirectory(test)

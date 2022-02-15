@@ -14,6 +14,7 @@
 #include <nlohmann/json.hpp>
 
 #include <entt/entity/registry.hpp>
+#include <entt/entity/handle.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -29,26 +30,22 @@ namespace NBody {
     class Simulation : public entt::basic_registry<Entity> {
     public:
 
-        class Body {
-        private:
-            const Entity _entity;
-            Simulation &_simulation;
+        class Particle : public entt::basic_handle<Entity> {
         public:
-            Body(const Entity &entity, Simulation &simulation) : _entity(entity), _simulation(simulation) {}
+            Particle(Simulation &ref, Entity value) : entt::basic_handle<Entity>(ref, value) {}
 
-            Body &setPosition(const Physics::Position &position);
+            Particle &setPosition(const Physics::Position &position);
 
-            Body &setVelocity(const Physics::Velocity &velocity);
+            Particle &setVelocity(const Physics::Velocity &velocity);
 
-            Body &setMass(const Physics::ActiveMass &mass);
+            Particle &setMass(const Physics::ActiveMass &mass);
 
-            Body &setColor(const Graphics::Color &color);
+            Particle &setColor(const Graphics::Color &color);
 
-            Body &setSphere(const Graphics::Sphere &sphere);
-
+            Particle &setSphere(const Graphics::Sphere &sphere);
         };
 
-        Body createBody();
+        Particle newParticle();
 
     public:
 
