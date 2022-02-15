@@ -5,6 +5,7 @@
 #        GIT_TAG v3.9.1)
 #FetchContent_MakeAvailable(json)
 
+find_package(glm REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
 add_library(Physics
