@@ -10,7 +10,7 @@ TEST_CASE("Velocity can be serialized and deserialized", "[Velocity]") {
 
     Velocity in = {1.0f, 2.0f, 3.0f};
 
-    // Convert the position to a json DOM
+    // Convert the value to a json DOM
     json json_in = in;
 
     // Convert the json object to a string
@@ -19,9 +19,9 @@ TEST_CASE("Velocity can be serialized and deserialized", "[Velocity]") {
     // Convert from the string to another json DOM
     json json_out = json::parse(serialized);
 
-    // Load the position
+    // Load the value
     Velocity out = json_out.get<Velocity>();
 
-    // The new position should be the same as the one that was serialized.
+    // The new value should be the same as the one that was serialized.
     REQUIRE(in == out);
 }
