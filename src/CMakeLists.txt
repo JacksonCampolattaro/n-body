@@ -6,6 +6,6 @@ find_package(spdlog REQUIRED)
 find_package(glm REQUIRED)
 find_package(Gtkmm REQUIRED)
 
-add_subdirectory(Application)
+#add_subdirectory(Application)
 add_subdirectory(NBody)
 

@@ -16,19 +16,19 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
     s.each([&](const auto &entity) {
         json e;
 
-        if (s.has<NBody::Physics::Position>(entity))
+        if (s.all_of<NBody::Physics::Position>(entity))
             e["position"] = s.get<NBody::Physics::Position>(entity);
 
-        if (s.has<NBody::Physics::Velocity>(entity))
+        if (s.all_of<NBody::Physics::Velocity>(entity))
             e["velocity"] = s.get<NBody::Physics::Velocity>(entity);
 
-        if (s.has<NBody::Physics::ActiveMass>(entity))
+        if (s.all_of<NBody::Physics::ActiveMass>(entity))
             e["mass"] = s.get<NBody::Physics::ActiveMass>(entity);
 
-        if (s.has<NBody::Graphics::Color>(entity))
+        if (s.all_of<NBody::Graphics::Color>(entity))
             e["color"] = s.get<NBody::Graphics::Color>(entity);
 
-        if (s.has<NBody::Graphics::Sphere>(entity))
+        if (s.all_of<NBody::Graphics::Sphere>(entity))
             e["sphere"] = s.get<NBody::Graphics::Sphere>(entity);
 
         j["bodies"].push_back(e);
