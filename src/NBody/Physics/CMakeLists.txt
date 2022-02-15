@@ -1,9 +1,11 @@
 
-include(FetchContent)
-FetchContent_Declare(json
-        GIT_REPOSITORY https://github.com/nlohmann/json.git
-        GIT_TAG v3.9.1)
-FetchContent_MakeAvailable(json)
+#include(FetchContent)
+#FetchContent_Declare(json
+#        GIT_REPOSITORY https://github.com/nlohmann/json.git
+#        GIT_TAG v3.9.1)
+#FetchContent_MakeAvailable(json)
+
+find_package(nlohmann_json REQUIRED)
 
 add_library(Physics
         Position.h Position.cpp
@@ -14,7 +16,8 @@ target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
 
 target_link_libraries(Physics PUBLIC
-        nlohmann_json::nlohmann_json
-        )
+        nlohmann_json::nlohmann_json)
 
 add_library(NBody::Physics ALIAS Physics)
+
+add_subdirectory(test)
