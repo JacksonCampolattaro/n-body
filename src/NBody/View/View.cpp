@@ -14,12 +14,12 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
     set_required_version(4, 5);
     set_has_depth_buffer(true);
 
-    signal_realize().connect(sigc::mem_fun(this, &View::onRealize));
-    signal_unrealize().connect(sigc::mem_fun(this, &View::onUnrealize));
-    signal_render().connect(sigc::mem_fun(this, &View::onRender));
-    signal_resize().connect(sigc::mem_fun(this, &View::onResize));
+    signal_realize().connect(sigc::mem_fun(*this, &View::onRealize));
+    signal_unrealize().connect(sigc::mem_fun(*this, &View::onUnrealize));
+    signal_render().connect(sigc::mem_fun(*this, &View::onRender), true);
+    signal_resize().connect(sigc::mem_fun(*this, &View::onResize));
 
-    slot_renderNeeded = sigc::mem_fun(this, &View::queue_render);
+    slot_renderNeeded = sigc::mem_fun(*this, &View::queue_render);
     _camera.signal_changed.connect(slot_renderNeeded);
 }
 

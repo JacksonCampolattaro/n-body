@@ -4,13 +4,13 @@
 
 #include "GtkmmArcBallCamera.h"
 
-bool NBody::GtkmmArcBallCamera::on_buttonPress(GdkEventButton *event) {
+bool NBody::GtkmmArcBallCamera::on_buttonPress(GdkButtonEvent *event) {
     initTransformation({static_cast<int>(event->x), static_cast<int>(event->y)});
     signal_changed.emit();
     return false;
 }
 
-bool NBody::GtkmmArcBallCamera::on_buttonRelease(GdkEventButton *event) {
+bool NBody::GtkmmArcBallCamera::on_buttonRelease(GdkButtonEvent *event) {
     signal_changed.emit();
     return false;
 }

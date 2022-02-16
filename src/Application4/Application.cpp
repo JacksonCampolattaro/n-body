@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "Application.h"
+#include "UI/Simple.h"
 
 Application::Application() :
         Gtk::Application(
@@ -15,7 +16,11 @@ Glib::RefPtr<Application> Application::create() {
 }
 
 void Application::on_activate() {
-    spdlog::info("activate");
+    spdlog::debug("activate");
+
+    auto window = new UI::Simple(_simulation);
+    add_window(*window);
+    window->present();
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {
@@ -32,7 +37,6 @@ void Application::on_open(const Application::type_vec_files &files, const Glib::
         spdlog::debug("Successfully loaded scenario with {} particles", _simulation.size());
         spdlog::trace("Scenario contents:\n{}", data.dump(4));
     }
-
 
     activate();
 }

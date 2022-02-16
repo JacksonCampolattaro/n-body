@@ -7,6 +7,7 @@
 
 
 #include <gdk/gdk.h>
+#include <gtkmm.h>
 #include <sigc++/slot.h>
 
 #include "ArcBallCamera.h"
@@ -19,10 +20,10 @@ namespace NBody {
     public:
         // Slots
 
-        sigc::slot<bool(GdkEventButton *)> slot_buttonPress;
-        sigc::slot<bool(GdkEventButton *)> slot_buttonRelease;
-        sigc::slot<bool(GdkEventMotion *)> slot_mouseMotion;
-        sigc::slot<bool(GdkEventScroll *)> slot_scroll;
+        sigc::slot<bool(GdkButtonEvent *)> slot_buttonPress;
+        sigc::slot<bool(GdkButtonEvent *)> slot_buttonRelease;
+        sigc::slot<bool(GdkMotionEvent *)> slot_mouseMotion;
+        sigc::slot<bool(GdkScrollEvent *)> slot_scroll;
 
 
     public:
@@ -40,13 +41,13 @@ namespace NBody {
 
     private:
 
-        bool on_buttonPress(GdkEventButton *event);
+        bool on_buttonPress(GdkButtonEvent *event);
 
-        bool on_buttonRelease(GdkEventButton *event);
+        bool on_buttonRelease(GdkButtonEvent *event);
 
-        bool on_mouseMotion(GdkEventMotion *event);
+        bool on_mouseMotion(GdkMotionEvent *event);
 
-        bool on_scroll(GdkEventScroll *event);
+        bool on_scroll(GdkScrollEvent *event);
 
     };
 

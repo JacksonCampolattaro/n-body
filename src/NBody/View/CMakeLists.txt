@@ -18,9 +18,15 @@ else ()
 endif ()
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
+find_package(Gtkmm REQUIRED)
+
 add_library(View
+        ArcBall.cpp ArcBall.h
+        ArcBallCamera.cpp ArcBallCamera.h
+        #GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
+        #InteractiveView.cpp InteractiveView.h
         View.cpp View.h
-        InteractiveView.cpp InteractiveView.h ArcBall.cpp ArcBall.h ArcBallCamera.cpp ArcBallCamera.h GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h)
+        )
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -30,8 +36,6 @@ target_link_libraries(View PUBLIC
         NBody::Simulation
 
         ${GTKMM_LIBRARIES}
-
-        spdlog::spdlog
 
         Magnum::Magnum
         Magnum::GLContext

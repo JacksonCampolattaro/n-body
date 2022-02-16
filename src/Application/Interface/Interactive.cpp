@@ -38,7 +38,7 @@ Interface::Interactive::Interactive(Simulation &simulation) : Interface(simulati
 
 }
 
-//bool Interface::Interactive::on_keyPressEvent(GdkEventKey *event) {
+//bool UI::Interactive::on_keyPressEvent(GdkEventKey *event) {
 //
 //    float stepSize = 2.0;
 //
