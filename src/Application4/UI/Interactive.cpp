@@ -1,6 +1,10 @@
-#include "Simple.h"
+//
+// Created by jackcamp on 2/16/22.
+//
 
-UI::Simple::Simple(NBody::Simulation &simulation) :
+#include "Interactive.h"
+
+UI::Interactive::Interactive(NBody::Simulation &simulation) :
         Gtk::ApplicationWindow(),
         _simulation{simulation},
         _camera{

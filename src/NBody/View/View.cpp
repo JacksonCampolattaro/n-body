@@ -7,7 +7,7 @@
 NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulation) :
         Gtk::GLArea(), _simulation(simulation), _camera(camera) {
 
-    set_size_request(400, 400);
+    set_size_request(720, 480);
 
     //set_auto_render();
 

@@ -19,12 +19,13 @@ endif ()
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 find_package(Gtkmm REQUIRED)
+find_package(spdlog REQUIRED)
 
 add_library(View
         ArcBall.cpp ArcBall.h
         ArcBallCamera.cpp ArcBallCamera.h
-        #GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
-        #InteractiveView.cpp InteractiveView.h
+        GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
+        InteractiveView.cpp InteractiveView.h
         View.cpp View.h
         )
 
@@ -34,6 +35,8 @@ target_include_directories(View PUBLIC
 target_link_libraries(View PUBLIC
 
         NBody::Simulation
+
+        spdlog::spdlog
 
         ${GTKMM_LIBRARIES}
 

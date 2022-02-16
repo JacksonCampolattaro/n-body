@@ -3,6 +3,7 @@
 
 #include "Application.h"
 #include "UI/Simple.h"
+#include "UI/Interactive.h"
 
 Application::Application() :
         Gtk::Application(
@@ -18,7 +19,7 @@ Glib::RefPtr<Application> Application::create() {
 void Application::on_activate() {
     spdlog::debug("activate");
 
-    auto window = new UI::Simple(_simulation);
+    auto window = new UI::Interactive(_simulation);
     add_window(*window);
     window->present();
 }
