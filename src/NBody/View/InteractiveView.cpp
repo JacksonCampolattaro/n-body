@@ -13,19 +13,24 @@ NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody
     scrollController->signal_scroll().connect(camera.slot_scroll, false);
     add_controller(scrollController);
 
+    auto leftClickController = Gtk::GestureClick::create();
+    leftClickController->set_touch_only(false);
+    leftClickController->set_button(1);
+    leftClickController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
+    leftClickController->signal_pressed().connect(camera.slot_leftButtonPress);
+    leftClickController->signal_released().connect(camera.slot_buttonRelease);
+    add_controller(leftClickController);
 
-//    signal_button_press_event().connect(camera.slot_buttonPress);
-//    signal_button_release_event().connect(camera.slot_buttonRelease);
-//
-//    add_events(
-//            Gdk::BUTTON_PRESS_MASK |
-//            Gdk::BUTTON1_MOTION_MASK |
-//            Gdk::BUTTON2_MOTION_MASK
-//    );
-//    signal_motion_notify_event().connect(camera.slot_mouseMotion);
-//
-//    add_events(
-//            Gdk::SMOOTH_SCROLL_MASK
-//    );
-//    signal_scroll_event().connect(camera.slot_scroll);
+    auto middleClickController = Gtk::GestureClick::create();
+    middleClickController->set_touch_only(false);
+    middleClickController->set_button(2);
+    middleClickController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
+    middleClickController->signal_pressed().connect(camera.slot_middleButtonPress);
+    middleClickController->signal_released().connect(camera.slot_buttonRelease);
+    add_controller(middleClickController);
+
+    auto mouseMotionController = Gtk::EventControllerMotion::create();
+    mouseMotionController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
+    mouseMotionController->signal_motion().connect(camera.slot_mouseMotion);
+    add_controller(mouseMotionController);
 }
