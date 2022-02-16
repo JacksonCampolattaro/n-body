@@ -46,7 +46,7 @@ private:
     NBody::Simulation _simulation;
     std::unique_ptr<::Interface::Interface> _interface;
 
-//    NBody::Interface::Viewport _viewport;
+//    NBody::UI::Viewport _viewport;
 
 
 };

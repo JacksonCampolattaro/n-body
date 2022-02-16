@@ -40,7 +40,7 @@ void NBody::ArcBallCamera::_draw(entt::basic_view<entt::entity, entt::exclude_t<
         const NBody::Graphics::Color,
         const NBody::Graphics::Sphere> view) {
 
-    Containers::Array<SphereInstanceData> instanceData{NoInit, view.size()};
+    Containers::Array<SphereInstanceData> instanceData{NoInit, view.size_hint()};
 
     std::size_t i = 0;
     view.each([&](

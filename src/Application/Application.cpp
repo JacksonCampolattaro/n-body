@@ -108,11 +108,11 @@ int Application::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>
 //    // Connect all the signals
 //    {
 //        _simulation.signal_update_progress
-//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_simulation_progress));
+//                .connect(sigc::mem_fun(_view.get(), &UI::UI::on_simulation_progress));
 //        _simulation.signal_drawables_changed
-//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_drawables_changed));
+//                .connect(sigc::mem_fun(_view.get(), &UI::UI::on_drawables_changed));
 //        _simulation.signal_update_complete
-//                .connect(sigc::mem_fun(_view.get(), &Interface::Interface::on_simulation_complete));
+//                .connect(sigc::mem_fun(_view.get(), &UI::UI::on_simulation_complete));
 //
 //        _view->signal_start_simulation
 //                .connect(sigc::mem_fun(&_simulation, &Model::Simulation::update));
