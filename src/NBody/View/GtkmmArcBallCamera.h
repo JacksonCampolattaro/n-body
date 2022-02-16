@@ -19,15 +19,24 @@ using namespace Magnum;
 namespace NBody {
 
     class GtkmmArcBallCamera : public ArcBallCamera {
+    private:
+
+        enum class TransformationMode {
+            ROTATE,
+            TRANSLATE,
+            NONE
+        };
+
+        TransformationMode _mode = TransformationMode::NONE;
+
     public:
         // Slots
 
         sigc::slot<bool(double, double)> slot_scroll;
-
-//        sigc::slot<bool(GdkButtonEvent *)> slot_buttonPress;
-//        sigc::slot<bool(GdkButtonEvent *)> slot_buttonRelease;
-//        sigc::slot<bool(GdkMotionEvent *)> slot_mouseMotion;
-
+        sigc::slot<void(int, double, double)> slot_leftButtonPress;
+        sigc::slot<void(int, double, double)> slot_middleButtonPress;
+        sigc::slot<void(int, double, double)> slot_buttonRelease;
+        sigc::slot<void(double, double)> slot_mouseMotion;
 
     public:
 
@@ -37,21 +46,23 @@ namespace NBody {
                 ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
             slot_scroll = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_scroll);
-
-//            slot_buttonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonPress);
-//            slot_buttonRelease = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonRelease);
-//            slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_mouseMotion);
+            slot_leftButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_leftButtonPress);
+            slot_middleButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_middleButtonPress);
+            slot_buttonRelease = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonRelease);
+            slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_MouseMotion);
         }
 
     private:
-//
-//        bool on_buttonPress(GdkButtonEvent *event);
-//
-//        bool on_buttonRelease(GdkButtonEvent *event);
-//
-//        bool on_mouseMotion(GdkMotionEvent *event);
 
         bool on_scroll(double dx, double dy);
+
+        void on_leftButtonPress(int _, double x, double y);
+
+        void on_middleButtonPress(int _, double x, double y);
+
+        void on_buttonRelease(int _, double x, double y);
+
+        void on_MouseMotion(double x, double y);
 
     };
 

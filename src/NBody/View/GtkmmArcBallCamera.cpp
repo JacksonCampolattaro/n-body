@@ -12,31 +12,36 @@ bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
     return false;
 }
 
-//bool NBody::GtkmmArcBallCamera::on_buttonPress(GdkButtonEvent *event) {
-//    initTransformation({static_cast<int>(event->x), static_cast<int>(event->y)});
-//    signal_changed.emit();
-//    return false;
-//}
-//
-//bool NBody::GtkmmArcBallCamera::on_buttonRelease(GdkButtonEvent *event) {
-//    signal_changed.emit();
-//    return false;
-//}
-//
-//bool NBody::GtkmmArcBallCamera::on_mouseMotion(GdkEventMotion *event) {
-//
-//    if (event->state & GDK_BUTTON1_MASK)
-//        rotate({static_cast<int>(event->x), static_cast<int>(event->y)});
-//
-//    if (event->state & GDK_BUTTON2_MASK)
-//        translate({static_cast<int>(event->x), static_cast<int>(event->y)});
-//
-//    signal_changed.emit();
-//    return false;
-//}
-//
-//bool NBody::GtkmmArcBallCamera::on_scroll(GdkEventScroll *event) {
-//    zoom((float) -event->delta_y);
-//    signal_changed.emit();
-//    return false;
-//}
+void NBody::GtkmmArcBallCamera::on_leftButtonPress(int _, double x, double y) {
+    spdlog::debug("Left click signal received: x={}, y={}", x, y);
+
+    initTransformation({static_cast<int>(x), static_cast<int>(y)});
+    _mode = TransformationMode::ROTATE;
+    signal_changed.emit();
+}
+
+void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) {
+    spdlog::debug("Middle click signal received: x={}, y={}", x, y);
+
+    initTransformation({static_cast<int>(x), static_cast<int>(y)});
+    _mode = TransformationMode::TRANSLATE;
+    signal_changed.emit();
+}
+
+void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
+    spdlog::debug("Mouse button released");
+
+    _mode = TransformationMode::NONE;
+    signal_changed.emit();
+}
+
+void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
+
+    if (_mode == TransformationMode::ROTATE)
+        rotate({static_cast<int>(x), static_cast<int>(y)});
+
+    if (_mode == TransformationMode::TRANSLATE)
+        translate({static_cast<int>(x), static_cast<int>(y)});
+
+    signal_changed.emit();
+}
