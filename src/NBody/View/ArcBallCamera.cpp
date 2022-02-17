@@ -26,8 +26,9 @@ void NBody::ArcBallCamera::draw(
                 Matrix4::translation({position.x, position.y, position.z}) *
                 Matrix4::scaling(Vector3{sphere.radius()});
 
-        shader.setDiffuseColor(color)
-                //.setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.5f}))
+        shader
+                .setDiffuseColor(color)
+                .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.7f}))
                 .setTransformationMatrix(transformationMatrix)
                 .setNormalMatrix(transformationMatrix.normalMatrix())
                 .setProjectionMatrix(perspectiveProjection())
@@ -58,7 +59,6 @@ void NBody::ArcBallCamera::_draw(entt::basic_view<entt::entity, entt::exclude_t<
         i++;
     });
 
-
     Shaders::PhongGL shader = Shaders::PhongGL{
             Shaders::PhongGL::Flag::NoSpecular |
             Shaders::PhongGL::Flag::VertexColor |
@@ -74,6 +74,7 @@ void NBody::ArcBallCamera::_draw(entt::basic_view<entt::entity, entt::exclude_t<
 
     instanceBuffer.setData(instanceData, GL::BufferUsage::DynamicDraw);
     shader
+            .setAmbientColor(Color3{0.2, 0.2, 0.2})
             .setProjectionMatrix(perspectiveProjection())
             .setTransformationMatrix(viewMatrix())
             .setNormalMatrix(viewMatrix().normalMatrix())

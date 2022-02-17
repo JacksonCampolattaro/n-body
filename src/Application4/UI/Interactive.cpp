@@ -13,7 +13,14 @@ UI::Interactive::Interactive(NBody::Simulation &simulation) :
                 45.0_degf,
                 Vector2i{400, 400}
         },
-        _view{_camera, simulation} {
+        _paned(Gtk::Orientation::HORIZONTAL),
+        _view{_camera, _simulation},
+        _sidebar(_camera, _simulation)
+        {
 
-    set_child(_view);
+    set_child(_paned);
+
+    _paned.set_start_child(_view);
+    _paned.set_end_child(_sidebar);
+
 }

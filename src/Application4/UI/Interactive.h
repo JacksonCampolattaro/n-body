@@ -7,15 +7,22 @@
 #include <NBody/View/InteractiveView.h>
 #include <NBody/View/GtkmmArcBallCamera.h>
 
+#include "Sidebar/Sidebar.h"
+
 namespace UI {
 
     class Interactive : public Gtk::ApplicationWindow  {
     private:
 
         NBody::GtkmmArcBallCamera _camera;
-        NBody::InteractiveView _view;
-
         NBody::Simulation &_simulation;
+
+        Gtk::Paned _paned;
+
+        NBody::InteractiveView _view;
+        Sidebar _sidebar;
+        Gtk::Button _button{"text!"};
+
 
     public:
 
