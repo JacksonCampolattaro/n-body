@@ -19,7 +19,15 @@ Glib::RefPtr<Application> Application::create() {
 void Application::on_activate() {
     spdlog::debug("activate");
 
+    // Create a new window
     auto window = new UI::Interactive(_simulation);
+
+    // Apply our custom styling
+    auto css = Gtk::CssProvider::create();
+    css->load_from_resource("/NBody/stylesheet/style.css");
+    window->get_style_context()->add_provider_for_display(Gdk::Display::get_default(), css,
+                                                          GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
     add_window(*window);
     window->present();
 }
@@ -27,7 +35,7 @@ void Application::on_activate() {
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {
     spdlog::debug("open");
 
-    for (const auto &file : files) {
+    for (const auto &file: files) {
         spdlog::info("Loading scenario from file: {}", file->get_parse_name().c_str());
 
         // TODO: Temporary solution, this should be done in the background using read_async()

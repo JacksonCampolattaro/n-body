@@ -51,7 +51,8 @@ add_executable(NBody_gtkmm4
         Application.cpp Application.h
         UI/Simple.cpp UI/Simple.h
         UI/Interactive.cpp UI/Interactive.h
-        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h UI/Sidebar/RecordingPanel.cpp UI/Sidebar/RecordingPanel.h)
+        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h UI/Sidebar/RecordingPanel.cpp UI/Sidebar/RecordingPanel.h
+        UI/Widgets/LabeledWidget.h)
 
 target_link_libraries(NBody_gtkmm4 PUBLIC
 
