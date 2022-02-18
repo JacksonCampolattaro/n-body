@@ -8,6 +8,10 @@
     color:@theme_unfocused_fg_color;
 }
 
+.popup-entry {
+    border-radius: 1024px
+}
+
 list {
     margin: 16px;
     border-radius: 10px;
@@ -18,7 +22,6 @@ row {
     background-color:@theme_unfocused_bg_color;
     min-height: 32px;
     padding: 8px 12px;
-    font-size: smaller;
 }
 
 row:first-child {
