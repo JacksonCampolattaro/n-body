@@ -4,6 +4,20 @@
 
 #include "GtkmmArcBallCamera.h"
 
+void NBody::GtkmmArcBallCamera::moveTo(double x, double y, double z) {
+
+    spdlog::debug("Moving the camera to ({}, {}, {})", x, y, z);
+
+    _targetPosition.x() = x;
+    _targetPosition.y() = y;
+    _targetPosition.z() = z;
+    _currentPosition = _targetPosition;
+    updateInternalTransformations();
+
+    signal_changed.emit();
+    signal_positionChanged.emit(x, y, z);
+}
+
 bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
     spdlog::debug("Scroll signal received: dx={}, dy={}", dx, dy);
 
@@ -43,5 +57,6 @@ void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
     if (_mode == TransformationMode::TRANSLATE)
         translate({static_cast<int>(x), static_cast<int>(y)});
 
+    signal_positionChanged.emit(_currentPosition.x(), _currentPosition.y(), _currentPosition.z());
     signal_changed.emit();
 }

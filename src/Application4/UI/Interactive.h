@@ -21,8 +21,6 @@ namespace UI {
 
         NBody::InteractiveView _view;
         Sidebar _sidebar;
-        Gtk::Button _button{"text!"};
-
 
     public:
 

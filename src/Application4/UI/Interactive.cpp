@@ -15,12 +15,10 @@ UI::Interactive::Interactive(NBody::Simulation &simulation) :
         },
         _paned(Gtk::Orientation::HORIZONTAL),
         _view{_camera, _simulation},
-        _sidebar(_camera, _simulation)
-        {
+        _sidebar(_camera, _simulation) {
 
     set_child(_paned);
 
     _paned.set_start_child(_view);
     _paned.set_end_child(_sidebar);
-
 }

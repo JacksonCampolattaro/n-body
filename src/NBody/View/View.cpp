@@ -9,7 +9,7 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
 
     set_size_request(720, 480);
 
-    //set_auto_render();
+    set_auto_render();
 
     set_required_version(4, 5);
     set_has_depth_buffer(true);

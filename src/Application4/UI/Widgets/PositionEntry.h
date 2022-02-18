@@ -35,19 +35,28 @@ namespace UI {
             Gtk::Label{")"},
         };
 
-        Gtk::Label _currentValue;
         Gtk::Popover _popover;
-
         Gtk::Grid _popoverGrid;
         Gtk::Label _xLabel{"X"}, _yLabel{"Y"}, _zLabel{"Z"};
         Gtk::SpinButton _xEntry, _yEntry, _zEntry;
 
+    public:
+        // Slots
+
+        sigc::slot<void(double, double, double)> slot_update;
+
+    public:
+        // Signals
+
+        sigc::signal<void(double, double, double)> signal_changed;
 
     public:
 
-        PositionEntry(double x, double y, double z);
+        PositionEntry();
 
         void on_valueChanged();
+
+        void on_update(double x, double y, double z);
     };
 
 }

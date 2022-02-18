@@ -6,7 +6,10 @@
 
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         Panel("Camera"),
-        _position("Position", "The location of the camera", 1.0, 2.0, 3.0) {
+        _position("Position", "The location of the camera") {
+
+    camera.signal_positionChanged.connect(_position.widget().slot_update);
+    _position.widget().signal_changed.connect(camera.slot_moveTo);
 
     _list.append(_position);
     append(_list);
