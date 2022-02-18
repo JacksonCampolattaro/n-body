@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
     <gresource prefix="/NBody">
+
         <file>icons/outliner_ob_pointcloud.svg</file>
         <file>icons/physics.svg</file>
         <file>icons/memory.svg</file>
@@ -10,6 +11,9 @@
         <file>icons/tria_right.svg</file>
         <file>icons/frame_next.svg</file>
         <file>icons/render_animation.svg</file>
+
+        <file>stylesheet/style.css</file>
+
         <file>ui/menu.xml</file>
     </gresource>
 </gresources>
