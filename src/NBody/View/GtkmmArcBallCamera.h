@@ -30,7 +30,14 @@ namespace NBody {
         TransformationMode _mode = TransformationMode::NONE;
 
     public:
+        // Signals
+
+        sigc::signal<void(double, double, double)> signal_positionChanged;
+
+    public:
         // Slots
+
+        sigc::slot<void(double, double, double)> slot_moveTo;
 
         sigc::slot<bool(double, double)> slot_scroll;
         sigc::slot<void(int, double, double)> slot_leftButtonPress;
@@ -45,12 +52,16 @@ namespace NBody {
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
                 ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
+            slot_moveTo = sigc::mem_fun(*this, &GtkmmArcBallCamera::moveTo);
+
             slot_scroll = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_scroll);
             slot_leftButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_leftButtonPress);
             slot_middleButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_middleButtonPress);
             slot_buttonRelease = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonRelease);
             slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_MouseMotion);
         }
+
+        void moveTo(double x, double y, double z);
 
     private:
 

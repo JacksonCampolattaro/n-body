@@ -2,9 +2,10 @@
 // Created by jackcamp on 2/18/22.
 //
 
+#include <spdlog/spdlog.h>
 #include "PositionEntry.h"
 
-UI::PositionEntry::PositionEntry(double x, double y, double z) : Gtk::Button() {
+UI::PositionEntry::PositionEntry() : Gtk::Button() {
 
     get_style_context()->add_class("popup-entry");
 
@@ -53,6 +54,8 @@ UI::PositionEntry::PositionEntry(double x, double y, double z) : Gtk::Button() {
 
     signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
 
+    slot_update = sigc::mem_fun(*this, &UI::PositionEntry::on_update);
+
     _xEntry.signal_value_changed().connect(sigc::mem_fun(*this, &UI::PositionEntry::on_valueChanged));
     _yEntry.signal_value_changed().connect(sigc::mem_fun(*this, &UI::PositionEntry::on_valueChanged));
     _zEntry.signal_value_changed().connect(sigc::mem_fun(*this, &UI::PositionEntry::on_valueChanged));
@@ -79,4 +82,12 @@ void UI::PositionEntry::on_valueChanged() {
     stream << _zEntry.get_value();
     _previewLabels[5].set_label(stream.str());
     stream.clear();
+
+    signal_changed.emit(_xEntry.get_value(), _yEntry.get_value(), _zEntry.get_value());
+}
+
+void UI::PositionEntry::on_update(double x, double y, double z) {
+    _xEntry.set_value(x);
+    _yEntry.set_value(y);
+    _zEntry.set_value(z);
 }
