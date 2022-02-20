@@ -14,6 +14,7 @@
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
+#include "../Widgets/ParticlesListView.h"
 
 namespace UI {
 

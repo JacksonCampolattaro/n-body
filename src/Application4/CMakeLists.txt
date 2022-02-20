@@ -6,14 +6,14 @@ find_package(Gtkmm REQUIRED)
 # Add resource files
 find_package(Gio REQUIRED)
 find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
-set(RESOURCE_DIR     ${PROJECT_SOURCE_DIR}/resources)
-set(GRESOURCE_C      resources.c)
-set(GRESOURCE_XML    gresource.xml)
+set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/resources)
+set(GRESOURCE_C resources.c)
+set(GRESOURCE_XML gresource.xml)
 set(GRESOURCE_XML_IN ${RESOURCE_DIR}/gresource.xml.in)
 set(GRESOURCE_DEPENDENCIES CACHE INTERNAL "GResource dependencies for dummy")
 set(OLD ${CMAKE_CURRENT_SOURCE_DIR}/${GRESOURCE_XML_IN})
 set(NEW ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_XML})
-if(NOT EXISTS ${NEW} OR (${OLD} IS_NEWER_THAN ${NEW}))
+if (NOT EXISTS ${NEW} OR (${OLD} IS_NEWER_THAN ${NEW}))
     configure_file(${GRESOURCE_XML_IN} ${GRESOURCE_XML})
     execute_process(
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -25,7 +25,7 @@ if(NOT EXISTS ${NEW} OR (${OLD} IS_NEWER_THAN ${NEW}))
     string(REPLACE "\n" ";" GRESOURCE_DEPENDENCIES ${GRESOURCE_DEPENDENCIES})
     list(POP_BACK GRESOURCE_DEPENDENCIES)
     list(TRANSFORM GRESOURCE_DEPENDENCIES PREPEND ${RESOURCE_DIR}/)
-endif()
+endif ()
 message(STATUS ${RESOURCE_DIR})
 message(STATUS ${GRESOURCE_DEPENDENCIES})
 add_custom_command(
@@ -52,7 +52,9 @@ add_executable(NBody_gtkmm4
         UI/Simple.cpp UI/Simple.h
         UI/Interactive.cpp UI/Interactive.h
         UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h UI/Sidebar/RecordingPanel.cpp UI/Sidebar/RecordingPanel.h
-        UI/Widgets/LabeledWidget.h UI/Widgets/PositionEntry.cpp UI/Widgets/PositionEntry.h)
+        UI/Widgets/LabeledWidget.h
+        UI/Widgets/PositionEntry.cpp UI/Widgets/PositionEntry.h
+        UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h)
 
 target_link_libraries(NBody_gtkmm4 PUBLIC
 
@@ -60,5 +62,12 @@ target_link_libraries(NBody_gtkmm4 PUBLIC
         NBody::View
 
         spdlog::spdlog
+        ${GTKMM_LIBRARIES}
+        )
+
+add_executable(properties_example
+        properties_example.cc)
+
+target_link_libraries(properties_example PUBLIC
         ${GTKMM_LIBRARIES}
         )
