@@ -10,10 +10,10 @@
 
 .popup-entry {
     font-size: smaller;
-    border-radius: 1024px
+    border-radius: 1024px;
 }
 
-list {
+list, listview {
     margin: 16px;
     border-radius: 10px;
     background-clip: padding-box;
