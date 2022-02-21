@@ -21,18 +21,25 @@
 
 namespace UI {
 
+    class VectorEntry : public Gtk::Button {
+
+    public:
+
+        VectorEntry(char open = '(', char close = ')');
+    };
+
     class PositionEntry : public Gtk::Button {
     private:
 
         Gtk::Box _previewBox;
-        std::array<Gtk::Label, 7> _previewLabels {
-            Gtk::Label{"("},
-            Gtk::Label{"X"},
-            Gtk::Label{", "},
-            Gtk::Label{"Y"},
-            Gtk::Label{", "},
-            Gtk::Label{"Z"},
-            Gtk::Label{")"},
+        std::array<Gtk::Label, 7> _previewLabels{
+                Gtk::Label{"("},
+                Gtk::Label{"X"},
+                Gtk::Label{", "},
+                Gtk::Label{"Y"},
+                Gtk::Label{", "},
+                Gtk::Label{"Z"},
+                Gtk::Label{")"},
         };
 
         Gtk::Popover _popover;
