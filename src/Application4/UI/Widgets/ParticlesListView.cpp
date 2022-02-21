@@ -13,10 +13,8 @@
 UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
         Gtk::Box(Gtk::Orientation::VERTICAL),
         _simulation(simulation),
-        _model(Gtk::StringList::create({})),
         _factory(Gtk::SignalListItemFactory::create()),
         _listView(Gtk::NoSelection::create(_particlesModel), _factory) {
-
 
     _simulation.each([&](auto entity) {
         auto particle = NBody::Simulation::Particle{_simulation, entity};

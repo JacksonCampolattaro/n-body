@@ -27,13 +27,17 @@ namespace UI {
                 _name(name), _description(description),
                 _widget(args...) {
 
+            _textBox.set_expand(false);
+
             _name.set_halign(Gtk::Align::START);
             _name.set_justify(Gtk::Justification::LEFT);
+            _name.set_expand(false);
             _textBox.append(_name);
 
             _description.get_style_context()->add_class("description");
             _description.set_halign(Gtk::Align::START);
             _description.set_justify(Gtk::Justification::LEFT);
+            _description.set_expand(false);
             _textBox.append(_description);
 
             _textBox.set_halign(Gtk::Align::START);
