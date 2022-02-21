@@ -12,6 +12,11 @@
     border-radius: 1024px;
 }
 
+.editable {
+    font-size: smaller;
+    border-radius: 1024px;
+}
+
 .sphere-view {
     border-radius: 10px;
     min-width: 40px;

@@ -4,7 +4,7 @@
 
 #include "GtkmmArcBallCamera.h"
 
-void NBody::GtkmmArcBallCamera::moveTo(double x, double y, double z) {
+void NBody::GtkmmArcBallCamera::moveTo(float x, float y, float z) {
 
     spdlog::debug("Moving the camera to ({}, {}, {})", x, y, z);
 

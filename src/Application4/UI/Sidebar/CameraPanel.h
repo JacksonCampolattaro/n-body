@@ -11,7 +11,7 @@
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
-#include "../Widgets/PositionEntry.h"
+#include "../Widgets/VectorEditable.h"
 
 namespace UI {
 
@@ -19,7 +19,8 @@ namespace UI {
     private:
 
         Gtk::ListBox _list;
-        LabeledWidget<PositionEntry> _position;
+        LabeledWidget<PositionEditable> _position;
+        LabeledWidget<DirectionEditable> _direction;
 
     public:
 

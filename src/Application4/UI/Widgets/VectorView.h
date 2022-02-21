@@ -10,6 +10,8 @@
 
 #include <glm/vec3.hpp>
 
+#include <iomanip>
+
 namespace UI {
 
     // A neat C++20 trick from https://ctrpeach.io/posts/cpp20-string-literal-template-parameters/

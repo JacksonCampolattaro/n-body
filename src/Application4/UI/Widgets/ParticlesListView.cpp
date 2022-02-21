@@ -7,7 +7,6 @@
 #include <spdlog/spdlog.h>
 #include "Application4/UI/Sidebar/ParticlesPanel.h"
 #include "ParticlesListView.h"
-#include "PositionEntry.h"
 #include "ParticleEntry.h"
 
 UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
