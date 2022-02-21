@@ -29,15 +29,13 @@ namespace NBody {
 
         TransformationMode _mode = TransformationMode::NONE;
 
-    public:
-        // Signals
+    public: // Signals
 
-        sigc::signal<void(double, double, double)> signal_positionChanged;
+        sigc::signal<void(float, float, float)> signal_positionChanged;
 
-    public:
-        // Slots
+    public: // Slots
 
-        sigc::slot<void(double, double, double)> slot_moveTo;
+        sigc::slot<void(float, float, float)> slot_moveTo;
 
         sigc::slot<bool(double, double)> slot_scroll;
         sigc::slot<void(int, double, double)> slot_leftButtonPress;
@@ -61,7 +59,7 @@ namespace NBody {
             slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_MouseMotion);
         }
 
-        void moveTo(double x, double y, double z);
+        void moveTo(float x, float y, float z);
 
     private:
 
