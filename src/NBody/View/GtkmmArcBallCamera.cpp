@@ -8,9 +8,7 @@ void NBody::GtkmmArcBallCamera::moveTo(float x, float y, float z) {
 
     spdlog::debug("Moving the camera to ({}, {}, {})", x, y, z);
 
-    _targetPosition.x() = x;
-    _targetPosition.y() = y;
-    _targetPosition.z() = z;
+    _targetPosition = {x, y, z};
     _currentPosition = _targetPosition;
     updateInternalTransformations();
 
@@ -51,12 +49,15 @@ void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
 
 void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
 
-    if (_mode == TransformationMode::ROTATE)
+    if (_mode == TransformationMode::ROTATE) {
         rotate({static_cast<int>(x), static_cast<int>(y)});
+        Vector3 direction = _currentQRotation.toMatrix() * Vector3::zAxis();
+        signal_directionChanged.emit(direction.x(), direction.y(), direction.z());
+    }
 
-    if (_mode == TransformationMode::TRANSLATE)
+    if (_mode == TransformationMode::TRANSLATE) {
         translate({static_cast<int>(x), static_cast<int>(y)});
-
-    signal_positionChanged.emit(_currentPosition.x(), _currentPosition.y(), _currentPosition.z());
+        signal_positionChanged.emit(_currentPosition.x(), _currentPosition.y(), _currentPosition.z());
+    }
     signal_changed.emit();
 }

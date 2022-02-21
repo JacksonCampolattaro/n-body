@@ -12,8 +12,8 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     camera.signal_positionChanged.connect(_position.widget().slot_changed);
     _position.widget().signal_changed.connect(camera.slot_moveTo);
 
-//    camera.signal_positionChanged.connect(_position.widget().slot_update);
-//    _position.widget().signal_changed.connect(camera.slot_moveTo);
+    camera.signal_directionChanged.connect(_direction.widget().slot_changed);
+    _direction.widget().set_sensitive(false);
 
     _list.append(_position);
     _list.append(_direction);
