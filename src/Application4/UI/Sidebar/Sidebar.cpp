@@ -4,6 +4,8 @@
 
 #include "Sidebar.h"
 
+#include <gdkmm/pixbuf.h>
+
 UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation) :
         Gtk::Box(Gtk::Orientation::HORIZONTAL),
         _notebook(),
@@ -15,19 +17,19 @@ UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simul
     _notebook.set_tab_pos(Gtk::PositionType::LEFT);
     append(_notebook);
 
-    _bodiesIcon.set_from_resource("/NBody/icons/outliner_ob_pointcloud.svg");
+    _bodiesIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/outliner_ob_pointcloud.svg", -1, 128));
     _notebook.append_page(_bodiesPanel, _bodiesIcon);
 
-    _physicsIcon.set_from_resource("/NBody/icons/physics.svg");
+    _physicsIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/physics.svg", -1, 128));
     _notebook.append_page(_physicsPanel, _physicsIcon);
 
-    _solverIcon.set_from_resource("/NBody/icons/memory.svg");
+    _solverIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/memory.svg", -1, 128));
     _notebook.append_page(_solverPanel, _solverIcon);
 
-    _cameraIcon.set_from_resource("/NBody/icons/orientation_global.svg");
+    _cameraIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/orientation_global.svg", -1, 128));
     _notebook.append_page(_cameraPanel, _cameraIcon);
 
-    _recordingIcon.set_from_resource("/NBody/icons/view_camera.svg");
+    _recordingIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/view_camera.svg", -1, 128));
     _notebook.append_page(_recordingPanel, _recordingIcon);
 
 }
