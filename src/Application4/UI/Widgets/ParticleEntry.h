@@ -14,13 +14,18 @@
 
 #include "VectorView.h"
 #include "LabeledWidget.h"
+#include "SphereView.h"
 
 namespace UI {
 
-    class ParticleEntry : public Gtk::Grid {
+    class ParticleEntry : public Gtk::Box {
     private:
 
+        Gtk::Grid _grid;
+
         Gtk::Image _icon;
+
+        SphereView _sphereView;
 
         Gtk::Label
                 _positionLabel{"P = "},

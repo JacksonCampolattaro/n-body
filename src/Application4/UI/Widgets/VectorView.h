@@ -80,6 +80,7 @@ namespace UI {
         void setValue(const glm::vec3 &value) {
             setValue(value.x, value.y, value.z);
         };
+
     };
 
     typedef VectorView<"(", ")"> PositionView;
