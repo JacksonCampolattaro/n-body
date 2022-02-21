@@ -63,10 +63,3 @@ target_link_libraries(NBody_gtkmm4 PUBLIC
         spdlog::spdlog
         ${GTKMM_LIBRARIES}
         )
-
-add_executable(properties_example
-        properties_example.cc)
-
-target_link_libraries(properties_example PUBLIC
-        ${GTKMM_LIBRARIES}
-        )
