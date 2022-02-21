@@ -32,6 +32,7 @@ namespace NBody {
     public: // Signals
 
         sigc::signal<void(float, float, float)> signal_positionChanged;
+        sigc::signal<void(float, float, float)> signal_directionChanged;
 
     public: // Slots
 
