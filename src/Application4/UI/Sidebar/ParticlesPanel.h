@@ -26,6 +26,8 @@ namespace UI {
         UI::LabeledWidget<Gtk::Label> _countWidget;
         UI::LabeledWidget<Gtk::Switch> _example;
 
+        UI::ParticlesListView _particlesView;
+
     public:
 
         ParticlesPanel(NBody::Simulation &simulation);

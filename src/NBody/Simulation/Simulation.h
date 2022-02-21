@@ -32,6 +32,9 @@ namespace NBody {
 
         class Particle : public entt::basic_handle<Entity> {
         public:
+
+            Particle() : entt::basic_handle<Entity>() {}
+
             Particle(Simulation &ref, Entity value) : entt::basic_handle<Entity>(ref, value) {}
 
             Particle &setPosition(const Physics::Position &position);

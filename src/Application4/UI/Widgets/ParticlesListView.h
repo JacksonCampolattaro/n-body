@@ -17,8 +17,9 @@
 #include <giomm/listmodel.h>
 #include <giomm/liststore.h>
 
-#include <glibmm.h>
 #include <glibmm/property.h>
+#include <glibmm/interface.h>
+#include <glibmm/ustring.h>
 
 #include <NBody/Simulation/Simulation.h>
 
@@ -27,31 +28,21 @@
 
 namespace UI {
 
-    /*
-    class GtkParticleHandle : public Gtk::CellRenderer {
+    class GtkParticleHandle : public Glib::Object {
     public:
-        //NBody::Simulation::Particle particle;
+        Glib::Property<Glib::ustring> _name;
+        Glib::Property<NBody::Simulation::Particle> _particle;
 
-        GtkParticleHandle(NBody::Simulation::Particle particle) :
-                Glib::ObjectBase(typeid(GtkParticleHandle)),
-                Gtk::CellRenderer(),
-                _name(*this, "name", "[placeholder]")
-        //particle(particle)
-        {
-        };
+        GtkParticleHandle(NBody::Simulation::Particle particle);
 
         virtual ~GtkParticleHandle() {}
-
-        Glib::Property<Glib::ustring> _name;
     };
-    */
 
     class ParticlesListView : public Gtk::Box {
     private:
 
-        std::map<Glib::ustring, NBody::Simulation::Particle> _table;
-
         NBody::Simulation &_simulation;
+        Glib::RefPtr<Gio::ListStore<GtkParticleHandle>> _particlesModel = Gio::ListStore<GtkParticleHandle>::create();
 
         Glib::RefPtr<Gtk::StringList> _model = Gtk::StringList::create({"a", "b"});
         Glib::RefPtr<Gtk::SignalListItemFactory> _factory = Gtk::SignalListItemFactory::create();
