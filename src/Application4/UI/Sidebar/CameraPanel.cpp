@@ -9,7 +9,7 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         _camera(camera),
         _position("Position", "The location of the camera"),
         _direction("Direction", "The direction the camera faces"),
-        _backgroundColor("Background Color", "The color of the background"){
+        _backgroundColor("Background Color", "The color of the unobstructed background"){
 
     _backgroundColor.widget().signal_color_set().connect(sigc::mem_fun(*this, &UI::CameraPanel::on_backgroundColorChanged));
     _backgroundColor.widget().set_rgba({0.12, 0.12, 0.1, 1.0});
