@@ -6,8 +6,8 @@
 #define N_BODY_GTKMMARCBALLCAMERA_H
 
 
-#include <gdk/gdk.h>
 #include <gtkmm.h>
+#include <glibmm/propertyproxy.h>
 #include <sigc++/slot.h>
 
 #include <spdlog/spdlog.h>
@@ -62,6 +62,8 @@ namespace NBody {
 
         void moveTo(float x, float y, float z);
 
+        void setBackgroundColor(const Gdk::RGBA &color);
+
     private:
 
         bool on_scroll(double dx, double dy);
@@ -73,7 +75,6 @@ namespace NBody {
         void on_buttonRelease(int _, double x, double y);
 
         void on_MouseMotion(double x, double y);
-
     };
 
 }

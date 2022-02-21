@@ -7,6 +7,7 @@
 #include <Magnum/SceneGraph/Scene.h>
 
 #include <Magnum/GL/Mesh.h>
+#include <Magnum/GL/Renderer.h>
 #include <Magnum/Trade/MeshData.h>
 #include <Magnum/MeshTools/Compile.h>
 #include <Magnum/Primitives/Cube.h>
@@ -27,6 +28,10 @@ namespace NBody {
     using namespace Math::Literals;
 
     class ArcBallCamera : public Examples::ArcBall {
+    protected:
+
+        Color4 _backgroundColor = {0.12, 0.12, 0.1, 1.0};
+
     public:
 
         ArcBallCamera(

@@ -60,7 +60,7 @@ namespace UI {
         void setValue(float x, float y, float z) {
 
             std::stringstream stream;
-            stream << std::setprecision(2);
+            stream << std::setprecision(3);
 
             stream.str(std::string());
             stream << x;
