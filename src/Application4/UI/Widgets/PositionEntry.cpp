@@ -5,39 +5,21 @@
 #include <spdlog/spdlog.h>
 #include "PositionEntry.h"
 
+UI::FloatEntry::FloatEntry() : Gtk::SpinButton() {
+
+    set_digits(9);
+    set_width_chars(10);
+    set_hexpand();
+
+    set_range(-std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    set_increments(0.1, 1.0);
+}
+
 UI::PositionEntry::PositionEntry() : Gtk::Button() {
 
     get_style_context()->add_class("popup-entry");
 
-    _previewLabels[1].set_width_chars(7);
-    _previewLabels[3].set_width_chars(7);
-    _previewLabels[5].set_width_chars(7);
-    _previewLabels[1].set_halign(Gtk::Align::END);
-    _previewLabels[3].set_halign(Gtk::Align::END);
-    _previewLabels[5].set_halign(Gtk::Align::END);
-//    _previewLabels[1].set_justify(Gtk::Justification::RIGHT);
-//    _previewLabels[3].set_justify(Gtk::Justification::RIGHT);
-//    _previewLabels[5].set_justify(Gtk::Justification::RIGHT);
-//    _previewLabels[1].set_hexpand();
-//    _previewLabels[3].set_hexpand();
-//    _previewLabels[5].set_hexpand();
-    for (auto &label : _previewLabels)
-        _previewBox.append(label);
-    set_child(_previewBox);
-
-    _xEntry.set_digits(9);
-    _yEntry.set_digits(9);
-    _zEntry.set_digits(9);
-    _xEntry.set_width_chars(10);
-    _yEntry.set_width_chars(10);
-    _zEntry.set_width_chars(10);
-    _xEntry.set_range(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-    _yEntry.set_range(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-    _zEntry.set_range(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
-    _xEntry.set_hexpand();
-    _xEntry.set_increments(0.1, 1.0);
-    _yEntry.set_increments(0.1, 1.0);
-    _zEntry.set_increments(0.1, 1.0);
+    set_child(_preview);
 
     _popoverGrid.attach(_xLabel, 0, 0);
     _popoverGrid.attach(_xEntry, 1, 0);
@@ -65,24 +47,7 @@ UI::PositionEntry::PositionEntry() : Gtk::Button() {
 
 void UI::PositionEntry::on_valueChanged() {
 
-    std::stringstream stream;
-    stream << std::setprecision(2);// << std::scientific;
-
-    stream.str(std::string());
-    stream << _xEntry.get_value();
-    _previewLabels[1].set_label(stream.str());
-    stream.clear();
-
-    stream.str(std::string());
-    stream << _yEntry.get_value();
-    _previewLabels[3].set_label(stream.str());
-    stream.clear();
-
-    stream.str(std::string());
-    stream << _zEntry.get_value();
-    _previewLabels[5].set_label(stream.str());
-    stream.clear();
-
+    _preview.setValue(_xEntry.get_value(), _yEntry.get_value(), _zEntry.get_value());
     signal_changed.emit(_xEntry.get_value(), _yEntry.get_value(), _zEntry.get_value());
 }
 

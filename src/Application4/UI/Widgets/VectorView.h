@@ -55,26 +55,30 @@ namespace UI {
             setValue({0, 0, 0});
         }
 
-        void setValue(const glm::vec3 &value) {
+        void setValue(float x, float y, float z) {
 
             std::stringstream stream;
             stream << std::setprecision(2);
 
             stream.str(std::string());
-            stream << value.x;
+            stream << x;
             _x.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << value.y;
+            stream << y;
             _y.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << value.z;
+            stream << z;
             _z.set_label(stream.str());
             stream.clear();
 
+        }
+
+        void setValue(const glm::vec3 &value) {
+            setValue(value.x, value.y, value.z);
         };
     };
 
