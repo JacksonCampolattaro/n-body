@@ -20,13 +20,16 @@ namespace UI {
     class ParticleEntry : public Gtk::Grid {
     private:
 
-        Glib::RefPtr<Gdk::Pixbuf> _pixbuf =
-                Gdk::Pixbuf::create_from_resource("/NBody/icons/node_material.svg", -1, 256);
-
         Gtk::Image _icon;
+
+        Gtk::Label
+                _positionLabel{"P = "},
+                _velocityLabel{"V = "},
+                _massLabel{"M = "};
 
         PositionView _positionView;
         VelocityView _velocityView;
+        Gtk::Label _massView{"0.00"};
 
     public:
 
