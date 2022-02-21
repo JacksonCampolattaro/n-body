@@ -6,6 +6,7 @@
 #define N_BODY_CAMERAPANEL_H
 
 #include <gtkmm/listbox.h>
+#include <gtkmm/colorbutton.h>
 
 #include <NBody/View/GtkmmArcBallCamera.h>
 
@@ -18,13 +19,21 @@ namespace UI {
     class CameraPanel : public Panel {
     private:
 
+        NBody::GtkmmArcBallCamera &_camera;
+
         Gtk::ListBox _list;
         LabeledWidget<PositionEditable> _position;
         LabeledWidget<DirectionEditable> _direction;
 
+        LabeledWidget<Gtk::ColorButton> _backgroundColor;
+
     public:
 
         CameraPanel(NBody::GtkmmArcBallCamera &camera);
+
+    private:
+
+        void on_backgroundColorChanged();
 
     };
 

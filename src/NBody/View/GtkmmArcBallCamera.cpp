@@ -16,6 +16,11 @@ void NBody::GtkmmArcBallCamera::moveTo(float x, float y, float z) {
     signal_positionChanged.emit(x, y, z);
 }
 
+void NBody::GtkmmArcBallCamera::setBackgroundColor(const Gdk::RGBA &color) {
+    _backgroundColor = {color.get_red(), color.get_green(), color.get_blue()};
+    signal_changed.emit();
+}
+
 bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
     spdlog::debug("Scroll signal received: dx={}, dy={}", dx, dy);
 
@@ -61,3 +66,4 @@ void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
     }
     signal_changed.emit();
 }
+

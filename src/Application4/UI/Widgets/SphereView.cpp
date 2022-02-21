@@ -18,7 +18,7 @@ UI::SphereView::SphereView() : Gtk::AspectFrame() {
 void UI::SphereView::setValue(const NBody::Graphics::Color &color, const NBody::Graphics::Sphere &sphere) {
     _color = color;
     _radius = sphere.radius() / (1 + sphere.radius());
-    spdlog::debug("Radius {} mapped to radius {} in sphere preview", sphere.radius(), _radius);
+    spdlog::trace("Radius {} mapped to radius {} in sphere preview", sphere.radius(), _radius);
 }
 
 void UI::SphereView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int width, int height) {

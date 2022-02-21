@@ -17,6 +17,7 @@ UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
 
     add_css_class("particles-listview");
     set_overflow(Gtk::Overflow::HIDDEN);
+    _scrolledWindow.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
 
     _simulation.each([&](auto entity) {
         auto particle = NBody::Simulation::Particle{_simulation, entity};
@@ -43,7 +44,7 @@ void UI::ParticlesListView::on_bind(const Glib::RefPtr<Gtk::ListItem> &listItem)
         if (auto particleObject = std::dynamic_pointer_cast<GtkParticleHandle>(listItem->get_item())) {
             auto particle = particleObject->get_property<NBody::Simulation::Particle>("particle");
             entry->bind(particle);
-            spdlog::debug("binding");
+            spdlog::trace("Binding particle with widget");
         }
     }
 }
