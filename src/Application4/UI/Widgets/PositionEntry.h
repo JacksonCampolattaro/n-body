@@ -19,26 +19,26 @@
 
 #include <NBody/Physics/Position.h>
 
+#include "VectorView.h"
+
 namespace UI {
+
+    class FloatEntry : public Gtk::SpinButton {
+    public:
+
+        FloatEntry();
+
+    };
 
     class PositionEntry : public Gtk::Button {
     private:
 
-        Gtk::Box _previewBox;
-        std::array<Gtk::Label, 7> _previewLabels{
-                Gtk::Label{"("},
-                Gtk::Label{"X"},
-                Gtk::Label{", "},
-                Gtk::Label{"Y"},
-                Gtk::Label{", "},
-                Gtk::Label{"Z"},
-                Gtk::Label{")"},
-        };
+        PositionView _preview;
 
         Gtk::Popover _popover;
         Gtk::Grid _popoverGrid;
         Gtk::Label _xLabel{"X"}, _yLabel{"Y"}, _zLabel{"Z"};
-        Gtk::SpinButton _xEntry, _yEntry, _zEntry;
+        FloatEntry _xEntry, _yEntry, _zEntry;
 
     public:
         // Slots
