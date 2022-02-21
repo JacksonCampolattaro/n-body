@@ -17,7 +17,7 @@
     min-width: 40px;
 }
 
-list, listview {
+list, .particles-listview {
     margin: 16px;
     border-radius: 10px;
     background-clip: padding-box;

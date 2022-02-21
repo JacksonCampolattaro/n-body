@@ -16,6 +16,9 @@ UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
         _factory(Gtk::SignalListItemFactory::create()),
         _listView(Gtk::NoSelection::create(_particlesModel), _factory) {
 
+    add_css_class("particles-listview");
+    set_overflow(Gtk::Overflow::HIDDEN);
+
     _simulation.each([&](auto entity) {
         auto particle = NBody::Simulation::Particle{_simulation, entity};
         _particlesModel->append(Glib::make_refptr_for_instance(new GtkParticleHandle(particle)));
@@ -24,7 +27,10 @@ UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
     _factory->signal_setup().connect(sigc::mem_fun(*this, &ParticlesListView::on_setup));
     _factory->signal_bind().connect(sigc::mem_fun(*this, &ParticlesListView::on_bind));
 
-    Gtk::Box::append(_listView);
+    _scrolledWindow.set_child(_listView);
+
+    _scrolledWindow.set_vexpand();
+    append(_scrolledWindow);
 }
 
 void UI::ParticlesListView::on_setup(const Glib::RefPtr<Gtk::ListItem> &listItem) {
@@ -46,5 +52,4 @@ void UI::ParticlesListView::on_bind(const Glib::RefPtr<Gtk::ListItem> &listItem)
 UI::GtkParticleHandle::GtkParticleHandle(NBody::Simulation::Particle particle) :
         Glib::ObjectBase(typeid(GtkParticleHandle)),
         Glib::Object(),
-        _particle(*this, "particle", particle),
-        _name(*this, "name", "placeholder") {}
+        _particle(*this, "particle", particle) {}

@@ -14,6 +14,7 @@
 #include <gtkmm/noselection.h>
 #include <gtkmm/stringlist.h>
 #include <gtkmm/cellrenderer.h>
+#include <gtkmm/scrolledwindow.h>
 #include <giomm/listmodel.h>
 #include <giomm/liststore.h>
 
@@ -30,7 +31,6 @@ namespace UI {
 
     class GtkParticleHandle : public Glib::Object {
     public:
-        Glib::Property<Glib::ustring> _name;
         Glib::Property<NBody::Simulation::Particle> _particle;
 
         GtkParticleHandle(NBody::Simulation::Particle particle);
@@ -47,6 +47,7 @@ namespace UI {
         Glib::RefPtr<Gtk::StringList> _model = Gtk::StringList::create({"a", "b"});
         Glib::RefPtr<Gtk::SignalListItemFactory> _factory = Gtk::SignalListItemFactory::create();
 
+        Gtk::ScrolledWindow _scrolledWindow;
         Gtk::ListView _listView;
 
     public:

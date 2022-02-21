@@ -11,9 +11,6 @@ UI::SphereView::SphereView() : Gtk::AspectFrame() {
     _drawingArea.add_css_class("sphere-view");
     _drawingArea.set_overflow(Gtk::Overflow::HIDDEN);
 
-    //_drawingArea.set_size_request(48, 48);
-    //_drawingArea.set_hexpand();
-
     _drawingArea.set_draw_func(sigc::mem_fun(*this, &SphereView::on_draw));
     set_child(_drawingArea);
 }
@@ -21,7 +18,7 @@ UI::SphereView::SphereView() : Gtk::AspectFrame() {
 void UI::SphereView::setValue(const NBody::Graphics::Color &color, const NBody::Graphics::Sphere &sphere) {
     _color = color;
     _radius = sphere.radius() / (1 + sphere.radius());
-    spdlog::debug("Radius {} mapped to radius {} in preview", sphere.radius(), _radius);
+    spdlog::debug("Radius {} mapped to radius {} in sphere preview", sphere.radius(), _radius);
 }
 
 void UI::SphereView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr, int width, int height) {
