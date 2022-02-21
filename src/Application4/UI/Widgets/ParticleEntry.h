@@ -5,14 +5,15 @@
 #ifndef N_BODY_PARTICLEENTRY_H
 #define N_BODY_PARTICLEENTRY_H
 
+#include <NBody/Simulation/Simulation.h>
+
 #include <gtkmm/box.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 
-#include "PositionEntry.h"
-
-#include <NBody/Simulation/Simulation.h>
+#include "VectorView.h"
+#include "LabeledWidget.h"
 
 namespace UI {
 
@@ -24,11 +25,8 @@ namespace UI {
 
         Gtk::Image _icon;
 
-        Gtk::Label
-                _positionLabel{"P"},
-                _velocityLabel{"V"},
-                _massLabel{"M"};
-        PositionEntry _positionEntry;
+        PositionView _positionView;
+        VelocityView _velocityView;
 
     public:
 

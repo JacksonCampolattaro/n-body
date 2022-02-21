@@ -21,13 +21,6 @@
 
 namespace UI {
 
-    class VectorEntry : public Gtk::Button {
-
-    public:
-
-        VectorEntry(char open = '(', char close = ')');
-    };
-
     class PositionEntry : public Gtk::Button {
     private:
 
