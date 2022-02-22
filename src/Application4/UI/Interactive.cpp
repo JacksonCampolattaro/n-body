@@ -47,4 +47,13 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
 
     flap.append(_sidebar);
     content.append(_view);
+
+//    Glib::signal_idle().connect([&](){
+//        _view.queue_render();
+//        return true;
+//    });
+
+    _view.signal_doneRendering.connect([&](){
+        spdlog::debug("done rendering");
+    });
 }
