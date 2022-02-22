@@ -17,24 +17,10 @@
 namespace UI {
 
     class CameraPanel : public Panel {
-    private:
-
-        NBody::GtkmmArcBallCamera &_camera;
-
-//        Gtk::ListBox _list;
-//        LabeledWidget<PositionEditable> _position;
-//        LabeledWidget<DirectionEditable> _direction;
-//
-//        Gtk::Expander _appearenceExpander;
-//        LabeledWidget<Gtk::ColorButton> _backgroundColor;
 
     public:
 
         CameraPanel(NBody::GtkmmArcBallCamera &camera);
-
-    private:
-
-        void on_backgroundColorChanged();
 
     };
 

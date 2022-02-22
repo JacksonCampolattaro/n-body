@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+    <object class="AdwApplicationWindow" id="primary-window">
+        <property name="title" translatable="yes">N Body</property>
+        <child>
+            <object class="GtkBox" id="main-box">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">True</property>
+                <child>
+                    <object class="AdwHeaderBar">
+
+                        <child type="end">
+                            <object class="GtkToggleButton" id="reveal_btn_end">
+                                <property name="icon-name">view-sidebar-end-symbolic</property>
+                                <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="sync-create|bidirectional"/>
+                            </object>
+                        </child>
+
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwFlap" id="flap">
+                        <property name="vexpand">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="flap-position">end</property>
+
+                        <property name="flap">
+                            <object class="GtkBox" id="FlapBox">
+                                <property name="hexpand">False</property>
+                            </object>
+                        </property>
+
+                        <property name="content">
+                            <object class="GtkBox" id="ContentBox">
+                                <property name="hexpand">True</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
