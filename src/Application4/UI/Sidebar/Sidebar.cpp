@@ -26,10 +26,7 @@ UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simul
     _solverIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/memory.svg", -1, 128));
     _notebook.append_page(_solverPanel, _solverIcon);
 
-    _cameraIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/orientation_global.svg", -1, 128));
+    _cameraIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/view_camera.svg", -1, 128));
     _notebook.append_page(_cameraPanel, _cameraIcon);
-
-    _recordingIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/view_camera.svg", -1, 128));
-    _notebook.append_page(_recordingPanel, _recordingIcon);
 
 }

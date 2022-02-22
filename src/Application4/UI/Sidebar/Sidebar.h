@@ -13,7 +13,6 @@
 #include "PhysicsPanel.h"
 #include "CameraPanel.h"
 #include "SolverPanel.h"
-#include "RecordingPanel.h"
 
 namespace UI {
 
@@ -21,8 +20,6 @@ namespace UI {
     private:
 
         Gtk::Notebook _notebook;
-
-        Gtk::Button _placeholder{"placeholder"};
 
         Gtk::Image _bodiesIcon;
         ParticlesPanel _bodiesPanel;
@@ -32,9 +29,6 @@ namespace UI {
 
         Gtk::Image _solverIcon;
         SolverPanel _solverPanel;
-
-        Gtk::Image _recordingIcon;
-        RecordingPanel _recordingPanel;
 
         Gtk::Image _cameraIcon;
         CameraPanel _cameraPanel;

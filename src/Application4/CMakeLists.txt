@@ -56,7 +56,7 @@ add_executable(NBody_gtkmm4
         Application.cpp Application.h
         UI/Simple.cpp UI/Simple.h
         UI/Interactive.cpp UI/Interactive.h
-        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h UI/Sidebar/RecordingPanel.cpp UI/Sidebar/RecordingPanel.h
+        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
         UI/Widgets/LabeledWidget.h
         UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h UI/Widgets/ParticleEntry.cpp UI/Widgets/ParticleEntry.h UI/Widgets/VectorView.h UI/Widgets/SphereView.cpp UI/Widgets/SphereView.h UI/Widgets/VectorEditable.cpp UI/Widgets/VectorEditable.h)
 
