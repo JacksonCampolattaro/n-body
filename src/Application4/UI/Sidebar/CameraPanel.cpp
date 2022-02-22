@@ -6,27 +6,30 @@
 
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         Panel("Camera"),
-        _camera(camera),
-        _position("Position", "The location of the camera"),
-        _direction("Direction", "The direction the camera faces"),
-        _backgroundColor("Background Color", "The color of the unobstructed background"){
+        _camera(camera) {
 
-    _backgroundColor.widget().signal_color_set().connect(sigc::mem_fun(*this, &UI::CameraPanel::on_backgroundColorChanged));
-    _backgroundColor.widget().set_rgba({0.12, 0.12, 0.1, 1.0});
 
-    camera.signal_positionChanged.connect(_position.widget().slot_changed);
-    _position.widget().signal_changed.connect(camera.slot_moveTo);
+    auto builder = Gtk::Builder::create_from_resource("/ui/camera_panel.xml");
+    auto &root = *builder->get_widget<Gtk::Widget>("root");
+    _contents.append(root);
 
-    camera.signal_directionChanged.connect(_direction.widget().slot_changed);
-    _direction.widget().set_sensitive(false);
+    auto &position = *Gtk::Builder::get_widget_derived<PositionEditable>(builder, "CameraPositionEditable");
+    camera.signal_positionChanged.connect(position.slot_changed);
+    position.signal_changed.connect(camera.slot_moveTo);
 
-    _list.append(_position);
-    _list.append(_direction);
-    _list.append(_backgroundColor);
-    append(_list);
+    auto &direction = *Gtk::Builder::get_widget_derived<DirectionEditable>(builder, "CameraDirectionEditable");
+    camera.signal_directionChanged.connect(direction.slot_changed);
+    direction.set_sensitive(false);
+
+    auto &colorButton = *builder->get_widget<Gtk::ColorButton>("BackgroundColorButton");
+    colorButton.signal_color_set().connect([&](){
+        auto color = colorButton.get_rgba();
+        camera.setBackgroundColor(color);
+    });
+    colorButton.set_rgba({0.12, 0.12, 0.1, 1.0});
 }
 
 void UI::CameraPanel::on_backgroundColorChanged() {
-    auto color = _backgroundColor.widget().get_rgba();
-    _camera.setBackgroundColor(color);
+    //auto color = _backgroundColor.widget().get_rgba();
+    //_camera.setBackgroundColor(color);
 }

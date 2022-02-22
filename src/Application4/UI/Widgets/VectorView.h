@@ -38,13 +38,25 @@ namespace UI {
 
         VectorView() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
 
-            _x.set_width_chars(7);
-            _y.set_width_chars(7);
-            _z.set_width_chars(7);
+            add_css_class("monospace");
+            add_css_class("caption");
 
-            _x.set_max_width_chars(7);
-            _y.set_max_width_chars(7);
-            _z.set_max_width_chars(7);
+            _x.set_width_chars(5);
+            _y.set_width_chars(5);
+            _z.set_width_chars(5);
+
+            _x.set_max_width_chars(5);
+            _y.set_max_width_chars(5);
+            _z.set_max_width_chars(5);
+
+            _x.set_ellipsize(Pango::EllipsizeMode::END);
+            _y.set_ellipsize(Pango::EllipsizeMode::END);
+            _z.set_ellipsize(Pango::EllipsizeMode::END);
+
+            _open.add_css_class("dim-label");
+            _sep1.add_css_class("dim-label");
+            _sep2.add_css_class("dim-label");
+            _close.add_css_class("dim-label");
 
             append(_open);
             append(_x);
@@ -60,20 +72,20 @@ namespace UI {
         void setValue(float x, float y, float z) {
 
             std::stringstream stream;
-            stream << std::setprecision(3);
+            stream << std::setprecision(2);
 
             stream.str(std::string());
-            stream << x;
+            stream << std::setw(5) << x;
             _x.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << y;
+            stream << std::setw(5) << y;
             _y.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << z;
+            stream << std::setw(5) << z;
             _z.set_label(stream.str());
             stream.clear();
 

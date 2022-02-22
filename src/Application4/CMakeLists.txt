@@ -3,6 +3,11 @@
 find_package(spdlog REQUIRED)
 find_package(Gtkmm REQUIRED)
 
+# Include LibAdwaita
+pkg_check_modules(ADWAITA REQUIRED libadwaita-1)
+link_directories(${ADWAITA_LIBRARY_DIRS})
+include_directories(${ADWAITA_INCLUDE_DIRS})
+
 # Add resource files
 find_package(Gio REQUIRED)
 find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
@@ -62,4 +67,5 @@ target_link_libraries(NBody_gtkmm4 PUBLIC
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}
+        ${ADWAITA_LIBRARIES}
         )

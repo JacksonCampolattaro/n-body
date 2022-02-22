@@ -5,6 +5,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/builder.h>
 
 namespace UI {
 
@@ -15,24 +16,24 @@ namespace UI {
 
         Gtk::Separator _separator;
 
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+    protected:
+
+        Gtk::Box &_contents;
+
     public:
 
-        Panel(const std::string &title) : Gtk::Box(Gtk::Orientation::VERTICAL), _title(title) {
+        Panel(const std::string &title) : Gtk::Box(Gtk::Orientation::VERTICAL),
+        _builder(Gtk::Builder::create_from_resource("/ui/panel.xml")),
+        _contents(*_builder->get_widget<Gtk::Box>("box")),
+        _title(title) {
 
-//            Pango::AttrList attributes {};
-//            auto fontWeight = Pango::AttrFontDesc::create_attr_weight(Pango::Weight::NORMAL);
-//            auto fontSize = Pango::AttrFontDesc::create_attr_scale(1.25);
-//            attributes.insert(fontWeight);
-//            attributes.insert(fontSize);
-//            _title.set_attributes(attributes);
+            auto root = _builder->get_widget<Gtk::Widget>("root");
+            append(*root);
 
-            _title.get_style_context()->add_class("heading");
-            _title.set_margin(10);
-            _title.set_justify(Gtk::Justification::LEFT);
-            _title.set_halign(Gtk::Align::START);
-            _title.set_hexpand();
-            append(_title);
-            append(_separator);
+            auto label = _builder->get_widget<Gtk::Label>("label");
+            label->set_text(title);
 
         }
     };

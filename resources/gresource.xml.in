@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
+
+    <gresource>
+        <file>ui/primary_window.xml</file>
+
+        <file>ui/panel.xml</file>
+
+        <file>ui/physics_panel.xml</file>
+        <file>ui/particles_panel.xml</file>
+        <file>ui/camera_panel.xml</file>
+    </gresource>
+
     <gresource prefix="/NBody">
 
         <file>icons/outliner_ob_pointcloud.svg</file>
@@ -15,6 +26,5 @@
 
         <file>stylesheet/style.css</file>
 
-        <file>ui/menu.xml</file>
     </gresource>
 </gresources>

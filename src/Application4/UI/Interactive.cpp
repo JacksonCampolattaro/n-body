@@ -4,8 +4,10 @@
 
 #include "Interactive.h"
 
+#include <gtkmm/binlayout.h>
+
 UI::Interactive::Interactive(NBody::Simulation &simulation) :
-        Gtk::ApplicationWindow(),
+        Gtk::Paned(Gtk::Orientation::HORIZONTAL),
         _simulation{simulation},
         _camera{
                 Vector3::zAxis(-20.0f),
@@ -13,12 +15,11 @@ UI::Interactive::Interactive(NBody::Simulation &simulation) :
                 45.0_degf,
                 Vector2i{400, 400}
         },
-        _paned(Gtk::Orientation::HORIZONTAL),
         _view{_camera, _simulation},
         _sidebar(_camera, _simulation) {
 
-    set_child(_paned);
+    set_expand();
 
-    _paned.set_start_child(_view);
-    _paned.set_end_child(_sidebar);
+    set_start_child(_view);
+    set_end_child(_sidebar);
 }

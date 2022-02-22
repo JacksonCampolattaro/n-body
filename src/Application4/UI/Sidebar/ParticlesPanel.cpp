@@ -6,19 +6,14 @@
 
 UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         Panel("Particles"),
-        _list(),
-        _particlesView(simulation),
-        _countWidget("Count", "The number of particles", "#"),
-        _example("Example", "Demonstration of how a switch works") {
+        _particlesView(simulation) {
 
-    _list.set_hexpand();
-    _list.get_style_context()->add_class("rich-list");
-    append(_list);
+    auto builder = Gtk::Builder::create_from_resource("/ui/particles_panel.xml");
+    auto root = builder->get_widget<Gtk::Widget>("root");
+    _contents.append(*root);
 
-    _list.append(_countWidget);
-    _list.append(_example);
+    auto count = builder->get_widget<Gtk::Label>("count-label");
+    count->set_text(std::to_string(simulation.size()));
 
-    _countWidget.widget().set_text(std::to_string(simulation.size()));
-
-    append(_particlesView);
+    //append(_particlesView);
 }
