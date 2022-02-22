@@ -5,8 +5,7 @@
 #include "CameraPanel.h"
 
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
-        Panel("Camera"),
-        _camera(camera) {
+        Panel("Camera") {
 
 
     auto builder = Gtk::Builder::create_from_resource("/ui/camera_panel.xml");
@@ -22,14 +21,8 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     direction.set_sensitive(false);
 
     auto &colorButton = *builder->get_widget<Gtk::ColorButton>("BackgroundColorButton");
-    colorButton.signal_color_set().connect([&](){
-        auto color = colorButton.get_rgba();
-        camera.setBackgroundColor(color);
+    colorButton.signal_color_set().connect([&]() {
+        camera.setBackgroundColor(colorButton.get_rgba());
     });
     colorButton.set_rgba({0.12, 0.12, 0.1, 1.0});
-}
-
-void UI::CameraPanel::on_backgroundColorChanged() {
-    //auto color = _backgroundColor.widget().get_rgba();
-    //_camera.setBackgroundColor(color);
 }

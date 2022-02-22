@@ -2,7 +2,7 @@
 <gresources>
 
     <gresource>
-        <file>ui/primary_window.xml</file>
+        <file>ui/interactive.xml</file>
 
         <file>ui/panel.xml</file>
 
@@ -12,6 +12,8 @@
     </gresource>
 
     <gresource prefix="/NBody">
+
+        <file>icons/scalable/actions/view-sidebar-end-symbolic.svg</file>
 
         <file>icons/outliner_ob_pointcloud.svg</file>
         <file>icons/physics.svg</file>

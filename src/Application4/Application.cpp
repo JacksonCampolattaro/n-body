@@ -21,25 +21,16 @@ Glib::RefPtr<Application> Application::create() {
 void Application::on_activate() {
     spdlog::debug("activate");
 
-    auto builder = Gtk::Builder::create_from_resource("/ui/primary_window.xml");
-    auto window = builder->get_widget<Gtk::Window>("primary-window");
-    auto box = builder->get_widget<Gtk::Box>("main-box");
-    auto interactive = new UI::Interactive(_simulation);
-    box->append(*interactive);
+    Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
-    // Create a new window
-    //auto window = new UI::Interactive(_simulation);
-
-    // Apply our custom styling
-    //auto css = Gtk::CssProvider::create();
-    //css->load_from_resource("/NBody/stylesheet/style.css");
-    //window->get_style_context()->add_provider_for_display(Gdk::Display::get_default(), css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
+    auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(builder, "primary-window", _simulation);
 
     // Apply LibAdwaita styling
     adw_style_manager_set_color_scheme(adw_style_manager_get_default(), ADW_COLOR_SCHEME_PREFER_DARK);
 
-    add_window(*window);
-    window->present();
+    add_window(*interactive);
+    interactive->present();
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {

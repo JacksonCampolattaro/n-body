@@ -11,7 +11,7 @@
 
 namespace UI {
 
-    class Interactive : public Gtk::Paned  {
+    class Interactive : public Gtk::ApplicationWindow {
     private:
 
         NBody::GtkmmArcBallCamera _camera;
@@ -22,7 +22,8 @@ namespace UI {
 
     public:
 
-        Interactive(NBody::Simulation &simulation);
+        Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
+                    NBody::Simulation &simulation);
     };
 
 }
