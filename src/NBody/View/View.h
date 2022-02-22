@@ -54,8 +54,11 @@ namespace NBody {
 
         void onResize(int width, int height);
 
-    public:
-        // Slots
+    public: // Signals
+
+        sigc::signal<void()> signal_doneRendering;
+
+    public: // Slots
 
         sigc::slot<void()> slot_renderNeeded;
 

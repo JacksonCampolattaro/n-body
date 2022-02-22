@@ -51,7 +51,7 @@ namespace NBody {
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
                 ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
-            slot_moveTo = sigc::mem_fun(*this, &GtkmmArcBallCamera::moveTo);
+            slot_moveTo = sigc::mem_fun(*this, &GtkmmArcBallCamera::setPosition);
 
             slot_scroll = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_scroll);
             slot_leftButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_leftButtonPress);
@@ -60,7 +60,9 @@ namespace NBody {
             slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_MouseMotion);
         }
 
-        void moveTo(float x, float y, float z);
+        void setPosition(float x, float y, float z);
+
+        void setZoom(float z);
 
         void setBackgroundColor(const Gdk::RGBA &color);
 

@@ -28,6 +28,14 @@
         </child>
         <child>
             <object class="AdwActionRow">
+                <property name="title">Zoom</property>
+                <child type="suffix">
+                    <object class="GtkSpinButton" id="CameraZoomFloatEntry"/>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwActionRow">
                 <property name="title">Background Color</property>
                 <property name="subtitle">The color of empty space</property>
                 <child type="suffix">

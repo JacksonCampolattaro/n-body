@@ -7,6 +7,7 @@
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         Panel("Camera") {
 
+    camera.setLagging(0.5);
 
     auto builder = Gtk::Builder::create_from_resource("/ui/camera_panel.xml");
     auto &root = *builder->get_widget<Gtk::Widget>("root");
@@ -19,6 +20,8 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     auto &direction = *Gtk::Builder::get_widget_derived<DirectionEditable>(builder, "CameraDirectionEditable");
     camera.signal_directionChanged.connect(direction.slot_changed);
     direction.set_sensitive(false);
+
+    auto &zoom = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "CameraZoomFloatEntry");
 
     auto &colorButton = *builder->get_widget<Gtk::ColorButton>("BackgroundColorButton");
     colorButton.signal_color_set().connect([&]() {

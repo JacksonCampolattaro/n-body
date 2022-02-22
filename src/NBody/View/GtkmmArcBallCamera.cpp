@@ -4,16 +4,18 @@
 
 #include "GtkmmArcBallCamera.h"
 
-void NBody::GtkmmArcBallCamera::moveTo(float x, float y, float z) {
+void NBody::GtkmmArcBallCamera::setPosition(float x, float y, float z) {
 
-    spdlog::debug("Moving the camera to ({}, {}, {})", x, y, z);
+    spdlog::trace("Moving the camera to ({}, {}, {})", x, y, z);
 
     _targetPosition = {x, y, z};
-    _currentPosition = _targetPosition;
-    updateInternalTransformations();
 
     signal_changed.emit();
     signal_positionChanged.emit(x, y, z);
+}
+
+void NBody::GtkmmArcBallCamera::setZoom(float z) {
+    _targetZooming = z;
 }
 
 void NBody::GtkmmArcBallCamera::setBackgroundColor(const Gdk::RGBA &color) {
@@ -22,7 +24,7 @@ void NBody::GtkmmArcBallCamera::setBackgroundColor(const Gdk::RGBA &color) {
 }
 
 bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
-    spdlog::debug("Scroll signal received: dx={}, dy={}", dx, dy);
+    spdlog::trace("Scroll signal received: dx={}, dy={}", dx, dy);
 
     zoom((float) -dy);
     signal_changed.emit();
@@ -30,7 +32,7 @@ bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
 }
 
 void NBody::GtkmmArcBallCamera::on_leftButtonPress(int _, double x, double y) {
-    spdlog::debug("Left click signal received: x={}, y={}", x, y);
+    spdlog::trace("Left click signal received: x={}, y={}", x, y);
 
     initTransformation({static_cast<int>(x), static_cast<int>(y)});
     _mode = TransformationMode::ROTATE;
@@ -38,7 +40,7 @@ void NBody::GtkmmArcBallCamera::on_leftButtonPress(int _, double x, double y) {
 }
 
 void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) {
-    spdlog::debug("Middle click signal received: x={}, y={}", x, y);
+    spdlog::trace("Middle click signal received: x={}, y={}", x, y);
 
     initTransformation({static_cast<int>(x), static_cast<int>(y)});
     _mode = TransformationMode::TRANSLATE;
@@ -46,7 +48,7 @@ void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) 
 }
 
 void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
-    spdlog::debug("Mouse button released");
+    spdlog::trace("Mouse button released");
 
     _mode = TransformationMode::NONE;
     signal_changed.emit();

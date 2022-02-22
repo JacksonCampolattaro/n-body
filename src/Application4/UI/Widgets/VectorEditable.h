@@ -13,14 +13,10 @@
 
 #include <spdlog/spdlog.h>
 
+#include "FloatEntry.h"
 #include "VectorView.h"
 
 namespace UI {
-
-    class FloatEntry : public Gtk::SpinButton {
-    public:
-        FloatEntry();
-    };
 
     class VectorEntry : public Gtk::Grid {
     private:

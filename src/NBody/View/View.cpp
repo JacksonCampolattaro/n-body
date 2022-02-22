@@ -2,14 +2,15 @@
 // Created by jackcamp on 7/17/21.
 //
 
+#include <spdlog/spdlog.h>
+#include <glibmm/main.h>
+
 #include "View.h"
 
 NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulation) :
         Gtk::GLArea(), _simulation(simulation), _camera(camera) {
 
     set_size_request(720, 480);
-
-    set_auto_render();
 
     set_required_version(4, 5);
     set_has_depth_buffer(true);
@@ -38,6 +39,7 @@ void NBody::View::onRealize() {
 }
 
 bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
+    spdlog::debug("Rendering");
 
     // Eliminate outside effects on GL state
     GL::Context::current().resetState(GL::Context::State::ExitExternal);
@@ -56,15 +58,27 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     // Reset color and depth buffers
     gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
-    _camera.updateTransformation();
     _camera.draw(_simulation);
 
     // Restore external GL state
     GL::Context::current().resetState(GL::Context::State::EnterExternal);
+
+    // If the camera is moving, we need to render again as soon as possible
+    if(_camera.updateTransformation()) {
+        spdlog::debug("Transformation not complete, queue a render");
+
+        // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
+        Glib::signal_timeout().connect_once([&](){
+            queue_render();
+        }, 16);
+    }
+
+    signal_doneRendering.emit();
     return true;
 }
 
 void NBody::View::onResize(int width, int height) {
+    spdlog::debug("Resizing");
     _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
     queue_render();
 }
