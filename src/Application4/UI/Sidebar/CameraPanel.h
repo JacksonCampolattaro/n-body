@@ -21,11 +21,12 @@ namespace UI {
 
         NBody::GtkmmArcBallCamera &_camera;
 
-        Gtk::ListBox _list;
-        LabeledWidget<PositionEditable> _position;
-        LabeledWidget<DirectionEditable> _direction;
-
-        LabeledWidget<Gtk::ColorButton> _backgroundColor;
+//        Gtk::ListBox _list;
+//        LabeledWidget<PositionEditable> _position;
+//        LabeledWidget<DirectionEditable> _direction;
+//
+//        Gtk::Expander _appearenceExpander;
+//        LabeledWidget<Gtk::ColorButton> _backgroundColor;
 
     public:
 

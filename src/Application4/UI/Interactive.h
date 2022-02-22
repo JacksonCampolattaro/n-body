@@ -11,13 +11,11 @@
 
 namespace UI {
 
-    class Interactive : public Gtk::ApplicationWindow  {
+    class Interactive : public Gtk::Paned  {
     private:
 
         NBody::GtkmmArcBallCamera _camera;
         NBody::Simulation &_simulation;
-
-        Gtk::Paned _paned;
 
         NBody::InteractiveView _view;
         Sidebar _sidebar;

@@ -22,10 +22,13 @@
     min-width: 40px;
 }
 
-list, .particles-listview {
+list, expander-widget, .particles-listview {
     margin: 16px;
     border-radius: 10px;
     background-clip: padding-box;
+
+    background-color:@theme_unfocused_bg_color;
+    padding: 12px;
 }
 
 row {

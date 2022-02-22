@@ -9,6 +9,7 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/builder.h>
 
 #include <spdlog/spdlog.h>
 
@@ -95,8 +96,25 @@ namespace UI {
 
     public:
 
-        VectorEditable() : signal_changed(_entry.signal_changed) {
-            add_css_class("editable");
+//        VectorEditable() : signal_changed(_entry.signal_changed) {
+//            //add_css_class("editable");
+//
+//            set_child(_preview);
+//
+//            _popover.set_child(_entry);
+//            _popover.set_parent(_preview);
+//
+//            signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
+//
+//            slot_changed = sigc::mem_fun<void, VectorEditable, VectorEditable, float, float, float>(*this,
+//                                                                                                    &VectorEditable::setValue);
+//        }
+
+        VectorEditable(Gtk::Button::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+                : Gtk::Button(cobject),
+                  signal_changed(_entry.signal_changed) {
+
+            set_valign(Gtk::Align::CENTER);
 
             set_child(_preview);
 
