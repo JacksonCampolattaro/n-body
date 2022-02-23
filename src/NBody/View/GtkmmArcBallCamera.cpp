@@ -16,6 +16,8 @@ void NBody::GtkmmArcBallCamera::setPosition(float x, float y, float z) {
 
 void NBody::GtkmmArcBallCamera::setZoom(float z) {
     _targetZooming = z;
+    signal_zoomChanged.emit(_targetZooming);
+    signal_changed.emit();
 }
 
 void NBody::GtkmmArcBallCamera::setBackgroundColor(const Gdk::RGBA &color) {
@@ -27,6 +29,7 @@ bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
     spdlog::trace("Scroll signal received: dx={}, dy={}", dx, dy);
 
     zoom((float) -dy);
+    signal_zoomChanged.emit(_targetZooming);
     signal_changed.emit();
     return false;
 }

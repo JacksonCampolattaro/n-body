@@ -70,7 +70,7 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
         // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
         Glib::signal_timeout().connect_once([&](){
             queue_render();
-        }, 16);
+        }, 8);
     }
 
     signal_doneRendering.emit();
