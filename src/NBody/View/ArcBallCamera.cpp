@@ -6,9 +6,6 @@
 
 void NBody::ArcBallCamera::draw(const NBody::Simulation &simulation) {
 
-    // Set the background color
-    GL::Renderer::setClearColor(_backgroundColor);
-
     _draw(simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>());
 }
 

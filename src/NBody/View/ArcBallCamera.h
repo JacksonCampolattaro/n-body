@@ -65,6 +65,8 @@ namespace NBody {
 
         void draw();
 
+        const Color4 &backgroundColor() { return _backgroundColor; }
+
     public:
         // Signals
 
