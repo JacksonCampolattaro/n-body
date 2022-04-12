@@ -20,7 +20,7 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
     signal_render().connect(sigc::mem_fun(*this, &View::onRender), true);
     signal_resize().connect(sigc::mem_fun(*this, &View::onResize));
 
-    slot_renderNeeded = sigc::mem_fun(*this, &View::queue_render);
+    slot_renderNeeded = sigc::mem_fun(*this, &View::requestRender);
     _camera.signal_changed.connect(slot_renderNeeded);
 }
 
@@ -55,6 +55,9 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
              {get_width(), get_height()}}
     );
 
+    // Set the background color
+    GL::Renderer::setClearColor(_camera.backgroundColor());
+
     // Reset color and depth buffers
     gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
@@ -64,14 +67,8 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     GL::Context::current().resetState(GL::Context::State::EnterExternal);
 
     // If the camera is moving, we need to render again as soon as possible
-    if(_camera.updateTransformation()) {
-        spdlog::debug("Transformation not complete, queue a render");
-
-        // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
-        Glib::signal_timeout().connect_once([&](){
-            queue_render();
-        }, 8);
-    }
+    if(_camera.updateTransformation())
+        requestRender();
 
     signal_doneRendering.emit();
     return true;
@@ -81,4 +78,13 @@ void NBody::View::onResize(int width, int height) {
     spdlog::debug("Resizing");
     _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
     queue_render();
+}
+
+void NBody::View::requestRender() {
+    spdlog::debug("Render requested");
+
+    // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
+    Glib::signal_timeout().connect_once([&](){
+        queue_render();
+    }, 8);
 }

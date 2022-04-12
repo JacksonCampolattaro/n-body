@@ -14,4 +14,4 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
 
 # Include our targets
 add_subdirectory(src)
-add_subdirectory(docs)
+#add_subdirectory(docs)
