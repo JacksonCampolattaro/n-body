@@ -12,11 +12,8 @@ UI::ParticleEntry::ParticleEntry() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
     _grid.set_row_spacing(4);
     _grid.set_column_spacing(8);
 
-    //_icon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/node_material.svg", -1, 256));
-    //_icon.set_expand();
-    //attach(_icon, 0, 0, 1, 2);
     //_sphereView.set_expand();
-    append(_sphereView);
+    //append(_sphereView);
 
     _positionLabel.add_css_class("description");
     _velocityLabel.add_css_class("description");
