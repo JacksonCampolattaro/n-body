@@ -20,6 +20,7 @@
 #include <iostream>
 #include <iomanip>
 #include <thread>
+#include <mutex>
 
 using nlohmann::json;
 using std::istream;

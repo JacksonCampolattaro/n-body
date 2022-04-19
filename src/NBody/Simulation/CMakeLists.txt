@@ -1,6 +1,7 @@
 
 find_package(nlohmann_json REQUIRED)
 find_package(SigC++ REQUIRED)
+find_package(spdlog REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(entt
@@ -25,6 +26,7 @@ target_link_libraries(Simulation PUBLIC
         EnTT::EnTT
         nlohmann_json::nlohmann_json
 
+        spdlog::spdlog
         ${SIGCPP_LIBRARIES}
         )
 
