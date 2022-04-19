@@ -20,7 +20,7 @@ namespace NBody::Physics {
 
         Velocity(float x, float y, float z) : glm::vec3(x, y, z) {};
 
-        explicit Velocity(glm::vec3 vector) : glm::vec3(vector) {};
+        Velocity(glm::vec3 vector) : glm::vec3(vector) {};
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Velocity, x, y, z)
     };

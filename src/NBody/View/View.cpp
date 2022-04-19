@@ -5,6 +5,8 @@
 #include <spdlog/spdlog.h>
 #include <glibmm/main.h>
 
+#include <thread>
+
 #include "View.h"
 
 NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulation) :

@@ -8,6 +8,7 @@
 #include <NBody/Physics/Position.h>
 #include <NBody/Physics/Velocity.h>
 #include <NBody/Physics/ActiveMass.h>
+#include <NBody/Physics/PassiveMass.h>
 #include <NBody/Graphics/Color.h>
 #include <NBody/Graphics/Sphere.h>
 
@@ -18,6 +19,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <thread>
 
 using nlohmann::json;
 using std::istream;
@@ -41,7 +43,11 @@ namespace NBody {
 
             Particle &setVelocity(const Physics::Velocity &velocity);
 
-            Particle &setMass(const Physics::ActiveMass &mass);
+            Particle &setMass(const float &mass);
+
+            Particle &setActiveMass(const Physics::ActiveMass &mass);
+
+            Particle &setPassiveMass(const Physics::PassiveMass &mass);
 
             Particle &setColor(const Graphics::Color &color);
 
@@ -51,6 +57,8 @@ namespace NBody {
         Particle newParticle();
 
     public:
+
+        mutable std::mutex mutex;
 
         friend void to_json(json &j, const Simulation &s);
 

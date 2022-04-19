@@ -4,11 +4,13 @@
 #include <gtkmm.h>
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/NaiveSolver.h>
 
 class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
+    std::shared_ptr<NBody::Solver> _solver;
 
 protected:
 

@@ -24,8 +24,19 @@ NBody::Simulation::Particle &NBody::Simulation::Particle::setVelocity(const NBod
     return *this;
 }
 
-NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const NBody::Physics::ActiveMass &mass) {
+NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const float &mass) {
     emplace_or_replace<NBody::Physics::ActiveMass>(mass);
+    emplace_or_replace<NBody::Physics::PassiveMass>(mass);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setActiveMass(const NBody::Physics::ActiveMass &mass) {
+    emplace_or_replace<NBody::Physics::ActiveMass>(mass);
+    return *this;
+}
+
+NBody::Simulation::Particle &NBody::Simulation::Particle::setPassiveMass(const NBody::Physics::PassiveMass &mass) {
+    emplace_or_replace<NBody::Physics::PassiveMass>(mass);
     return *this;
 }
 
@@ -40,6 +51,7 @@ NBody::Simulation::Particle &NBody::Simulation::Particle::setSphere(const NBody:
 }
 
 void NBody::to_json(json &j, const NBody::Simulation &s) {
+    std::scoped_lock l(s.mutex);
 
     s.each([&](const auto &entity) {
         json e;
@@ -64,6 +76,7 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 }
 
 void NBody::from_json(const json &j, NBody::Simulation &s) {
+    std::scoped_lock l(s.mutex);
 
     for (const auto &p: j["particles"]) {
         auto particle = s.newParticle();
@@ -75,7 +88,7 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
             particle.setVelocity(p["velocity"].get<NBody::Physics::Velocity>());
 
         if (p.contains("mass"))
-            particle.setMass(p["mass"].get<NBody::Physics::ActiveMass>());
+            particle.setMass(p["mass"].get<float>());
 
         if (p.contains("color"))
             particle.setColor(p["color"].get<NBody::Graphics::Color>());

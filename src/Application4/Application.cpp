@@ -21,10 +21,13 @@ Glib::RefPtr<Application> Application::create() {
 void Application::on_activate() {
     spdlog::debug("activate");
 
+    _solver = std::make_shared<NBody::NaiveSolver>(_simulation);
+    _solver->slot_step();
+
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
     auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
-    auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(builder, "primary-window", _simulation);
+    auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(builder, "primary-window", _simulation, *_solver);
 
     // Apply LibAdwaita styling
     adw_style_manager_set_color_scheme(adw_style_manager_get_default(), ADW_COLOR_SCHEME_DEFAULT);

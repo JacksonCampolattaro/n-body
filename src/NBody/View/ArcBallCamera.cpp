@@ -6,6 +6,8 @@
 
 void NBody::ArcBallCamera::draw(const NBody::Simulation &simulation) {
 
+    std::scoped_lock l(simulation.mutex);
+
     _draw(simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>());
 }
 

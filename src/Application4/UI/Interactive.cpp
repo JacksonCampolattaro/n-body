@@ -7,7 +7,7 @@
 #include <gtkmm/binlayout.h>
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::Simulation &simulation) :
+                             NBody::Simulation &simulation, NBody::Solver &solver) :
         Gtk::ApplicationWindow(cobject),
         _simulation{simulation},
         _camera{
@@ -17,7 +17,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                 Vector2i{400, 400}
         },
         _view{_camera, _simulation},
-        _sidebar(_camera, _simulation) {
+        _sidebar(_camera, _simulation, solver) {
 
     auto &flap = *builder->get_widget<Gtk::Box>("FlapBox");
     auto &content = *builder->get_widget<Gtk::Box>("ContentBox");
@@ -35,4 +35,5 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     _view.signal_doneRendering.connect([&](){
         spdlog::debug("done rendering");
     });
+
 }
