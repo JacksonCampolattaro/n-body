@@ -2,31 +2,20 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
-    <object class="AdwApplicationWindow" id="primary-window">
+    <object class="GtkApplicationWindow" id="primary-window">
         <property name="title" translatable="yes">N Body</property>
         <child>
             <object class="GtkBox" id="main-box">
                 <property name="orientation">vertical</property>
                 <property name="hexpand">True</property>
                 <child>
-                    <object class="AdwHeaderBar">
-
-                        <child type="end">
-                            <object class="GtkToggleButton" id="flap-toggle">
-                                <property name="icon-name">view-sidebar-end-symbolic</property>
-                                <property name="active" bind-source="flap" bind-property="reveal-flap" bind-flags="sync-create|bidirectional"/>
-                            </object>
-                        </child>
-
-                    </object>
-                </child>
-                <child>
                     <object class="AdwFlap" id="flap">
                         <property name="vexpand">True</property>
                         <property name="hexpand">True</property>
                         <property name="flap-position">end</property>
-                        <property name="modal">False</property>
+                        <property name="modal">True</property>
                         <property name="fold-threshold-policy">natural</property>
+                        <property name="transition-type">over</property>
 
                         <property name="flap">
                             <object class="GtkBox" id="FlapBox">
@@ -38,8 +27,23 @@
                         </property>
 
                         <property name="content">
-                            <object class="GtkBox" id="ContentBox">
-                                <property name="hexpand">True</property>
+                            <object class="GtkOverlay">
+                                <child>
+                                    <object class="GtkBox" id="ContentBox">
+                                        <property name="hexpand">True</property>
+                                    </object>
+                                </child>
+                                <child type="overlay">
+                                    <object class="GtkToggleButton" id="flap-toggle">
+                                        <property name="halign">end</property>
+                                        <property name="valign">start</property>
+                                        <property name="margin-top">5</property>
+                                        <property name="margin-end">5</property>
+                                        <property name="icon-name">view-sidebar-end-symbolic</property>
+                                        <property name="active" bind-source="flap" bind-property="reveal-flap"
+                                                  bind-flags="sync-create|bidirectional"/>
+                                    </object>
+                                </child>
                             </object>
                         </property>
                     </object>
