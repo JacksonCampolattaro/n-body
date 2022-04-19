@@ -13,6 +13,7 @@
 #include "PhysicsPanel.h"
 #include "CameraPanel.h"
 #include "SolverPanel.h"
+#include "NBody/Simulation/Solver.h"
 
 namespace UI {
 
@@ -38,7 +39,7 @@ namespace UI {
 
     public:
 
-        Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation);
+        Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation, NBody::Solver &solver);
 
     };
 

@@ -1,6 +1,6 @@
 
 find_package(nlohmann_json REQUIRED)
-
+find_package(SigC++ REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(entt
@@ -10,6 +10,8 @@ FetchContent_MakeAvailable(entt)
 
 add_library(Simulation
         Simulation.h Simulation.cpp
+        Solver.h
+        Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         )
 
 target_include_directories(Simulation PUBLIC
@@ -22,6 +24,8 @@ target_link_libraries(Simulation PUBLIC
 
         EnTT::EnTT
         nlohmann_json::nlohmann_json
+
+        ${SIGCPP_LIBRARIES}
         )
 
 add_library(NBody::Simulation ALIAS Simulation)
