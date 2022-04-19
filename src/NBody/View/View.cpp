@@ -12,7 +12,7 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
 
     set_size_request(720, 480);
 
-    set_required_version(4, 5);
+    set_required_version(3, 2);
     set_has_depth_buffer(true);
 
     signal_realize().connect(sigc::mem_fun(*this, &View::onRealize));
