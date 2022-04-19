@@ -11,7 +11,7 @@
 #include <Magnum/Trade/MeshData.h>
 #include <Magnum/MeshTools/Compile.h>
 #include <Magnum/Primitives/Cube.h>
-#include <Magnum/Shaders/PhongGL.
+#include <Magnum/Shaders/PhongGL.h>
 #include <Magnum/Math/Color.h>
 
 #include <sigc++/sigc++.h>
