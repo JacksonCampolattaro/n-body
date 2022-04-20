@@ -18,7 +18,7 @@ namespace NBody {
     protected:
 
         Simulation &_simulation;
-        float _dt = 1.0;
+        float _dt = 0.001;
 
     public:
 
