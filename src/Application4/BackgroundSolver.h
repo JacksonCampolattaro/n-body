@@ -25,8 +25,20 @@ public:
     }
 
     void step() override {
+        spdlog::debug("Launching solver in new thread");
+
+        if (_thread != nullptr) {
+            spdlog::warn("Attempted to spawn multiple background threads");
+            return;
+        }
+
+        // Spawn a new thread when the user requests a step
         _thread = new std::thread([&] {
+
+            // Run the underlying solver (this may be very slow)
             _solver->step();
+
+            // Notify the main thread that we're finished (so we can join)
             _dispatcher.emit();
         });
     }
@@ -39,6 +51,8 @@ protected:
 
         // When the underlying solver announces that it's complete
         _dispatcher.connect([&] {
+
+            spdlog::debug("Joining completed solver");
 
             // Join the solver thread
             assert(_thread != nullptr);

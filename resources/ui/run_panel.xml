@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkListBox" id="root">
+
+        <property name="selection-mode">none</property>
+        <style>
+            <class name="boxed-list"/>
+        </style>
+        <child>
+            <object class="AdwActionRow">
+                <property name="title">Step</property>
+                <property name="subtitle">Iterate the simulation by one step</property>
+                <child type="suffix">
+                    <object class="GtkButton" id="step-button">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">go-last</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwActionRow">
+                <property name="title">Run</property>
+                <property name="subtitle">Iterate the simulation automatically</property>
+                <child type="suffix">
+                    <object class="GtkToggleButton" id="run-button">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">go-next</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+
+</interface>
