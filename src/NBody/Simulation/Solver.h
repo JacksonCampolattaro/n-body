@@ -28,6 +28,8 @@ namespace NBody {
 
         virtual void step() = 0;
 
+        Simulation &simulation() { return _simulation; }
+
     public:
 
         sigc::signal<void()> signal_finished;
