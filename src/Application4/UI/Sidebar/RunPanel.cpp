@@ -22,7 +22,7 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) : Panel("Run") {
             _idler = Glib::signal_timeout().connect([&] {
                 solver.slot_step();
                 return true;
-            }, 8);
+            }, 1);
         else
             _idler.disconnect();
     });
