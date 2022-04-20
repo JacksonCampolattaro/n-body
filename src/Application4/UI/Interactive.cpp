@@ -23,7 +23,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     auto &content = *builder->get_widget<Gtk::Box>("ContentBox");
 
     _view.set_hexpand();
-    solver.signal_finished.connect(_view.slot_renderNeeded);
+    solver.signal_finished().connect(_view.slot_renderNeeded);
 
     flap.append(_sidebar);
     content.append(_view);

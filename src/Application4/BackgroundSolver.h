@@ -9,19 +9,31 @@
 
 #include <glibmm/dispatcher.h>
 
-class BackgroundSolver : public NBody::Solver {
+template <class BaseSolver>
+class BackgroundSolver : public BaseSolver {
 private:
 
     std::thread *_thread = nullptr;
     Glib::Dispatcher _dispatcher;
 
-    std::shared_ptr<NBody::Solver> _solver;
-
 public:
 
-    template<class SolverType, typename ...Args>
-    static BackgroundSolver create(Args &&...args) {
-        return BackgroundSolver(std::make_shared<SolverType>(std::forward<Args>(args)...));
+    template<typename ...Args>
+    explicit BackgroundSolver(Args &&...args) : BaseSolver(std::forward<Args>(args)...) {
+
+        // When the underlying solver announces that it's complete...
+        _dispatcher.connect([&] {
+
+            spdlog::debug("Joining completed solver");
+
+            // Join the solver thread
+            assert(_thread != nullptr);
+            _thread->join();
+            _thread = nullptr;
+
+            // Announce the completion to the rest of the UI
+            BaseSolver::signal_finished().emit();
+        });
     }
 
     void step() override {
@@ -36,31 +48,10 @@ public:
         _thread = new std::thread([&] {
 
             // Run the underlying solver (this may be very slow)
-            _solver->step();
+            BaseSolver::step();
 
             // Notify the main thread that we're finished (so we can join)
             _dispatcher.emit();
-        });
-    }
-
-protected:
-
-    template<class SolverType>
-    explicit BackgroundSolver(std::shared_ptr<SolverType> solver) :
-            _solver(solver), NBody::Solver(solver->simulation()) {
-
-        // When the underlying solver announces that it's complete
-        _dispatcher.connect([&] {
-
-            spdlog::debug("Joining completed solver");
-
-            // Join the solver thread
-            assert(_thread != nullptr);
-            _thread->join();
-            _thread = nullptr;
-
-            // Announce the completion to the rest of the UI
-            signal_finished.emit();
         });
     }
 

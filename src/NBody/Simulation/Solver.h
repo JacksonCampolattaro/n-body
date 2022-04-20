@@ -7,6 +7,8 @@
 
 #include "Simulation.h"
 
+#include <NBody/Physics/Rule.h>
+
 #include <sigc++/sigc++.h>
 #include <spdlog/spdlog.h>
 
@@ -18,25 +20,29 @@ namespace NBody {
     protected:
 
         Simulation &_simulation;
+        Physics::Rule &_rule;
         float _dt = 0.001;
+
+        sigc::signal<void()> _signal_finished;
+        sigc::slot<void()> _slot_step;
 
     public:
 
-        explicit Solver(Simulation &simulation) : _simulation(simulation) {
-            slot_step = sigc::mem_fun(*this, &Solver::on_step);
+        Solver(Simulation &simulation, Physics::Rule &rule) : _simulation(simulation), _rule(rule) {
+            _slot_step = sigc::mem_fun(*this, &Solver::on_step);
         };
 
         virtual void step() = 0;
 
         Simulation &simulation() { return _simulation; }
 
-    public:
-
-        sigc::signal<void()> signal_finished;
+        Physics::Rule &rule() { return _rule; }
 
     public:
 
-        sigc::slot<void()> slot_step;
+        sigc::signal<void()> &signal_finished() { return _signal_finished; };
+
+        sigc::slot<void()> &slot_step() { return _slot_step; };
 
     private:
 
@@ -48,7 +54,7 @@ namespace NBody {
                 spdlog::debug("Finished simulation step");
             });
             t.join();
-            signal_finished.emit();
+            signal_finished().emit();
         }
 
     };

@@ -2,6 +2,7 @@
 find_package(nlohmann_json REQUIRED)
 find_package(SigC++ REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(TBB REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(entt
@@ -28,6 +29,7 @@ target_link_libraries(Simulation PUBLIC
 
         spdlog::spdlog
         ${SIGCPP_LIBRARIES}
+        TBB::tbb
         )
 
 add_library(NBody::Simulation ALIAS Simulation)

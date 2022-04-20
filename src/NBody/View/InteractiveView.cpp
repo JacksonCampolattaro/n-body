@@ -29,6 +29,15 @@ NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody
     middleClickController->signal_released().connect(camera.slot_buttonRelease);
     add_controller(middleClickController);
 
+    // Temporarily set right clicks to act as middle clicks
+    auto rightClickController = Gtk::GestureClick::create();
+    rightClickController->set_touch_only(false);
+    rightClickController->set_button(3);
+    rightClickController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
+    rightClickController->signal_pressed().connect(camera.slot_middleButtonPress);
+    rightClickController->signal_released().connect(camera.slot_buttonRelease);
+    add_controller(rightClickController);
+
     auto mouseMotionController = Gtk::EventControllerMotion::create();
     mouseMotionController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
     mouseMotionController->signal_motion().connect(camera.slot_mouseMotion);

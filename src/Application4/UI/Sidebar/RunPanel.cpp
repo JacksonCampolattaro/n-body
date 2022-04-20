@@ -14,13 +14,13 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) : Panel("Run") {
     _contents.append(*root);
 
     _stepButton = builder->get_widget<Gtk::Button>("step-button");
-    _stepButton->signal_clicked().connect(solver.slot_step);
+    _stepButton->signal_clicked().connect(solver.slot_step());
 
     _runButton = builder->get_widget<Gtk::ToggleButton>("run-button");
     _runButton->signal_toggled().connect([&] {
         if (_runButton->get_active())
             _idler = Glib::signal_timeout().connect([&] {
-                solver.slot_step();
+                solver.step();
                 return true;
             }, 1);
         else

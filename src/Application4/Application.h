@@ -8,11 +8,14 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 
+#include <NBody/Physics/Gravity.h>
+
 class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
-    BackgroundSolver _solver;
+    BackgroundSolver<NBody::NaiveSolver> _solver;
+    NBody::Physics::Gravity _rule{1.0};
 
 protected:
 

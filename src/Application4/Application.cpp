@@ -11,7 +11,7 @@ Application::Application() :
         Gtk::Application(
                 "com.github.JacksonCampolattaro.nbody",
                 Gio::Application::Flags::HANDLES_OPEN
-        ), _solver(BackgroundSolver::create<NBody::NaiveSolver>(_simulation)) {}
+        ), _solver(_simulation, _rule) {}
 
 Glib::RefPtr<Application> Application::create() {
     spdlog::set_level(spdlog::level::debug);

@@ -12,7 +12,7 @@ namespace NBody {
     class NaiveSolver : public Solver {
     public:
 
-        NaiveSolver(Simulation &simulation) : Solver(simulation) {}
+        NaiveSolver(Simulation &simulation, Physics::Rule &rule) : Solver(simulation, rule) {}
 
         void step() override;
     };
