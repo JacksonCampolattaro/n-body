@@ -6,11 +6,12 @@
 
 #include <gdkmm/pixbuf.h>
 
-UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation, NBody::Solver &solver) :
+UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
+                     NBody::Physics::Rule &rule, NBody::Solver &solver) :
         Gtk::Box(Gtk::Orientation::HORIZONTAL),
         _notebook(),
         _bodiesPanel(simulation),
-        _physicsPanel(),
+        _physicsPanel(rule),
         _cameraPanel(camera),
         _solverPanel(),
         _runPanel(solver) {
@@ -30,12 +31,12 @@ UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simul
     _cameraIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/view_camera.svg", -1, 128));
     _notebook.append_page(_cameraPanel, _cameraIcon);
 
-//    auto step = new Gtk::Button("step");
-//    step->signal_clicked().connect(solver.slot_step);
-//
-//    solver.signal_finished.connect([&] {
-//        camera.signal_changed.emit();
-//    });
+    //    auto step = new Gtk::Button("step");
+    //    step->signal_clicked().connect(solver.slot_step);
+    //
+    //    solver.signal_finished.connect([&] {
+    //        camera.signal_changed.emit();
+    //    });
 
     _runIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/tria_right.svg", -1, 128));
     _notebook.append_page(_runPanel, _runIcon);

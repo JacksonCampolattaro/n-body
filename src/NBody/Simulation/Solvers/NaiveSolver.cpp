@@ -50,4 +50,5 @@ void NBody::NaiveSolver::step() {
     }
 
     // Other constraints (e.g. non-intersection/collision detection) should be enforced here
+    // ...
 }
