@@ -13,13 +13,12 @@
 
 namespace NBody::Physics {
 
-    class Force : public glm::vec3 {
-    };
+    typedef glm::vec3 Acceleration;
 
     class Rule {
     public:
 
-        virtual std::pair<Position, Force> operator()(
+        virtual Acceleration operator()(
                 const Position &activePosition, const ActiveMass &activeMass,
                 const Position &passivePosition, const PassiveMass &passiveMass
         ) = 0;

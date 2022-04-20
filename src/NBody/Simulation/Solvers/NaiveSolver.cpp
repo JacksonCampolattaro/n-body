@@ -4,33 +4,33 @@
 
 #include "NaiveSolver.h"
 
+#include <glm/glm.hpp>
+
+#include <tbb/tbb.h>
+#include <tbb/blocked_range.h>
+
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
 using NBody::Physics::ActiveMass;
 using NBody::Physics::PassiveMass;
 
-#include <glm/glm.hpp>
-
 void NBody::NaiveSolver::step() {
 
-    // Update velocities
-    // todo: This is a temporary example, in the future a Rule should be used here
+    // Update accelerations and velocities
     {
         spdlog::debug("Updating velocities");
         auto actors = _simulation.view<const Position, const ActiveMass>();
         auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
-        targets.each([&](const Position &targetPosition, const PassiveMass &targetMass, Velocity &velocity) {
+        tbb::parallel_for_each(targets, [&](Entity e) {
+            const auto &targetPosition = _simulation.get<Position>(e);
+            const auto &targetMass = _simulation.get<PassiveMass>(e);
+            auto &velocity = _simulation.get<Velocity>(e);
 
             actors.each([&](const Position &actorPosition, const ActiveMass &actorMass) {
 
                 if (actorPosition == targetPosition) return;
 
-                float force = 1.0f * targetMass.mass() * actorMass.mass() /
-                              (glm::length(actorPosition - targetPosition) + 0.0001);
-
-                glm::vec3 forceVector = glm::normalize(actorPosition - targetPosition) * force;
-
-                glm::vec3 acceleration = forceVector / targetMass.mass();
+                glm::vec3 acceleration = _rule(actorPosition, actorMass, targetPosition, targetMass);
 
                 velocity += acceleration * _dt;
             });
@@ -41,7 +41,10 @@ void NBody::NaiveSolver::step() {
     {
         spdlog::debug("Updating positions");
         auto view = _simulation.view<const Velocity, Position>();
-        view.each([&](const Velocity &v, Position &p) {
+
+        tbb::parallel_for_each(view, [&](Entity e) {
+            const auto &v = _simulation.get<Velocity>(e);
+            auto &p = _simulation.get<Position>(e);
             p = p + (v * _dt);
         });
     }

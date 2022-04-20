@@ -13,15 +13,16 @@ namespace NBody::Physics {
     private:
 
         float _g;
+        float _epsilon = 0.0000001;
 
     public:
 
         Gravity(const float &G = 1.0) : _g(G) {};
 
-        std::pair<Position, Force> operator()(
+        Acceleration operator()(
                 const Position &activePosition, const ActiveMass &activeMass,
                 const Position &passivePosition, const PassiveMass &passiveMass
-        );
+        ) override;
     };
 
 }
