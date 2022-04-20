@@ -13,7 +13,7 @@
 #include "PhysicsPanel.h"
 #include "CameraPanel.h"
 #include "SolverPanel.h"
-#include "NBody/Simulation/Solver.h"
+#include "RunPanel.h"
 
 namespace UI {
 
@@ -35,7 +35,7 @@ namespace UI {
         CameraPanel _cameraPanel;
 
         Gtk::Image _runIcon;
-        //RunPanel _runPanel;
+        RunPanel _runPanel;
 
     public:
 
