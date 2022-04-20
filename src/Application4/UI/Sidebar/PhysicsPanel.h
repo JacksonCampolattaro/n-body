@@ -6,15 +6,22 @@
 #define N_BODY_PHYSICSPANEL_H
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Physics/Rule.h>
 
 #include "Panel.h"
 
 namespace UI {
 
+    using NBody::Physics::Rule;
+
     class PhysicsPanel : public Panel {
+    private:
+
+        Rule &_rule;
+
     public:
 
-        PhysicsPanel();
+        PhysicsPanel(Rule &rule);
 
     };
 

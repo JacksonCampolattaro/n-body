@@ -37,12 +37,13 @@ public:
     }
 
     void step() override {
-        spdlog::debug("Launching solver in new thread");
 
         if (_thread != nullptr) {
             spdlog::warn("Attempted to spawn multiple background threads");
             return;
         }
+
+        spdlog::debug("Launching solver in new thread");
 
         // Spawn a new thread when the user requests a step
         _thread = new std::thread([&] {

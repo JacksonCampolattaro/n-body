@@ -39,7 +39,8 @@ namespace UI {
 
     public:
 
-        Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation, NBody::Solver &solver);
+        Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
+                NBody::Physics::Rule &rule, NBody::Solver &solver);
 
     };
 
