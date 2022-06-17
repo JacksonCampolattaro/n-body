@@ -18,7 +18,10 @@ else ()
 endif ()
 #set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
-find_package(Gtkmm REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
+pkg_check_modules(adwaita REQUIRED IMPORTED_TARGET libadwaita-1)
+
 find_package(spdlog REQUIRED)
 
 add_library(View
@@ -38,7 +41,8 @@ target_link_libraries(View PUBLIC
 
         spdlog::spdlog
 
-        ${GTKMM_LIBRARIES}
+        PkgConfig::gtkmm
+        PkgConfig::adwaita
 
         Magnum::Magnum
         Magnum::GLContext
