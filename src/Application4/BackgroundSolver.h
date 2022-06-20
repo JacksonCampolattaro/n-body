@@ -9,11 +9,11 @@
 
 #include <glibmm/dispatcher.h>
 
-template <class BaseSolver>
+template<class BaseSolver>
 class BackgroundSolver : public BaseSolver {
 private:
 
-    std::thread *_thread = nullptr;
+    std::shared_ptr<std::thread> _thread;
     Glib::Dispatcher _dispatcher;
 
 public:
@@ -36,6 +36,11 @@ public:
         });
     }
 
+    ~BackgroundSolver() {
+        if (_thread)
+            _thread->join();
+    }
+
     void step() override {
 
         if (_thread != nullptr) {
@@ -46,7 +51,7 @@ public:
         spdlog::debug("Launching solver in new thread");
 
         // Spawn a new thread when the user requests a step
-        _thread = new std::thread([&] {
+        _thread = std::make_shared<std::thread>([&] {
 
             // Run the underlying solver (this may be very slow)
             BaseSolver::step();
