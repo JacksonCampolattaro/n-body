@@ -26,4 +26,11 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) : Panel("Run") {
         else
             _idler.disconnect();
     });
+
+    _iterationsLabel = builder->get_widget<Gtk::Label>("iterations-label");
+    solver.signal_finished().connect([&]{
+        _iterations++;
+        _iterationsLabel->set_text(Glib::ustring::format(_iterations));
+    });
+
 }
