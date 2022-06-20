@@ -20,6 +20,9 @@ namespace UI {
 
         Gtk::Button *_stepButton;
         Gtk::ToggleButton *_runButton;
+        Gtk::Label *_iterationsLabel;
+
+        int _iterations = 0;
 
     public:
 
