@@ -47,6 +47,9 @@ void Application::on_open(const Application::type_vec_files &files, const Glib::
         json data = json::parse(scenario_data);
         from_json(data, _simulation);
 
+        if (data.contains("G"))
+            _rule.g() = data["G"].get<float>();
+
         spdlog::debug("Successfully loaded scenario with {} particles", _simulation.size());
         spdlog::trace("Scenario contents:\n{}", data.dump(4));
     }
