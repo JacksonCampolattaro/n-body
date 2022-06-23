@@ -56,9 +56,21 @@ add_executable(NBody_gtkmm4
         Application.cpp Application.h
         UI/Simple.cpp UI/Simple.h
         UI/Interactive.cpp UI/Interactive.h
-        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
+        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h
+        UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
         UI/Widgets/LabeledWidget.h
-        UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h UI/Widgets/ParticleEntry.cpp UI/Widgets/ParticleEntry.h UI/Widgets/VectorView.h UI/Widgets/SphereView.cpp UI/Widgets/SphereView.h UI/Widgets/VectorEditable.cpp UI/Widgets/VectorEditable.h UI/Widgets/BuilderWidget.h UI/Widgets/FloatEntry.cpp UI/Widgets/FloatEntry.h BackgroundSolver.cpp BackgroundSolver.h UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h)
+        UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h
+        UI/Widgets/ParticleEntry.cpp UI/Widgets/ParticleEntry.h
+        UI/Widgets/VectorView.h
+        UI/Widgets/SphereView.cpp UI/Widgets/SphereView.h
+        UI/Widgets/VectorEditable.cpp UI/Widgets/VectorEditable.h
+        UI/Widgets/BuilderWidget.h
+        UI/Widgets/FloatEntry.cpp UI/Widgets/FloatEntry.h
+        BackgroundSolver.cpp BackgroundSolver.h
+        UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
+        UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
+        UI/Widgets/Bindable/ParticleActiveMassBindable.cpp UI/Widgets/Bindable/ParticleActiveMassBindable.h
+        UI/Widgets/Bindable/ParticlePassiveMassBindable.cpp UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h)
 
 target_link_libraries(NBody_gtkmm4 PUBLIC
 

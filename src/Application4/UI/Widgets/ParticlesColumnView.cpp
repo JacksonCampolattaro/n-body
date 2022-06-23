@@ -1,0 +1,28 @@
+//
+// Created by Jackson Campolattaro on 6/23/22.
+//
+
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/label.h>
+#include <gtkmm/signallistitemfactory.h>
+#include <gtkmm/singleselection.h>
+
+#include "ParticlesColumnView.h"
+
+
+UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
+        Gtk::Box(Gtk::Orientation::VERTICAL),
+        _simulation(simulation),
+        _particlesModel(ParticlesListModel::create(simulation)) {
+
+    _columnView.set_model(Gtk::SingleSelection::create(_particlesModel));
+
+    _columnView.append_column(Gtk::ColumnViewColumn::create("Active Mass", BindableListItemFactory<ParticleActiveMassBindable>::create()));
+    _columnView.append_column(Gtk::ColumnViewColumn::create("Passive Mass", BindableListItemFactory<ParticlePassiveMassBindable>::create()));
+
+    _scrolledWindow.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
+    _scrolledWindow.set_vexpand();
+    _scrolledWindow.set_child(_columnView);
+    append(_scrolledWindow);
+}
+
