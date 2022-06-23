@@ -17,13 +17,14 @@
 #include "../Widgets/ParticlesListView.h"
 
 #include "Panel.h"
+#include "Application4/UI/Widgets/ParticlesColumnView.h"
 
 namespace UI {
 
 class ParticlesPanel : public Panel {
     private:
 
-        UI::ParticlesListView _particlesView;
+        UI::ParticlesColumnView _particlesView;
 
         Gtk::Window _particlesWindow;
 
