@@ -2,6 +2,8 @@
 // Created by jackcamp on 2/16/22.
 //
 
+#include <spdlog/spdlog.h>
+#include <gtkmm/button.h>
 #include "ParticlesPanel.h"
 
 UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
@@ -15,5 +17,16 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     auto count = builder->get_widget<Gtk::Label>("count-label");
     count->set_text(std::to_string(simulation.size()));
 
-    //append(_particlesView);
+    auto openParticlesViewButton = builder->get_widget<Gtk::Button>("modify-button");
+    openParticlesViewButton->signal_clicked().connect([&] {
+        _particlesWindow.show();
+    });
+
+    _particlesWindow.set_child(_particlesView);
+    _particlesWindow.signal_close_request().connect(
+            [&] {
+                _particlesWindow.hide();
+                return true;
+            },
+            false);
 }

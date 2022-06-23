@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkListBox" id="root">
+
+        <property name="selection-mode">none</property>
+        <style>
+            <class name="boxed-list"/>
+        </style>
+        <child>
+            <object class="AdwComboRow" id="solver-combo-row">
+                <property name="title">Algorithm</property>
+                <property name="subtitle">Approach to compute pair-wise interactions</property>
+                <property name="model">
+                    <object class="GtkStringList">
+                        <items>
+                            <item>Naive</item>
+                            <item>Barnes-Hut</item>
+                        </items>
+                    </object>
+                </property>
+            </object>
+        </child>
+    </object>
+
+</interface>

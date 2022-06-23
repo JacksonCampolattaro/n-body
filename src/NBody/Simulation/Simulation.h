@@ -17,10 +17,13 @@
 #include <entt/entity/registry.hpp>
 #include <entt/entity/handle.hpp>
 
+#include <glibmm/interface.h>
+
 #include <iostream>
 #include <iomanip>
 #include <thread>
 #include <mutex>
+#include <giomm/listmodel.h>
 
 using nlohmann::json;
 using std::istream;
@@ -33,10 +36,14 @@ namespace NBody {
     class Simulation : public entt::basic_registry<Entity> {
     public:
 
-        class Particle : public entt::basic_handle<Entity> {
+        class Particle : public entt::basic_handle<Entity>, public Glib::Object {
         public:
 
-            Particle() : entt::basic_handle<Entity>() {}
+            //Particle() : entt::basic_handle<Entity>() {}
+
+            Particle(const Particle &other) : entt::basic_handle<Entity>(other),
+                                              Glib::ObjectBase(typeid(Particle)),
+                                              Glib::Object() {}
 
             Particle(Simulation &ref, Entity value) : entt::basic_handle<Entity>(ref, value) {}
 
