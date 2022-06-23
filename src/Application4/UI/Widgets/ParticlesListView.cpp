@@ -2,27 +2,32 @@
 // Created by jackcamp on 2/19/22.
 //
 
-#include <glibmm/init.h>
 #include <gtkmm/stringobject.h>
 #include <spdlog/spdlog.h>
-#include "Application4/UI/Sidebar/ParticlesPanel.h"
-#include "ParticlesListView.h"
 #include "ParticleEntry.h"
+
+#include "ParticlesListView.h"
 
 UI::ParticlesListView::ParticlesListView(NBody::Simulation &simulation) :
         Gtk::Box(Gtk::Orientation::VERTICAL),
         _simulation(simulation),
+        _particlesModel(ParticlesListModel::create(simulation)),
         _factory(Gtk::SignalListItemFactory::create()),
-        _listView(Gtk::NoSelection::create(_particlesModel), _factory) {
+        _listView(Gtk::NoSelection::create(_particlesModel), _factory)
+        {
 
     add_css_class("particles-listview");
     set_overflow(Gtk::Overflow::HIDDEN);
     _scrolledWindow.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
 
-    _simulation.each([&](auto entity) {
-        auto particle = NBody::Simulation::Particle{_simulation, entity};
-        _particlesModel->append(Glib::make_refptr_for_instance(new GtkParticleHandle(particle)));
-    });
+//    _listView.set_factory(_factory);
+//    auto simulationObject = Glib::make_refptr_for_instance(&simulation);
+//    _listView.set_model(Gtk::NoSelection::create(simulationObject));
+
+//    _simulation.each([&](auto entity) {
+//        auto particle = new NBody::Simulation::Particle{_simulation, entity};
+//        _particlesModel->append(Glib::make_refptr_for_instance(particle));
+//    });
 
     _factory->signal_setup().connect(sigc::mem_fun(*this, &ParticlesListView::on_setup));
     _factory->signal_bind().connect(sigc::mem_fun(*this, &ParticlesListView::on_bind));
@@ -41,15 +46,9 @@ void UI::ParticlesListView::on_setup(const Glib::RefPtr<Gtk::ListItem> &listItem
 void UI::ParticlesListView::on_bind(const Glib::RefPtr<Gtk::ListItem> &listItem) {
 
     if (auto entry = dynamic_cast<ParticleEntry *>(listItem->get_child())) {
-        if (auto particleObject = std::dynamic_pointer_cast<GtkParticleHandle>(listItem->get_item())) {
-            auto particle = particleObject->get_property<NBody::Simulation::Particle>("particle");
-            entry->bind(particle);
+        if (auto particle = std::dynamic_pointer_cast<NBody::Simulation::Particle>(listItem->get_item())) {
+            entry->bind(*particle);
             spdlog::trace("Binding particle with widget");
         }
     }
 }
-
-UI::GtkParticleHandle::GtkParticleHandle(NBody::Simulation::Particle particle) :
-        Glib::ObjectBase(typeid(GtkParticleHandle)),
-        Glib::Object(),
-        _particle(*this, "particle", particle) {}

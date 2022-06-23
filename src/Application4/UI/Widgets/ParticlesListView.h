@@ -27,24 +27,16 @@
 #include "Application4/UI/Sidebar/Panel.h"
 #include "LabeledWidget.h"
 
+#include "ParticlesListModel.h"
+
 namespace UI {
-
-    class GtkParticleHandle : public Glib::Object {
-    public:
-        Glib::Property<NBody::Simulation::Particle> _particle;
-
-        GtkParticleHandle(NBody::Simulation::Particle particle);
-
-        virtual ~GtkParticleHandle() {}
-    };
 
     class ParticlesListView : public Gtk::Box {
     private:
 
         NBody::Simulation &_simulation;
-        Glib::RefPtr<Gio::ListStore<GtkParticleHandle>> _particlesModel = Gio::ListStore<GtkParticleHandle>::create();
+        Glib::RefPtr<ParticlesListModel> _particlesModel;
 
-        Glib::RefPtr<Gtk::StringList> _model = Gtk::StringList::create({"a", "b"});
         Glib::RefPtr<Gtk::SignalListItemFactory> _factory = Gtk::SignalListItemFactory::create();
 
         Gtk::ScrolledWindow _scrolledWindow;

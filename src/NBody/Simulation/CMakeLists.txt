@@ -10,6 +10,9 @@ FetchContent_Declare(entt
         GIT_TAG v3.8.1)
 FetchContent_MakeAvailable(entt)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
+
 add_library(Simulation
         Simulation.h Simulation.cpp
         Solver.h
@@ -26,6 +29,8 @@ target_link_libraries(Simulation PUBLIC
 
         EnTT::EnTT
         nlohmann_json::nlohmann_json
+
+        PkgConfig::gtkmm
 
         spdlog::spdlog
         ${SIGCPP_LIBRARIES}

@@ -11,6 +11,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
 #include <gtkmm/switch.h>
+#include <gtkmm/window.h>
 
 #include "../Widgets/LabeledWidget.h"
 #include "../Widgets/ParticlesListView.h"
@@ -23,6 +24,8 @@ class ParticlesPanel : public Panel {
     private:
 
         UI::ParticlesListView _particlesView;
+
+        Gtk::Window _particlesWindow;
 
     public:
 
