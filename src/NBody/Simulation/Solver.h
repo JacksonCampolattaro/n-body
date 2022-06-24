@@ -30,6 +30,11 @@ namespace NBody {
 
         Solver(Simulation &simulation, Physics::Rule &rule) : _simulation(simulation), _rule(rule) {
             _slot_step = sigc::mem_fun(*this, &Solver::on_step);
+
+            // When the "finished" signal is triggered, all individual particle signals should also trigger
+            _signal_finished.connect([&] {
+                _simulation.view<sigc::signal<void()>>().each([](auto &s) { s.emit(); });
+            });
         };
 
         virtual void step() = 0;

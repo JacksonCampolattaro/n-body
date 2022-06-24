@@ -15,6 +15,8 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
         _simulation(simulation),
         _particlesModel(ParticlesListModel::create(simulation)) {
 
+    set_size_request(-1, 400);
+
     _columnView.set_model(Gtk::SingleSelection::create(_particlesModel));
 
     _columnView.append_column(Gtk::ColumnViewColumn::create("Active Mass", BindableListItemFactory<ParticleActiveMassBindable>::create()));
