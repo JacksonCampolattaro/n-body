@@ -5,7 +5,7 @@
 #ifndef N_BODY_PARTICLEVELOCITYBINDABLE_H
 #define N_BODY_PARTICLEVELOCITYBINDABLE_H
 
-#include "../VectorView.h"
+#include "Application4/UI/Widgets/View/VectorView.h"
 #include "Bindable.h"
 #include <NBody/Simulation/Simulation.h>
 

@@ -5,16 +5,16 @@
 #ifndef N_BODY_PARTICLEENTRY_H
 #define N_BODY_PARTICLEENTRY_H
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 
-#include "VectorView.h"
-#include "LabeledWidget.h"
-#include "SphereView.h"
+#include "Application4/UI/Widgets/View/VectorView.h"
+#include "Application4/UI/Widgets/LabeledWidget.h"
+#include "Application4/UI/Widgets/View/SphereView.h"
 
 namespace UI {
 

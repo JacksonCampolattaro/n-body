@@ -13,11 +13,11 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     auto &root = *builder->get_widget<Gtk::Widget>("root");
     _contents.append(root);
 
-    auto &position = *Gtk::Builder::get_widget_derived<PositionEditable>(builder, "CameraPositionEditable");
+    auto &position = *Gtk::Builder::get_widget_derived<CompactPositionEntry>(builder, "CameraPositionEditable");
     camera.signal_positionChanged.connect(position.slot_changed);
     position.signal_changed.connect(camera.slot_moveTo);
 
-    auto &direction = *Gtk::Builder::get_widget_derived<DirectionEditable>(builder, "CameraDirectionEditable");
+    auto &direction = *Gtk::Builder::get_widget_derived<CompactDirectionEntry>(builder, "CameraDirectionEditable");
     camera.signal_directionChanged.connect(direction.slot_changed);
     direction.set_sensitive(false);
 

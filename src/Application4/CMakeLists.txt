@@ -60,17 +60,17 @@ add_executable(NBody_gtkmm4
         UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
         UI/Widgets/LabeledWidget.h
         UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h
-        UI/Widgets/ParticleEntry.cpp UI/Widgets/ParticleEntry.h
-        UI/Widgets/VectorView.h
-        UI/Widgets/SphereView.cpp UI/Widgets/SphereView.h
-        UI/Widgets/VectorEditable.cpp UI/Widgets/VectorEditable.h
+        UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
+        UI/Widgets/View/VectorView.h
+        UI/Widgets/View/SphereView.cpp UI/Widgets/View/SphereView.h
+        UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
-        UI/Widgets/FloatEntry.cpp UI/Widgets/FloatEntry.h
+        UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
         BackgroundSolver.cpp BackgroundSolver.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/Bindable/ParticleActiveMassBindable.h
-        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/FloatView.h)
+        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/View/FloatView.h)
 
 target_link_libraries(NBody_gtkmm4 PUBLIC
 

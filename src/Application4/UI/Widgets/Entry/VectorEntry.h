@@ -2,8 +2,8 @@
 // Created by jackcamp on 2/21/22.
 //
 
-#ifndef N_BODY_VECTOREDITABLE_H
-#define N_BODY_VECTOREDITABLE_H
+#ifndef N_BODY_VECTORENTRY_H
+#define N_BODY_VECTORENTRY_H
 
 #include <gtkmm/button.h>
 #include <gtkmm/popover.h>
@@ -13,8 +13,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include "FloatEntry.h"
-#include "VectorView.h"
+#include "Application4/UI/Widgets/Entry/FloatEntry.h"
+#include "Application4/UI/Widgets/View/VectorView.h"
 
 namespace UI {
 
@@ -74,7 +74,7 @@ namespace UI {
     };
 
     template<StringLiteral open, StringLiteral close>
-    class VectorEditable : public Gtk::Button {
+    class CompactVectorEntry : public Gtk::Button {
     private:
 
         VectorView<open, close> _preview;
@@ -92,21 +92,21 @@ namespace UI {
 
     public:
 
-//        VectorEditable() : signal_changed(_entry.signal_changed) {
-//            //add_css_class("editable");
-//
-//            set_child(_preview);
-//
-//            _popover.set_child(_entry);
-//            _popover.set_parent(_preview);
-//
-//            signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
-//
-//            slot_changed = sigc::mem_fun<void, VectorEditable, VectorEditable, float, float, float>(*this,
-//                                                                                                    &VectorEditable::setValue);
-//        }
+        //        VectorEntry() : signal_changed(_entry.signal_changed) {
+        //            //add_css_class("editable");
+        //
+        //            set_child(_preview);
+        //
+        //            _popover.set_child(_entry);
+        //            _popover.set_parent(_preview);
+        //
+        //            signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
+        //
+        //            slot_changed = sigc::mem_fun<void, VectorEntry, VectorEntry, float, float, float>(*this,
+        //                                                                                                    &VectorEntry::setValue);
+        //        }
 
-        VectorEditable(Gtk::Button::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+        CompactVectorEntry(Gtk::Button::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
                 : Gtk::Button(cobject),
                   signal_changed(_entry.signal_changed) {
 
@@ -119,8 +119,9 @@ namespace UI {
 
             signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
 
-            slot_changed = sigc::mem_fun<void, VectorEditable, VectorEditable, float, float, float>(*this,
-                                                                                                    &VectorEditable::setValue);
+            slot_changed = sigc::mem_fun<void, CompactVectorEntry, CompactVectorEntry, float, float, float>(
+                    *this, &CompactVectorEntry::setValue
+            );
         }
 
         void setValue(float x, float y, float z) {
@@ -136,9 +137,9 @@ namespace UI {
 
     };
 
-    typedef VectorEditable<"(", ")"> PositionEditable;
-    typedef VectorEditable<"⟨", "⟩"> VelocityEditable;
-    typedef VectorEditable<"|", "|"> DirectionEditable;
+    typedef CompactVectorEntry<"(", ")"> CompactPositionEntry;
+    typedef CompactVectorEntry<"⟨", "⟩"> CompactVelocityEntry;
+    typedef CompactVectorEntry<"|", "|"> CompactDirectionEntry;
 }
 
-#endif //N_BODY_VECTOREDITABLE_H
+#endif //N_BODY_VECTORENTRY_H

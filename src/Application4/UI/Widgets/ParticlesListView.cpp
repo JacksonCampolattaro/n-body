@@ -4,7 +4,7 @@
 
 #include <gtkmm/stringobject.h>
 #include <spdlog/spdlog.h>
-#include "ParticleEntry.h"
+#include "Application4/UI/Widgets/Entry/ParticleEntry.h"
 
 #include "ParticlesListView.h"
 

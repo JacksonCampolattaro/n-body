@@ -8,7 +8,7 @@
 #include <gtkmm/widget.h>
 #include <gtkmm/builder.h>
 
-#include "VectorView.h" // TODO move StringLiteral type
+#include "Application4/UI/Widgets/View/VectorView.h" // TODO move StringLiteral type
 
 namespace UI {
 
