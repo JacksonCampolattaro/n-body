@@ -5,7 +5,7 @@
 #ifndef N_BODY_PARTICLEPOSITIONBINDABLE_H
 #define N_BODY_PARTICLEPOSITIONBINDABLE_H
 
-#include "Application4/UI/Widgets/View/VectorView.h"
+#include "Application/UI/Widgets/View/VectorView.h"
 #include "Bindable.h"
 #include <NBody/Simulation/Simulation.h>
 

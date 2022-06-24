@@ -12,9 +12,9 @@
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 
-#include "Application4/UI/Widgets/View/VectorView.h"
-#include "Application4/UI/Widgets/LabeledWidget.h"
-#include "Application4/UI/Widgets/View/SphereView.h"
+#include "Application/UI/Widgets/View/VectorView.h"
+#include "Application/UI/Widgets/LabeledWidget.h"
+#include "Application/UI/Widgets/View/SphereView.h"
 
 namespace UI {
 

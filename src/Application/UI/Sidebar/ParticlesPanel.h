@@ -17,7 +17,7 @@
 #include "../Widgets/ParticlesListView.h"
 
 #include "Panel.h"
-#include "Application4/UI/Widgets/ParticlesColumnView.h"
+#include "Application/UI/Widgets/ParticlesColumnView.h"
 
 namespace UI {
 

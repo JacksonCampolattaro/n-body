@@ -3,7 +3,7 @@
 //
 
 #include "PhysicsPanel.h"
-#include "Application4/UI/Widgets/Entry/FloatEntry.h"
+#include "Application/UI/Widgets/Entry/FloatEntry.h"
 
 UI::PhysicsPanel::PhysicsPanel(NBody::Physics::Rule &rule) : Panel("Physics"), _rule(rule) {
 

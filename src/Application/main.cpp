@@ -1,7 +1,11 @@
+#include <gtkmm.h>
 
 #include "Application.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
+    Glib::init();
+    auto application = Application::create();
 
-    return Application().run(argc, argv);
+    return application->run(argc, argv);
 }

@@ -1,40 +1,38 @@
 
-find_package(Magnum REQUIRED
-        GL
-        )
+# Add necessary libraries
+find_package(spdlog REQUIRED)
+find_package(Gtkmm REQUIRED)
 
+# Include LibAdwaita
+pkg_check_modules(ADWAITA REQUIRED libadwaita-1)
+link_directories(${ADWAITA_LIBRARY_DIRS})
+include_directories(${ADWAITA_INCLUDE_DIRS})
+
+# Add resource files
 find_package(Gio REQUIRED)
-
 find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
-
-set(RESOURCE_DIR     ${PROJECT_SOURCE_DIR}/resources)
-set(GRESOURCE_C      resources.c)
-set(GRESOURCE_XML    gresource.xml)
+set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/resources)
+set(GRESOURCE_C resources.c)
+set(GRESOURCE_XML gresource.xml)
 set(GRESOURCE_XML_IN ${RESOURCE_DIR}/gresource.xml.in)
 set(GRESOURCE_DEPENDENCIES CACHE INTERNAL "GResource dependencies for dummy")
-
 set(OLD ${CMAKE_CURRENT_SOURCE_DIR}/${GRESOURCE_XML_IN})
 set(NEW ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_XML})
-
-if(NOT EXISTS ${NEW} OR (${OLD} IS_NEWER_THAN ${NEW}))
+if (NOT EXISTS ${NEW} OR (${OLD} IS_NEWER_THAN ${NEW}))
     configure_file(${GRESOURCE_XML_IN} ${GRESOURCE_XML})
-
     execute_process(
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMAND ${GLIB_COMPILE_RESOURCES} --generate-dependencies ${GRESOURCE_XML}
             OUTPUT_VARIABLE GRESOURCE_DEPENDENCIES
     )
-
     # OUTPUT_VARIABLE is not a list but a single string value with newlines
     # Convert it to a list and pop out the last newline character
     string(REPLACE "\n" ";" GRESOURCE_DEPENDENCIES ${GRESOURCE_DEPENDENCIES})
     list(POP_BACK GRESOURCE_DEPENDENCIES)
     list(TRANSFORM GRESOURCE_DEPENDENCIES PREPEND ${RESOURCE_DIR}/)
-endif()
-
+endif ()
 message(STATUS ${RESOURCE_DIR})
 message(STATUS ${GRESOURCE_DEPENDENCIES})
-
 add_custom_command(
         OUTPUT ${GRESOURCE_C}
         WORKING_DIRECTORY ${RESOURCE_DIR}
@@ -47,7 +45,6 @@ add_custom_command(
         MAIN_DEPENDENCY ${GRESOURCE_XML}
         DEPENDS ${GRESOURCE_DEPENDENCIES}
 )
-
 set_source_files_properties(
         ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C}
         PROPERTIES GENERATED TRUE
@@ -56,15 +53,24 @@ set_source_files_properties(
 add_executable(NBody
         main.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C} # fixme this is terrible, there must be a better way
-        Logger.h Logger.cpp
-        Application.h Application.cpp
-        Interface/Interface.cpp Interface/Interface.h
-        Interface/Simple.cpp Interface/Simple.h
-        Interface/Interactive.cpp Interface/Interactive.h
-        Interface/ConfigurationPanel/ConfigurationPanel.cpp Interface/ConfigurationPanel/ConfigurationPanel.h
-        Interface/ConfigurationPanel/LabeledWidget.h
-        Interface/ConfigurationPanel/Panes/BodiesPane.cpp Interface/ConfigurationPanel/Panes/BodiesPane.h
-        Interface/ConfigurationPanel/Panes/Pane.cpp Interface/ConfigurationPanel/Panes/Pane.h Interface/ConfigurationPanel/Panes/PhysicsPane.cpp Interface/ConfigurationPanel/Panes/PhysicsPane.h Interface/ConfigurationPanel/Panes/CameraPane.cpp Interface/ConfigurationPanel/Panes/CameraPane.h)
+        Application.cpp Application.h
+        UI/Simple.cpp UI/Simple.h
+        UI/Interactive.cpp UI/Interactive.h
+        UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h
+        UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
+        UI/Widgets/LabeledWidget.h
+        UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h
+        UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
+        UI/Widgets/View/VectorView.h
+        UI/Widgets/View/SphereView.cpp UI/Widgets/View/SphereView.h
+        UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
+        UI/Widgets/BuilderWidget.h
+        UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
+        BackgroundSolver.cpp BackgroundSolver.h
+        UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
+        UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
+        UI/Widgets/Bindable/ParticleActiveMassBindable.h
+        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/View/FloatView.h)
 
 target_link_libraries(NBody PUBLIC
 
@@ -73,4 +79,5 @@ target_link_libraries(NBody PUBLIC
 
         spdlog::spdlog
         ${GTKMM_LIBRARIES}
+        ${ADWAITA_LIBRARIES}
         )

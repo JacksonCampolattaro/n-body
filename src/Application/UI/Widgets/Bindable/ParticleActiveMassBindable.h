@@ -7,7 +7,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include "Bindable.h"
-#include "Application4/UI/Widgets/View/FloatView.h"
+#include "Application/UI/Widgets/View/FloatView.h"
 
 #include <gtkmm/label.h>
 
