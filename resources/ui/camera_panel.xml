@@ -11,7 +11,7 @@
         <child>
             <object class="AdwActionRow">
                 <property name="title">Position</property>
-                <property name="subtitle">The location of the camera</property>
+<!--                <property name="subtitle">The location of the camera</property>-->
                 <child type="suffix">
                     <object class="GtkButton" id="CameraPositionEditable"/>
                 </child>
@@ -20,7 +20,7 @@
         <child>
             <object class="AdwActionRow">
                 <property name="title">Direction</property>
-                <property name="subtitle">The direction the camera faces</property>
+<!--                <property name="subtitle">The direction the camera faces</property>-->
                 <child type="suffix">
                     <object class="GtkButton" id="CameraDirectionEditable"/>
                 </child>
