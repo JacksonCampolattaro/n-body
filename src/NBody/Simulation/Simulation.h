@@ -23,7 +23,9 @@
 #include <iomanip>
 #include <thread>
 #include <mutex>
+
 #include <giomm/listmodel.h>
+#include <glibmm/dispatcher.h>
 
 using nlohmann::json;
 using std::istream;
@@ -66,7 +68,25 @@ namespace NBody {
 
     public:
 
+        Simulation() : entt::basic_registry<Entity>() {
+            _dispatcher.connect([&] { signal_changed.emit(); });
+        }
+
+        void notifyChanged() {
+            _dispatcher.emit();
+        }
+
+    public:
+
+        sigc::signal<void()> signal_changed;
+
         mutable std::mutex mutex;
+
+    private:
+
+        Glib::Dispatcher _dispatcher;
+
+    public:
 
         friend void to_json(json &j, const Simulation &s);
 

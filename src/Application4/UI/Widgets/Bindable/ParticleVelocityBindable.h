@@ -6,16 +6,15 @@
 #define N_BODY_PARTICLEVELOCITYBINDABLE_H
 
 #include "../VectorView.h"
+#include "Bindable.h"
 #include <NBody/Simulation/Simulation.h>
 
 namespace UI {
 
-    class ParticleVelocityBindable : public VelocityView {
+    class ParticleVelocityBindable : public VelocityView, public Bindable<NBody::Physics::Velocity> {
     public:
 
-        void bind(NBody::Simulation::Particle &particle);
-
-        void unbind();
+        void update(NBody::Physics::Velocity &value) override { setValue(value); };
     };
 
 }

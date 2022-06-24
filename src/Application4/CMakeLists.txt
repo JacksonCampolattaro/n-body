@@ -69,8 +69,8 @@ add_executable(NBody_gtkmm4
         BackgroundSolver.cpp BackgroundSolver.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
-        UI/Widgets/Bindable/ParticleActiveMassBindable.cpp UI/Widgets/Bindable/ParticleActiveMassBindable.h
-        UI/Widgets/Bindable/ParticlePassiveMassBindable.cpp UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.cpp UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.cpp UI/Widgets/Bindable/ParticleVelocityBindable.h)
+        UI/Widgets/Bindable/ParticleActiveMassBindable.h
+        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h)
 
 target_link_libraries(NBody_gtkmm4 PUBLIC
 

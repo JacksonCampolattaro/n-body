@@ -6,17 +6,16 @@
 #define N_BODY_PARTICLEACTIVEMASSBINDABLE_H
 
 #include <NBody/Simulation/Simulation.h>
+#include "Bindable.h"
 
 #include <gtkmm/label.h>
 
 namespace UI {
 
-    class ParticleActiveMassBindable : public Gtk::Label {
+    class ParticleActiveMassBindable : public Gtk::Label, public Bindable<NBody::Physics::ActiveMass> {
     public:
 
-        void bind(NBody::Simulation::Particle &particle);
-
-        void unbind();
+        void update(NBody::Physics::ActiveMass &value) override { set_text(std::to_string(value.mass())); };
     };
 
 }

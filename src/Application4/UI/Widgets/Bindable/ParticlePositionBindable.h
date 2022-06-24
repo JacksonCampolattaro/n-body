@@ -6,16 +6,15 @@
 #define N_BODY_PARTICLEPOSITIONBINDABLE_H
 
 #include "../VectorView.h"
+#include "Bindable.h"
 #include <NBody/Simulation/Simulation.h>
 
 namespace UI {
 
-    class ParticlePositionBindable : public PositionView {
+    class ParticlePositionBindable : public PositionView, public Bindable<NBody::Physics::Position> {
     public:
 
-        void bind(NBody::Simulation::Particle &particle);
-
-        void unbind();
+        void update(NBody::Physics::Position &value) override { setValue(value); };
     };
 
 }
