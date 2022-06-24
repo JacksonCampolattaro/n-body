@@ -7,15 +7,16 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include "Bindable.h"
+#include "../FloatView.h"
 
 #include <gtkmm/label.h>
 
 namespace UI {
 
-    class ParticlePassiveMassBindable : public Gtk::Label, public Bindable<NBody::Physics::PassiveMass> {
+    class ParticlePassiveMassBindable : public FloatView<10>, public Bindable<NBody::Physics::PassiveMass> {
     public:
 
-        void update(NBody::Physics::PassiveMass &value) override { set_text(std::to_string(value.mass())); };
+        void update(NBody::Physics::PassiveMass &value) override { setValue(value.mass()); };
     };
 
 }

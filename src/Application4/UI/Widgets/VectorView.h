@@ -5,6 +5,8 @@
 #ifndef N_BODY_VECTORVIEW_H
 #define N_BODY_VECTORVIEW_H
 
+#include "FloatView.h"
+
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
 
@@ -25,13 +27,12 @@ namespace UI {
     class VectorView : public Gtk::Box {
     private:
 
+        FloatView<6> _x, _y, _z;
+
         Gtk::Label
                 _open{open.value},
-                _x{"[X]"},
                 _sep1{", "},
-                _y{"[Y]"},
                 _sep2{", "},
-                _z{"[Z]"},
                 _close{close.value};
 
     public:
@@ -39,19 +40,6 @@ namespace UI {
         VectorView() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
 
             add_css_class("monospace");
-            //add_css_class("caption");
-
-            _x.set_width_chars(6);
-            _y.set_width_chars(6);
-            _z.set_width_chars(6);
-
-            _x.set_max_width_chars(6);
-            _y.set_max_width_chars(6);
-            _z.set_max_width_chars(6);
-
-            _x.set_ellipsize(Pango::EllipsizeMode::END);
-            _y.set_ellipsize(Pango::EllipsizeMode::END);
-            _z.set_ellipsize(Pango::EllipsizeMode::END);
 
             _open.add_css_class("dim-label");
             _sep1.add_css_class("dim-label");
@@ -70,25 +58,9 @@ namespace UI {
         }
 
         void setValue(float x, float y, float z) {
-
-            std::stringstream stream;
-            stream << std::setprecision(2);
-
-            stream.str(std::string());
-            stream << std::setw(6) << x;
-            _x.set_label(stream.str());
-            stream.clear();
-
-            stream.str(std::string());
-            stream << std::setw(6) << y;
-            _y.set_label(stream.str());
-            stream.clear();
-
-            stream.str(std::string());
-            stream << std::setw(6) << z;
-            _z.set_label(stream.str());
-            stream.clear();
-
+            _x.setValue(x);
+            _y.setValue(y);
+            _z.setValue(z);
         }
 
         void setValue(const glm::vec3 &value) {
