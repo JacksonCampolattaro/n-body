@@ -14,6 +14,8 @@
 
 #include "Bindable/ParticleActiveMassBindable.h"
 #include "Bindable/ParticlePassiveMassBindable.h"
+#include "Bindable/ParticlePositionBindable.h"
+#include "Bindable/ParticleVelocityBindable.h"
 #include "Bindable/BindableListItemFactory.h"
 
 namespace UI {

@@ -39,15 +39,15 @@ namespace UI {
         VectorView() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
 
             add_css_class("monospace");
-            add_css_class("caption");
+            //add_css_class("caption");
 
-            _x.set_width_chars(5);
-            _y.set_width_chars(5);
-            _z.set_width_chars(5);
+            _x.set_width_chars(6);
+            _y.set_width_chars(6);
+            _z.set_width_chars(6);
 
-            _x.set_max_width_chars(5);
-            _y.set_max_width_chars(5);
-            _z.set_max_width_chars(5);
+            _x.set_max_width_chars(6);
+            _y.set_max_width_chars(6);
+            _z.set_max_width_chars(6);
 
             _x.set_ellipsize(Pango::EllipsizeMode::END);
             _y.set_ellipsize(Pango::EllipsizeMode::END);
@@ -75,17 +75,17 @@ namespace UI {
             stream << std::setprecision(2);
 
             stream.str(std::string());
-            stream << std::setw(5) << x;
+            stream << std::setw(6) << x;
             _x.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << std::setw(5) << y;
+            stream << std::setw(6) << y;
             _y.set_label(stream.str());
             stream.clear();
 
             stream.str(std::string());
-            stream << std::setw(5) << z;
+            stream << std::setw(6) << z;
             _z.set_label(stream.str());
             stream.clear();
 

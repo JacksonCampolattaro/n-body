@@ -19,6 +19,8 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
 
     _columnView.append_column(Gtk::ColumnViewColumn::create("Active Mass", BindableListItemFactory<ParticleActiveMassBindable>::create()));
     _columnView.append_column(Gtk::ColumnViewColumn::create("Passive Mass", BindableListItemFactory<ParticlePassiveMassBindable>::create()));
+    _columnView.append_column(Gtk::ColumnViewColumn::create("Position", BindableListItemFactory<ParticlePositionBindable>::create()));
+    _columnView.append_column(Gtk::ColumnViewColumn::create("Velocity", BindableListItemFactory<ParticleVelocityBindable>::create()));
 
     _scrolledWindow.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
     _scrolledWindow.set_vexpand();
