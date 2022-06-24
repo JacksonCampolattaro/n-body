@@ -24,7 +24,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 
-#include "Application4/UI/Sidebar/Panel.h"
+#include "Application/UI/Sidebar/Panel.h"
 #include "LabeledWidget.h"
 
 #include "ParticlesListModel.h"

@@ -13,8 +13,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Application4/UI/Widgets/Entry/FloatEntry.h"
-#include "Application4/UI/Widgets/View/VectorView.h"
+#include "Application/UI/Widgets/Entry/FloatEntry.h"
+#include "Application/UI/Widgets/View/VectorView.h"
 
 namespace UI {
 

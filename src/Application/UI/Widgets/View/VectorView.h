@@ -5,7 +5,7 @@
 #ifndef N_BODY_VECTORVIEW_H
 #define N_BODY_VECTORVIEW_H
 
-#include "Application4/UI/Widgets/View/FloatView.h"
+#include "Application/UI/Widgets/View/FloatView.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
