@@ -8,8 +8,8 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/aspectframe.h>
 
-#include <NBody/Graphics/Color.h>
-#include <NBody/Graphics/Sphere.h>
+#include "NBody/Graphics/Color.h"
+#include "NBody/Graphics/Sphere.h"
 
 namespace UI {
 

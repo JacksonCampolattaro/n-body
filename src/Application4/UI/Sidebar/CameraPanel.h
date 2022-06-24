@@ -12,7 +12,7 @@
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
-#include "../Widgets/VectorEditable.h"
+#include "Application4/UI/Widgets/Entry/VectorEntry.h"
 
 namespace UI {
 
