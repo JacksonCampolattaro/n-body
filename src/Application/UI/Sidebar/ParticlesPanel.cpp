@@ -22,11 +22,13 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         _particlesWindow.show();
     });
 
+    _particlesWindow.set_title("Particles");
     _particlesWindow.set_child(_particlesView);
     _particlesWindow.signal_close_request().connect(
             [&] {
                 _particlesWindow.hide();
                 return true;
             },
-            false);
+            false
+    );
 }

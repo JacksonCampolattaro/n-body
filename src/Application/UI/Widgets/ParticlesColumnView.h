@@ -7,8 +7,11 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/columnview.h>
+#include <gtkmm/signallistitemfactory.h>
+#include <gtkmm/singleselection.h>
 
 #include <NBody/Simulation/Simulation.h>
+#include <gtkmm/window.h>
 
 #include "ParticlesListModel.h"
 
@@ -17,6 +20,7 @@
 #include "Bindable/ParticlePositionBindable.h"
 #include "Bindable/ParticleVelocityBindable.h"
 #include "Bindable/BindableListItemFactory.h"
+#include "Application/UI/Widgets/Entry/ParticleEntry.h"
 
 namespace UI {
 
@@ -24,10 +28,14 @@ namespace UI {
     private:
 
         NBody::Simulation &_simulation;
+        Glib::RefPtr<Gtk::SingleSelection> _selectionModel;
         Glib::RefPtr<ParticlesListModel> _particlesModel;
 
         Gtk::ScrolledWindow _scrolledWindow;
         Gtk::ColumnView _columnView;
+
+        ParticleEntry _particleEntry;
+        Gtk::Window _window;
 
     public:
 
