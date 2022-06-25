@@ -21,20 +21,20 @@ namespace UI {
     class ParticleEntry : public Gtk::Box {
     private:
 
-        Gtk::Grid _grid;
-
-        Gtk::Image _icon;
-
-        SphereView _sphereView;
-
-        Gtk::Label
-                _positionLabel{"P = "},
-                _velocityLabel{"V = "},
-                _massLabel{"M = "};
-
-        PositionView _positionView;
-        VelocityView _velocityView;
-        Gtk::Label _massView{"0.00"};
+//        Gtk::Grid _grid;
+//
+//        Gtk::Image _icon;
+//
+//        SphereView _sphereView;
+//
+//        Gtk::Label
+//                _positionLabel{"P = "},
+//                _velocityLabel{"V = "},
+//                _massLabel{"M = "};
+//
+//        PositionView _positionView;
+//        VelocityView _velocityView;
+//        Gtk::Label _massView{"0.00"};
 
     public:
 

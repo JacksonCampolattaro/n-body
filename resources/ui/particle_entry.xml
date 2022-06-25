@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="AdwClamp" id="root">
+        <property name="maximum-size">600</property>
+        <property name="tightening-threshold">200</property>
+        <property name="halign">fill</property>
+        <property name="hexpand">1</property>
+
+        <property name="margin-top">16</property>
+        <property name="margin-bottom">16</property>
+        <property name="margin-start">16</property>
+        <property name="margin-end">16</property>
+
+        <property name="child">
+            <object class="GtkBox" id="box">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">True</property>
+                <property name="spacing">16</property>
+
+                <child>
+                    <object class="GtkLabel" id="label">
+                        <property name="label">Particle Properties</property>
+                        <property name="halign">start</property>
+                        <style>
+                            <class name="title-2"/>
+                        </style>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                            <class name="boxed-list"/>
+                        </style>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Position</property>
+                                <child type="suffix">
+                                    <object class="GtkButton" id="position-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Velocity</property>
+                                <child type="suffix">
+                                    <object class="GtkButton" id="velocity-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                            <class name="boxed-list"/>
+                        </style>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Active Mass</property>
+                                <property name="subtitle">Used when calculating force on other particles</property>
+                                <child type="suffix">
+                                    <object class="GtkSpinButton" id="active-mass-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Passive Mass</property>
+                                <property name="subtitle">Used when calculating force on this particle</property>
+                                <child type="suffix">
+                                    <object class="GtkSpinButton" id="passive-mass-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Color</property>
+                                <property name="subtitle">Color of the particle</property>
+                                <child type="suffix">
+                                    <object class="GtkColorButton" id="particle-color-button">
+                                        <property name="hexpand">0</property>
+                                        <property name="vexpand">0</property>
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+
+            </object>
+
+        </property>
+    </object>
+
+</interface>

@@ -11,6 +11,8 @@
         <file>ui/solver_panel.xml</file>
         <file>ui/camera_panel.xml</file>
         <file>ui/run_panel.xml</file>
+
+        <file>ui/particle_entry.xml</file>
     </gresource>
 
     <gresource prefix="/NBody">
