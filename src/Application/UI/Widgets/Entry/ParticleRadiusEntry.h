@@ -5,7 +5,7 @@
 #ifndef N_BODY_PARTICLERADIUSENTRY_H
 #define N_BODY_PARTICLERADIUSENTRY_H
 
-#include "Bindable.h"
+#include "Application/UI/Widgets/Bindable.h"
 #include "../Entry/FloatEntry.h"
 
 #include <NBody/Graphics/Sphere.h>

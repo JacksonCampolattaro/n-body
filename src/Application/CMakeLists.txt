@@ -69,8 +69,8 @@ add_executable(NBody
         BackgroundSolver.cpp BackgroundSolver.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
-        UI/Widgets/Bindable/ParticleActiveMassBindable.h
-        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Bindable/ParticlePositionEntry.h UI/Widgets/Bindable/ParticleVelocityEntry.h UI/Widgets/Bindable/ParticleActiveMassEntry.h UI/Widgets/Bindable/ParticlePassiveMassEntry.h UI/Widgets/Bindable/ParticleColorEntry.h UI/Widgets/Bindable/ParticleRadiusEntry.h)
+        UI/Widgets/View/ParticleActiveMassView.h
+        UI/Widgets/View/ParticlePassiveMassView.h UI/Widgets/BindableListItemFactory.h UI/Widgets/View/ParticlePositionView.h UI/Widgets/View/ParticleVelocityView.h UI/Widgets/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Entry/ParticlePositionEntry.h UI/Widgets/Entry/ParticleVelocityEntry.h UI/Widgets/Entry/ParticleActiveMassEntry.h UI/Widgets/Entry/ParticlePassiveMassEntry.h UI/Widgets/Entry/ParticleColorEntry.h UI/Widgets/Entry/ParticleRadiusEntry.h UI/Widgets/View/ParticleColorView.h UI/Widgets/View/ParticleRadiusView.h)
 
 target_link_libraries(NBody PUBLIC
 

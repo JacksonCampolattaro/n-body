@@ -5,10 +5,10 @@
 #ifndef N_BODY_PARTICLEACTIVEMASSENTRY_H
 #define N_BODY_PARTICLEACTIVEMASSENTRY_H
 
-#include "Bindable.h"
-#include "../Entry/FloatEntry.h"
+#include "Application/UI/Widgets/Bindable.h"
+#include "FloatEntry.h"
 
-#include <NBody/Physics/ActiveMass.h>
+#include "NBody/Physics/ActiveMass.h"
 
 namespace UI {
 

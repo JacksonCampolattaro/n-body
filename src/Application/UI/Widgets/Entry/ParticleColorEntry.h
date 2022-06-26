@@ -5,9 +5,9 @@
 #ifndef N_BODY_PARTICLECOLORENTRY_H
 #define N_BODY_PARTICLECOLORENTRY_H
 
-#include "Bindable.h"
+#include "Application/UI/Widgets/Bindable.h"
 
-#include <NBody/Graphics/Color.h>
+#include "NBody/Graphics/Color.h"
 
 #include <gtkmm/colorbutton.h>
 #include <gtkmm/builder.h>

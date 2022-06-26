@@ -15,11 +15,14 @@
 
 #include "ParticlesListModel.h"
 
-#include "Bindable/ParticleActiveMassBindable.h"
-#include "Bindable/ParticlePassiveMassBindable.h"
-#include "Bindable/ParticlePositionBindable.h"
-#include "Bindable/ParticleVelocityBindable.h"
-#include "Bindable/BindableListItemFactory.h"
+#include "Application/UI/Widgets/View/ParticleActiveMassView.h"
+#include "Application/UI/Widgets/View/ParticlePassiveMassView.h"
+#include "Application/UI/Widgets/View/ParticlePositionView.h"
+#include "Application/UI/Widgets/View/ParticleVelocityView.h"
+#include "Application/UI/Widgets/View/ParticleColorView.h"
+#include "Application/UI/Widgets/View/ParticleRadiusView.h"
+#include "BindableListItemFactory.h"
+
 #include "Application/UI/Widgets/Entry/ParticleEntry.h"
 
 namespace UI {
