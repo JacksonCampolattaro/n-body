@@ -5,7 +5,7 @@
 #ifndef N_BODY_BINDABLE_H
 #define N_BODY_BINDABLE_H
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 namespace UI {
 

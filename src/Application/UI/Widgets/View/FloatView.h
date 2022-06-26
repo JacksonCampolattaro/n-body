@@ -23,7 +23,7 @@ namespace UI {
         void setValue(float v) {
 
             std::stringstream stream;
-            stream << std::setprecision(2) << std::setw(Digits)
+            stream << std::setprecision(Digits / 2) << std::setw(Digits)
                    << v;
             set_text(stream.str());
         }

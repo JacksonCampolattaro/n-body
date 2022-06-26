@@ -5,10 +5,11 @@
 #ifndef N_BODY_PARTICLEPOSITIONENTRY_H
 #define N_BODY_PARTICLEPOSITIONENTRY_H
 
-#include "Bindable.h"
-#include "../Entry/VectorEntry.h"
+#include "Application/UI/Widgets/Bindable.h"
 
-#include <NBody/Physics/Position.h>
+#include "VectorEntry.h"
+
+#include "NBody/Physics/Position.h"
 
 namespace UI {
 

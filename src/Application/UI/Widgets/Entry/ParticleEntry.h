@@ -19,12 +19,12 @@
 #include "Application/UI/Widgets/View/SphereView.h"
 #include "VectorEntry.h"
 
-#include "../Bindable/ParticlePositionEntry.h"
-#include "../Bindable/ParticleVelocityEntry.h"
-#include "../Bindable/ParticleActiveMassEntry.h"
-#include "../Bindable/ParticlePassiveMassEntry.h"
-#include "../Bindable/ParticleColorEntry.h"
-#include "../Bindable/ParticleRadiusEntry.h"
+#include "ParticlePositionEntry.h"
+#include "ParticleVelocityEntry.h"
+#include "ParticleActiveMassEntry.h"
+#include "ParticlePassiveMassEntry.h"
+#include "ParticleColorEntry.h"
+#include "ParticleRadiusEntry.h"
 
 namespace UI {
 

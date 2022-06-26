@@ -18,14 +18,30 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _selectionModel = Gtk::SingleSelection::create(_particlesModel);
     _columnView.set_model(_selectionModel);
 
-    _columnView.append_column(Gtk::ColumnViewColumn::create("Active Mass",
-                                                            BindableListItemFactory<ParticleActiveMassBindable>::create()));
-    _columnView.append_column(Gtk::ColumnViewColumn::create("Passive Mass",
-                                                            BindableListItemFactory<ParticlePassiveMassBindable>::create()));
-    _columnView.append_column(
-            Gtk::ColumnViewColumn::create("Position", BindableListItemFactory<ParticlePositionBindable>::create()));
-    _columnView.append_column(
-            Gtk::ColumnViewColumn::create("Velocity", BindableListItemFactory<ParticleVelocityBindable>::create()));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Active Mass",
+            BindableListItemFactory<ParticleActiveMassView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Passive Mass",
+            BindableListItemFactory<ParticlePassiveMassView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Position",
+            BindableListItemFactory<ParticlePositionView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Velocity",
+            BindableListItemFactory<ParticleVelocityView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Color",
+            BindableListItemFactory<ParticleColorView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Radius",
+            BindableListItemFactory<ParticleRadiusView>::create()
+    ));
 
     _scrolledWindow.set_policy(Gtk::PolicyType::NEVER, Gtk::PolicyType::AUTOMATIC);
     _scrolledWindow.set_vexpand();

@@ -5,10 +5,11 @@
 #ifndef N_BODY_PARTICLEPASSIVEMASSENTRY_H
 #define N_BODY_PARTICLEPASSIVEMASSENTRY_H
 
-#include "Bindable.h"
-#include "../Entry/FloatEntry.h"
+#include "Application/UI/Widgets/Bindable.h"
 
-#include <NBody/Physics/PassiveMass.h>
+#include "FloatEntry.h"
+
+#include "NBody/Physics/PassiveMass.h"
 
 namespace UI {
 

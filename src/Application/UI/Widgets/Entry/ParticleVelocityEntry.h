@@ -5,7 +5,7 @@
 #ifndef N_BODY_PARTICLEVELOCITYENTRY_H
 #define N_BODY_PARTICLEVELOCITYENTRY_H
 
-#include "Bindable.h"
+#include "Application/UI/Widgets/Bindable.h"
 #include "../Entry/VectorEntry.h"
 
 #include <NBody/Physics/Position.h>
