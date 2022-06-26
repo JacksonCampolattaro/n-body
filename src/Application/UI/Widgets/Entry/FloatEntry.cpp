@@ -31,3 +31,7 @@ UI::FloatEntry::FloatEntry(Gtk::SpinButton::BaseObjectType *cobject, const Glib:
         Gtk::SpinButton(cobject) {
     setup();
 }
+
+void UI::FloatEntry::setValue(float v) {
+    set_value(v);
+}

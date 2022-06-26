@@ -70,7 +70,7 @@ add_executable(NBody
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/Bindable/ParticleActiveMassBindable.h
-        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/View/FloatView.h)
+        UI/Widgets/Bindable/ParticlePassiveMassBindable.h UI/Widgets/Bindable/BindableListItemFactory.h UI/Widgets/Bindable/ParticlePositionBindable.h UI/Widgets/Bindable/ParticleVelocityBindable.h UI/Widgets/Bindable/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Bindable/ParticlePositionEntry.h UI/Widgets/Bindable/ParticleVelocityEntry.h UI/Widgets/Bindable/ParticleActiveMassEntry.h UI/Widgets/Bindable/ParticlePassiveMassEntry.h UI/Widgets/Bindable/ParticleColorEntry.h UI/Widgets/Bindable/ParticleRadiusEntry.h)
 
 target_link_libraries(NBody PUBLIC
 

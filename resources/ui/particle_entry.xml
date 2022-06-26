@@ -55,6 +55,16 @@
                     </object>
                 </child>
 
+
+                <child>
+                    <object class="GtkLabel">
+                        <property name="label">Physics</property>
+                        <property name="halign">start</property>
+                        <style>
+                            <class name="title-5"/>
+                        </style>
+                    </object>
+                </child>
                 <child>
                     <object class="GtkListBox">
                         <property name="selection-mode">none</property>
@@ -64,7 +74,7 @@
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Active Mass</property>
-                                <property name="subtitle">Used when calculating force on other particles</property>
+                                <property name="subtitle">Transmits forces to other particles</property>
                                 <child type="suffix">
                                     <object class="GtkSpinButton" id="active-mass-entry"/>
                                 </child>
@@ -73,18 +83,36 @@
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Passive Mass</property>
-                                <property name="subtitle">Used when calculating force on this particle</property>
+                                <property name="subtitle">Receives forces from other particles</property>
                                 <child type="suffix">
                                     <object class="GtkSpinButton" id="passive-mass-entry"/>
                                 </child>
                             </object>
                         </child>
+                    </object>
+                </child>
+
+
+                <child>
+                    <object class="GtkLabel">
+                        <property name="label">Appearance</property>
+                        <property name="halign">start</property>
+                        <style>
+                            <class name="title-5"/>
+                        </style>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkListBox">
+                        <property name="selection-mode">none</property>
+                        <style>
+                            <class name="boxed-list"/>
+                        </style>
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Color</property>
-                                <property name="subtitle">Color of the particle</property>
                                 <child type="suffix">
-                                    <object class="GtkColorButton" id="particle-color-button">
+                                    <object class="GtkColorButton" id="color-entry">
                                         <property name="hexpand">0</property>
                                         <property name="vexpand">0</property>
                                         <property name="valign">center</property>
@@ -92,6 +120,15 @@
                                 </child>
                             </object>
                         </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Radius</property>
+                                <child type="suffix">
+                                    <object class="GtkSpinButton" id="radius-entry"/>
+                                </child>
+                            </object>
+                        </child>
+
                     </object>
                 </child>
 

@@ -11,36 +11,42 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
+#include <gtkmm/builder.h>
+#include <gtkmm/colorbutton.h>
 
 #include "Application/UI/Widgets/View/VectorView.h"
 #include "Application/UI/Widgets/LabeledWidget.h"
 #include "Application/UI/Widgets/View/SphereView.h"
+#include "VectorEntry.h"
+
+#include "../Bindable/ParticlePositionEntry.h"
+#include "../Bindable/ParticleVelocityEntry.h"
+#include "../Bindable/ParticleActiveMassEntry.h"
+#include "../Bindable/ParticlePassiveMassEntry.h"
+#include "../Bindable/ParticleColorEntry.h"
+#include "../Bindable/ParticleRadiusEntry.h"
 
 namespace UI {
 
     class ParticleEntry : public Gtk::Box {
     private:
 
-//        Gtk::Grid _grid;
-//
-//        Gtk::Image _icon;
-//
-//        SphereView _sphereView;
-//
-//        Gtk::Label
-//                _positionLabel{"P = "},
-//                _velocityLabel{"V = "},
-//                _massLabel{"M = "};
-//
-//        PositionView _positionView;
-//        VelocityView _velocityView;
-//        Gtk::Label _massView{"0.00"};
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        ParticlePositionEntry &_positionEntry;
+        ParticleVelocityEntry &_velocityEntry;
+
+        ParticleActiveMassEntry &_activeMassEntry;
+        ParticlePassiveMassEntry &_passiveMassEntry;
+
+        ParticleColorEntry &_colorEntry;
+        ParticleRadiusEntry &_radiusEntry;
 
     public:
 
         ParticleEntry();
 
-        void bind(const NBody::Simulation::Particle &particle);
+        void bind(std::shared_ptr<NBody::Simulation::Particle> &particle);
 
     };
 
