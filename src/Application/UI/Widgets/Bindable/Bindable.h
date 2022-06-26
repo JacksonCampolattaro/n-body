@@ -21,7 +21,14 @@ namespace UI {
 
         virtual void update(T &value) = 0;
 
+        void changed(const T &value) {
+            assert(_particle);
+            _particle->emplace_or_replace<T>(value);
+        }
+
         void bind(std::shared_ptr<NBody::Simulation::Particle> &particle) {
+            if (_particle) unbind();
+
             _particle = particle;
 
             // If nobody else is already watching this particle, give it a signal

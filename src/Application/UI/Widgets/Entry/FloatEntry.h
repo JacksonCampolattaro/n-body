@@ -28,6 +28,8 @@ namespace UI {
         FloatEntry();
 
         FloatEntry(Gtk::SpinButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder);
+
+        void setValue(float v);
     };
 
 }

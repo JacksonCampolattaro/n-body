@@ -39,7 +39,7 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
         spdlog::debug("Selection changed, p={} n={}", p, n);
         if (auto selected = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                 _selectionModel->get_selected_item())) {
-            _particleEntry.bind(*selected);
+            _particleEntry.bind(selected);
             _window.set_title("Particle #" + std::to_string((ENTT_ID_TYPE) selected->entity()));
             _window.show();
         }

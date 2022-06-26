@@ -1,72 +1,52 @@
 //
 // Created by jackcamp on 2/20/22.
 //
-
-#include <gtkmm/builder.h>
-#include <gtkmm/colorbutton.h>
 #include "ParticleEntry.h"
 #include "FloatEntry.h"
 #include "VectorEntry.h"
 
 
-UI::ParticleEntry::ParticleEntry() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
+UI::ParticleEntry::ParticleEntry() :
+        Gtk::Box(Gtk::Orientation::HORIZONTAL),
+        _builder(Gtk::Builder::create_from_resource("/ui/particle_entry.xml")),
+        _positionEntry(*Gtk::Builder::get_widget_derived<ParticlePositionEntry>(_builder, "position-entry")),
+        _velocityEntry(*Gtk::Builder::get_widget_derived<ParticleVelocityEntry>(_builder, "velocity-entry")),
+        _activeMassEntry(*Gtk::Builder::get_widget_derived<ParticleActiveMassEntry>(_builder, "active-mass-entry")),
+        _passiveMassEntry(*Gtk::Builder::get_widget_derived<ParticlePassiveMassEntry>(_builder, "passive-mass-entry")),
+        _colorEntry(*Gtk::Builder::get_widget_derived<ParticleColorEntry>(_builder, "color-entry")),
+        _radiusEntry(*Gtk::Builder::get_widget_derived<ParticleRadiusEntry>(_builder, "radius-entry")) {
 
-    auto builder = Gtk::Builder::create_from_resource("/ui/particle_entry.xml");
-    auto root = builder->get_widget<Gtk::Widget>("root");
+    //auto builder = Gtk::Builder::create_from_resource("/ui/particle_entry.xml");
+    auto root = _builder->get_widget<Gtk::Widget>("root");
     append(*root);
-
-    auto &positionEntry = *Gtk::Builder::get_widget_derived<CompactPositionEntry>(builder, "position-entry");
-    auto &velocityEntry = *Gtk::Builder::get_widget_derived<CompactVelocityEntry>(builder, "velocity-entry");
-
-    auto &activeMassEntry = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "active-mass-entry");
-    auto &passiveMassEntry = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "passive-mass-entry");
-
-    auto &colorEntry = *builder->get_widget<Gtk::ColorButton>("color-entry");
-
-    //    set_spacing(10);
-//
-//    _grid.set_row_spacing(4);
-//    _grid.set_column_spacing(8);
-//
-//    //_sphereView.set_expand();
-//    //append(_sphereView);
-//
-//    _positionLabel.add_css_class("description");
-//    _velocityLabel.add_css_class("description");
-//    _massLabel.add_css_class("description");
-//    _grid.attach(_positionLabel, 0, 0);
-//    _grid.attach(_velocityLabel, 0, 1);
-//    _grid.attach(_massLabel, 2, 0);
-//
-//    _grid.attach(_positionView, 1, 0);
-//    _grid.attach(_velocityView, 1, 1);
-//    _grid.attach(_massView, 3, 0);
-//
-//    append(_grid);
 }
 
-void UI::ParticleEntry::bind(const NBody::Simulation::Particle &particle) {
+void UI::ParticleEntry::bind(std::shared_ptr<NBody::Simulation::Particle> &particle) {
 
-//    if (particle.all_of<NBody::Graphics::Color, NBody::Graphics::Sphere>()) {
-//
-//        auto color = particle.get<NBody::Graphics::Color>();
-//        auto sphere = particle.get<NBody::Graphics::Sphere>();
-//        _sphereView.setValue(color, sphere);
-//    }
-//
-//    auto position = particle.get<NBody::Physics::Position>();
-//    _positionView.setValue(position);
-//
-//    auto velocity = particle.get<NBody::Physics::Velocity>();
-//    _velocityView.setValue(velocity);
-//
-//    if (particle.all_of<NBody::Physics::ActiveMass>()) {
-//        _massLabel.show();
-//        _massView.show();
-//        auto mass = particle.get<NBody::Physics::ActiveMass>();
-//        _massView.set_text(std::to_string(mass.mass()));
-//    } else {
-//        _massLabel.hide();
-//        _massView.hide();
-//    }
+    _positionEntry.bind(particle);
+    _velocityEntry.bind(particle);
+
+    if (particle->all_of<NBody::Physics::ActiveMass>()) {
+        _activeMassEntry.bind(particle);
+    } else {
+        _activeMassEntry.unbind();
+    }
+
+    if (particle->all_of<NBody::Physics::PassiveMass>()) {
+        _passiveMassEntry.bind(particle);
+    } else {
+        _passiveMassEntry.unbind();
+    }
+
+    if (particle->all_of<NBody::Graphics::Color>()) {
+        _colorEntry.bind(particle);
+    } else {
+        _colorEntry.unbind();
+    }
+
+    if (particle->all_of<NBody::Graphics::Sphere>()) {
+        _radiusEntry.bind(particle);
+    } else {
+        _radiusEntry.unbind();
+    }
 }
