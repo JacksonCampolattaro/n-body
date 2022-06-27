@@ -59,10 +59,8 @@ add_executable(NBody
         UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h
         UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
         UI/Widgets/LabeledWidget.h
-        UI/Widgets/ParticlesListView.cpp UI/Widgets/ParticlesListView.h
         UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
         UI/Widgets/View/VectorView.h
-        UI/Widgets/View/SphereView.cpp UI/Widgets/View/SphereView.h
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
         UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h

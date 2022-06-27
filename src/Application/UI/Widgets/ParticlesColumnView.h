@@ -9,9 +9,10 @@
 #include <gtkmm/columnview.h>
 #include <gtkmm/signallistitemfactory.h>
 #include <gtkmm/singleselection.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/window.h>
 
 #include <NBody/Simulation/Simulation.h>
-#include <gtkmm/window.h>
 
 #include "ParticlesListModel.h"
 
