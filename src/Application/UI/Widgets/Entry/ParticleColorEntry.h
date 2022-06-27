@@ -24,7 +24,7 @@ namespace UI {
 
             signal_color_set().connect([&]() {
                 auto rgba = get_rgba();
-                changed({rgba.get_red(), rgba.get_green(), rgba.get_blue()});
+                changed(Color{rgba.get_red(), rgba.get_green(), rgba.get_blue()});
             });
 
         }

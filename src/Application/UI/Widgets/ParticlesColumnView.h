@@ -15,6 +15,7 @@
 
 #include "ParticlesListModel.h"
 
+#include "Application/UI/Widgets/View/ParticleIconView.h"
 #include "Application/UI/Widgets/View/ParticleActiveMassView.h"
 #include "Application/UI/Widgets/View/ParticlePassiveMassView.h"
 #include "Application/UI/Widgets/View/ParticlePositionView.h"

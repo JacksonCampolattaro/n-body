@@ -9,7 +9,7 @@
 
 namespace UI {
 
-    template<typename T>
+    template<typename ...Types>
     class Bindable {
     private:
 
@@ -19,11 +19,19 @@ namespace UI {
 
     public:
 
-        virtual void update(T &value) = 0;
+        virtual void update(Types &... value) = 0;
 
+        template<typename T>
         void changed(const T &value) {
             assert(_particle);
             _particle->emplace_or_replace<T>(value);
+            _particle->get<sigc::signal<void()>>().emit();
+        }
+
+        template<typename T, typename ...Args>
+        void changed(const T &first, Args... remaining) {
+            changed(first);
+            changed(remaining...);
         }
 
         void bind(std::shared_ptr<NBody::Simulation::Particle> &particle) {
@@ -35,10 +43,10 @@ namespace UI {
             // Whenever the particle is marked as changed, update the view
             _connection = particle->get_or_emplace<sigc::signal<void()>>().connect([&] {
                 assert(_particle); // there should be an associated particle
-                update(_particle->get<T>());
+                update(_particle->get<Types>()...);
             });
 
-            update(particle->get<T>());
+            update(particle->get<Types>()...);
         }
 
         void unbind() {
