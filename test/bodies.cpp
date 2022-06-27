@@ -5,7 +5,7 @@
 
 using namespace NBody;
 
-void cubicGrid(Simulation::Simulation &simulation,
+void cubicGrid(Simulation &simulation,
                Physics::Position corner, glm::ivec3 size, float spacing,
                Physics::Velocity velocity, float mass) {
 
@@ -27,7 +27,7 @@ void cubicGrid(Simulation::Simulation &simulation,
                         1.0f - y / fsize.y + x / fsize.x
                 };
 
-                simulation.createBody()
+                simulation.newParticle()
                         .setPosition(position)
                         .setVelocity(velocity)
                         .setMass({mass})
@@ -38,21 +38,21 @@ void cubicGrid(Simulation::Simulation &simulation,
     }
 }
 
-void threeBody(Simulation::Simulation &simulation) {
+void threeBody(Simulation &simulation) {
 
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({0.0, 5.0, 5.0})
             .setVelocity({0, -0.1, 0})
             .setColor({0.8, 0.8, 0.8})
             .setSphere({1.0})
             .setMass({0.5});
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({-5, 0, 0})
             .setVelocity({0, 0.15, 0})
             .setColor({0.8, 0.8, 0.0})
             .setSphere({1.0})
             .setMass({0.5});
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({5, 0, 0})
             .setVelocity({0, -0.05, 0})
             .setColor({0.8, 0.0, 0.0})
@@ -60,7 +60,7 @@ void threeBody(Simulation::Simulation &simulation) {
             .setMass({0.5});
 }
 
-void galaxy(Simulation::Simulation &simulation) {
+void galaxy(Simulation &simulation) {
 
 //    simulation._rule._gravitationalConstant = 0.01;
 //    simulation._rule._timeIncrement = 0.001;
@@ -70,7 +70,7 @@ void galaxy(Simulation::Simulation &simulation) {
               {5, 5, 500}, 10,
               {60, 20, 0}, 5000);
 
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({0, 0, -500})
             .setVelocity({0, 0, 0})
             .setColor({0.9, 0.9, 0.9})
@@ -78,7 +78,7 @@ void galaxy(Simulation::Simulation &simulation) {
             .setMass(190000000.0f);
 }
 
-void blender(Simulation::Simulation &simulation) {
+void blender(Simulation &simulation) {
 
 //    simulation._rule._gravitationalConstant = 0.01;
 //    simulation._rule._timeIncrement = 0.05;
@@ -88,13 +88,13 @@ void blender(Simulation::Simulation &simulation) {
               {5, 5, 100},10,
               {0.8, 0.25, 0}, 5000);
 
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({-60, 0, -500})
             .setVelocity({0, -90, 0})
             .setColor({0.9, 0.9, 0.9})
             .setSphere({16.0})
             .setMass({180000000});
-    simulation.createBody()
+    simulation.newParticle()
             .setPosition({60, 0, -500})
             .setVelocity({0, 90, 0})
             .setColor({0.9, 0.9, 0.9})
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
     {
         std::ofstream file((directory / "cubicgrid.json").native());
         if (!file.is_open()) return EXIT_FAILURE;
-        Simulation::Simulation simulation;
+        Simulation simulation;
         cubicGrid(simulation, {0, 0, 0}, {3, 3, 3}, 10.0, {0, 0, 0}, 1.0);
         file << simulation << std::endl;
         file.close();
@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
     {
         std::ofstream file((directory / "threebody.json").native());
         if (!file.is_open()) return EXIT_FAILURE;
-        Simulation::Simulation simulation;
+        Simulation simulation;
         threeBody(simulation);
         file << simulation << std::endl;
         file.close();
@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
     {
         std::ofstream file((directory / "galaxy.json").native());
         if (!file.is_open()) return EXIT_FAILURE;
-        Simulation::Simulation simulation;
+        Simulation simulation;
         galaxy(simulation);
         file << simulation << std::endl;
         file.close();
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
     {
         std::ofstream file((directory / "blender.json").native());
         if (!file.is_open()) return EXIT_FAILURE;
-        Simulation::Simulation simulation;
+        Simulation simulation;
         blender(simulation);
         file << simulation << std::endl;
         file.close();

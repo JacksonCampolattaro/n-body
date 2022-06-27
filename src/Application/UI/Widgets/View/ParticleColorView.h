@@ -16,15 +16,26 @@ namespace UI {
 
     using NBody::Graphics::Color;
 
-    class ParticleColorView : public Bindable<Color>, public Gtk::ColorButton {
+    class ParticleColorView : public Bindable<Color>, public Gtk::Label {
     public:
 
         ParticleColorView() {
-            set_sensitive(false);
+            set_use_markup();
         }
 
         void update(Color &value) override {
-            set_rgba({value.r(), value.g(), value.b()});
+
+            auto hexString = fmt::format(
+                    "#{:02x}{:02x}{:02x}",
+                    (int) (value.r() * 255),
+                    (int) (value.g() * 255),
+                    (int) (value.b() * 255)
+            );
+
+            this->set_label(fmt::format(
+                    R"(<span font_desc="monospace" underline="double" underline_color="{}">{}</span>)",
+                    hexString, hexString
+            ));
         }
     };
 }
