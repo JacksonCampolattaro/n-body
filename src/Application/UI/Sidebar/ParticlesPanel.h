@@ -14,7 +14,6 @@
 #include <gtkmm/window.h>
 
 #include "../Widgets/LabeledWidget.h"
-#include "../Widgets/ParticlesListView.h"
 
 #include "Panel.h"
 #include "Application/UI/Widgets/ParticlesColumnView.h"

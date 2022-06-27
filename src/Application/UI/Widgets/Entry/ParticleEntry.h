@@ -16,7 +16,6 @@
 
 #include "Application/UI/Widgets/View/VectorView.h"
 #include "Application/UI/Widgets/LabeledWidget.h"
-#include "Application/UI/Widgets/View/SphereView.h"
 #include "VectorEntry.h"
 
 #include "ParticlePositionEntry.h"
