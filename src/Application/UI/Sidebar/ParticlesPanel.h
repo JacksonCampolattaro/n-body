@@ -12,6 +12,9 @@
 #include <gtkmm/box.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/window.h>
+#include <gtkmm/button.h>
+#include <gtkmm/actionbar.h>
+#include <gtkmm/filechooserdialog.h>
 
 #include "../Widgets/LabeledWidget.h"
 
@@ -26,6 +29,8 @@ class ParticlesPanel : public Panel {
         UI::ParticlesColumnView _particlesView;
 
         Gtk::Window _particlesWindow;
+
+        Gtk::FileChooserDialog _fileChooser;
 
     public:
 
