@@ -43,8 +43,9 @@ public:
 
     void step() override {
 
+        // This should be idempotent, calling more than once should only spawn one background thread
         if (_thread != nullptr) {
-            spdlog::warn("Attempted to spawn multiple background threads");
+            spdlog::trace("Attempted to spawn multiple background threads");
             return;
         }
 
