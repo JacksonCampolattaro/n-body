@@ -26,7 +26,12 @@ namespace UI {
             });
         }
 
-        void update(PassiveMass &value) override { setValue(value.mass()); }
+        void update(PassiveMass &value) override {
+            show();
+            setValue(value.mass());
+        }
+
+        void update() override { hide(); };
     };
 }
 

@@ -25,7 +25,12 @@ namespace UI {
             });
         }
 
-        void update(Sphere &value) override { setValue(value.radius()); }
+        void update(Sphere &value) override {
+            show();
+            setValue(value.radius());
+        }
+
+        void update() override { hide(); };
     };
 }
 

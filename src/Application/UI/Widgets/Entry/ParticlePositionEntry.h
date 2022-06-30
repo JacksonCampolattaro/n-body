@@ -26,7 +26,12 @@ namespace UI {
             });
         }
 
-        void update(Position &value) override { setValue(value); }
+        void update(Position &value) override {
+            show();
+            setValue(value);
+        }
+
+        void update() override { hide(); };
     };
 }
 

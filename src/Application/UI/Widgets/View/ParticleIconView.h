@@ -41,6 +41,8 @@ namespace UI {
         }
 
         void update(NBody::Graphics::Sphere &sphere, NBody::Graphics::Color &color) override {
+            show();
+
             _color = {color.r(), color.g(), color.b()};
             float diameter = sphere.radius() / (1.0f + sphere.radius());
             _radius = diameter / 2.0f;
@@ -55,6 +57,8 @@ namespace UI {
 
             spdlog::trace("Radius {} mapped to radius {} in particle icon view", sphere.radius(), _radius);
         };
+
+        void update() override { hide(); };
 
     protected:
 

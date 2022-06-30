@@ -25,7 +25,12 @@ namespace UI {
             });
         }
 
-        void update(Velocity &value) override { setValue(value); }
+        void update(Velocity &value) override {
+            show();
+            setValue(value);
+        }
+
+        void update() override { hide(); };
     };
 }
 
