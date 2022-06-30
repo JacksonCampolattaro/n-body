@@ -79,6 +79,7 @@ namespace NBody {
     public:
 
         sigc::signal<void()> signal_changed;
+        sigc::signal<void(std::size_t)> signal_particles_added;
 
         mutable std::mutex mutex;
 

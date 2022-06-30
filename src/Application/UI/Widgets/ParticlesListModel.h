@@ -6,6 +6,7 @@
 #define N_BODY_PARTICLESLISTMODEL_H
 
 #include <giomm/listmodel.h>
+#include <spdlog/spdlog.h>
 
 #include <NBody/Simulation/Simulation.h>
 
@@ -15,7 +16,15 @@ namespace UI {
     public:
 
         explicit ParticlesListModel(NBody::Simulation &simulation)
-                : Glib::ObjectBase(typeid(ParticlesListModel)), Glib::Object(), _simulation(simulation) {}
+                : Glib::ObjectBase(typeid(ParticlesListModel)), Glib::Object(), _simulation(simulation) {
+
+            simulation.signal_particles_added.connect([&](std::size_t count) {
+
+                // When new particles are added to the simulation, they always appear at the beginning of the list,
+                // so we notify the list model of new items at position 0.
+                items_changed(0, 0, count);
+            });
+        }
 
         static Glib::RefPtr<ParticlesListModel> create(NBody::Simulation &simulation) {
             return Glib::make_refptr_for_instance(new ParticlesListModel(simulation));
