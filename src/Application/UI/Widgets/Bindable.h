@@ -20,6 +20,7 @@ namespace UI {
     public:
 
         virtual void update(Types &... value) = 0;
+        virtual void update() = 0;
 
         template<typename T>
         void changed(const T &value) {
@@ -38,6 +39,12 @@ namespace UI {
             if (_particle) unbind();
 
             _particle = particle;
+
+            // If the particle doesn't have the types we're trying to bind to, hide it!
+            if (!_particle->all_of<Types...>()) {
+                update();
+                return;
+            }
 
             // If nobody else is already watching this particle, give it a signal
             // Whenever the particle is marked as changed, update the view

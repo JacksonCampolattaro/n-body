@@ -24,6 +24,7 @@ namespace UI {
         }
 
         void update(Color &value) override {
+            show();
 
             auto hexString = fmt::format(
                     "#{:02x}{:02x}{:02x}",
@@ -37,6 +38,8 @@ namespace UI {
                     hexString, hexString
             ));
         }
+
+        void update() override { hide(); };
     };
 }
 
