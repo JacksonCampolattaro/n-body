@@ -96,4 +96,6 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("sphere"))
             particle.setSphere(p["sphere"].get<NBody::Graphics::Sphere>());
     }
+
+    s.signal_changed.emit();
 }

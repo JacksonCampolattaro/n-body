@@ -26,8 +26,9 @@ namespace UI {
 class ParticlesPanel : public Panel {
     private:
 
-        UI::ParticlesColumnView _particlesView;
+        NBody::Simulation &_simulation;
 
+        UI::ParticlesColumnView _particlesView;
         Gtk::Window _particlesWindow;
 
         Gtk::FileChooserDialog _fileChooser;
@@ -35,6 +36,8 @@ class ParticlesPanel : public Panel {
     public:
 
         ParticlesPanel(NBody::Simulation &simulation);
+
+        void on_file_dialog_response(int response_id);
 
     };
 

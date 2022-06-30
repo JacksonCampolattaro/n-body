@@ -4,11 +4,13 @@
 
 #include <spdlog/spdlog.h>
 #include <gtkmm/applicationwindow.h>
+#include <fstream>
 
 #include "ParticlesPanel.h"
 
 UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         Panel("Particles"),
+        _simulation(simulation),
         _particlesView(simulation),
         _fileChooser("Choose a Scenario") {
 
@@ -57,4 +59,46 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
 
     _fileChooser.add_button("_Cancel", Gtk::ResponseType::CANCEL);
     _fileChooser.add_button("_Open", Gtk::ResponseType::OK);
+
+    auto filter_json = Gtk::FileFilter::create();
+    filter_json->set_name("JSON files");
+    filter_json->add_mime_type("application/json");
+    _fileChooser.add_filter(filter_json);
+
+    auto filter_any = Gtk::FileFilter::create();
+    filter_any->set_name("Any files");
+    filter_any->add_pattern("*");
+    _fileChooser.add_filter(filter_any);
+
+    _fileChooser.add_choice("rules", "Load rules settings from file");
+
+    _fileChooser.signal_response().connect(sigc::mem_fun(*this, &ParticlesPanel::on_file_dialog_response));
+    _fileChooser.signal_close_request().connect(
+            [&] {
+                _fileChooser.hide();
+                return true;
+            },
+            false
+    );
+}
+
+void UI::ParticlesPanel::on_file_dialog_response(int response_id) {
+
+    // We don't need to do anything unless the user chose a file
+    if (response_id == Gtk::ResponseType::OK) {
+
+        spdlog::info("Loading scenario from file: {}", _fileChooser.get_file()->get_path());
+
+        std::ifstream scenario_data{_fileChooser.get_file()->get_path()};
+        json data = json::parse(scenario_data);
+        spdlog::debug("Loading {} particles", data["particles"].size());
+        from_json(data, _simulation);
+
+        // todo Load rules from file if that option is enabled
+
+        spdlog::debug("Simulation now contains {} particles", _simulation.size());
+    }
+
+    // Always hide the file chooser once the user makes a choice
+    _fileChooser.hide();
 }
