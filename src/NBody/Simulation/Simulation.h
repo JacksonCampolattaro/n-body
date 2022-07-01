@@ -23,9 +23,11 @@
 #include <iomanip>
 #include <thread>
 #include <mutex>
+#include <fstream>
 
 #include <giomm/listmodel.h>
 #include <glibmm/dispatcher.h>
+#include <giomm/file.h>
 
 using nlohmann::json;
 using std::istream;
@@ -75,6 +77,10 @@ namespace NBody {
         void notifyChanged() {
             _dispatcher.emit();
         }
+
+        void save(Gio::File &destination) const;
+
+        void load(Gio::File &source);
 
     public:
 

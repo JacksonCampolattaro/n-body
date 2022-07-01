@@ -25,9 +25,9 @@ namespace UI {
     public:
 
         Panel(const std::string &title) : Gtk::Box(Gtk::Orientation::VERTICAL),
-        _builder(Gtk::Builder::create_from_resource("/ui/panel.xml")),
-        _contents(*_builder->get_widget<Gtk::Box>("box")),
-        _title(title) {
+                                          _builder(Gtk::Builder::create_from_resource("/ui/panel.xml")),
+                                          _contents(*_builder->get_widget<Gtk::Box>("box")),
+                                          _title(title) {
 
             auto root = _builder->get_widget<Gtk::Widget>("root");
             append(*root);
