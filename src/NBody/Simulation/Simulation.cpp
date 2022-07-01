@@ -100,3 +100,13 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
     s.signal_particles_added.emit(j["particles"].size());
     s.signal_changed.emit();
 }
+
+void NBody::Simulation::save(Gio::File &destination) const {
+    std::ofstream outputFile{destination.get_path()};
+    outputFile << (*this);
+}
+
+void NBody::Simulation::load(Gio::File &source) {
+    std::ifstream inputFile(source.get_path());
+     inputFile >> (*this);
+}

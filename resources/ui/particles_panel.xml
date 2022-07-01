@@ -3,41 +3,111 @@
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
 
-    <object class="GtkListBox" id="root">
-        <property name="selection-mode">none</property>
-        <style>
-            <class name="boxed-list"/>
-        </style>
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="spacing">16</property>
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Count</property>
-                <property name="subtitle">The number of Particles</property>
-                <child type="suffix">
-                    <object class="GtkLabel" id="count-label">
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
-                        <style>
-                            <class name="numeric"/>
-                        </style>
+            <object class="GtkListBox">
+                <property name="selection-mode">none</property>
+                <style>
+                    <class name="boxed-list"/>
+                </style>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Count</property>
+                        <property name="subtitle">The number of Particles</property>
+                        <child type="suffix">
+                            <object class="GtkLabel" id="count-label">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <style>
+                                    <class name="numeric"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">List</property>
+                        <property name="subtitle">Modify the Particles (placeholder)</property>
+                        <child type="suffix">
+                            <object class="GtkButton" id="modify-button">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="label">Edit</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
         </child>
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">List</property>
-                <property name="subtitle">Modify the Particles (placeholder)</property>
-                <child type="suffix">
-                    <object class="GtkButton" id="modify-button">
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
-                        <property name="label">Edit</property>
+            <object class="GtkLabel">
+                <property name="label">Statistics</property>
+                <property name="halign">start</property>
+                <style>
+                    <class name="title-5"/>
+                </style>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkFrame">
+<!--                <style>-->
+<!--                    <class name="card"/>-->
+<!--                </style>-->
+                <style>
+                    <class name="dim-label"/>
+                </style>
+
+                <child>
+                    <object class="GtkBox" id="box">
+                        <property name="orientation">vertical</property>
+                        <property name="hexpand">True</property>
+
+                        <property name="spacing">8</property>
+
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                        <property name="margin-start">16</property>
+                        <property name="margin-end">16</property>
+
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Particle Count:</property>
+                                <property name="halign">start</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Average Position:</property>
+                                <property name="halign">start</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Center of Mass:</property>
+                                <property name="halign">start</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkLabel">
+                                <property name="label">Total Mass:</property>
+                                <property name="halign">start</property>
+                            </object>
+                        </child>
                     </object>
+
                 </child>
             </object>
         </child>
+
     </object>
 
     <object class="GtkActionBar" id="action-bar">

@@ -14,16 +14,17 @@
 #include <gtkmm/window.h>
 #include <gtkmm/button.h>
 #include <gtkmm/actionbar.h>
-#include <gtkmm/filechooserdialog.h>
 
 #include "../Widgets/LabeledWidget.h"
+#include "../Widgets/SaveSimulationDialog.h"
+#include "../Widgets/LoadSimulationDialog.h"
 
 #include "Panel.h"
 #include "Application/UI/Widgets/ParticlesColumnView.h"
 
 namespace UI {
 
-class ParticlesPanel : public Panel {
+    class ParticlesPanel : public Panel {
     private:
 
         NBody::Simulation &_simulation;
@@ -31,7 +32,8 @@ class ParticlesPanel : public Panel {
         UI::ParticlesColumnView _particlesView;
         Gtk::Window _particlesWindow;
 
-        Gtk::FileChooserDialog _fileChooser;
+        SaveSimulationDialog _saveDialog;
+        LoadSimulationDialog _loadDialog;
 
     public:
 
