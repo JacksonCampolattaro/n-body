@@ -9,6 +9,7 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
+#include <gtkmm/builder.h>
 
 #include <glm/vec3.hpp>
 
@@ -35,10 +36,7 @@ namespace UI {
                 _sep2{", "},
                 _close{close.value};
 
-    public:
-
-        VectorView() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
-
+        void setup() {
             add_css_class("monospace");
 
             _open.add_css_class("dim-label");
@@ -55,6 +53,17 @@ namespace UI {
             append(_close);
 
             setValue({0, 0, 0});
+        }
+
+    public:
+
+        VectorView() : Gtk::Box(Gtk::Orientation::HORIZONTAL) {
+            setup();
+        }
+
+        VectorView(Gtk::Box::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+        : Gtk::Box(cobject) {
+            setup();
         }
 
         void setValue(float x, float y, float z) {
