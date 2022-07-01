@@ -18,6 +18,7 @@
 #include "../Widgets/LabeledWidget.h"
 #include "../Widgets/SaveSimulationDialog.h"
 #include "../Widgets/LoadSimulationDialog.h"
+#include "../Widgets/View/VectorView.h"
 
 #include "Panel.h"
 #include "Application/UI/Widgets/ParticlesColumnView.h"
@@ -26,6 +27,12 @@ namespace UI {
 
     class ParticlesPanel : public Panel {
     private:
+
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        Gtk::Label &_countLabel;
+        PositionView &_averagePositionView;
+        PositionView &_centerOfMassPositionView;
 
         NBody::Simulation &_simulation;
 
@@ -38,8 +45,6 @@ namespace UI {
     public:
 
         ParticlesPanel(NBody::Simulation &simulation);
-
-        void on_file_dialog_response(int response_id);
 
     };
 

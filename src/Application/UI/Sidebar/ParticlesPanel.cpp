@@ -10,19 +10,23 @@
 
 UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         Panel("Particles"),
+        _builder(Gtk::Builder::create_from_resource("/ui/particles_panel.xml")),
+        _countLabel(*_builder->get_widget<Gtk::Label>("count-label")),
+        _averagePositionView(*Gtk::Builder::get_widget_derived<PositionView>(_builder, "average-position-view")),
+        _centerOfMassPositionView(*Gtk::Builder::get_widget_derived<PositionView>(_builder, "center-of-mass-position-view")),
         _simulation(simulation),
         _particlesView(simulation),
         _saveDialog(simulation),
         _loadDialog(simulation) {
 
-    auto builder = Gtk::Builder::create_from_resource("/ui/particles_panel.xml");
-    auto root = builder->get_widget<Gtk::Widget>("root");
+    auto root = _builder->get_widget<Gtk::Widget>("root");
     _contents.append(*root);
 
-    auto count = builder->get_widget<Gtk::Label>("count-label");
-    count->set_text(std::to_string(simulation.size()));
+    _simulation.signal_changed.connect([&](){
+        _countLabel.set_text(std::to_string(simulation.size()));
+    });
 
-    auto openParticlesViewButton = builder->get_widget<Gtk::Button>("modify-button");
+    auto openParticlesViewButton = _builder->get_widget<Gtk::Button>("modify-button");
     openParticlesViewButton->signal_clicked().connect([&] {
         _particlesWindow.show();
     });
@@ -38,15 +42,15 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     );
 
     _contents.set_expand();
-    append(*builder->get_widget<Gtk::ActionBar>("action-bar"));
+    append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
 
-    auto saveButton = builder->get_widget<Gtk::Button>("save-button");
+    auto saveButton = _builder->get_widget<Gtk::Button>("save-button");
     saveButton->signal_clicked().connect([&] {
         spdlog::debug("Save clicked");
         _saveDialog.show();
     });
 
-    auto openButton = builder->get_widget<Gtk::Button>("open-button");
+    auto openButton = _builder->get_widget<Gtk::Button>("open-button");
     openButton->signal_clicked().connect([&] {
         spdlog::debug("Open clicked");
         _loadDialog.show();

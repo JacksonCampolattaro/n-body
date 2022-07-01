@@ -25,7 +25,7 @@
                         <property name="halign">start</property>
                         <property name="margin-bottom">16</property>
                         <style>
-                            <class name="title-2"/>
+                            <class name="title-1"/>
                         </style>
                     </object>
                 </child>
