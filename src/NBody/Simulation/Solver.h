@@ -55,9 +55,9 @@ namespace NBody {
         void on_step() {
             std::thread t([&] {
                 std::scoped_lock lock(_simulation.mutex);
-                spdlog::debug("Beginning simulation step");
+                spdlog::trace("Beginning simulation step");
                 step();
-                spdlog::debug("Finished simulation step");
+                spdlog::trace("Finished simulation step");
             });
             t.join();
             signal_finished().emit();

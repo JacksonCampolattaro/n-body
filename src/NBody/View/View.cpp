@@ -42,7 +42,7 @@ void NBody::View::onRealize() {
 }
 
 bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
-    spdlog::debug("Rendering");
+    spdlog::trace("Rendering");
 
     // Eliminate outside effects on GL state
     GL::Context::current().resetState(GL::Context::State::ExitExternal);
@@ -78,13 +78,13 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
 }
 
 void NBody::View::onResize(int width, int height) {
-    spdlog::debug("Resizing");
+    spdlog::trace("Resizing window");
     _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
     queue_render();
 }
 
 void NBody::View::requestRender() {
-    spdlog::debug("Render requested");
+    spdlog::trace("Render requested");
 
     // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
     Glib::signal_timeout().connect_once([&]() {

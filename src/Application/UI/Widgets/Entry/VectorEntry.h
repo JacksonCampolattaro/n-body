@@ -67,8 +67,8 @@ namespace UI {
     private:
 
         void on_edited() {
-            spdlog::debug("Camera position manually edited");
-            signal_changed.emit(_x.get_value(), _y.get_value(), _z.get_value());
+            spdlog::trace("Camera position manually edited");
+            signal_changed.emit((float) _x.get_value(), (float) _y.get_value(), (float) _z.get_value());
         }
 
     };
