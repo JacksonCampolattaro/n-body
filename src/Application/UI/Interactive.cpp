@@ -34,7 +34,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     flap.set_size_request(natural.get_width(), natural.get_height());
 
     _view.signal_doneRendering.connect([&](){
-        spdlog::debug("done rendering");
+        spdlog::trace("done rendering");
     });
 
 }

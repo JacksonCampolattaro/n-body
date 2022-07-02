@@ -18,7 +18,7 @@ void NBody::NaiveSolver::step() {
 
     // Update accelerations and velocities
     {
-        spdlog::debug("Updating velocities");
+        spdlog::trace("Updating velocities");
         auto actors = _simulation.view<const Position, const ActiveMass>();
         auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
         tbb::parallel_for_each(targets, [&](Entity e) {
@@ -39,7 +39,10 @@ void NBody::NaiveSolver::step() {
 
     // Update positions, based on velocity
     {
-        spdlog::debug("Updating positions");
+        // While the solver is modifying simulation values, the simulation should be locked for other threads
+        std::scoped_lock l(_simulation.mutex);
+
+        spdlog::trace("Updating positions");
         auto view = _simulation.view<const Velocity, Position>();
 
         tbb::parallel_for_each(view, [&](Entity e) {

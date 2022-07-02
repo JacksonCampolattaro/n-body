@@ -24,7 +24,7 @@ public:
         // When the underlying solver announces that it's complete...
         _dispatcher.connect([&] {
 
-            spdlog::debug("Joining completed solver");
+            spdlog::trace("Joining completed solver");
 
             // Join the solver thread
             assert(_thread != nullptr);
@@ -49,7 +49,7 @@ public:
             return;
         }
 
-        spdlog::debug("Launching solver in new thread");
+        spdlog::trace("Launching solver in new thread");
 
         // Spawn a new thread when the user requests a step
         _thread = std::make_shared<std::thread>([&] {

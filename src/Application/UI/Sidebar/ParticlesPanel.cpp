@@ -58,13 +58,11 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
 
     auto saveButton = _builder->get_widget<Gtk::Button>("save-button");
     saveButton->signal_clicked().connect([&] {
-        spdlog::debug("Save clicked");
         _saveDialog.show();
     });
 
     auto openButton = _builder->get_widget<Gtk::Button>("open-button");
     openButton->signal_clicked().connect([&] {
-        spdlog::debug("Open clicked");
         _loadDialog.show();
     });
 

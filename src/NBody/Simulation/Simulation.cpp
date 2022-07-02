@@ -2,6 +2,7 @@
 // Created by jackcamp on 12/22/20.
 //
 
+#include <spdlog/spdlog.h>
 #include "Simulation.h"
 
 NBody::Simulation::Particle NBody::Simulation::newParticle() {
@@ -73,6 +74,8 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 
         j["particles"].push_back(e);
     });
+
+    spdlog::debug("Serialized {} particles", j["particles"].size());
 }
 
 void NBody::from_json(const json &j, NBody::Simulation &s) {
@@ -99,14 +102,18 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
 
     s.signal_particles_added.emit(j["particles"].size());
     s.signal_changed.emit();
+
+    spdlog::debug("Read {} particles", j["particles"].size());
 }
 
 void NBody::Simulation::save(Gio::File &destination) const {
+    spdlog::debug("Writing JSON file to path \"{}\"", destination.get_path());
     std::ofstream outputFile{destination.get_path()};
     outputFile << (*this);
 }
 
 void NBody::Simulation::load(Gio::File &source) {
+    spdlog::debug("Loading JSON file from path \"{}\"", source.get_path());
     std::ifstream inputFile(source.get_path());
      inputFile >> (*this);
 }
