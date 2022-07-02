@@ -6,19 +6,28 @@
 #define N_BODY_FLOATVIEW_H
 
 #include <gtkmm/label.h>
+#include <gtkmm/builder.h>
+
 #include <iomanip>
 
 namespace UI {
 
     template<int Digits>
     class FloatView : public Gtk::Label {
-    public:
+    private:
 
-        FloatView() {
+        void setup() {
             set_width_chars(Digits);
             set_max_width_chars(Digits);
             set_ellipsize(Pango::EllipsizeMode::END);
         }
+
+    public:
+
+        FloatView() { setup(); }
+
+        FloatView(Gtk::Label::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+                : Gtk::Label(cobject) { setup(); }
 
         void setValue(float v) {
 

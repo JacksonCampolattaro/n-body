@@ -34,6 +34,7 @@ namespace NBody {
             // When the "finished" signal is triggered, all individual particle signals should also trigger
             _signal_finished.connect([&] {
                 _simulation.view<sigc::signal<void()>>().each([](auto &s) { s.emit(); });
+                _simulation.signal_changed.emit();
             });
         };
 

@@ -24,6 +24,7 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
 
     slot_renderNeeded = sigc::mem_fun(*this, &View::requestRender);
     _camera.signal_changed.connect(slot_renderNeeded);
+    _simulation.signal_changed.connect(slot_renderNeeded);
 }
 
 void NBody::View::onRealize() {
@@ -69,7 +70,7 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     GL::Context::current().resetState(GL::Context::State::EnterExternal);
 
     // If the camera is moving, we need to render again as soon as possible
-    if(_camera.updateTransformation())
+    if (_camera.updateTransformation())
         requestRender();
 
     signal_doneRendering.emit();
@@ -86,7 +87,7 @@ void NBody::View::requestRender() {
     spdlog::debug("Render requested");
 
     // Wait a moment before triggering the next frame, otherwise this doesn't seem to work
-    Glib::signal_timeout().connect_once([&](){
+    Glib::signal_timeout().connect_once([&]() {
         queue_render();
     }, 8);
 }

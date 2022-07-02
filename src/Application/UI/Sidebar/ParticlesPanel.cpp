@@ -11,9 +11,15 @@
 UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         Panel("Particles"),
         _builder(Gtk::Builder::create_from_resource("/ui/particles_panel.xml")),
+        _modifyButton(*_builder->get_widget<Gtk::Button>("modify-button")),
         _countLabel(*_builder->get_widget<Gtk::Label>("count-label")),
-        _averagePositionView(*Gtk::Builder::get_widget_derived<PositionView>(_builder, "average-position-view")),
-        _centerOfMassPositionView(*Gtk::Builder::get_widget_derived<PositionView>(_builder, "center-of-mass-position-view")),
+        _totalMassView(*Gtk::Builder::get_widget_derived<FloatView<10>>(
+                _builder, "total-mass-label")),
+        _averagePositionView(*Gtk::Builder::get_widget_derived<PositionView>(
+                _builder, "average-position-view")),
+        _centerOfMassPositionView(*Gtk::Builder::get_widget_derived<PositionView>(
+                _builder, "center-of-mass-position-view")),
+        _interactionCountLabel(*_builder->get_widget<Gtk::Label>("interaction-count-label")),
         _simulation(simulation),
         _particlesView(simulation),
         _saveDialog(simulation),
@@ -23,11 +29,17 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     _contents.append(*root);
 
     _simulation.signal_changed.connect([&](){
+
         _countLabel.set_text(std::to_string(simulation.size()));
+        _averagePositionView.setValue(simulation.averagePosition());
+
+        _totalMassView.setValue(simulation.totalMass());
+        _centerOfMassPositionView.setValue(simulation.centerOfMass());
+
+        _interactionCountLabel.set_text(std::to_string(simulation.interactionCount()));
     });
 
-    auto openParticlesViewButton = _builder->get_widget<Gtk::Button>("modify-button");
-    openParticlesViewButton->signal_clicked().connect([&] {
+    _modifyButton.signal_clicked().connect([&] {
         _particlesWindow.show();
     });
 

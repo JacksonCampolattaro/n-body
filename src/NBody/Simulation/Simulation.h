@@ -70,28 +70,26 @@ namespace NBody {
 
     public:
 
-        Simulation() : entt::basic_registry<Entity>() {
-            _dispatcher.connect([&] { signal_changed.emit(); });
-        }
-
-        void notifyChanged() {
-            _dispatcher.emit();
-        }
+        Simulation() : entt::basic_registry<Entity>() {}
 
         void save(Gio::File &destination) const;
 
         void load(Gio::File &source);
 
+        Physics::Position averagePosition() const;
+
+        float totalMass() const;
+
+        Physics::Position centerOfMass() const;
+
+        std::size_t interactionCount() const;
+
     public:
 
-        sigc::signal<void()> signal_changed;
+        mutable sigc::signal<void()> signal_changed;
         sigc::signal<void(std::size_t)> signal_particles_added;
 
         mutable std::mutex mutex;
-
-    private:
-
-        Glib::Dispatcher _dispatcher;
 
     public:
 
