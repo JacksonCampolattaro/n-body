@@ -30,9 +30,15 @@ namespace UI {
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
+        Gtk::Button &_modifyButton;
+
         Gtk::Label &_countLabel;
         PositionView &_averagePositionView;
+
+        FloatView<10> &_totalMassView;
         PositionView &_centerOfMassPositionView;
+
+        Gtk::Label &_interactionCountLabel;
 
         NBody::Simulation &_simulation;
 

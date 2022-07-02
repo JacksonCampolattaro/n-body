@@ -110,3 +110,42 @@ void NBody::Simulation::load(Gio::File &source) {
     std::ifstream inputFile(source.get_path());
      inputFile >> (*this);
 }
+
+NBody::Physics::Position NBody::Simulation::averagePosition() const {
+    Physics::Position average;
+
+    auto positions = view<const Physics::Position>();
+    positions.each([&](const auto &position) {
+        average = average + position;
+    });
+
+    return average / (float) positions.size();
+}
+
+float NBody::Simulation::totalMass() const {
+    float totalMass = 0;
+
+    auto masses = view<const Physics::PassiveMass>();
+    masses.each([&](const auto &mass) {
+       totalMass += mass.mass();
+    });
+
+    return totalMass;
+}
+
+NBody::Physics::Position NBody::Simulation::centerOfMass() const {
+    Physics::Position average;
+    float totalMass = 0;
+
+    auto massesAndPositions = view<const Physics::PassiveMass, const Physics::Position>();
+    massesAndPositions.each([&](const auto &mass, const auto &position) {
+        average = average + (position * mass.mass());
+        totalMass += mass.mass();
+    });
+
+    return average / totalMass;
+}
+
+std::size_t NBody::Simulation::interactionCount() const {
+    return view<const Physics::PassiveMass>().size() * view<const Physics::ActiveMass>().size();
+}
