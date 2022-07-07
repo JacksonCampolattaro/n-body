@@ -17,7 +17,7 @@ add_library(Simulation
         Simulation.h Simulation.cpp
         Solver.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
-        )
+        Solvers/BarnesHutSolver.cpp Solvers/BarnesHutSolver.h Solvers/Octree.cpp Solvers/Octree.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

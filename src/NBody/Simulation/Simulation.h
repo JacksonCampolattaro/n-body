@@ -43,8 +43,6 @@ namespace NBody {
         class Particle : public entt::basic_handle<Entity>, public Glib::Object {
         public:
 
-            //Particle() : entt::basic_handle<Entity>() {}
-
             Particle(const Particle &other) : entt::basic_handle<Entity>(other),
                                               Glib::ObjectBase(typeid(Particle)),
                                               Glib::Object() {}
