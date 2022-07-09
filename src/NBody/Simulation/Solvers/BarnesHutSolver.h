@@ -18,18 +18,13 @@ namespace NBody {
     private:
 
         std::unique_ptr<Octree> _octree;
+        float _theta = 0.5f;
 
     public:
 
         BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) : Solver(simulation, rule) {}
 
         void step() override;
-
-    protected:
-
-        Physics::Acceleration applyRule(Physics::Rule &rule,
-                                        const Physics::Position &passivePosition,
-                                        const Physics::PassiveMass &passiveMass);
 
     };
 

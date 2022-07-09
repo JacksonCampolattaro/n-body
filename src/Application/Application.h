@@ -16,6 +16,7 @@ private:
 
     NBody::Simulation _simulation;
     BackgroundSolver<NBody::BarnesHutSolver> _solver;
+    //NBody::BarnesHutSolver _solver;
     NBody::Physics::Rule _rule{1.0};
 
 protected:
