@@ -25,7 +25,7 @@ void NBody::BarnesHutSolver::step() {
         const auto &targetMass = _simulation.get<PassiveMass>(e);
         auto &velocity = _simulation.get<Velocity>(e);
 
-        auto acceleration = applyRule(_rule,  targetPosition, targetMass);
+        auto acceleration = _octree->applyRule(_rule, targetPosition, targetMass, _theta);
 
         velocity += acceleration * _dt;
     });
@@ -45,10 +45,4 @@ void NBody::BarnesHutSolver::step() {
         });
     }
 
-}
-
-NBody::Physics::Acceleration
-NBody::BarnesHutSolver::applyRule(NBody::Physics::Rule &rule, const Position &passivePosition,
-                                  const PassiveMass &passiveMass) {
-    return _octree->applyRule(_rule,  passivePosition, passiveMass);
 }
