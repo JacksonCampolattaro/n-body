@@ -20,6 +20,7 @@ namespace UI {
             set_width_chars(Digits);
             set_max_width_chars(Digits);
             set_ellipsize(Pango::EllipsizeMode::END);
+            set_xalign(1.0f);
         }
 
     public:
