@@ -44,4 +44,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _camera.setBackgroundColor({0.9, 0.9, 0.92, 1.0});
     }
 
+    _view.set_cursor(Gdk::Cursor::create("crosshair"));
+
 }
