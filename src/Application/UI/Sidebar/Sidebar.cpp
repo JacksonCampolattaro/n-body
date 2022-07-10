@@ -5,6 +5,7 @@
 #include "Sidebar.h"
 
 #include <gdkmm/pixbuf.h>
+#include <gtkmm/icontheme.h>
 
 UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
                      NBody::Physics::Rule &rule, NBody::Solver &solver) :
@@ -19,26 +20,21 @@ UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simul
     _notebook.set_tab_pos(Gtk::PositionType::LEFT);
     append(_notebook);
 
-    _bodiesIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/outliner_ob_pointcloud.svg", -1, 128));
+    auto iconTheme = Gtk::IconTheme::get_for_display(Gdk::Display::get_default());
+
+    _bodiesIcon.set(iconTheme->lookup_icon("nbody-particles-symbolic", 128));
     _notebook.append_page(_bodiesPanel, _bodiesIcon);
 
-    _physicsIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/physics.svg", -1, 128));
+    _physicsIcon.set(iconTheme->lookup_icon("nbody-physics-symbolic", 128));
     _notebook.append_page(_physicsPanel, _physicsIcon);
 
-    _solverIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/memory.svg", -1, 128));
+    _solverIcon.set(iconTheme->lookup_icon("nbody-solver-symbolic", 128));
     _notebook.append_page(_solverPanel, _solverIcon);
 
-    _cameraIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/view_camera.svg", -1, 128));
+    _cameraIcon.set(iconTheme->lookup_icon("nbody-camera-symbolic", 128));
     _notebook.append_page(_cameraPanel, _cameraIcon);
 
-    //    auto step = new Gtk::Button("step");
-    //    step->signal_clicked().connect(solver.slot_step);
-    //
-    //    solver.signal_finished.connect([&] {
-    //        camera.signal_changed.emit();
-    //    });
-
-    _runIcon.set(Gdk::Pixbuf::create_from_resource("/NBody/icons/tria_right.svg", -1, 128));
+    _runIcon.set(iconTheme->lookup_icon("nbody-run-symbolic", 128));
     _notebook.append_page(_runPanel, _runIcon);
 
 }
