@@ -28,9 +28,19 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) : Panel("Run") {
     });
 
     _iterationsLabel = builder->get_widget<Gtk::Label>("iterations-label");
-    solver.signal_finished().connect([&]{
+    solver.signal_finished().connect([&] {
         _iterations++;
         _iterationsLabel->set_text(Glib::ustring::format(_iterations));
+    });
+
+    _stepTimeLabel = Gtk::Builder::get_widget_derived<FloatView<5>>(builder, "step-time-label");
+    _averageStepTimeLabel = Gtk::Builder::get_widget_derived<FloatView<10>>(builder, "average-step-time-label");
+    solver.signal_computeTime().connect([&](auto &duration) {
+        _stepTimeLabel->setValue(duration.count());
+        _stepTimes.emplace_back(duration);
+        if (_stepTimes.size() > 1000) _stepTimes.pop_front();
+        auto averageDuration = std::reduce(_stepTimes.begin(), _stepTimes.end()) / _stepTimes.size();
+        _averageStepTimeLabel->setValue((float) averageDuration.count());
     });
 
 }

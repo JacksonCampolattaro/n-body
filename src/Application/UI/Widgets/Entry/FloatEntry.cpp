@@ -5,7 +5,7 @@
 #include "FloatEntry.h"
 
 void UI::FloatEntry::setup() {
-    set_digits(2);
+    set_digits(3);
     set_width_chars(10);
 
     set_vexpand(false);
