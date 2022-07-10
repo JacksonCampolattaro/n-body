@@ -6,6 +6,7 @@
 #define N_BODY_BACKGROUNDSOLVER_H
 
 #include <NBody/Simulation/Solver.h>
+#include <NBody/Simulation/TypedDispatcher.h>
 
 #include <glibmm/dispatcher.h>
 
@@ -54,8 +55,15 @@ public:
         // Spawn a new thread when the user requests a step
         _thread = std::make_shared<std::thread>([&] {
 
-            // Run the underlying solver (this may be very slow)
+            spdlog::trace("Beginning simulation step");
+
+            auto startTime = std::chrono::high_resolution_clock::now();
             BaseSolver::step();
+            auto finishTime = std::chrono::high_resolution_clock::now();
+
+            std::chrono::duration<double> duration = finishTime - startTime;
+            BaseSolver::_computeTimeDispatcher.emit(duration);
+            spdlog::trace("Finished simulation step in {} s", duration.count());
 
             // Notify the main thread that we're finished (so we can join)
             _dispatcher.emit();
