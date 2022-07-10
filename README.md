@@ -1,9 +1,11 @@
-# MINI
-### Modular Integrator for N-body Interaction
+# NB
+### A Modular Integrator for N-body Interaction
 
 An n-body Gravity Simulator by Jackson Campolattaro.
 
+<!---
 ![Galaxy](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/galaxy.png)
+--->
 
 NOTE: The branch 'Gtkmm' currently contains the most up-to-date code, and will be merged to master soon.
 
@@ -33,7 +35,9 @@ In the future I'm hoping to explore offloading some of the work to the GPU; this
 
 ### Graphics
 
+<!---
 ![Running Simulation](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/running-simulation.png)
+--->
 
 Throughout this project, graphics have consistently been a source of frustration. When I built my proof of concept, I used freeGLUT because there were so many tutorials and examples available for it. GLUT was a great graphics library for beginners... in 1999. 
 
@@ -43,9 +47,11 @@ Eventually, even that became an issue, and the pre-2.0 OpenGL became a major per
 
 ### Interface
 
+<!---
 ![Physics panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/physics.png) 
-![View panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/view.png) 
+![UI panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/view.png) 
 ![Solver panel](https://github.com/JacksonCampolattaro/n_body/blob/master/doc/interface/solver.png)
+--->
 
 I've built a simple interface for controlling the program using [Gtkmm](https://www.gtkmm.org/en/), the C++ interface for Gtk+. I've been very happy with Gtkmm because it's very lightweight and looks native on my operating system (Fedora linux). I also considered [Qt](https://www.qt.io/), which worked nicely but felt way too heavy for my purposes, and [WxWidgets](https://www.wxwidgets.org/), which is just a bit too messy for me.
 
