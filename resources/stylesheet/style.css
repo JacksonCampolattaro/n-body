@@ -1,0 +1,48 @@
+.heading {
+    font-size: larger;
+}
+
+.description {
+    font-size: smaller;
+    color:@theme_unfocused_fg_color;
+}
+
+.popup-entry {
+    font-size: smaller;
+    border-radius: 1024px;
+}
+
+.editable {
+    font-size: smaller;
+    border-radius: 1024px;
+}
+
+.sphere-view {
+    border-radius: 10px;
+    min-width: 40px;
+}
+
+list, expander-widget, .particles-listview {
+    margin: 16px;
+    border-radius: 10px;
+    background-clip: padding-box;
+
+    background-color:@theme_unfocused_bg_color;
+    padding: 12px;
+}
+
+row {
+    background-color:@theme_unfocused_bg_color;
+    min-height: 32px;
+    padding: 8px 12px;
+}
+
+row:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+row:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}

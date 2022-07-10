@@ -1,54 +1,71 @@
-#include <cassert>
+#include <catch2/catch.hpp>
 
-#include "../src/Model/Simulation.h"
-#include "../src/Model/Entity.h"
+#include <NBody/Simulation/Simulation.h>
 
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/prettywriter.h>
+using namespace NBody::Simulation;
+using namespace NBody::Physics;
+using namespace NBody::Graphics;
 
-#include <iostream>
+TEST_CASE("Serialization of a single body", "[Simulation]") {
 
-using Model::Simulation;
-using Model::Entity;
+    // Create a simple simulation scenario
+    Simulation original;
 
-int main() {
+    Entity a = original.createBody();
+    original.emplace_or_replace<Position>(a, 0.0f, 5.0f, 5.0f);
+    original.emplace_or_replace<Velocity>(a, 0.0f, -0.1f, 5.0f);
 
-    rapidjson::StringBuffer buffer;
+    // Serialize the scenario
+    std::stringstream stream;
+    stream << original;
 
-    Simulation original{};
+    // Deserialize that data
+    Simulation copy;
+    stream >> copy;
 
-    original.newEntity()
-            .setPosition({0, 5, 5})
-            .setVelocity({0, -0.1, 0})
-            .setDrawable({{0.8, 0.8, 0.8}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    original.newEntity()
-            .setPosition({-5, 0, 0})
-            .setVelocity({0, 0.15, 0})
-            .setDrawable({{0.8, 0.8, 0.0}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    original.newEntity()
-            .setPosition({5, 0, 0})
-            .setVelocity({0, -0.05, 0})
-            .setDrawable({{0.8, 0.0, 0.0}, 1.0})
-            .setPassiveElement({0.5})
-            .setActiveElement({0.5});
-    std::cout << "original: \n" << original;
-    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-    writer << original;
-    original.saveBodiesToPath("test.bod");
+    std::stringstream original_stream, copy_stream;
+    original_stream << original;
+    copy_stream << copy;
+    CHECK(original_stream.str() == copy_stream.str());
+}
 
-    std::string saved = buffer.GetString();
-    std::cout << "archive: \n" << saved << std::endl;
+TEST_CASE("Serialization of a small scenario", "[Simulation]") {
 
+    // Create a simple simulation scenario
+    Simulation original;
 
-    auto copy = Simulation();
-    rapidjson::Document document;
-    document.Parse(saved.c_str());
-    document >> copy;
-    std::cout << "copy: " << copy << std::endl;
+    Entity a = original.createBody();
+    original.emplace_or_replace<Position>(a, 0.0f, 5.0f, 5.0f);
+    original.emplace_or_replace<Velocity>(a, 0.0f, -0.1f, 5.0f);
 
+    Entity b = original.createBody();
+    original.emplace_or_replace<Position>(b, 0.0f, 5.0f, 4.0f);
+    original.emplace_or_replace<Velocity>(b, 0.0f, -0.2f, 5.0f);
+    original.emplace_or_replace<Color>(b, Magnum::Color3::red());
+    original.emplace_or_replace<Sphere>(b, 4.0f);
+
+    Entity c = original.createBody();
+    original.emplace_or_replace<Position>(c, 0.0f, 5.0f, 3.0f);
+    original.emplace_or_replace<Velocity>(c, 1.0f, -0.3f, 5.0f);
+    original.emplace_or_replace<ActiveMass>(c, 5.0f);
+
+    // Serialize the scenario
+    std::stringstream stream;
+    stream << original;
+
+    std::cout << stream.str() << std::endl;
+
+    // Deserialize that data
+    Simulation intermediate;
+    stream >> intermediate;
+
+    // Data gets reversed when serialized, so we need to repeat to put it in the same order for testing
+    stream << intermediate;
+    Simulation copy;
+    stream >> copy;
+
+    std::stringstream original_stream, copy_stream;
+    original_stream << original;
+    copy_stream << copy;
+    CHECK(original_stream.str() == copy_stream.str());
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+
+    <gresource>
+        <file>ui/interactive.xml</file>
+
+        <file>ui/panel.xml</file>
+
+        <file>ui/physics_panel.xml</file>
+        <file>ui/particles_panel.xml</file>
+        <file>ui/solver_panel.xml</file>
+        <file>ui/camera_panel.xml</file>
+        <file>ui/run_panel.xml</file>
+
+        <file>ui/particle_entry.xml</file>
+    </gresource>
+
+    <gresource prefix="/NBody">
+
+        <file>icons/scalable/actions/view-sidebar-end-symbolic.svg</file>
+
+        <file>icons/outliner_ob_pointcloud.svg</file>
+        <file>icons/physics.svg</file>
+        <file>icons/memory.svg</file>
+        <file>icons/settings.svg</file>
+        <file>icons/orientation_global.svg</file>
+        <file>icons/view_camera.svg</file>
+        <file>icons/tria_right.svg</file>
+        <file>icons/frame_next.svg</file>
+        <file>icons/render_animation.svg</file>
+        <file>icons/node_material.svg</file>
+
+        <file>stylesheet/style.css</file>
+
+    </gresource>
+</gresources>
