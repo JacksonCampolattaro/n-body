@@ -6,13 +6,12 @@
 #define N_BODY_SOLVER_H
 
 #include "Simulation.h"
+#include "TypedDispatcher.h"
 
 #include <NBody/Physics/Rule.h>
 
 #include <sigc++/sigc++.h>
 #include <spdlog/spdlog.h>
-
-#include <thread>
 
 namespace NBody {
 
@@ -25,6 +24,8 @@ namespace NBody {
 
         sigc::signal<void()> _signal_finished;
         sigc::slot<void()> _slot_step;
+
+        TypedDispatcher<std::chrono::duration<double>> _computeTimeDispatcher;
 
     public:
 
@@ -48,18 +49,20 @@ namespace NBody {
 
         sigc::signal<void()> &signal_finished() { return _signal_finished; };
 
+        sigc::signal<void(std::chrono::duration<double>)> &signal_computeTime() { return _computeTimeDispatcher.signal(); };
+
         sigc::slot<void()> &slot_step() { return _slot_step; };
 
     private:
 
         void on_step() {
-            std::thread t([&] {
-                std::scoped_lock lock(_simulation.mutex);
-                spdlog::trace("Beginning simulation step");
-                step();
-                spdlog::trace("Finished simulation step");
-            });
-            t.join();
+            std::scoped_lock lock(_simulation.mutex);
+            spdlog::trace("Beginning simulation step");
+            auto startTime = std::chrono::high_resolution_clock::now();
+            step();
+            auto finishTime = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = finishTime - startTime;
+            spdlog::debug("Finished simulation step in {}s", duration.count());
             signal_finished().emit();
         }
 
