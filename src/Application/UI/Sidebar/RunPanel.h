@@ -8,8 +8,11 @@
 #include <NBody/Simulation/Solver.h>
 
 #include "Panel.h"
+#include "../Widgets/View/FloatView.h"
 
 #include <sigc++/sigc++.h>
+
+#include <deque>
 
 namespace UI {
 
@@ -21,6 +24,10 @@ namespace UI {
         Gtk::Button *_stepButton;
         Gtk::ToggleButton *_runButton;
         Gtk::Label *_iterationsLabel;
+        FloatView<5> *_stepTimeLabel;
+        FloatView<10> *_averageStepTimeLabel;
+
+        std::deque<std::chrono::duration<double>> _stepTimes;
 
         int _iterations = 0;
 

@@ -143,6 +143,8 @@ namespace NBody {
                                         const Physics::PassiveMass &passiveMass,
                                         float theta) {
 
+            return _root.applyRule(rule, _simulation, passivePosition, passiveMass);
+
             Physics::Acceleration acceleration;
 
             std::stack<const OctreeNode *> nodes;
