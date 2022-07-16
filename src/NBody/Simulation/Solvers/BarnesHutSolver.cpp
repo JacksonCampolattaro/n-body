@@ -25,6 +25,7 @@ void NBody::BarnesHutSolver::step() {
         const auto &targetMass = _simulation.get<PassiveMass>(e);
         auto &velocity = _simulation.get<Velocity>(e);
 
+        assert(_octree);
         auto acceleration = _octree->applyRule(_rule, targetPosition, targetMass, _theta);
 
         velocity += acceleration * _dt;
