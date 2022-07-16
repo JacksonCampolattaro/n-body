@@ -1,6 +1,8 @@
 #ifndef N_BODY_APPLICATION_H
 #define N_BODY_APPLICATION_H
 
+#include "MultiSolver.h"
+
 #include <gtkmm.h>
 
 #include <NBody/Simulation/Simulation.h>
@@ -13,7 +15,8 @@ class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
-    NBody::BarnesHutSolver _solver;
+    //NBody::BarnesHutSolver _solver;
+    NBody::MultiSolver _solver;
     NBody::Physics::Rule _rule{1.0};
 
 protected:

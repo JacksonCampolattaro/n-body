@@ -23,6 +23,8 @@ void Application::on_activate() {
 
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
+    _solver.select<NBody::BarnesHutSolver>();
+
     auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
     auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(
             builder, "primary-window",
