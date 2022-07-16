@@ -18,7 +18,7 @@ namespace NBody {
     private:
 
         std::unique_ptr<Octree> _octree;
-        float _theta = 0.5f;
+        float _theta = 0.4f;
 
     public:
 

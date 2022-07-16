@@ -3,26 +3,152 @@
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
 
-    <object class="GtkListBox" id="root">
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="spacing">16</property>
 
-        <property name="selection-mode">none</property>
-        <style>
-            <class name="boxed-list"/>
-        </style>
+
         <child>
-            <object class="AdwComboRow" id="solver-combo-row">
-                <property name="title">Algorithm</property>
-                <property name="subtitle">Approach to compute pair-wise interactions</property>
-                <property name="model">
-                    <object class="GtkStringList">
-                        <items>
-                            <item>Naive</item>
-                            <item>Barnes-Hut</item>
-                        </items>
+            <object class="GtkListBox">
+                <property name="selection-mode">none</property>
+                <style>
+                    <class name="boxed-list"/>
+                </style>
+                <child>
+                    <object class="AdwComboRow" id="solver-combo-row">
+                        <property name="title">Algorithm</property>
+                        <property name="subtitle">Approach to compute pair-wise interactions</property>
+                        <property name="model">
+                            <object class="GtkStringList">
+                                <items>
+                                    <item>Naive</item>
+                                    <item>Barnes-Hut</item>
+                                </items>
+                            </object>
+                        </property>
                     </object>
-                </property>
+                </child>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkStack" id="stack">
+                <property name="transition-type">crossfade</property>
+
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">naive</property>
+                        <property name="title" translatable="yes">Naive</property>
+                        <property name="child">
+
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">16</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Naive Algorithm Settings</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="title-5"/>
+                                        </style>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkListBox">
+                                        <property name="selection-mode">none</property>
+                                        <style>
+                                            <class name="boxed-list"/>
+                                        </style>
+
+                                        <child>
+                                            <object class="AdwActionRow">
+                                                <property name="title">Placeholder</property>
+                                                <property name="subtitle">That's what I am!</property>
+                                                <child type="suffix">
+                                                    <object class="GtkSpinButton" id="placeholder">
+                                                        <property name="hexpand">0</property>
+                                                        <property name="vexpand">0</property>
+                                                        <property name="valign">center</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+
+                        </property>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">barnes-hut</property>
+                        <property name="title" translatable="yes">Barnes-Hut</property>
+                        <property name="child">
+
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">16</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Barnes-Hut Algorithm Settings</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="title-5"/>
+                                        </style>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkListBox">
+                                        <property name="selection-mode">none</property>
+                                        <style>
+                                            <class name="boxed-list"/>
+                                        </style>
+
+                                        <child>
+                                            <object class="AdwActionRow">
+                                                <property name="title">Theta</property>
+                                                <property name="subtitle">Higher values trade accuracy for speed
+                                                </property>
+                                                <child type="suffix">
+                                                    <object class="GtkSpinButton" id="theta-float-entry">
+                                                        <property name="hexpand">0</property>
+                                                        <property name="vexpand">0</property>
+                                                        <property name="valign">center</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="AdwActionRow">
+                                                <property name="title">Maximum Tree Depth</property>
+                                                <property name="subtitle">Shallower trees reduce memory load</property>
+                                                <child type="suffix">
+                                                    <object class="GtkSpinButton" id="tree-depth-int-entry">
+                                                        <property name="hexpand">0</property>
+                                                        <property name="vexpand">0</property>
+                                                        <property name="valign">center</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                >
+                            </object>
+
+                        </property>
+                    </object>
+                </child>
             </object>
         </child>
     </object>
-
 </interface>
