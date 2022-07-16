@@ -7,14 +7,25 @@
 
 #include <NBody/Simulation/Simulation.h>
 
+#include <gtkmm/button.h>
+
 #include "Panel.h"
+#include "../../MultiSolver.h"
 
 namespace UI {
 
     class SolverPanel : public Panel {
+    private:
+
+        NBody::MultiSolver &_multiSolver;
+
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        Gtk::Button &_placeholder;
+
     public:
 
-        SolverPanel();
+        SolverPanel(NBody::MultiSolver &multiSolver);
 
     };
 

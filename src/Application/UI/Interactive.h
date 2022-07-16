@@ -23,7 +23,7 @@ namespace UI {
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::Solver &solver);
+                    NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::MultiSolver &solver);
     };
 
 }

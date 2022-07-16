@@ -8,13 +8,13 @@
 #include <gtkmm/icontheme.h>
 
 UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
-                     NBody::Physics::Rule &rule, NBody::Solver &solver) :
+                     NBody::Physics::Rule &rule, NBody::MultiSolver &solver) :
         Gtk::Box(Gtk::Orientation::HORIZONTAL),
         _notebook(),
         _bodiesPanel(simulation),
         _physicsPanel(rule),
         _cameraPanel(camera),
-        _solverPanel(),
+        _solverPanel(solver),
         _runPanel(solver) {
 
     _notebook.set_tab_pos(Gtk::PositionType::LEFT);
