@@ -64,7 +64,6 @@ add_executable(NBody
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
         UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
-        BackgroundSolver.cpp BackgroundSolver.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/View/ParticleActiveMassView.h

@@ -20,7 +20,7 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) : Panel("Run") {
     _runButton->signal_toggled().connect([&] {
         if (_runButton->get_active())
             _idler = Glib::signal_timeout().connect([&] {
-                solver.step();
+                solver.slot_step()();
                 return true;
             }, 1);
         else
