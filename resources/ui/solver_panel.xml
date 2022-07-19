@@ -16,7 +16,7 @@
                     <class name="boxed-list"/>
                 </style>
                 <child>
-                    <object class="AdwComboRow" id="solver-combo-row">
+                    <object class="AdwComboRow" id="solver-dropdown">
                         <property name="title">Algorithm</property>
                         <property name="subtitle">Approach to compute pair-wise interactions</property>
                         <property name="model">
@@ -24,6 +24,7 @@
                                 <items>
                                     <item>Naive</item>
                                     <item>Barnes-Hut</item>
+                                    <item>Placeholder</item>
                                 </items>
                             </object>
                         </property>
@@ -34,10 +35,10 @@
 
         <child>
             <object class="GtkStack" id="stack">
-                <property name="transition-type">crossfade</property>
+                <property name="transition-type">none</property>
 
                 <child>
-                    <object class="GtkStackPage">
+                    <object class="GtkStackPage" id="naive-page">
                         <property name="name">naive</property>
                         <property name="title" translatable="yes">Naive</property>
                         <property name="child">
@@ -49,7 +50,7 @@
 
                                 <child>
                                     <object class="GtkLabel">
-                                        <property name="label">Algorithm Settings</property>
+                                        <property name="label">Naive Algorithm Settings</property>
                                         <property name="halign">start</property>
                                         <style>
                                             <class name="title-5"/>
@@ -73,7 +74,7 @@
                                                         <property name="hexpand">0</property>
                                                         <property name="vexpand">0</property>
                                                         <property name="valign">center</property>
-                                                        <property name="label">Naive</property>
+                                                        <property name="label">Placeholder</property>
                                                     </object>
                                                 </child>
                                             </object>
@@ -87,7 +88,7 @@
                 </child>
 
                 <child>
-                    <object class="GtkStackPage">
+                    <object class="GtkStackPage" id="barnes-hut-page">
                         <property name="name">barnes-hut</property>
                         <property name="title" translatable="yes">Barnes-Hut</property>
                         <property name="child">
