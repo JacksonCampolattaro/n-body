@@ -32,6 +32,7 @@
 
 #include <Magnum/Math/Matrix3.h>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 namespace Magnum::Examples {
 

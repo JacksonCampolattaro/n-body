@@ -8,6 +8,10 @@
 #include <NBody/Simulation/Simulation.h>
 
 #include <gtkmm/button.h>
+#include <gtkmm/stack.h>
+#include <gtkmm/stackswitcher.h>
+#include <gtkmm/dropdown.h>
+#include <gtkmm/listboxrow.h>
 
 #include "Panel.h"
 #include "../../MultiSolver.h"
@@ -21,7 +25,8 @@ namespace UI {
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
-        Gtk::Button &_placeholder;
+        Gtk::ListBoxRow &_solverDropdown;
+        Gtk::Stack &_solverStack;
 
     public:
 
