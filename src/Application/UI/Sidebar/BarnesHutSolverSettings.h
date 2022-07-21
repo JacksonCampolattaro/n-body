@@ -5,6 +5,8 @@
 #ifndef N_BODY_BARNESHUTSOLVERSETTINGS_H
 #define N_BODY_BARNESHUTSOLVERSETTINGS_H
 
+#include "../Widgets/Entry/FloatEntry.h"
+
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 
 #include <gtkmm/box.h>
@@ -18,6 +20,9 @@ namespace UI {
         NBody::BarnesHutSolver &_solver;
 
         Glib::RefPtr<Gtk::Builder> _builder;
+
+        FloatEntry &_thetaEntry;
+        Gtk::SpinButton &_maxDepthEntry;
 
     public:
 
