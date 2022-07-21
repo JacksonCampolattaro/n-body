@@ -128,7 +128,7 @@ namespace NBody {
 
     public:
 
-        Octree(NBody::Simulation &simulation) : _simulation(simulation) {
+        Octree(NBody::Simulation &simulation, int maxDepth = std::numeric_limits<int>::max()) : _simulation(simulation) {
 
             // Get a list of physics-actor particles
             auto activeParticlesView = _simulation.view<Physics::ActiveMass>();
