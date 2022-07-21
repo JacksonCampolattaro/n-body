@@ -10,12 +10,17 @@
 UI::SolverPanel::SolverPanel(NBody::MultiSolver &multiSolver) :
         Panel("Solver"),
         _multiSolver(multiSolver),
+        _naiveSolverSettings(multiSolver.getSolver<NBody::NaiveSolver>()),
+        _barnesHutSolverSettings(multiSolver.getSolver<NBody::BarnesHutSolver>()),
         _builder(Gtk::Builder::create_from_resource("/ui/solver_panel.xml")),
         _solverDropdown(*_builder->get_widget<Gtk::ListBoxRow>("solver-dropdown")),
         _solverStack(*_builder->get_widget<Gtk::Stack>("stack")) {
 
     auto root = _builder->get_widget<Gtk::Widget>("root");
     _contents.append(*root);
+
+    _solverStack.add(_naiveSolverSettings, "naive");
+    _solverStack.add(_barnesHutSolverSettings, "barnes-hut");
 
     _multiSolver.select<NBody::NaiveSolver>();
     _solverStack.set_visible_child("naive");

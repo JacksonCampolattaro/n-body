@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+    <object class="GtkListBox" id="root">
+        <property name="selection-mode">none</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">False</property>
+        <style>
+            <class name="boxed-list"/>
+        </style>
+
+        <child>
+            <object class="AdwActionRow">
+                <property name="title">Settings Placeholder</property>
+                <property name="subtitle">That's what I am!</property>
+                <property name="vexpand">False</property>
+                <child type="suffix">
+                    <object class="GtkButton" id="placeholder">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="label">Placeholder</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
