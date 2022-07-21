@@ -14,6 +14,8 @@
 #include <gtkmm/listboxrow.h>
 
 #include "Panel.h"
+#include "NaiveSolverSettings.h"
+#include "BarnesHutSolverSettings.h"
 #include "../../MultiSolver.h"
 
 namespace UI {
@@ -22,6 +24,9 @@ namespace UI {
     private:
 
         NBody::MultiSolver &_multiSolver;
+
+        NaiveSolverSettings _naiveSolverSettings;
+        BarnesHutSolverSettings _barnesHutSolverSettings;
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
