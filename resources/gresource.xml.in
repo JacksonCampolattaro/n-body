@@ -12,6 +12,9 @@
         <file>ui/camera_panel.xml</file>
         <file>ui/run_panel.xml</file>
 
+        <file>ui/naive_solver_settings.xml</file>
+        <file>ui/barnes_hut_solver_settings.xml</file>
+
         <file>ui/particle_entry.xml</file>
     </gresource>
 
