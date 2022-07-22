@@ -5,29 +5,36 @@
 #include "Octree.h"
 
 NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const NBody::Simulation &registry,
-                                      Position center, float sideLength)
+                                      Position center, float sideLength,
+                                      int maxDepth, int maxLeafSize)
         : _contents(contents),
           _center(center),
           _sideLength(sideLength) {
 
     // Subdivide if this node contains too many particles
     // todo We can probably get more performance by allowing leaf nodes to contain more than one particle
-    if (contents.size() > 32 && sideLength > 0.1) {
+    if (contents.size() > maxLeafSize && sideLength > 0.1 && maxDepth > 0) {
 
-        // todo This is an awful, ugly way of doing this; later it can be replaced with bitset indices
+        std::span<NBody::Entity>
+                xyz000,
+                xyz100,
+                xyz010,
+                xyz110,
+                xyz001,
+                xyz101,
+                xyz011,
+                xyz111;
 
-        // Split on x-axis
-        auto [x0, x1] = split<0>(_contents, registry);
-
-        // Split on y-axis
-        auto [xy00, xy01] = split<1>(x0, registry);
-        auto [xy10, xy11] = split<1>(x1, registry);
-
-        // Split on z-axis
-        auto [xyz000, xyz001] = split<2>(xy00, registry);
-        auto [xyz010, xyz011] = split<2>(xy01, registry);
-        auto [xyz100, xyz101] = split<2>(xy10, registry);
-        auto [xyz110, xyz111] = split<2>(xy11, registry);
+        std::tie(
+                xyz000,
+                xyz100,
+                xyz010,
+                xyz110,
+                xyz001,
+                xyz101,
+                xyz011,
+                xyz111
+        ) = split<2>(_contents, registry);
 
         // Initialize 8 child nodes
         float childSideLength = sideLength / 2.0f;
@@ -35,28 +42,28 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
                 {
                         {xyz000, registry,
                          center + glm::vec3{-childSideLength, -childSideLength, -childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz001, registry,
                          center + glm::vec3{-childSideLength, -childSideLength, childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz010, registry,
                          center + glm::vec3{-childSideLength, childSideLength, -childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz011, registry,
                          center + glm::vec3{-childSideLength, childSideLength, childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz100, registry,
                          center + glm::vec3{childSideLength, -childSideLength, -childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz101, registry,
                          center + glm::vec3{childSideLength, -childSideLength, childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz110, registry,
                          center + glm::vec3{childSideLength, childSideLength, -childSideLength},
-                         childSideLength},
+                         childSideLength, maxDepth - 1, maxLeafSize},
                         {xyz111, registry,
                          center + glm::vec3{childSideLength, childSideLength, childSideLength},
-                         childSideLength}
+                         childSideLength, maxDepth - 1, maxLeafSize}
                 }
         });
 
