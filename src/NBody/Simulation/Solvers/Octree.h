@@ -36,11 +36,11 @@ namespace NBody {
         public:
 
             // todo Maybe this can be removed?
-            OctreeNode() {}
+            OctreeNode() = default;
 
             // Recursive constructor is gross, this will be replaced
             OctreeNode(std::span<NBody::Entity> contents, const NBody::Simulation &registry,
-                       Physics::Position center = {}, float sideLength = (2 << 20));
+                       Physics::Position center, float sideLength, int maxDepth, int maxLeafSize);
 
 
             [[nodiscard]] float sideLength() const { return _sideLength; }
@@ -56,7 +56,7 @@ namespace NBody {
             [[nodiscard]] const std::span<NBody::Entity> &particles() const { return _contents; }
 
             template<int Dimension>
-            [[nodiscard]] std::pair<std::span<NBody::Entity>, std::span<NBody::Entity>>
+            [[nodiscard]] auto
             split(std::span<NBody::Entity> &entities, const NBody::Simulation &registry) const {
 
                 auto c = std::partition(entities.begin(), entities.end(), [&](Entity entity) {
@@ -66,28 +66,38 @@ namespace NBody {
                 std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
                 std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
                 assert(less.size() + more.size() == entities.size());
-                return {less, more};
+
+                // This can be done with std::arrays, using something like:
+                // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
+                // Or this:
+                // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
+                return std::tuple_cat(split<Dimension - 1>(less, registry), split<Dimension - 1>(more, registry));
+            }
+
+            template<>
+            [[nodiscard]] auto
+            split<0>(std::span<NBody::Entity> &entities, const NBody::Simulation &registry) const {
+
+                auto c = std::partition(entities.begin(), entities.end(), [&](Entity entity) {
+                    return (registry.template get<Physics::Position>(entity))[0] < _center[0];
+                });
+
+                std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
+                std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
+                assert(less.size() + more.size() == entities.size());
+
+                return std::tuple{less, more};
             }
 
             [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, const Simulation &simulation,
                                                           const Physics::Position &passivePosition,
-                                                          const Physics::PassiveMass &passiveMass) const {
+                                                          const Physics::PassiveMass &passiveMass,
+                                                          float theta) const {
 
                 // Empty nodes can be ignored
                 if (_contents.empty()) return Physics::Acceleration{};
 
-                if (!_children) {
-
-                    return std::transform_reduce(
-                            _contents.begin(), _contents.end(),
-                            Physics::Acceleration{}, std::plus{},
-                            [&](auto entity) {
-                                return rule(simulation.get<Position>(entity),
-                                            simulation.get<ActiveMass>(entity),
-                                            passivePosition, passiveMass);
-                            });
-
-                } else if ((_sideLength / glm::distance((glm::vec3) passivePosition, (glm::vec3) centerOfMass())) < 1) {
+                if ((_sideLength / glm::distance((glm::vec3) passivePosition, (glm::vec3) centerOfMass())) < theta) {
 
                     // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
                     return rule(centerOfMass(),
@@ -96,12 +106,30 @@ namespace NBody {
 
                 } else {
 
-                    return std::transform_reduce(
-                            children().begin(), children().end(),
-                            Physics::Acceleration{}, std::plus{},
-                            [&](const auto &child) {
-                                return child.applyRule(rule, simulation, passivePosition, passiveMass);
-                            });
+                    // Otherwise, the node can't be summarized
+                    if (isLeaf()) {
+
+                        // If this is a leaf node, interact with all particles contained
+                        return std::transform_reduce(
+                                _contents.begin(), _contents.end(),
+                                Physics::Acceleration{}, std::plus{},
+                                [&](auto entity) {
+                                    return rule(simulation.get<Position>(entity),
+                                                simulation.get<ActiveMass>(entity),
+                                                passivePosition, passiveMass);
+                                });
+
+                    } else {
+
+                        // If it's a non-leaf node, descend the tree (recursive case)
+                        return std::transform_reduce(
+                                children().begin(), children().end(),
+                                Physics::Acceleration{}, std::plus{},
+                                [&](const auto &child) {
+                                    return child.applyRule(rule, simulation, passivePosition, passiveMass, theta);
+                                });
+                    }
+
                 }
             }
 
@@ -128,22 +156,30 @@ namespace NBody {
 
     public:
 
-        Octree(NBody::Simulation &simulation, int maxDepth = std::numeric_limits<int>::max()) : _simulation(simulation) {
+        Octree(NBody::Simulation &simulation) : _simulation(
+                simulation) {
 
-            // Get a list of physics-actor particles
+            // Save a list of physics-actor particles
             auto activeParticlesView = _simulation.view<Physics::ActiveMass>();
             _particles = {activeParticlesView.begin(), activeParticlesView.end()};
-
-            _root = OctreeNode{{_particles}, _simulation};
         }
 
+        void build(int maxDepth, int maxLeafSize) {
+            _root = OctreeNode{
+                    {_particles}, _simulation, {}, (2 << 20),
+                    maxDepth, maxLeafSize
+            };
+        }
 
         Physics::Acceleration applyRule(const Physics::Rule &rule,
                                         const Physics::Position &passivePosition,
                                         const Physics::PassiveMass &passiveMass,
                                         float theta) {
 
-            return _root.applyRule(rule, _simulation, passivePosition, passiveMass);
+            // Make sure the tree has been constructed
+            assert(!_root.isLeaf());
+
+            return _root.applyRule(rule, _simulation, passivePosition, passiveMass, theta);
 
             Physics::Acceleration acceleration;
 
