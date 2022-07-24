@@ -6,13 +6,13 @@
 #define N_BODY_SOLVER_H
 
 #include "Simulation.h"
+#include "TypedDispatcher.h"
 
 #include <NBody/Physics/Rule.h>
 
 #include <sigc++/sigc++.h>
 #include <spdlog/spdlog.h>
-
-#include <thread>
+#include <tbb/global_control.h>
 
 namespace NBody {
 
@@ -22,21 +22,43 @@ namespace NBody {
         Simulation &_simulation;
         Physics::Rule &_rule;
         float _dt = 0.001;
+        std::size_t _maxThreadCount = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism);
 
         sigc::signal<void()> _signal_finished;
         sigc::slot<void()> _slot_step;
+
+        TypedDispatcher<std::chrono::duration<double>> _computeTimeDispatcher;
+
+        std::shared_ptr<std::thread> _thread;
+        Glib::Dispatcher _dispatcher;
 
     public:
 
         Solver(Simulation &simulation, Physics::Rule &rule) : _simulation(simulation), _rule(rule) {
             _slot_step = sigc::mem_fun(*this, &Solver::on_step);
 
-            // When the "finished" signal is triggered, all individual particle signals should also trigger
-            _signal_finished.connect([&] {
+            // When the underlying solver announces that it's complete...
+            _dispatcher.connect([&] {
+
+                spdlog::trace("Joining completed solver");
+
+                // Join the solver thread
+                assert(_thread);
+                _thread->join();
+                _thread.reset();
+
+                // Announce the completion to the rest of the UI
                 _simulation.view<sigc::signal<void()>>().each([](auto &s) { s.emit(); });
                 _simulation.signal_changed.emit();
+                signal_finished().emit();
             });
         };
+
+        virtual ~Solver() {
+            if (_thread)
+                _thread->join();
+            _thread.reset();
+        }
 
         virtual void step() = 0;
 
@@ -44,25 +66,51 @@ namespace NBody {
 
         Physics::Rule &rule() { return _rule; }
 
+        std::size_t &maxThreadCount() { return _maxThreadCount; }
+
+        const std::size_t &maxThreadCount() const { return _maxThreadCount; }
+
     public:
 
         sigc::signal<void()> &signal_finished() { return _signal_finished; };
+
+        sigc::signal<void(std::chrono::duration<double>)> &
+        signal_computeTime() { return _computeTimeDispatcher.signal(); };
 
         sigc::slot<void()> &slot_step() { return _slot_step; };
 
     private:
 
         void on_step() {
-            std::thread t([&] {
-                std::scoped_lock lock(_simulation.mutex);
-                spdlog::trace("Beginning simulation step");
-                step();
-                spdlog::trace("Finished simulation step");
-            });
-            t.join();
-            signal_finished().emit();
-        }
 
+            // This should be idempotent, calling more than once should only spawn one background thread
+            if (_thread) {
+                spdlog::trace("Attempted to spawn multiple background threads");
+                return;
+            }
+
+            spdlog::trace("Launching solver in new thread");
+
+            // Spawn a new thread when the user requests a step
+            _thread = std::make_shared<std::thread>([&] {
+
+                spdlog::trace("Beginning simulation step");
+
+                // Cap the number of threads based on the user's preference
+                tbb::global_control c{tbb::global_control::max_allowed_parallelism, _maxThreadCount};
+
+                auto startTime = std::chrono::high_resolution_clock::now();
+                step();
+                auto finishTime = std::chrono::high_resolution_clock::now();
+
+                std::chrono::duration<double> duration = finishTime - startTime;
+                _computeTimeDispatcher.emit(duration);
+                spdlog::trace("Finished simulation step in {} s", duration.count());
+
+                // Notify the main thread that we're finished (so we can join)
+                _dispatcher.emit();
+            });
+        }
     };
 
 }

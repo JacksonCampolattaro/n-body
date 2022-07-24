@@ -18,14 +18,29 @@ namespace NBody {
     private:
 
         std::unique_ptr<Octree> _octree;
-        float _theta = 0.5f;
+        float _theta = 0.4f;
+        int _maxDepth = 1024;
+        int _maxLeafSize = 64;
 
     public:
 
-        BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) : Solver(simulation, rule) {}
+        BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) :
+                Solver(simulation, rule),
+                _octree(std::make_unique<Octree>(simulation)) {}
 
         void step() override;
 
+        float &theta() { return _theta; }
+
+        const float &theta() const { return _theta; }
+
+        int &maxDepth() { return _maxDepth; }
+
+        const int &maxDepth() const { return _maxDepth; }
+
+        int &maxLeafSize() { return _maxLeafSize; }
+
+        const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
 }

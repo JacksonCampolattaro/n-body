@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+    <object class="GtkListBox" id="root">
+        <property name="selection-mode">none</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">False</property>
+        <style>
+            <class name="boxed-list"/>
+        </style>
+
+        <child>
+            <object class="AdwActionRow">
+                <property name="title">(Placeholder)</property>
+                <property name="subtitle">The naive solver currently has no settings.</property>
+                <property name="vexpand">False</property>
+            </object>
+        </child>
+    </object>
+</interface>
