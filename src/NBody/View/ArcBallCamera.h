@@ -41,7 +41,6 @@ namespace NBody {
     public:
 
         ArcBallCamera(
-                const NBody::Simulation &simulation,
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
                 ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {}

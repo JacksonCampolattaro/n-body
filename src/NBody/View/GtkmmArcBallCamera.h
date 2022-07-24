@@ -48,10 +48,9 @@ namespace NBody {
     public:
 
         GtkmmArcBallCamera(
-                const NBody::Simulation &simulation,
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-                ArcBallCamera{simulation, cameraPosition, viewCenter, upDir, fov, windowSize} {
+                ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
 
             slot_moveTo = sigc::mem_fun(*this, &GtkmmArcBallCamera::setPosition);
 
