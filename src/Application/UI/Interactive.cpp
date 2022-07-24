@@ -12,6 +12,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         Gtk::ApplicationWindow(cobject),
         _simulation{simulation},
         _camera{
+                simulation,
                 Vector3::zAxis(-20.0f),
                 {}, Vector3::yAxis(),
                 45.0_degf,

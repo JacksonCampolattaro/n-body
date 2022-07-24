@@ -9,6 +9,7 @@
 #include <gtkmm/colorbutton.h>
 
 #include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/Renderer.h>
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
