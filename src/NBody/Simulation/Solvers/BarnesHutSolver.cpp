@@ -15,8 +15,7 @@ using NBody::Physics::PassiveMass;
 void NBody::BarnesHutSolver::step() {
 
     // Construct an octree from the actor particles
-    // todo This doesn't actually need to be re-done from scratch every time!
-    _octree = std::make_unique<Octree>(_simulation);
+    _octree->build(_maxDepth, _maxLeafSize);
 
     // Use the octree to estimate forces on each passive particle, and update their velocity
     auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
@@ -25,6 +24,7 @@ void NBody::BarnesHutSolver::step() {
         const auto &targetMass = _simulation.get<PassiveMass>(e);
         auto &velocity = _simulation.get<Velocity>(e);
 
+        assert(_octree);
         auto acceleration = _octree->applyRule(_rule, targetPosition, targetMass, _theta);
 
         velocity += acceleration * _dt;

@@ -8,7 +8,7 @@
 #include <adwaita.h>
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::Solver &solver) :
+                             NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::MultiSolver &solver) :
         Gtk::ApplicationWindow(cobject),
         _simulation{simulation},
         _camera{
@@ -43,5 +43,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     } else {
         _camera.setBackgroundColor({0.9, 0.9, 0.92, 1.0});
     }
+
+    _view.set_cursor(Gdk::Cursor::create("crosshair"));
 
 }

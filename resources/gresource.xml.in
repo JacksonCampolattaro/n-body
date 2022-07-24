@@ -12,12 +12,20 @@
         <file>ui/camera_panel.xml</file>
         <file>ui/run_panel.xml</file>
 
+        <file>ui/naive_solver_settings.xml</file>
+        <file>ui/barnes_hut_solver_settings.xml</file>
+
         <file>ui/particle_entry.xml</file>
     </gresource>
 
     <gresource prefix="/NBody">
 
         <file>icons/scalable/actions/view-sidebar-end-symbolic.svg</file>
+        <file>icons/scalable/actions/nbody-particles-symbolic.svg</file>
+        <file>icons/scalable/actions/nbody-physics-symbolic.svg</file>
+        <file>icons/scalable/actions/nbody-solver-symbolic.svg</file>
+        <file>icons/scalable/actions/nbody-camera-symbolic.svg</file>
+        <file>icons/scalable/actions/nbody-run-symbolic.svg</file>
 
         <file>icons/outliner_ob_pointcloud.svg</file>
         <file>icons/physics.svg</file>

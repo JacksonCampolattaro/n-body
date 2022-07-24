@@ -64,11 +64,10 @@ add_executable(NBody
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
         UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
-        BackgroundSolver.cpp BackgroundSolver.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/View/ParticleActiveMassView.h
-        UI/Widgets/View/ParticlePassiveMassView.h UI/Widgets/BindableListItemFactory.h UI/Widgets/View/ParticlePositionView.h UI/Widgets/View/ParticleVelocityView.h UI/Widgets/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Entry/ParticlePositionEntry.h UI/Widgets/Entry/ParticleVelocityEntry.h UI/Widgets/Entry/ParticleActiveMassEntry.h UI/Widgets/Entry/ParticlePassiveMassEntry.h UI/Widgets/Entry/ParticleColorEntry.h UI/Widgets/Entry/ParticleRadiusEntry.h UI/Widgets/View/ParticleColorView.h UI/Widgets/View/ParticleRadiusView.h UI/Widgets/View/ParticleIconView.h UI/Widgets/SaveSimulationDialog.cpp UI/Widgets/SaveSimulationDialog.h UI/Widgets/LoadSimulationDialog.cpp UI/Widgets/LoadSimulationDialog.h)
+        UI/Widgets/View/ParticlePassiveMassView.h UI/Widgets/BindableListItemFactory.h UI/Widgets/View/ParticlePositionView.h UI/Widgets/View/ParticleVelocityView.h UI/Widgets/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Entry/ParticlePositionEntry.h UI/Widgets/Entry/ParticleVelocityEntry.h UI/Widgets/Entry/ParticleActiveMassEntry.h UI/Widgets/Entry/ParticlePassiveMassEntry.h UI/Widgets/Entry/ParticleColorEntry.h UI/Widgets/Entry/ParticleRadiusEntry.h UI/Widgets/View/ParticleColorView.h UI/Widgets/View/ParticleRadiusView.h UI/Widgets/View/ParticleIconView.h UI/Widgets/SaveSimulationDialog.cpp UI/Widgets/SaveSimulationDialog.h UI/Widgets/LoadSimulationDialog.cpp UI/Widgets/LoadSimulationDialog.h MultiSolver.h UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h)
 
 target_link_libraries(NBody PUBLIC
 

@@ -3,57 +3,186 @@
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
 
-    <object class="GtkListBox" id="root">
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="spacing">16</property>
 
-        <property name="selection-mode">none</property>
-        <style>
-            <class name="boxed-list"/>
-        </style>
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Step</property>
-                <property name="subtitle">Iterate the simulation by one step</property>
-                <child type="suffix">
-                    <object class="GtkButton" id="step-button">
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
-                        <property name="icon-name">go-last</property>
+            <object class="GtkListBox">
+
+                <property name="selection-mode">none</property>
+                <style>
+                    <class name="boxed-list"/>
+                </style>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Step</property>
+                        <property name="subtitle">Iterate the simulation by one step</property>
+                        <child type="suffix">
+                            <object class="GtkButton" id="step-button">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="icon-name">go-last</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Run</property>
+                        <property name="subtitle">Iterate the simulation automatically</property>
+                        <child type="suffix">
+                            <object class="GtkToggleButton" id="run-button">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="icon-name">go-next</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
         </child>
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Run</property>
-                <property name="subtitle">Iterate the simulation automatically</property>
-                <child type="suffix">
-                    <object class="GtkToggleButton" id="run-button">
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
-                        <property name="icon-name">go-next</property>
+            <object class="GtkLabel">
+                <property name="label">Statistics</property>
+                <property name="halign">start</property>
+                <style>
+                    <class name="title-5"/>
+                </style>
+            </object>
+        </child>
+
+        <child>
+            <object class="GtkFrame">
+
+                <child>
+                    <object class="GtkBox" id="box">
+                        <property name="orientation">vertical</property>
+                        <property name="hexpand">True</property>
+                        <property name="spacing">8</property>
+                        <property name="margin-top">16</property>
+                        <property name="margin-bottom">16</property>
+                        <property name="margin-start">16</property>
+                        <property name="margin-end">16</property>
+
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">8</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Step count:</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="iterations-label">
+                                        <style>
+                                            <class name="numeric"/>
+                                            <class name="monospace"/>
+                                        </style>
+                                        <property name="label">0</property>
+                                        <property name="halign">end</property>
+                                        <property name="hexpand">True</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="GtkSeparator"/>
+                        </child>
+
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">8</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Step time:</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="step-time-label">
+                                        <style>
+                                            <class name="numeric"/>
+                                            <class name="monospace"/>
+                                        </style>
+                                        <property name="label">?.??</property>
+                                        <property name="halign">end</property>
+                                        <property name="hexpand">True</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">8</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">1000-step rolling average:</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel" id="average-step-time-label">
+                                        <style>
+                                            <class name="numeric"/>
+                                            <class name="monospace"/>
+                                        </style>
+                                        <property name="label">?.?????</property>
+                                        <property name="halign">end</property>
+                                        <property name="hexpand">True</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">s</property>
+                                        <property name="halign">start</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+
                     </object>
                 </child>
             </object>
         </child>
-        <child>
-            <object class="AdwActionRow">
-                <property name="title">Iterations</property>
-                <property name="subtitle">The number of steps that have been computed so far</property>
-                <child type="suffix">
-                    <object class="GtkLabel" id="iterations-label">
-                        <property name="label">0</property>
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
-                        <style>
-                            <class name="title-3"/>
-                        </style>
-                    </object>
-                </child>
-            </object>
-        </child>
+
     </object>
+
 
 </interface>
