@@ -17,10 +17,14 @@
 #include <sigc++/sigc++.h>
 
 #include <iostream>
+#include <memory>
 
 #include <NBody/Simulation/Simulation.h>
 
 #include "ArcBall.h"
+#include "Renderer.h"
+#include "Renderers/InstancedPhongRenderer.h"
+#include "Renderers/PhongRenderer.h"
 
 namespace NBody {
 
@@ -32,9 +36,12 @@ namespace NBody {
 
         Color4 _backgroundColor = {0.12, 0.12, 0.1, 1.0};
 
+        InstancedPhongRenderer _renderer;
+
     public:
 
         ArcBallCamera(
+                const NBody::Simulation &simulation,
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
                 ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {}
@@ -45,25 +52,6 @@ namespace NBody {
         }
 
         void draw(const Simulation &simulation);
-
-        void draw(entt::basic_view<entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Graphics::Color,
-                const NBody::Graphics::Sphere> view);
-
-
-        struct SphereInstanceData {
-            Matrix4 transformationMatrix;
-            Matrix3x3 normalMatrix;
-            Color3 color;
-        };
-
-        void _draw(entt::basic_view<entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Graphics::Color,
-                const NBody::Graphics::Sphere> view);
-
-        void draw();
 
         const Color4 &backgroundColor() { return _backgroundColor; }
 

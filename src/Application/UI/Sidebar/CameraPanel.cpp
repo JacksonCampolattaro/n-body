@@ -23,8 +23,8 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
 
     auto &zoom = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "CameraZoomFloatEntry");
     camera.signal_zoomChanged.connect(zoom.slot_changed);
-    zoom.signal_changed.connect([&](float z){
-       camera.setZoom(z);
+    zoom.signal_changed.connect([&](float z) {
+        camera.setZoom(z);
     });
 
     auto &colorButton = *builder->get_widget<Gtk::ColorButton>("BackgroundColorButton");
