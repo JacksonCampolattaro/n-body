@@ -23,6 +23,7 @@ namespace UI {
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;
+        Gtk::SpinButton &_maxLeafSizeEntry;
 
     public:
 

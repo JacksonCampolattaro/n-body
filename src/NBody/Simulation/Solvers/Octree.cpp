@@ -12,7 +12,6 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
           _sideLength(sideLength) {
 
     // Subdivide if this node contains too many particles
-    // todo We can probably get more performance by allowing leaf nodes to contain more than one particle
     if (contents.size() > maxLeafSize && sideLength > 0.1 && maxDepth > 0) {
 
         std::span<NBody::Entity>
@@ -67,12 +66,8 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
                 }
         });
 
-    }
-
-    // Summarize mass & position
-    if (_children) {
-
-        for (const auto &child: *_children) {
+        // Summarize mass & position
+        for (const auto &child: children()) {
             _totalMass.mass() += child.totalMass().mass();
             _centerOfMass = _centerOfMass + (child.centerOfMass() * child.totalMass().mass());
         }
@@ -80,13 +75,13 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
 
     } else {
 
+        // Otherwise, this is a leaf node
         for (const auto &entity: _contents) {
             auto entityMass = registry.get<ActiveMass>(entity).mass();
             _totalMass.mass() += entityMass;
             _centerOfMass = _centerOfMass + (entityMass * registry.get<Position>(entity));
         }
         _centerOfMass = _centerOfMass / _totalMass.mass();
-
     }
 
     for (const auto &entity: _contents) {

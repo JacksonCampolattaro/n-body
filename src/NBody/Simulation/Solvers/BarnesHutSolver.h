@@ -37,6 +37,10 @@ namespace NBody {
         int &maxDepth() { return _maxDepth; }
 
         const int &maxDepth() const { return _maxDepth; }
+
+        int &maxLeafSize() { return _maxLeafSize; }
+
+        const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
 }
