@@ -12,6 +12,7 @@
 
 #include <sigc++/sigc++.h>
 #include <spdlog/spdlog.h>
+#include <tbb/global_control.h>
 
 namespace NBody {
 
@@ -21,6 +22,7 @@ namespace NBody {
         Simulation &_simulation;
         Physics::Rule &_rule;
         float _dt = 0.001;
+        std::size_t _maxThreadCount = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism);
 
         sigc::signal<void()> _signal_finished;
         sigc::slot<void()> _slot_step;
@@ -64,6 +66,10 @@ namespace NBody {
 
         Physics::Rule &rule() { return _rule; }
 
+        std::size_t &maxThreadCount() { return _maxThreadCount; }
+
+        const std::size_t &maxThreadCount() const { return _maxThreadCount; }
+
     public:
 
         sigc::signal<void()> &signal_finished() { return _signal_finished; };
@@ -89,6 +95,9 @@ namespace NBody {
             _thread = std::make_shared<std::thread>([&] {
 
                 spdlog::trace("Beginning simulation step");
+
+                // Cap the number of threads based on the user's preference
+                tbb::global_control c{tbb::global_control::max_allowed_parallelism, _maxThreadCount};
 
                 auto startTime = std::chrono::high_resolution_clock::now();
                 step();
