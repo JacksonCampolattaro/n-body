@@ -27,7 +27,6 @@ UI::SolverPanel::SolverPanel(NBody::MultiSolver &multiSolver) :
     _solverStack.set_visible_child("naive");
     _solverDropdown.connect_property_changed("selected", [&]() {
         auto algorithm = _solverDropdown.get_property<guint>("selected");
-        _solverDropdown.set_property("selected", algorithm);
         switch (algorithm) {
             case 0:
                 _multiSolver.select<NBody::NaiveSolver>();
