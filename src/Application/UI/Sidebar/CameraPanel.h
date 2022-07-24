@@ -18,6 +18,15 @@
 namespace UI {
 
     class CameraPanel : public Panel {
+    private:
+
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        CompactPositionEntry &_positionEntry;
+        CompactDirectionEntry &_directionEntry;
+        FloatEntry &_zoomEntry;
+        Gtk::ColorButton &_backgroundColorEntry;
+        Gtk::ListBoxRow &_shaderDropdown;
 
     public:
 

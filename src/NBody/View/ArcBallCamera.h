@@ -25,6 +25,7 @@
 #include "Renderer.h"
 #include "Renderers/InstancedPhongRenderer.h"
 #include "Renderers/PhongRenderer.h"
+#include "NBody/View/Renderers/MultiRenderer.h"
 
 namespace NBody {
 
@@ -36,14 +37,17 @@ namespace NBody {
 
         Color4 _backgroundColor = {0.12, 0.12, 0.1, 1.0};
 
-        InstancedPhongRenderer _renderer;
+        MultiRenderer _renderer;
 
     public:
 
         ArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {}
+                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
+
+            _renderer.select<InstancedPhongRenderer>();
+        }
 
         Matrix4 perspectiveProjection() {
             return Matrix4::perspectiveProjection(
@@ -53,6 +57,8 @@ namespace NBody {
         void draw(const Simulation &simulation);
 
         const Color4 &backgroundColor() { return _backgroundColor; }
+
+        MultiRenderer &renderer() { return _renderer; }
 
     public:
         // Signals

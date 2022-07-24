@@ -16,8 +16,10 @@ pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.6
 add_library(Simulation
         Simulation.h Simulation.cpp
         Solver.h
+        Solvers/MultiSolver.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
-        Solvers/BarnesHutSolver.cpp Solvers/BarnesHutSolver.h Solvers/Octree.cpp Solvers/Octree.h)
+        Solvers/BarnesHutSolver.cpp Solvers/BarnesHutSolver.h
+        Solvers/Octree.cpp Solvers/Octree.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
