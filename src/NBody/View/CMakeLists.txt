@@ -31,6 +31,7 @@ add_library(View
         InteractiveView.cpp InteractiveView.h
         View.cpp View.h
         Renderer.h
+        Renderers/MultiRenderer.h
         Renderers/InstancedPhongRenderer.cpp Renderers/InstancedPhongRenderer.h
         Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h)
 

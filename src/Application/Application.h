@@ -1,13 +1,13 @@
 #ifndef N_BODY_APPLICATION_H
 #define N_BODY_APPLICATION_H
 
-#include "MultiSolver.h"
 
 #include <gtkmm.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
+#include <NBody/Simulation/Solvers/MultiSolver.h>
 
 #include <NBody/Physics/Rule.h>
 
