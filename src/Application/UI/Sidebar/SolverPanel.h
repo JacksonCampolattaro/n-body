@@ -32,6 +32,7 @@ namespace UI {
 
         Gtk::ListBoxRow &_solverDropdown;
         Gtk::Stack &_solverStack;
+        Gtk::SpinButton &_maxThreadCountEntry;
 
     public:
 
