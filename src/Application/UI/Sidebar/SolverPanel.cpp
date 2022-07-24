@@ -14,7 +14,8 @@ UI::SolverPanel::SolverPanel(NBody::MultiSolver &multiSolver) :
         _barnesHutSolverSettings(multiSolver.getSolver<NBody::BarnesHutSolver>()),
         _builder(Gtk::Builder::create_from_resource("/ui/solver_panel.xml")),
         _solverDropdown(*_builder->get_widget<Gtk::ListBoxRow>("solver-dropdown")),
-        _solverStack(*_builder->get_widget<Gtk::Stack>("stack")) {
+        _solverStack(*_builder->get_widget<Gtk::Stack>("stack")),
+        _maxThreadCountEntry(*_builder->get_widget<Gtk::SpinButton>("thread-count-int-entry")) {
 
     auto root = _builder->get_widget<Gtk::Widget>("root");
     _contents.append(*root);
@@ -40,5 +41,13 @@ UI::SolverPanel::SolverPanel(NBody::MultiSolver &multiSolver) :
                 spdlog::error("Unrecognized algorithm selected");
                 break;
         }
+    });
+
+
+    _maxThreadCountEntry.set_range(1, std::numeric_limits<float>::max());
+    _maxThreadCountEntry.set_increments(1.0, 10.0);
+    _maxThreadCountEntry.set_value(_multiSolver.maxThreadCount());
+    _maxThreadCountEntry.signal_value_changed().connect([&](){
+        _multiSolver.maxThreadCount() = _maxThreadCountEntry.get_value_as_int();
     });
 }
