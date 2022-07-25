@@ -4,6 +4,8 @@
 
 #include "CameraPanel.h"
 
+#include <adwaita.h>
+
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         Panel("Camera"),
         _builder(Gtk::Builder::create_from_resource("/ui/camera_panel.xml")),
@@ -33,7 +35,12 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     _backgroundColorEntry.signal_color_set().connect([&]() {
         camera.setBackgroundColor(_backgroundColorEntry.get_rgba());
     });
-    _backgroundColorEntry.set_rgba({0.12, 0.12, 0.1, 1.0});
+
+    // Set the chosen background color based on the selected style
+    if (adw_style_manager_get_dark(adw_style_manager_get_default()))
+        _backgroundColorEntry.set_rgba({0.12, 0.12, 0.1, 1.0});
+    else _backgroundColorEntry.set_rgba({0.9, 0.9, 0.92, 1.0});
+    camera.setBackgroundColor(_backgroundColorEntry.get_rgba());
 
     camera.renderer().select<NBody::InstancedPhongRenderer>();
     _shaderDropdown.connect_property_changed("selected", [&]() {
