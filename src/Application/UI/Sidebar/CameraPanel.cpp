@@ -45,6 +45,9 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
             case 1:
                 camera.renderer().select<NBody::PhongRenderer>();
                 break;
+            case 2:
+                camera.renderer().select<NBody::FlatRenderer>();
+                break;
             default:
                 spdlog::error("Unrecognized renderer selected");
                 break;

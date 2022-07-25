@@ -10,6 +10,7 @@
 
 #include <NBody/View/GtkmmArcBallCamera.h>
 #include <NBody/View/Renderer.h>
+#include <NBody/View/Renderers/FlatRenderer.h>
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
