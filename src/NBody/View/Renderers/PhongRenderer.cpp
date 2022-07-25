@@ -22,7 +22,7 @@ void NBody::PhongRenderer::draw(const Matrix4 &transformationMatrix, const Matri
 
         shader
                 .setDiffuseColor(color)
-                .setAmbientColor(Color3::fromHsv({color.hue(), 1.0f, 0.7f}))
+                .setAmbientColor(Color3::fromHsv({color.hue(), color.saturation(), color.value() * 0.7f}))
                 .setTransformationMatrix(individualTransformationMatrix)
                 .setNormalMatrix(individualTransformationMatrix.normalMatrix())
                 .setProjectionMatrix(projectionMatrix)
