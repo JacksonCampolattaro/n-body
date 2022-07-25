@@ -30,7 +30,10 @@ add_library(View
         GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
         InteractiveView.cpp InteractiveView.h
         View.cpp View.h
-        )
+        Renderer.h
+        Renderers/MultiRenderer.h
+        Renderers/InstancedPhongRenderer.cpp Renderers/InstancedPhongRenderer.h
+        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

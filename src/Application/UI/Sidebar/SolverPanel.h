@@ -6,6 +6,7 @@
 #define N_BODY_SOLVERPANEL_H
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/MultiSolver.h>
 
 #include <gtkmm/button.h>
 #include <gtkmm/stack.h>
@@ -16,7 +17,6 @@
 #include "Panel.h"
 #include "NaiveSolverSettings.h"
 #include "BarnesHutSolverSettings.h"
-#include "../../MultiSolver.h"
 
 namespace UI {
 

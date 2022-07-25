@@ -17,10 +17,15 @@
 #include <sigc++/sigc++.h>
 
 #include <iostream>
+#include <memory>
 
 #include <NBody/Simulation/Simulation.h>
 
 #include "ArcBall.h"
+#include "Renderer.h"
+#include "Renderers/InstancedPhongRenderer.h"
+#include "Renderers/PhongRenderer.h"
+#include "NBody/View/Renderers/MultiRenderer.h"
 
 namespace NBody {
 
@@ -32,12 +37,17 @@ namespace NBody {
 
         Color4 _backgroundColor = {0.12, 0.12, 0.1, 1.0};
 
+        MultiRenderer _renderer;
+
     public:
 
         ArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
                 const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {}
+                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
+
+            _renderer.select<InstancedPhongRenderer>();
+        }
 
         Matrix4 perspectiveProjection() {
             return Matrix4::perspectiveProjection(
@@ -46,26 +56,9 @@ namespace NBody {
 
         void draw(const Simulation &simulation);
 
-        void draw(entt::basic_view<entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Graphics::Color,
-                const NBody::Graphics::Sphere> view);
-
-
-        struct SphereInstanceData {
-            Matrix4 transformationMatrix;
-            Matrix3x3 normalMatrix;
-            Color3 color;
-        };
-
-        void _draw(entt::basic_view<entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Graphics::Color,
-                const NBody::Graphics::Sphere> view);
-
-        void draw();
-
         const Color4 &backgroundColor() { return _backgroundColor; }
+
+        MultiRenderer &renderer() { return _renderer; }
 
     public:
         // Signals
