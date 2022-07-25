@@ -56,8 +56,8 @@
                         <items>
                             <item>Instanced Phong</item>
                             <item>Phong</item>
+                            <item>Instanced Flat</item>
                             <item>Flat</item>
-                            <item>Placeholder</item>
                         </items>
                     </object>
                 </property>

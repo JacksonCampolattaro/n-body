@@ -46,6 +46,9 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
                 camera.renderer().select<NBody::PhongRenderer>();
                 break;
             case 2:
+                camera.renderer().select<NBody::InstancedFlatRenderer>();
+                break;
+            case 3:
                 camera.renderer().select<NBody::FlatRenderer>();
                 break;
             default:
