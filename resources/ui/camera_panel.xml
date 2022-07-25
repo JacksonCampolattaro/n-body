@@ -48,7 +48,7 @@
                 <property name="label">Style</property>
                 <property name="halign">start</property>
                 <style>
-                    <class name="title-5"/>
+                    <class name="title-4"/>
                 </style>
             </object>
         </child>
