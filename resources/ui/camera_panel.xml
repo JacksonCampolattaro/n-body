@@ -3,46 +3,91 @@
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
 
-    <object class="GtkListBox" id="root">
-        <property name="selection-mode">none</property>
-        <style>
-            <class name="boxed-list"/>
-        </style>
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="spacing">16</property>
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Position</property>
-<!--                <property name="subtitle">The location of the camera</property>-->
-                <child type="suffix">
-                    <object class="GtkButton" id="CameraPositionEditable"/>
+            <object class="GtkListBox">
+                <property name="selection-mode">none</property>
+                <style>
+                    <class name="boxed-list"/>
+                </style>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Position</property>
+                        <!--                <property name="subtitle">The location of the camera</property>-->
+                        <child type="suffix">
+                            <object class="GtkButton" id="camera-position-entry"/>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Direction</property>
+                        <!--                <property name="subtitle">The direction the camera faces</property>-->
+                        <child type="suffix">
+                            <object class="GtkButton" id="camera-direction-entry"/>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Zoom</property>
+                        <child type="suffix">
+                            <object class="GtkSpinButton" id="camera-zoom-entry"/>
+                        </child>
+                    </object>
                 </child>
             </object>
         </child>
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Direction</property>
-<!--                <property name="subtitle">The direction the camera faces</property>-->
-                <child type="suffix">
-                    <object class="GtkButton" id="CameraDirectionEditable"/>
-                </child>
+            <object class="GtkLabel">
+                <property name="label">Style</property>
+                <property name="halign">start</property>
+                <style>
+                    <class name="title-4"/>
+                </style>
             </object>
         </child>
+
+
         <child>
-            <object class="AdwActionRow">
-                <property name="title">Zoom</property>
-                <child type="suffix">
-                    <object class="GtkSpinButton" id="CameraZoomFloatEntry"/>
+            <object class="GtkListBox">
+                <property name="selection-mode">none</property>
+                <style>
+                    <class name="boxed-list"/>
+                </style>
+>
+                <child>
+                    <object class="AdwActionRow">
+                        <property name="title">Background Color</property>
+                        <property name="subtitle">The color of empty space</property>
+                        <child type="suffix">
+                            <object class="GtkColorButton" id="background-color-entry">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                            </object>
+                        </child>
+                    </object>
                 </child>
-            </object>
-        </child>
-        <child>
-            <object class="AdwActionRow">
-                <property name="title">Background Color</property>
-                <property name="subtitle">The color of empty space</property>
-                <child type="suffix">
-                    <object class="GtkColorButton" id="BackgroundColorButton">
-                        <property name="hexpand">0</property>
-                        <property name="vexpand">0</property>
-                        <property name="valign">center</property>
+                <child>
+                    <object class="AdwComboRow" id="shader-dropdown">
+                        <property name="title">Shader</property>
+                        <property name="subtitle">Approach used to render particles</property>
+                        <property name="model">
+                            <object class="GtkStringList">
+                                <items>
+                                    <item>Instanced Phong</item>
+                                    <item>Phong</item>
+                                    <item>Instanced Flat</item>
+                                    <item>Flat</item>
+                                </items>
+                            </object>
+                        </property>
                     </object>
                 </child>
             </object>

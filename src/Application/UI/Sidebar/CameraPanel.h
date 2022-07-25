@@ -9,6 +9,11 @@
 #include <gtkmm/colorbutton.h>
 
 #include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/Renderer.h>
+#include <NBody/View/Renderers/PhongRenderer.h>
+#include <NBody/View/Renderers/InstancedPhongRenderer.h>
+#include <NBody/View/Renderers/FlatRenderer.h>
+#include <NBody/View/Renderers/InstancedFlatRenderer.h>
 
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
@@ -17,6 +22,15 @@
 namespace UI {
 
     class CameraPanel : public Panel {
+    private:
+
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        CompactPositionEntry &_positionEntry;
+        CompactDirectionEntry &_directionEntry;
+        FloatEntry &_zoomEntry;
+        Gtk::ColorButton &_backgroundColorEntry;
+        Gtk::ListBoxRow &_shaderDropdown;
 
     public:
 

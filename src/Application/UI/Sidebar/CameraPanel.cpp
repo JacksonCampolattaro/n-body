@@ -4,32 +4,64 @@
 
 #include "CameraPanel.h"
 
+#include <adwaita.h>
+
 UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
-        Panel("Camera") {
+        Panel("Camera"),
+        _builder(Gtk::Builder::create_from_resource("/ui/camera_panel.xml")),
+        _positionEntry(*Gtk::Builder::get_widget_derived<CompactPositionEntry>(_builder, "camera-position-entry")),
+        _directionEntry(*Gtk::Builder::get_widget_derived<CompactDirectionEntry>(_builder, "camera-direction-entry")),
+        _zoomEntry(*Gtk::Builder::get_widget_derived<FloatEntry>(_builder, "camera-zoom-entry")),
+        _backgroundColorEntry(*_builder->get_widget<Gtk::ColorButton>("background-color-entry")),
+        _shaderDropdown(*_builder->get_widget<Gtk::ListBoxRow>("shader-dropdown")) {
 
     camera.setLagging(0.5);
 
-    auto builder = Gtk::Builder::create_from_resource("/ui/camera_panel.xml");
-    auto &root = *builder->get_widget<Gtk::Widget>("root");
-    _contents.append(root);
+    auto root = _builder->get_widget<Gtk::Widget>("root");
+    _contents.append(*root);
 
-    auto &position = *Gtk::Builder::get_widget_derived<CompactPositionEntry>(builder, "CameraPositionEditable");
-    camera.signal_positionChanged.connect(position.slot_changed);
-    position.signal_changed.connect(camera.slot_moveTo);
+    camera.signal_positionChanged.connect(_positionEntry.slot_changed);
+    _positionEntry.signal_changed.connect(camera.slot_moveTo);
 
-    auto &direction = *Gtk::Builder::get_widget_derived<CompactDirectionEntry>(builder, "CameraDirectionEditable");
-    camera.signal_directionChanged.connect(direction.slot_changed);
-    direction.set_sensitive(false);
+    camera.signal_directionChanged.connect(_directionEntry.slot_changed);
+    _directionEntry.signal_changed.connect(camera.slot_moveTo);
+    _directionEntry.set_sensitive(false);
 
-    auto &zoom = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "CameraZoomFloatEntry");
-    camera.signal_zoomChanged.connect(zoom.slot_changed);
-    zoom.signal_changed.connect([&](float z){
-       camera.setZoom(z);
+    camera.signal_zoomChanged.connect(_zoomEntry.slot_changed);
+    _zoomEntry.signal_changed.connect([&](float z) {
+        camera.setZoom(z);
     });
 
-    auto &colorButton = *builder->get_widget<Gtk::ColorButton>("BackgroundColorButton");
-    colorButton.signal_color_set().connect([&]() {
-        camera.setBackgroundColor(colorButton.get_rgba());
+    _backgroundColorEntry.signal_color_set().connect([&]() {
+        camera.setBackgroundColor(_backgroundColorEntry.get_rgba());
     });
-    colorButton.set_rgba({0.12, 0.12, 0.1, 1.0});
+
+    // Set the chosen background color based on the selected style
+    if (adw_style_manager_get_dark(adw_style_manager_get_default()))
+        _backgroundColorEntry.set_rgba({0.12, 0.12, 0.1, 1.0});
+    else _backgroundColorEntry.set_rgba({0.9, 0.9, 0.92, 1.0});
+    camera.setBackgroundColor(_backgroundColorEntry.get_rgba());
+
+    camera.renderer().select<NBody::InstancedPhongRenderer>();
+    _shaderDropdown.connect_property_changed("selected", [&]() {
+        auto renderer = _shaderDropdown.get_property<guint>("selected");
+        switch (renderer) {
+            case 0:
+                camera.renderer().select<NBody::InstancedPhongRenderer>();
+                break;
+            case 1:
+                camera.renderer().select<NBody::PhongRenderer>();
+                break;
+            case 2:
+                camera.renderer().select<NBody::InstancedFlatRenderer>();
+                break;
+            case 3:
+                camera.renderer().select<NBody::FlatRenderer>();
+                break;
+            default:
+                spdlog::error("Unrecognized renderer selected");
+                break;
+        }
+        camera.signal_changed.emit();
+    });
 }
