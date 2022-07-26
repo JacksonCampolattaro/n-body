@@ -109,7 +109,7 @@
                                             <class name="numeric"/>
                                             <class name="monospace"/>
                                         </style>
-                                        <property name="label">?.??</property>
+                                        <property name="label">?.?????</property>
                                         <property name="halign">end</property>
                                         <property name="hexpand">True</property>
                                     </object>

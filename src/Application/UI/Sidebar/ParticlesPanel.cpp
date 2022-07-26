@@ -38,6 +38,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
 
         _interactionCountLabel.set_text(std::to_string(simulation.interactionCount()));
     });
+    _simulation.signal_changed.emit();
 
     _modifyButton.signal_clicked().connect([&] {
         _particlesWindow.show();

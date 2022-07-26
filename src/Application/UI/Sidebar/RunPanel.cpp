@@ -109,6 +109,8 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
 void UI::RunPanel::run(std::size_t n) {
     spdlog::debug("Running {} steps", n);
 
+    _runModeDropdown.set_sensitive(false);
+
     _currentIterations = 1;
     _idler = Glib::signal_timeout().connect([this, n] {
 
@@ -128,4 +130,5 @@ void UI::RunPanel::stop() {
     _runOneStepButton.set_active(false);
     _runNStepsButton.set_active(false);
     _stepCountEntry.set_progress_fraction(0.0);
+    _runModeDropdown.set_sensitive(true);
 }
