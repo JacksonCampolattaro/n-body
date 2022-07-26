@@ -16,31 +16,17 @@
                     <class name="boxed-list"/>
                 </style>
                 <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Step</property>
-                        <property name="subtitle">Iterate the simulation by one step</property>
-                        <child type="suffix">
-                            <object class="GtkButton" id="step-button">
-                                <property name="hexpand">0</property>
-                                <property name="vexpand">0</property>
-                                <property name="valign">center</property>
-                                <property name="icon-name">go-last</property>
+                    <object class="AdwComboRow" id="run-mode-dropdown">
+                        <property name="title">Mode</property>
+                        <property name="model">
+                            <object class="GtkStringList">
+                                <items>
+                                    <item>Run Continuously</item>
+                                    <item>Run N-Steps*</item>
+                                    <item>Run One Step</item>
+                                </items>
                             </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Run</property>
-                        <property name="subtitle">Iterate the simulation automatically</property>
-                        <child type="suffix">
-                            <object class="GtkToggleButton" id="run-button">
-                                <property name="hexpand">0</property>
-                                <property name="vexpand">0</property>
-                                <property name="valign">center</property>
-                                <property name="icon-name">go-next</property>
-                            </object>
-                        </child>
+                        </property>
                     </object>
                 </child>
             </object>
@@ -184,5 +170,31 @@
 
     </object>
 
+    <object class="GtkActionBar" id="action-bar">
+        <property name="hexpand">1</property>
+        <property name="vexpand">0</property>
+        <child type="start">
+            <object class="GtkLabel">
+                <property name="label">Status:</property>
+                <property name="margin-start">8</property>
+                <style>
+                    <class name="dim-label"/>
+                </style>
+            </object>
+        </child>
+        <child type="start">
+            <object class="GtkLabel" id="status-label">
+                <property name="label">Stopped</property>
+            </object>
+        </child>
+        <child type="end">
+            <object class="GtkToggleButton" id="run-button">
+                <style>
+                    <class name="suggested-action"/>
+                </style>
+                <property name="label" translatable="yes">Run</property>
+            </object>
+        </child>
+    </object>
 
 </interface>

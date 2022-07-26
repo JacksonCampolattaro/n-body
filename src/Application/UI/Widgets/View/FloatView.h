@@ -39,6 +39,9 @@ namespace UI {
         }
 
     };
+
+    typedef FloatView<4> CoarseFloatView;
+    typedef FloatView<10> PreciseFloatView;
 }
 
 #endif //N_BODY_FLOATVIEW_H
