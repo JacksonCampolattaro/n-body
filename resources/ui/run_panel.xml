@@ -22,8 +22,8 @@
                             <object class="GtkStringList">
                                 <items>
                                     <item>Run Continuously</item>
-                                    <item>Run N-Steps*</item>
                                     <item>Run One Step</item>
+                                    <item>Run N-Steps</item>
                                 </items>
                             </object>
                         </property>
@@ -188,11 +188,69 @@
             </object>
         </child>
         <child type="end">
-            <object class="GtkToggleButton" id="run-button">
-                <style>
-                    <class name="suggested-action"/>
-                </style>
-                <property name="label" translatable="yes">Run</property>
+            <object class="GtkStack" id="run-controller-stack">
+                <property name="transition-type">none</property>
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">continuous</property>
+                        <property name="title">Continuous</property>
+                        <property name="child">
+                            <object class="GtkToggleButton" id="run-continuously-button">
+                                <style>
+                                    <class name="suggested-action"/>
+                                </style>
+                                <property name="label" translatable="yes">Run</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">one-step</property>
+                        <property name="title">One Step</property>
+                        <property name="child">
+                            <object class="GtkToggleButton" id="run-one-step-button">
+                                <style>
+                                    <class name="suggested-action"/>
+                                </style>
+                                <property name="label" translatable="yes">Step</property>
+                            </object>
+                        </property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">n-steps</property>
+                        <property name="title">N Steps</property>
+                        <property name="child">
+                            <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">False</property>
+                                <style>
+                                    <class name="linked"/>
+                                </style>
+                                <child>
+                                    <object class="GtkEntry" id="step-count-entry">
+                                        <style>
+                                            <class name="suggested-action"/>
+                                        </style>
+                                        <property name="max-width-chars" translatable="yes">10</property>
+                                        <property name="placeholder-text" translatable="yes">Step Count</property>
+                                        <property name="text" translatable="yes">100</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkToggleButton" id="run-n-steps-button">
+                                        <style>
+                                            <class name="suggested-action"/>
+                                        </style>
+                                        <property name="label" translatable="yes">Run</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </property>
+                    </object>
+                </child>
             </object>
         </child>
     </object>
