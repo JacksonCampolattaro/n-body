@@ -15,6 +15,8 @@ namespace NBody {
 
         Solver *_activeSolver;
 
+        sigc::connection _currentStatusConnection;
+
     public:
 
         MultiSolver(Simulation &simulation, Physics::Rule &rule) :
@@ -34,6 +36,7 @@ namespace NBody {
         template<class SolverType>
         void select() {
             _activeSolver = &getSolver<SolverType>();
+            _currentStatusConnection = _activeSolver->signal_status().connect(signal_status().make_slot());
         }
 
         void step() override {

@@ -15,9 +15,11 @@ using NBody::Physics::PassiveMass;
 void NBody::BarnesHutSolver::step() {
 
     // Construct an octree from the actor particles
+    _statusDispatcher.emit({"Building Octree"});
     _octree->build(_maxDepth, _maxLeafSize);
 
     // Use the octree to estimate forces on each passive particle, and update their velocity
+    _statusDispatcher.emit({"Computing Velocities"});
     auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
     tbb::parallel_for_each(targets, [&](Entity e) {
         const auto &targetPosition = _simulation.get<Position>(e);
@@ -36,6 +38,7 @@ void NBody::BarnesHutSolver::step() {
         std::scoped_lock l(_simulation.mutex);
 
         spdlog::trace("Updating positions");
+        _statusDispatcher.emit({"Updating positions"});
         auto view = _simulation.view<const Velocity, Position>();
 
         tbb::parallel_for_each(view, [&](Entity e) {

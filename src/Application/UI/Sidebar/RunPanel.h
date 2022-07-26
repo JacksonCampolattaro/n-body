@@ -30,6 +30,8 @@ namespace UI {
 
         Gtk::ListBoxRow &_runModeDropdown;
 
+        Gtk::Label &_statusLabel;
+
         Gtk::ToggleButton &_runContinuouslyButton;
         Gtk::ToggleButton &_runOneStepButton;
         Gtk::ToggleButton &_runNStepsButton;

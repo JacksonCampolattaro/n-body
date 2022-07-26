@@ -23,6 +23,7 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
         _solver(solver),
         _builder(Gtk::Builder::create_from_resource("/ui/run_panel.xml")),
         _runModeDropdown(*_builder->get_widget<Gtk::ListBoxRow>("run-mode-dropdown")),
+        _statusLabel(*_builder->get_widget<Gtk::Label>("status-label")),
         _runContinuouslyButton(*_builder->get_widget<Gtk::ToggleButton>("run-continuously-button")),
         _runOneStepButton(*_builder->get_widget<Gtk::ToggleButton>("run-one-step-button")),
         _runNStepsButton(*_builder->get_widget<Gtk::ToggleButton>("run-n-steps-button")),
@@ -98,6 +99,11 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
         _averageStepTimeLabel.setValue((float) averageDuration.count());
     });
 
+    _solver.signal_status().connect([&](const NBody::Status &status){
+        _statusLabel.set_text({status.begin()});
+    });
+
+    //_solver._statusDispatcher.emit({"stopped"});
 }
 
 void UI::RunPanel::run(std::size_t n) {
