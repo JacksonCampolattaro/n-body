@@ -11,6 +11,8 @@
 #include <NBody/Simulation/Solver.h>
 
 #include <gtkmm/listboxrow.h>
+#include <gtkmm/stack.h>
+#include <gtkmm/entry.h>
 
 #include <sigc++/sigc++.h>
 
@@ -28,7 +30,12 @@ namespace UI {
 
         Gtk::ListBoxRow &_runModeDropdown;
 
-        Gtk::ToggleButton &_runButton;
+        Gtk::ToggleButton &_runContinuouslyButton;
+        Gtk::ToggleButton &_runOneStepButton;
+        Gtk::ToggleButton &_runNStepsButton;
+        Gtk::Entry &_stepCountEntry;
+
+        Gtk::Stack &_runControllerStack;
 
         Gtk::Label &_iterationsLabel;
         PreciseFloatView &_stepTimeLabel;
@@ -43,8 +50,7 @@ namespace UI {
 
         RunPanel(NBody::Solver &solver);
 
-        void run();
-        void run(std::size_t n);
+        void run(std::size_t n = 1);
         void stop();
 
     };
