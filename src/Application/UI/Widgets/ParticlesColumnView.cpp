@@ -55,14 +55,18 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _window.set_child(_particleEntry);
 
     // Show the particle window when the user selects a particle
-    _selectionModel->signal_selection_changed().connect([&](guint p, guint n) {
-        spdlog::debug("Selection changed, p={} n={}", p, n);
+    _columnView.signal_activate().connect([&](guint p) {
         if (auto selected = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
-                _selectionModel->get_selected_item())) {
+                _selectionModel->get_object(p))) {
             _particleEntry.bind(selected);
             _window.set_title("Particle #" + std::to_string((ENTT_ID_TYPE) selected->entity()));
             _window.show();
+            _window.present();
         }
+    });
+
+    _selectionModel->signal_selection_changed().connect([&](guint p, guint n) {
+        spdlog::debug("Selection changed, p={} n={}", p, n);
     });
 
     // When the user closes the window, hide it
