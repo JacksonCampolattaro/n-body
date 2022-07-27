@@ -16,9 +16,11 @@ using NBody::Physics::PassiveMass;
 
 void NBody::NaiveSolver::step() {
 
+
     // Update accelerations and velocities
     {
         spdlog::trace("Updating velocities");
+        _statusDispatcher.emit({"Computing velocities"});
         auto actors = _simulation.view<const Position, const ActiveMass>();
         auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
         tbb::parallel_for_each(targets, [&](Entity e) {
@@ -43,6 +45,7 @@ void NBody::NaiveSolver::step() {
         std::scoped_lock l(_simulation.mutex);
 
         spdlog::trace("Updating positions");
+        _statusDispatcher.emit({"Updating Positions"});
         auto view = _simulation.view<const Velocity, Position>();
 
         tbb::parallel_for_each(view, [&](Entity e) {

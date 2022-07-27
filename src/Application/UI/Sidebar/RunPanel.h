@@ -5,10 +5,15 @@
 #ifndef N_BODY_RUNPANEL_H
 #define N_BODY_RUNPANEL_H
 
-#include <NBody/Simulation/Solver.h>
-
 #include "Panel.h"
 #include "../Widgets/View/FloatView.h"
+#include "../Widgets/View/TimeView.h"
+
+#include <NBody/Simulation/Solver.h>
+
+#include <gtkmm/listboxrow.h>
+#include <gtkmm/stack.h>
+#include <gtkmm/entry.h>
 
 #include <sigc++/sigc++.h>
 
@@ -19,21 +24,41 @@ namespace UI {
     class RunPanel : public Panel {
     private:
 
+        NBody::Solver &_solver;
         sigc::connection _idler;
 
-        Gtk::Button *_stepButton;
-        Gtk::ToggleButton *_runButton;
-        Gtk::Label *_iterationsLabel;
-        FloatView<5> *_stepTimeLabel;
-        FloatView<10> *_averageStepTimeLabel;
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        Gtk::ListBoxRow &_runModeDropdown;
+
+        Gtk::Label &_statusLabel;
+
+        Gtk::ToggleButton &_runContinuouslyButton;
+        Gtk::ToggleButton &_runOneStepButton;
+        Gtk::ToggleButton &_runNStepsButton;
+        Gtk::Entry &_stepCountEntry;
+
+        Gtk::Stack &_runControllerStack;
+
+        Gtk::Label &_iterationsLabel;
+        PreciseFloatView &_stepTimeLabel;
+        PreciseFloatView &_averageStepTimeLabel;
+        TimeView &_computeTimeView;
+        Gtk::Box &_remainingTime;
+        TimeView &_remainingTimeView;
 
         std::deque<std::chrono::duration<double>> _stepTimes;
+        std::chrono::duration<double> _totalElapsedComputeTime;
 
-        int _iterations = 0;
+        std::size_t _iterations = 0;
+        std::size_t _currentIterations = 0;
 
     public:
 
         RunPanel(NBody::Solver &solver);
+
+        void run(std::size_t n = 1);
+        void stop();
 
     };
 
