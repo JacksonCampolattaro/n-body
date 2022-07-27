@@ -35,6 +35,13 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
         ),
         _averageStepTimeLabel(
                 *Gtk::Builder::get_widget_derived<PreciseFloatView>(_builder, "average-step-time-label")
+        ),
+        _computeTimeView(
+                *Gtk::Builder::get_widget_derived<TimeView>(_builder, "compute-time-view")
+        ),
+        _remainingTime(*_builder->get_widget<Gtk::Box>("remaining-time")),
+        _remainingTimeView(
+                *Gtk::Builder::get_widget_derived<TimeView>(_builder, "remaining-time-view")
         ) {
 
     auto root = _builder->get_widget<Gtk::Widget>("root");
@@ -44,16 +51,20 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
 
 
     _runControllerStack.set_visible_child("continuous");
+    _remainingTime.hide();
     _runModeDropdown.connect_property_changed("selected", [&]() {
         switch (_runModeDropdown.get_property<guint>("selected")) {
             case 0:
                 _runControllerStack.set_visible_child("continuous");
+                _remainingTime.hide();
                 break;
             case 1:
                 _runControllerStack.set_visible_child("one-step");
+                _remainingTime.hide();
                 break;
             case 2:
                 _runControllerStack.set_visible_child("n-steps");
+                _remainingTime.show();
                 break;
             default:
                 spdlog::error("Unrecognized run mode selected");
@@ -97,13 +108,14 @@ UI::RunPanel::RunPanel(NBody::Solver &solver) :
         if (_stepTimes.size() > 1000) _stepTimes.pop_front();
         auto averageDuration = std::reduce(_stepTimes.begin(), _stepTimes.end()) / _stepTimes.size();
         _averageStepTimeLabel.setValue((float) averageDuration.count());
+
+        _totalElapsedComputeTime += duration;
+        _computeTimeView.setValue(_totalElapsedComputeTime);
     });
 
-    _solver.signal_status().connect([&](const NBody::Status &status){
+    _solver.signal_status().connect([&](const NBody::Status &status) {
         _statusLabel.set_text({status.begin()});
     });
-
-    //_solver._statusDispatcher.emit({"stopped"});
 }
 
 void UI::RunPanel::run(std::size_t n) {
@@ -117,9 +129,12 @@ void UI::RunPanel::run(std::size_t n) {
         _solver.slot_step()();
 
         _stepCountEntry.set_progress_fraction((double) _currentIterations / (double) n);
+        auto averageDuration = std::reduce(_stepTimes.begin(), _stepTimes.end()) / _stepTimes.size();
+        _remainingTimeView.setValue(averageDuration * (n - _currentIterations));
 
         if (_currentIterations >= n)
             stop();
+
         return true;
     }, 1);
 }

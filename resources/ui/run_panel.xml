@@ -163,6 +163,59 @@
                             </object>
                         </child>
 
+                        <child>
+                            <object class="GtkSeparator"/>
+                        </child>
+
+                        <child>
+                            <object class="GtkBox">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">8</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Elapsed compute time:</property>
+                                        <property name="halign">start</property>
+                                        <property name="hexpand">True</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkBox" id="compute-time-view">
+                                        <property name="halign">end</property>
+                                        <property name="hexpand">False</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="GtkBox" id="remaining-time">
+                                <property name="orientation">horizontal</property>
+                                <property name="hexpand">True</property>
+                                <property name="spacing">8</property>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Estimated remaining time:</property>
+                                        <property name="halign">start</property>
+                                        <property name="hexpand">True</property>
+                                        <style>
+                                            <class name="dim-label"/>
+                                        </style>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkBox" id="remaining-time-view">
+                                        <property name="halign">end</property>
+                                        <property name="hexpand">False</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>
