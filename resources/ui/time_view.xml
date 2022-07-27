@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkBox" id="root">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">True</property>
+        <property name="spacing">4</property>
+        <child>
+            <object class="GtkLabel" id="minutes-label">
+                <style>
+                    <class name="numeric"/>
+                    <class name="monospace"/>
+                </style>
+                <property name="label">0</property>
+                <property name="halign">end</property>
+                <property name="hexpand">False</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel">
+                <property name="label">:</property>
+                <property name="halign">end</property>
+                <style>
+                    <class name="dim-label"/>
+                </style>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="seconds-label">
+                <style>
+                    <class name="numeric"/>
+                    <class name="monospace"/>
+                </style>
+                <property name="label">00</property>
+                <property name="hexpand">False</property>
+                <property name="width-chars">2</property>
+                <property name="halign">end</property>
+                <property name="xalign">right</property>
+                <property name="justify">right</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel">
+                <property name="label">.</property>
+                <property name="halign">end</property>
+                <style>
+                    <class name="dim-label"/>
+                </style>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="milliseconds-label">
+                <style>
+                    <class name="numeric"/>
+                    <class name="monospace"/>
+                </style>
+                <property name="label">000</property>
+                <property name="halign">end</property>
+                <property name="hexpand">False</property>
+                <property name="width-chars">3</property>
+            </object>
+        </child>
+    </object>
+</interface>

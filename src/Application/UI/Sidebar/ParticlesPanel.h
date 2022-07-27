@@ -37,7 +37,7 @@ namespace UI {
         Gtk::Label &_countLabel;
         PositionView &_averagePositionView;
 
-        FloatView<10> &_totalMassView;
+        PreciseFloatView &_totalMassView;
         PositionView &_centerOfMassPositionView;
 
         Gtk::Label &_interactionCountLabel;

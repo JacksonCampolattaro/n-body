@@ -13,7 +13,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         _builder(Gtk::Builder::create_from_resource("/ui/particles_panel.xml")),
         _modifyButton(*_builder->get_widget<Gtk::Button>("modify-button")),
         _countLabel(*_builder->get_widget<Gtk::Label>("count-label")),
-        _totalMassView(*Gtk::Builder::get_widget_derived<FloatView<10>>(
+        _totalMassView(*Gtk::Builder::get_widget_derived<PreciseFloatView>(
                 _builder, "total-mass-label")),
         _averagePositionView(*Gtk::Builder::get_widget_derived<PositionView>(
                 _builder, "average-position-view")),
@@ -28,7 +28,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     auto root = _builder->get_widget<Gtk::Widget>("root");
     _contents.append(*root);
 
-    _simulation.signal_changed.connect([&](){
+    _simulation.signal_changed.connect([&]() {
 
         _countLabel.set_text(std::to_string(simulation.size()));
         _averagePositionView.setValue(simulation.averagePosition());

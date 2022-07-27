@@ -7,6 +7,7 @@
 
 #include "Panel.h"
 #include "../Widgets/View/FloatView.h"
+#include "../Widgets/View/TimeView.h"
 
 #include <NBody/Simulation/Solver.h>
 
@@ -42,8 +43,12 @@ namespace UI {
         Gtk::Label &_iterationsLabel;
         PreciseFloatView &_stepTimeLabel;
         PreciseFloatView &_averageStepTimeLabel;
+        TimeView &_computeTimeView;
+        Gtk::Box &_remainingTime;
+        TimeView &_remainingTimeView;
 
         std::deque<std::chrono::duration<double>> _stepTimes;
+        std::chrono::duration<double> _totalElapsedComputeTime;
 
         std::size_t _iterations = 0;
         std::size_t _currentIterations = 0;
