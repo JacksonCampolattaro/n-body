@@ -62,7 +62,7 @@ namespace UI {
             _connection.disconnect();
 
             // If nobody else is still watching this particle, remove its signal
-            if (_particle->get<sigc::signal<void()>>().empty())
+            if (_particle->valid() && _particle->get<sigc::signal<void()>>().empty())
                 _particle->remove<sigc::signal<void()>>();
 
             // Clean up -- unbound Bindables aren't associated with any particular particle

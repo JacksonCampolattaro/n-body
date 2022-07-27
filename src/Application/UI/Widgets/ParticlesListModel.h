@@ -24,6 +24,10 @@ namespace UI {
                 // so we notify the list model of new items at position 0.
                 items_changed(0, 0, count);
             });
+
+            simulation.signal_particle_removed.connect([&](std::size_t position) {
+                items_changed(position, 1, 0);
+            });
         }
 
         static Glib::RefPtr<ParticlesListModel> create(NBody::Simulation &simulation) {
@@ -35,7 +39,7 @@ namespace UI {
         };
 
         guint get_n_items_vfunc() override {
-            return _simulation.size();
+            return _simulation.size<NBody::Physics::Position>();
         };
 
         gpointer get_item_vfunc(guint position) override {
