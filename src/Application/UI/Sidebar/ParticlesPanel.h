@@ -28,6 +28,8 @@ namespace UI {
     class ParticlesPanel : public Panel {
     private:
 
+        NBody::Simulation &_simulation;
+
         Glib::RefPtr<Gtk::Builder> _builder;
 
         Gtk::Button &_modifyButton;
@@ -35,12 +37,10 @@ namespace UI {
         Gtk::Label &_countLabel;
         PositionView &_averagePositionView;
 
-        FloatView<10> &_totalMassView;
+        PreciseFloatView &_totalMassView;
         PositionView &_centerOfMassPositionView;
 
         Gtk::Label &_interactionCountLabel;
-
-        NBody::Simulation &_simulation;
 
         UI::ParticlesColumnView _particlesView;
         Gtk::Window _particlesWindow;

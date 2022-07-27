@@ -16,6 +16,7 @@
         <file>ui/barnes_hut_solver_settings.xml</file>
 
         <file>ui/particle_entry.xml</file>
+        <file>ui/time_view.xml</file>
     </gresource>
 
     <gresource prefix="/NBody">

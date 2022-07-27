@@ -16,6 +16,8 @@
 
 namespace NBody {
 
+    typedef std::array<char, 64> Status;
+
     class Solver {
     protected:
 
@@ -28,6 +30,7 @@ namespace NBody {
         sigc::slot<void()> _slot_step;
 
         TypedDispatcher<std::chrono::duration<double>> _computeTimeDispatcher;
+        TypedDispatcher<Status> _statusDispatcher;
 
         std::shared_ptr<std::thread> _thread;
         Glib::Dispatcher _dispatcher;
@@ -50,6 +53,7 @@ namespace NBody {
                 // Announce the completion to the rest of the UI
                 _simulation.view<sigc::signal<void()>>().each([](auto &s) { s.emit(); });
                 _simulation.signal_changed.emit();
+                _statusDispatcher.emit({"Stopped"});
                 signal_finished().emit();
             });
         };
@@ -77,6 +81,9 @@ namespace NBody {
         sigc::signal<void(std::chrono::duration<double>)> &
         signal_computeTime() { return _computeTimeDispatcher.signal(); };
 
+        virtual sigc::signal<void(Status)> &
+        signal_status() { return _statusDispatcher.signal(); };
+
         sigc::slot<void()> &slot_step() { return _slot_step; };
 
     private:
@@ -95,6 +102,7 @@ namespace NBody {
             _thread = std::make_shared<std::thread>([&] {
 
                 spdlog::trace("Beginning simulation step");
+                _statusDispatcher.emit({"Starting step"});
 
                 // Cap the number of threads based on the user's preference
                 tbb::global_control c{tbb::global_control::max_allowed_parallelism, _maxThreadCount};
@@ -106,6 +114,7 @@ namespace NBody {
                 std::chrono::duration<double> duration = finishTime - startTime;
                 _computeTimeDispatcher.emit(duration);
                 spdlog::trace("Finished simulation step in {} s", duration.count());
+                _statusDispatcher.emit({"Finished step"});
 
                 // Notify the main thread that we're finished (so we can join)
                 _dispatcher.emit();
