@@ -86,6 +86,7 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
 
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
             _simulation.removeParticle(_selectionModel->get_selected());
+            _window.hide();
         }
     });
     add_controller(keyController);
