@@ -39,12 +39,13 @@ namespace UI {
         };
 
         guint get_n_items_vfunc() override {
-            return _simulation.size<NBody::Physics::Position>();
+            return _simulation.particleCount();
         };
 
         gpointer get_item_vfunc(guint position) override {
             auto view = _simulation.view<NBody::Physics::Position>();
-            if (position > view.size()) return {};
+            std::cout << std::endl;
+            if (position > view.size() || !_simulation.valid(view[position])) return {};
             return (new NBody::Simulation::Particle(_simulation, view[position]))->gobj();
         };
 
