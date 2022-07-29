@@ -54,7 +54,7 @@
                                 <property name="valign">center</property>
 <!--                                <property name="label">+</property>-->
                                 <property name="icon-name">list-add-symbolic</property>
-                                <property name="menu-model">sample_menu</property>
+                                <property name="menu-model">particle-creation-menu</property>
                             </object>
                         </child>
                     </object>
