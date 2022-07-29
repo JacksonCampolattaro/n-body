@@ -118,6 +118,18 @@ void NBody::Simulation::load(Gio::File &source) {
      inputFile >> (*this);
 }
 
+void NBody::Simulation::removeParticle(std::size_t i) {
+    auto entity = view<const Physics::Position>()[i];
+    if (!valid(entity)) return;
+    destroy(entity);
+    signal_particle_removed.emit(i);
+    signal_changed.emit();
+}
+
+std::size_t NBody::Simulation::particleCount() const {
+    return size<Physics::Position>();
+}
+
 NBody::Physics::Position NBody::Simulation::averagePosition() const {
     Physics::Position average;
 

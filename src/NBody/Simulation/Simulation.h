@@ -74,6 +74,10 @@ namespace NBody {
 
         void load(Gio::File &source);
 
+        void removeParticle(std::size_t i);
+
+        std::size_t particleCount() const;
+
         Physics::Position averagePosition() const;
 
         float totalMass() const;
