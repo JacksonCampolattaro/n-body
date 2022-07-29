@@ -44,7 +44,6 @@ namespace UI {
 
         gpointer get_item_vfunc(guint position) override {
             auto view = _simulation.view<NBody::Physics::Position>();
-            std::cout << std::endl;
             if (position > view.size() || !_simulation.valid(view[position])) return {};
             return (new NBody::Simulation::Particle(_simulation, view[position]))->gobj();
         };
