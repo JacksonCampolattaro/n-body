@@ -11,7 +11,9 @@
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
-using NBody::Physics::ActiveMass;
+using NBody::Physics::Mass;
+using NBody::Physics::ActiveTag;
+using NBody::Physics::PassiveTag;
 using NBody::Physics::PassiveMass;
 
 void NBody::NaiveSolver::step() {
@@ -21,14 +23,14 @@ void NBody::NaiveSolver::step() {
     {
         spdlog::trace("Updating velocities");
         _statusDispatcher.emit({"Computing velocities"});
-        auto actors = _simulation.view<const Position, const ActiveMass>();
-        auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
+        auto actors = _simulation.view<const Position, const Mass, ActiveTag>();
+        auto targets = _simulation.view<const Position, const Mass, Velocity, PassiveTag>();
         tbb::parallel_for_each(targets, [&](Entity e) {
             const auto &targetPosition = _simulation.get<Position>(e);
-            const auto &targetMass = _simulation.get<PassiveMass>(e);
+            const auto &targetMass = _simulation.get<Mass>(e);
             auto &velocity = _simulation.get<Velocity>(e);
 
-            actors.each([&](const Position &actorPosition, const ActiveMass &actorMass) {
+            actors.each([&](const Position &actorPosition, const Mass &actorMass) {
 
                 if (actorPosition == targetPosition) return;
 

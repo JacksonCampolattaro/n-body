@@ -9,8 +9,9 @@
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
-using NBody::Physics::ActiveMass;
-using NBody::Physics::PassiveMass;
+using NBody::Physics::Mass;
+using NBody::Physics::PassiveTag;
+using NBody::Physics::ActiveTag;
 
 void NBody::BarnesHutSolver::step() {
 
@@ -20,10 +21,10 @@ void NBody::BarnesHutSolver::step() {
 
     // Use the octree to estimate forces on each passive particle, and update their velocity
     _statusDispatcher.emit({"Computing Velocities"});
-    auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
+    auto targets = _simulation.view<const Position, const Mass, Velocity, PassiveTag>();
     tbb::parallel_for_each(targets, [&](Entity e) {
         const auto &targetPosition = _simulation.get<Position>(e);
-        const auto &targetMass = _simulation.get<PassiveMass>(e);
+        const auto &targetMass = _simulation.get<Mass>(e);
         auto &velocity = _simulation.get<Velocity>(e);
 
         assert(_octree);

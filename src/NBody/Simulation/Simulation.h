@@ -7,8 +7,7 @@
 
 #include <NBody/Physics/Position.h>
 #include <NBody/Physics/Velocity.h>
-#include <NBody/Physics/ActiveMass.h>
-#include <NBody/Physics/PassiveMass.h>
+#include <NBody/Physics/Mass.h>
 #include <NBody/Graphics/Color.h>
 #include <NBody/Graphics/Sphere.h>
 
@@ -54,10 +53,6 @@ namespace NBody {
             Particle &setVelocity(const Physics::Velocity &velocity);
 
             Particle &setMass(const float &mass);
-
-            Particle &setActiveMass(const Physics::ActiveMass &mass);
-
-            Particle &setPassiveMass(const Physics::PassiveMass &mass);
 
             Particle &setColor(const Graphics::Color &color);
 

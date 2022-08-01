@@ -57,19 +57,9 @@
                         <property name="description">Properties concerning interactions with other particles</property>
                         <child>
                             <object class="AdwActionRow">
-                                <property name="title">Active Mass</property>
-                                <property name="subtitle">Transmits forces to other particles</property>
+                                <property name="title">Mass</property>
                                 <child type="suffix">
-                                    <object class="GtkSpinButton" id="active-mass-entry"/>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="AdwActionRow">
-                                <property name="title">Passive Mass</property>
-                                <property name="subtitle">Receives forces from other particles</property>
-                                <child type="suffix">
-                                    <object class="GtkSpinButton" id="passive-mass-entry"/>
+                                    <object class="GtkSpinButton" id="mass-entry"/>
                                 </child>
                             </object>
                         </child>
