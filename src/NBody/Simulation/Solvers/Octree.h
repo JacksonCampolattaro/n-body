@@ -14,6 +14,7 @@
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
 using NBody::Physics::Mass;
+using NBody::Physics::ActiveTag;
 
 namespace NBody {
 
@@ -88,7 +89,7 @@ namespace NBody {
                 return std::tuple{less, more};
             }
 
-            [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, const Simulation &simulation,
+            [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, Simulation &simulation,
                                                           const Physics::Position &passivePosition,
                                                           const Physics::Mass &passiveMass,
                                                           float theta) const {
@@ -108,13 +109,15 @@ namespace NBody {
                     // Otherwise, the node can't be summarized
                     if (isLeaf()) {
 
+                        auto actors = simulation.group<const Position, const Mass>(entt::get<const ActiveTag>);
+
                         // If this is a leaf node, interact with all particles contained
                         return std::transform_reduce(
                                 _contents.begin(), _contents.end(),
                                 Physics::Acceleration{}, std::plus{},
                                 [&](auto entity) {
-                                    return rule(simulation.get<Position>(entity),
-                                                simulation.get<Mass>(entity),
+                                    return rule(actors.get<const Position>(entity),
+                                                actors.get<const Mass>(entity),
                                                 passivePosition, passiveMass);
                                 });
 
@@ -159,8 +162,8 @@ namespace NBody {
                 simulation) {
 
             // Save a list of physics-actor particles
-            auto activeParticlesView = _simulation.view<Physics::Mass>();
-            _particles = {activeParticlesView.begin(), activeParticlesView.end()};
+            auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+            _particles = {actors.begin(), actors.end()};
         }
 
         void build(int maxDepth, int maxLeafSize) {

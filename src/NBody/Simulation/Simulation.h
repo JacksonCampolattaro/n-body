@@ -15,6 +15,7 @@
 
 #include <entt/entity/registry.hpp>
 #include <entt/entity/handle.hpp>
+#include <entt/entity/group.hpp>
 
 #include <glibmm/interface.h>
 
