@@ -13,6 +13,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/colorbutton.h>
+#include <gtkmm/checkbutton.h>
 
 #include "Application/UI/Widgets/View/VectorView.h"
 #include "Application/UI/Widgets/LabeledWidget.h"

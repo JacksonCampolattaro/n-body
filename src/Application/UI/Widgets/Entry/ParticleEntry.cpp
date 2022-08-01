@@ -16,7 +16,6 @@ UI::ParticleEntry::ParticleEntry() :
         _colorEntry(*Gtk::Builder::get_widget_derived<ParticleColorEntry>(_builder, "color-entry")),
         _radiusEntry(*Gtk::Builder::get_widget_derived<ParticleRadiusEntry>(_builder, "radius-entry")) {
 
-    //auto builder = Gtk::Builder::create_from_resource("/ui/particle_entry.xml");
     auto root = _builder->get_widget<Gtk::Widget>("root");
     append(*root);
 }
@@ -38,15 +37,11 @@ void UI::ParticleEntry::bind(std::shared_ptr<NBody::Simulation::Particle> &parti
         _passiveMassEntry.unbind();
     }
 
-    if (particle->all_of<NBody::Graphics::Color>()) {
+    if (particle->all_of<NBody::Graphics::Color, NBody::Graphics::Sphere>()) {
         _colorEntry.bind(particle);
-    } else {
-        _colorEntry.unbind();
-    }
-
-    if (particle->all_of<NBody::Graphics::Sphere>()) {
         _radiusEntry.bind(particle);
     } else {
+        _colorEntry.unbind();
         _radiusEntry.unbind();
     }
 }
