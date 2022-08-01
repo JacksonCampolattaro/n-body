@@ -24,11 +24,7 @@
         <property name="spacing">16</property>
 
         <child>
-            <object class="GtkListBox">
-                <property name="selection-mode">none</property>
-                <style>
-                    <class name="boxed-list"/>
-                </style>
+            <object class="AdwPreferencesGroup">
                 <child>
                     <object class="AdwActionRow">
                         <property name="title">List view</property>
@@ -52,7 +48,6 @@
                                 <property name="hexpand">0</property>
                                 <property name="vexpand">0</property>
                                 <property name="valign">center</property>
-<!--                                <property name="label">+</property>-->
                                 <property name="icon-name">list-add-symbolic</property>
                                 <property name="menu-model">particle-creation-menu</property>
                             </object>
@@ -63,168 +58,163 @@
         </child>
 
         <child>
-            <object class="GtkLabel">
-                <property name="label">Statistics</property>
-                <property name="halign">start</property>
-                <style>
-                    <class name="title-4"/>
-                </style>
-            </object>
-        </child>
-
-        <child>
-            <object class="GtkFrame">
-
+            <object class="AdwPreferencesGroup">
+                <property name="title">Statistics</property>
                 <child>
-                    <object class="GtkBox" id="box">
-                        <property name="orientation">vertical</property>
-                        <property name="hexpand">True</property>
-                        <property name="spacing">8</property>
-                        <property name="margin-top">16</property>
-                        <property name="margin-bottom">16</property>
-                        <property name="margin-start">16</property>
-                        <property name="margin-end">16</property>
+                    <object class="GtkFrame">
 
                         <child>
-                            <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
+                            <object class="GtkBox" id="box">
+                                <property name="orientation">vertical</property>
                                 <property name="hexpand">True</property>
                                 <property name="spacing">8</property>
+                                <property name="margin-top">16</property>
+                                <property name="margin-bottom">16</property>
+                                <property name="margin-start">16</property>
+                                <property name="margin-end">16</property>
 
                                 <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Particle Count:</property>
-                                        <property name="halign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="count-label">
-                                        <style>
-                                            <class name="numeric"/>
-                                        </style>
-                                        <property name="label">0</property>
-                                        <property name="halign">end</property>
+                                    <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
                                         <property name="hexpand">True</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Particle Count:</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="count-label">
+                                                <style>
+                                                    <class name="numeric"/>
+                                                </style>
+                                                <property name="label">0</property>
+                                                <property name="halign">end</property>
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
                                     </object>
                                 </child>
+
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Average position:</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox" id="average-position-view">
+                                                <property name="halign">end</property>
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkSeparator"/>
+                                </child>
+
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Total mass:</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="total-mass-label">
+                                                <style>
+                                                    <class name="numeric"/>
+                                                </style>
+                                                <property name="label">0.00</property>
+                                                <property name="halign">end</property>
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Center of mass:</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkBox" id="center-of-mass-position-view">
+                                                <property name="halign">end</property>
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkSeparator"/>
+                                </child>
+
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="orientation">horizontal</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="label">Interaction count:</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                    <class name="dim-label"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="interaction-count-label">
+                                                <style>
+                                                    <class name="numeric"/>
+                                                </style>
+                                                <property name="label">0</property>
+                                                <property name="halign">end</property>
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
                             </object>
                         </child>
-
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
-                                <property name="hexpand">True</property>
-                                <property name="spacing">8</property>
-
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Average position:</property>
-                                        <property name="halign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkBox" id="average-position-view">
-                                        <property name="halign">end</property>
-                                        <property name="hexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkSeparator"/>
-                        </child>
-
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
-                                <property name="hexpand">True</property>
-                                <property name="spacing">8</property>
-
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Total mass:</property>
-                                        <property name="halign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="total-mass-label">
-                                        <style>
-                                            <class name="numeric"/>
-                                        </style>
-                                        <property name="label">0.00</property>
-                                        <property name="halign">end</property>
-                                        <property name="hexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
-                                <property name="hexpand">True</property>
-                                <property name="spacing">8</property>
-
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Center of mass:</property>
-                                        <property name="halign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkBox" id="center-of-mass-position-view">
-                                        <property name="halign">end</property>
-                                        <property name="hexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-
-                        <child>
-                            <object class="GtkSeparator"/>
-                        </child>
-
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">horizontal</property>
-                                <property name="hexpand">True</property>
-                                <property name="spacing">8</property>
-
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Interaction count:</property>
-                                        <property name="halign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="interaction-count-label">
-                                        <style>
-                                            <class name="numeric"/>
-                                        </style>
-                                        <property name="label">0</property>
-                                        <property name="halign">end</property>
-                                        <property name="hexpand">True</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-
                     </object>
                 </child>
             </object>
