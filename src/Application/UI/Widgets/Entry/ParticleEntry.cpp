@@ -12,6 +12,8 @@ UI::ParticleEntry::ParticleEntry() :
         _positionEntry(*Gtk::Builder::get_widget_derived<ParticlePositionEntry>(_builder, "position-entry")),
         _velocityEntry(*Gtk::Builder::get_widget_derived<ParticleVelocityEntry>(_builder, "velocity-entry")),
         _massEntry(*Gtk::Builder::get_widget_derived<ParticleMassEntry>(_builder, "mass-entry")),
+        _activeEntry(*Gtk::Builder::get_widget_derived<ActiveTagEntry>(_builder, "active-entry")),
+        _passiveEntry(*Gtk::Builder::get_widget_derived<PassiveTagEntry>(_builder, "passive-entry")),
         _colorEntry(*Gtk::Builder::get_widget_derived<ParticleColorEntry>(_builder, "color-entry")),
         _radiusEntry(*Gtk::Builder::get_widget_derived<ParticleRadiusEntry>(_builder, "radius-entry")) {
 
@@ -29,6 +31,9 @@ void UI::ParticleEntry::bind(std::shared_ptr<NBody::Simulation::Particle> &parti
     } else {
         _massEntry.unbind();
     }
+
+    _activeEntry.bind(particle);
+    _passiveEntry.bind(particle);
 
     if (particle->all_of<NBody::Graphics::Color, NBody::Graphics::Sphere>()) {
         _colorEntry.bind(particle);

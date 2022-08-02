@@ -7,12 +7,6 @@ using nlohmann::json;
 
 namespace NBody::Physics {
 
-    struct ActiveTag {
-    };
-
-    struct PassiveTag {
-    };
-
     class Mass {
     private:
 
@@ -36,6 +30,12 @@ namespace NBody::Physics {
     void to_json(json &j, const Mass &m);
 
     void from_json(const json &j, Mass &m);
+
+    class ActiveTag {
+    };
+
+    struct PassiveTag {
+    };
 
 }
 

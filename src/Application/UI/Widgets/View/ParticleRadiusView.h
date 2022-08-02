@@ -16,7 +16,7 @@ namespace UI {
     class ParticleRadiusView : public FloatView<5>, public Bindable<NBody::Graphics::Sphere> {
     public:
 
-        void update(NBody::Graphics::Sphere &value) override {
+        void update(const NBody::Graphics::Sphere &value) override {
             show();
             setValue(value.radius());
         };

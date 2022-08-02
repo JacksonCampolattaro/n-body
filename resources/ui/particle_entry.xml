@@ -63,6 +63,24 @@
                                 </child>
                             </object>
                         </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Active</property>
+                                <property name="subtitle">Determines whether this particle affects others</property>
+                                <child type="suffix">
+                                    <object class="GtkCheckButton" id="active-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Passive</property>
+                                <property name="subtitle">Determines whether this particle is affected by others</property>
+                                <child type="suffix">
+                                    <object class="GtkCheckButton" id="passive-entry"/>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
 

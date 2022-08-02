@@ -25,7 +25,7 @@ namespace UI {
             });
         }
 
-        void update(Velocity &value) override {
+        void update(const Velocity &value) override {
             show();
             setValue(value);
         }

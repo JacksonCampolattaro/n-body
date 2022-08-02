@@ -16,7 +16,7 @@ namespace UI {
     class ParticleMassView : public FloatView<10>, public Bindable<NBody::Physics::Mass> {
     public:
 
-        void update(NBody::Physics::Mass &value) override {
+        void update(const NBody::Physics::Mass &value) override {
             show();
             setValue(value.mass());
         };

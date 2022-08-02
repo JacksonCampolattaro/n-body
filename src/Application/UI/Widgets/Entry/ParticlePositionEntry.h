@@ -26,7 +26,7 @@ namespace UI {
             });
         }
 
-        void update(Position &value) override {
+        void update(const Position &value) override {
             show();
             setValue(value);
         }
