@@ -2,8 +2,8 @@
 // Created by Jackson Campolattaro on 8/2/22.
 //
 
-#ifndef N_BODY_TAGENTRY_H
-#define N_BODY_TAGENTRY_H
+#ifndef N_BODY_PARTICLETAGENTRY_H
+#define N_BODY_PARTICLETAGENTRY_H
 
 #include "Application/UI/Widgets/Bindable.h"
 
@@ -18,10 +18,10 @@ namespace UI {
     using NBody::Physics::PassiveTag;
 
     template<typename Tag>
-    class TagEntry : public Bindable<Tag>, public Gtk::CheckButton {
+    class ParticleTagEntry : public Bindable<Tag>, public Gtk::CheckButton {
     public:
 
-        TagEntry(Gtk::CheckButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+        ParticleTagEntry(Gtk::CheckButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
                 : Gtk::CheckButton(cobject) {
 
             signal_toggled().connect([&]() {
@@ -40,8 +40,8 @@ namespace UI {
         void update() override { set_active(false); };
     };
 
-    typedef TagEntry<ActiveTag> ActiveTagEntry;
-    typedef TagEntry<PassiveTag> PassiveTagEntry;
+    typedef ParticleTagEntry<ActiveTag> ParticleActiveTagEntry;
+    typedef ParticleTagEntry<PassiveTag> ParticlePassiveTagEntry;
 }
 
-#endif //N_BODY_TAGENTRY_H
+#endif //N_BODY_PARTICLETAGENTRY_H

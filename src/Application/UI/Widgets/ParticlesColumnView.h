@@ -18,6 +18,7 @@
 
 #include "Application/UI/Widgets/View/ParticleIconView.h"
 #include "Application/UI/Widgets/View/ParticleMassView.h"
+#include "Application/UI/Widgets/View/ParticleTagView.h"
 #include "Application/UI/Widgets/View/ParticlePositionView.h"
 #include "Application/UI/Widgets/View/ParticleVelocityView.h"
 #include "Application/UI/Widgets/View/ParticleColorView.h"

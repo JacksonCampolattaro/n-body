@@ -28,6 +28,14 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
             BindableListItemFactory<ParticleMassView>::create()
     ));
     _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Active",
+            BindableListItemFactory<ParticleActiveTagView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "Passive",
+            BindableListItemFactory<ParticlePassiveTagView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Position",
             BindableListItemFactory<ParticlePositionView>::create()
     ));

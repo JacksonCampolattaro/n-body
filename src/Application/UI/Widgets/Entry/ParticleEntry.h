@@ -24,7 +24,7 @@
 #include "ParticleMassEntry.h"
 #include "ParticleColorEntry.h"
 #include "ParticleRadiusEntry.h"
-#include "TagEntry.h"
+#include "ParticleTagEntry.h"
 
 namespace UI {
 
@@ -37,8 +37,8 @@ namespace UI {
         ParticleVelocityEntry &_velocityEntry;
 
         ParticleMassEntry &_massEntry;
-        ActiveTagEntry &_activeEntry;
-        PassiveTagEntry &_passiveEntry;
+        ParticleActiveTagEntry &_activeEntry;
+        ParticlePassiveTagEntry &_passiveEntry;
 
         ParticleColorEntry &_colorEntry;
         ParticleRadiusEntry &_radiusEntry;
