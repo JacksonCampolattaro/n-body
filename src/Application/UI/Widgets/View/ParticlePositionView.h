@@ -14,7 +14,7 @@ namespace UI {
     class ParticlePositionView : public PositionView, public Bindable<NBody::Physics::Position> {
     public:
 
-        void update(NBody::Physics::Position &value) override {
+        void update(const NBody::Physics::Position &value) override {
             show();
             setValue(value);
         };

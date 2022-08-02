@@ -35,6 +35,12 @@ using std::ostream;
 
 namespace NBody {
 
+//    namespace Physics {
+//        using namespace entt::literals;
+//        typedef entt::tag<"active"_hs> ActiveTag;
+//        typedef entt::tag<"passive"_hs> PassiveTag;
+//    }
+
     typedef entt::entity Entity;
 
     class Simulation : public entt::basic_registry<Entity> {

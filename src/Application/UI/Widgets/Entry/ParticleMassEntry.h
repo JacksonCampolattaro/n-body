@@ -25,7 +25,7 @@ namespace UI {
             });
         }
 
-        void update(Mass &value) override {
+        void update(const Mass &value) override {
             show();
             setValue(value.mass());
         }
