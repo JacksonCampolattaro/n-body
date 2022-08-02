@@ -2,8 +2,8 @@
 // Created by Jackson Campolattaro on 6/23/22.
 //
 
-#ifndef N_BODY_PARTICLEPASSIVEMASSVIEW_H
-#define N_BODY_PARTICLEPASSIVEMASSVIEW_H
+#ifndef N_BODY_PARTICLEMASSVIEW_H
+#define N_BODY_PARTICLEMASSVIEW_H
 
 #include "NBody/Simulation/Simulation.h"
 #include "Application/UI/Widgets/Bindable.h"
@@ -13,10 +13,10 @@
 
 namespace UI {
 
-    class ParticlePassiveMassView : public FloatView<10>, public Bindable<NBody::Physics::PassiveMass> {
+    class ParticleMassView : public FloatView<10>, public Bindable<NBody::Physics::Mass> {
     public:
 
-        void update(NBody::Physics::PassiveMass &value) override {
+        void update(NBody::Physics::Mass &value) override {
             show();
             setValue(value.mass());
         };
@@ -26,4 +26,4 @@ namespace UI {
 
 }
 
-#endif //N_BODY_PARTICLEPASSIVEMASSVIEW_H
+#endif //N_BODY_PARTICLEMASSVIEW_H
