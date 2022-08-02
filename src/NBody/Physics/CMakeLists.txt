@@ -11,7 +11,7 @@ find_package(nlohmann_json REQUIRED)
 add_library(Physics
         Position.h Position.cpp
         Velocity.h Velocity.cpp
-        ActiveMass.cpp ActiveMass.h
+        ActiveMass.cpp Mass.h
         Rule.h PassiveMass.cpp PassiveMass.h)
 
 target_include_directories(Physics PUBLIC

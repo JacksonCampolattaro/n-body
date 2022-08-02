@@ -13,8 +13,8 @@
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
-using NBody::Physics::ActiveMass;
-using NBody::Physics::PassiveMass;
+using NBody::Physics::Mass;
+using NBody::Physics::ActiveTag;
 
 namespace NBody {
 
@@ -31,7 +31,7 @@ namespace NBody {
             float _sideLength;
 
             Physics::Position _centerOfMass;
-            Physics::ActiveMass _totalMass;
+            Physics::Mass _totalMass;
 
         public:
 
@@ -47,7 +47,7 @@ namespace NBody {
 
             [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
-            [[nodiscard]] const ActiveMass &totalMass() const { return _totalMass; }
+            [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
 
             [[nodiscard]] bool isLeaf() const { return !_children; }
 
@@ -89,9 +89,9 @@ namespace NBody {
                 return std::tuple{less, more};
             }
 
-            [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, const Simulation &simulation,
+            [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, Simulation &simulation,
                                                           const Physics::Position &passivePosition,
-                                                          const Physics::PassiveMass &passiveMass,
+                                                          const Physics::Mass &passiveMass,
                                                           float theta) const {
 
                 // Empty nodes can be ignored
@@ -109,13 +109,15 @@ namespace NBody {
                     // Otherwise, the node can't be summarized
                     if (isLeaf()) {
 
+                        auto actors = simulation.group<const Position, const Mass>(entt::get<const ActiveTag>);
+
                         // If this is a leaf node, interact with all particles contained
                         return std::transform_reduce(
                                 _contents.begin(), _contents.end(),
                                 Physics::Acceleration{}, std::plus{},
                                 [&](auto entity) {
-                                    return rule(simulation.get<Position>(entity),
-                                                simulation.get<ActiveMass>(entity),
+                                    return rule(actors.get<const Position>(entity),
+                                                actors.get<const Mass>(entity),
                                                 passivePosition, passiveMass);
                                 });
 
@@ -160,8 +162,8 @@ namespace NBody {
                 simulation) {
 
             // Save a list of physics-actor particles
-            auto activeParticlesView = _simulation.view<Physics::ActiveMass>();
-            _particles = {activeParticlesView.begin(), activeParticlesView.end()};
+            auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+            _particles = {actors.begin(), actors.end()};
         }
 
         void build(int maxDepth, int maxLeafSize) {
@@ -173,7 +175,7 @@ namespace NBody {
 
         Physics::Acceleration applyRule(const Physics::Rule &rule,
                                         const Physics::Position &passivePosition,
-                                        const Physics::PassiveMass &passiveMass,
+                                        const Physics::Mass &passiveMass,
                                         float theta) {
 
             // Make sure the tree has been constructed
@@ -206,7 +208,7 @@ namespace NBody {
                             Physics::Acceleration{}, std::plus{},
                             [&](auto entity) {
                                 return rule(_simulation.get<Position>(entity),
-                                            _simulation.get<ActiveMass>(entity),
+                                            _simulation.get<Mass>(entity),
                                             passivePosition, passiveMass);
                             });
 
