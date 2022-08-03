@@ -107,9 +107,9 @@ namespace NBody {
                 // Cap the number of threads based on the user's preference
                 tbb::global_control c{tbb::global_control::max_allowed_parallelism, _maxThreadCount};
 
-                auto startTime = std::chrono::high_resolution_clock::now();
+                auto startTime = std::chrono::steady_clock::now();
                 step();
-                auto finishTime = std::chrono::high_resolution_clock::now();
+                auto finishTime = std::chrono::steady_clock::now();
 
                 std::chrono::duration<double> duration = finishTime - startTime;
                 _computeTimeDispatcher.emit(duration);
