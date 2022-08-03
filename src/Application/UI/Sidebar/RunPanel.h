@@ -48,7 +48,7 @@ namespace UI {
         TimeView &_remainingTimeView;
 
         std::deque<std::chrono::duration<double>> _stepTimes;
-        std::chrono::duration<double> _totalElapsedComputeTime;
+        std::chrono::duration<double> _totalElapsedComputeTime = {};
 
         std::size_t _iterations = 0;
         std::size_t _currentIterations = 0;
