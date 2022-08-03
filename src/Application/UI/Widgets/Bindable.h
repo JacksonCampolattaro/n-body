@@ -9,7 +9,6 @@
 
 namespace UI {
 
-    //requires (!std::is_empty<Types>::value && ...)
     template<typename ...Types>
     class Bindable {
     protected:

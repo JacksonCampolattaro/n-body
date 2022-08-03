@@ -117,6 +117,14 @@ void NBody::Simulation::load(Gio::File &source) {
     inputFile >> (*this);
 }
 
+std::vector<NBody::Entity> NBody::Simulation::validEntities() {
+    std::vector<NBody::Entity> alive;
+    each([&](auto e) {
+        alive.push_back(e);
+    });
+    return alive;
+}
+
 void NBody::Simulation::removeParticle(std::size_t i) {
     auto entity = view<const Physics::Position>()[i];
     if (!valid(entity)) return;

@@ -16,6 +16,7 @@
 
 #include "ParticlesListModel.h"
 
+#include "Application/UI/Widgets/View/ParticleIDView.h"
 #include "Application/UI/Widgets/View/ParticleIconView.h"
 #include "Application/UI/Widgets/View/ParticleMassView.h"
 #include "Application/UI/Widgets/View/ParticleTagView.h"

@@ -20,6 +20,10 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _columnView.set_model(_selectionModel);
 
     _columnView.append_column(Gtk::ColumnViewColumn::create(
+            "ID",
+            BindableListItemFactory<ParticleIDView>::create()
+    ));
+    _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Appearance",
             BindableListItemFactory<ParticleIconView>::create()
     ));
@@ -89,7 +93,11 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     keyController->signal_key_released().connect([&](guint keyval, guint keycode, Gdk::ModifierType state) {
 
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
-            _simulation.removeParticle(_selectionModel->get_selected());
+            if (auto deleted = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
+                    _selectionModel->get_selected_item())) {
+                _simulation.destroy(deleted->entity());
+                _simulation.signal_particle_removed.emit(_selectionModel->get_selected());
+            }
             _window.hide();
         }
     });

@@ -35,12 +35,6 @@ using std::ostream;
 
 namespace NBody {
 
-//    namespace Physics {
-//        using namespace entt::literals;
-//        typedef entt::tag<"active"_hs> ActiveTag;
-//        typedef entt::tag<"passive"_hs> PassiveTag;
-//    }
-
     typedef entt::entity Entity;
 
     class Simulation : public entt::basic_registry<Entity> {
@@ -76,7 +70,11 @@ namespace NBody {
 
         void load(Gio::File &source);
 
+        std::vector<NBody::Entity> validEntities();
+
         void removeParticle(std::size_t i);
+
+    public:
 
         std::size_t particleCount() const;
 
