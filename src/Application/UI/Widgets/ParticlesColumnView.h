@@ -11,14 +11,18 @@
 #include <gtkmm/singleselection.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
+#include <gtkmm/numericsorter.h>
+#include <gtkmm/expression.h>
+#include <gtkmm/sortlistmodel.h>
 
 #include <NBody/Simulation/Simulation.h>
 
 #include "ParticlesListModel.h"
 
+#include "Application/UI/Widgets/View/ParticleIDView.h"
 #include "Application/UI/Widgets/View/ParticleIconView.h"
-#include "Application/UI/Widgets/View/ParticleActiveMassView.h"
-#include "Application/UI/Widgets/View/ParticlePassiveMassView.h"
+#include "Application/UI/Widgets/View/ParticleMassView.h"
+#include "Application/UI/Widgets/View/ParticleTagView.h"
 #include "Application/UI/Widgets/View/ParticlePositionView.h"
 #include "Application/UI/Widgets/View/ParticleVelocityView.h"
 #include "Application/UI/Widgets/View/ParticleColorView.h"

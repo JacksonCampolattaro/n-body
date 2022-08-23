@@ -11,7 +11,7 @@ namespace UI {
 
     template<typename ...Types>
     class Bindable {
-    private:
+    protected:
 
         sigc::connection _connection;
 
@@ -19,8 +19,17 @@ namespace UI {
 
     public:
 
-        virtual void update(Types &... value) = 0;
+        virtual void update(const Types &... value) = 0;
+
         virtual void update() = 0;
+
+        template<typename T>
+        void changed() {
+            assert(_particle);
+            spdlog::debug("removed");
+            _particle->template remove<T>();
+            _particle->get<sigc::signal<void()>>().emit();
+        }
 
         template<typename T>
         void changed(const T &value) {
@@ -40,20 +49,22 @@ namespace UI {
 
             _particle = particle;
 
-            // If the particle doesn't have the types we're trying to bind to, hide it!
-            if (!_particle->all_of<Types...>()) {
-                update();
-                return;
-            }
-
             // If nobody else is already watching this particle, give it a signal
             // Whenever the particle is marked as changed, update the view
             _connection = particle->get_or_emplace<sigc::signal<void()>>().connect([&] {
                 assert(_particle); // there should be an associated particle
-                update(_particle->get<Types>()...);
-            });
+                if (_particle->all_of<Types...>()) {
 
-            update(particle->get<Types>()...);
+                    // Only update values if we're not using empty types
+                    if constexpr((!std::is_empty<Types>::value && ...))
+                        update(_particle->get<const Types>()...);
+                    else
+                        update({});
+
+                } else
+                    update();
+            });
+            _particle->get<sigc::signal<void()>>().emit();
         }
 
         void unbind() {
@@ -62,7 +73,7 @@ namespace UI {
             _connection.disconnect();
 
             // If nobody else is still watching this particle, remove its signal
-            if (_particle->get<sigc::signal<void()>>().empty())
+            if (_particle && _particle->valid() && _particle->get<sigc::signal<void()>>().empty())
                 _particle->remove<sigc::signal<void()>>();
 
             // Clean up -- unbound Bindables aren't associated with any particular particle

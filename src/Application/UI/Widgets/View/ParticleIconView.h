@@ -40,7 +40,7 @@ namespace UI {
             _drawingArea.set_expand();
         }
 
-        void update(NBody::Graphics::Sphere &sphere, NBody::Graphics::Color &color) override {
+        void update(const NBody::Graphics::Sphere &sphere, const NBody::Graphics::Color &color) override {
             show();
 
             _color = {color.r(), color.g(), color.b()};

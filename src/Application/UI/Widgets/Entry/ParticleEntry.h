@@ -13,6 +13,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/colorbutton.h>
+#include <gtkmm/checkbutton.h>
 
 #include "Application/UI/Widgets/View/VectorView.h"
 #include "Application/UI/Widgets/LabeledWidget.h"
@@ -20,10 +21,10 @@
 
 #include "ParticlePositionEntry.h"
 #include "ParticleVelocityEntry.h"
-#include "ParticleActiveMassEntry.h"
-#include "ParticlePassiveMassEntry.h"
+#include "ParticleMassEntry.h"
 #include "ParticleColorEntry.h"
 #include "ParticleRadiusEntry.h"
+#include "ParticleTagEntry.h"
 
 namespace UI {
 
@@ -35,8 +36,9 @@ namespace UI {
         ParticlePositionEntry &_positionEntry;
         ParticleVelocityEntry &_velocityEntry;
 
-        ParticleActiveMassEntry &_activeMassEntry;
-        ParticlePassiveMassEntry &_passiveMassEntry;
+        ParticleMassEntry &_massEntry;
+        ParticleActiveTagEntry &_activeEntry;
+        ParticlePassiveTagEntry &_passiveEntry;
 
         ParticleColorEntry &_colorEntry;
         ParticleRadiusEntry &_radiusEntry;

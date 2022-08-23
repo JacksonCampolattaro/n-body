@@ -39,7 +39,6 @@ void NBody::GtkmmArcBallCamera::on_leftButtonPress(int _, double x, double y) {
 
     initTransformation({static_cast<int>(x), static_cast<int>(y)});
     _mode = TransformationMode::ROTATE;
-    signal_changed.emit();
 }
 
 void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) {
@@ -47,7 +46,6 @@ void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) 
 
     initTransformation({static_cast<int>(x), static_cast<int>(y)});
     _mode = TransformationMode::TRANSLATE;
-    signal_changed.emit();
 }
 
 void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
@@ -59,6 +57,10 @@ void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
 
 void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
 
+    if (_mode == TransformationMode::NONE) {
+        return;
+    }
+
     if (_mode == TransformationMode::ROTATE) {
         rotate({static_cast<int>(x), static_cast<int>(y)});
         Vector3 direction = _currentQRotation.toMatrix() * Vector3::zAxis();
@@ -69,6 +71,7 @@ void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
         translate({static_cast<int>(x), static_cast<int>(y)});
         signal_positionChanged.emit(_currentPosition.x(), _currentPosition.y(), _currentPosition.z());
     }
+
     signal_changed.emit();
 }
 

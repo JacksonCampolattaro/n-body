@@ -9,10 +9,14 @@
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
-using NBody::Physics::ActiveMass;
-using NBody::Physics::PassiveMass;
+using NBody::Physics::Mass;
+using NBody::Physics::PassiveTag;
+using NBody::Physics::ActiveTag;
 
 void NBody::BarnesHutSolver::step() {
+
+    auto targets = _simulation.group<const Position, const Mass, Velocity>(entt::get<PassiveTag>);
+    auto movableTargets = _simulation.group<Position, const Mass, const Velocity>(entt::get<PassiveTag>);
 
     // Construct an octree from the actor particles
     _statusDispatcher.emit({"Building Octree"});
@@ -20,11 +24,10 @@ void NBody::BarnesHutSolver::step() {
 
     // Use the octree to estimate forces on each passive particle, and update their velocity
     _statusDispatcher.emit({"Computing Velocities"});
-    auto targets = _simulation.view<const Position, const PassiveMass, Velocity>();
     tbb::parallel_for_each(targets, [&](Entity e) {
-        const auto &targetPosition = _simulation.get<Position>(e);
-        const auto &targetMass = _simulation.get<PassiveMass>(e);
-        auto &velocity = _simulation.get<Velocity>(e);
+        const auto &targetPosition = targets.get<const Position>(e);
+        const auto &targetMass = targets.get<const Mass>(e);
+        auto &velocity = targets.get<Velocity>(e);
 
         assert(_octree);
         auto acceleration = _octree->applyRule(_rule, targetPosition, targetMass, _theta);
@@ -41,9 +44,9 @@ void NBody::BarnesHutSolver::step() {
         _statusDispatcher.emit({"Updating positions"});
         auto view = _simulation.view<const Velocity, Position>();
 
-        tbb::parallel_for_each(view, [&](Entity e) {
-            const auto &v = _simulation.get<Velocity>(e);
-            auto &p = _simulation.get<Position>(e);
+        tbb::parallel_for_each(movableTargets, [&](Entity e) {
+            const auto &v = movableTargets.get<const Velocity>(e);
+            auto &p = movableTargets.get<Position>(e);
             p = p + (v * _dt);
         });
     }

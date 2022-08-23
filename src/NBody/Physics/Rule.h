@@ -10,7 +10,7 @@
 #include <glm/gtx/norm.hpp>
 
 #include "Position.h"
-#include "ActiveMass.h"
+#include "Mass.h"
 #include "PassiveMass.h"
 
 namespace NBody::Physics {
@@ -27,8 +27,8 @@ namespace NBody::Physics {
 
         explicit Rule(const float &G = 1.0, const float &epsilon = 0.00001) : _g(G), _epsilon(epsilon) {};
 
-        Acceleration operator()(const Position &activePosition, const ActiveMass &activeMass,
-                                const Position &passivePosition, const PassiveMass &passiveMass) const {
+        Acceleration operator()(const Position &activePosition, const Mass &activeMass,
+                                const Position &passivePosition, const Mass &passiveMass) const {
 
             if (activePosition == passivePosition) return {};
 

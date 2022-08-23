@@ -14,7 +14,7 @@ namespace UI {
     class ParticleVelocityView : public VelocityView, public Bindable<NBody::Physics::Velocity> {
     public:
 
-        void update(NBody::Physics::Velocity &value) override {
+        void update(const NBody::Physics::Velocity &value) override {
             show();
             setValue(value);
         };

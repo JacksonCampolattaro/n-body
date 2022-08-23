@@ -30,7 +30,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
 
     _simulation.signal_changed.connect([&]() {
 
-        _countLabel.set_text(std::to_string(simulation.size()));
+        _countLabel.set_text(std::to_string(simulation.particleCount()));
         _averagePositionView.setValue(simulation.averagePosition());
 
         _totalMassView.setValue(simulation.totalMass());
