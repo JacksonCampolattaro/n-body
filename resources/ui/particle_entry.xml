@@ -31,11 +31,7 @@
                 </child>
 
                 <child>
-                    <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <style>
-                            <class name="boxed-list"/>
-                        </style>
+                    <object class="AdwPreferencesGroup">
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Position</property>
@@ -55,59 +51,43 @@
                     </object>
                 </child>
 
-
                 <child>
-                    <object class="GtkLabel">
-                        <property name="label">Physics</property>
-                        <property name="halign">start</property>
-                        <style>
-                            <class name="title-4"/>
-                        </style>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <style>
-                            <class name="boxed-list"/>
-                        </style>
+                    <object class="AdwPreferencesGroup">
+                        <property name="title">Physics</property>
+                        <property name="description">Properties concerning interactions with other particles</property>
                         <child>
                             <object class="AdwActionRow">
-                                <property name="title">Active Mass</property>
-                                <property name="subtitle">Transmits forces to other particles</property>
+                                <property name="title">Mass</property>
                                 <child type="suffix">
-                                    <object class="GtkSpinButton" id="active-mass-entry"/>
+                                    <object class="GtkSpinButton" id="mass-entry"/>
                                 </child>
                             </object>
                         </child>
                         <child>
                             <object class="AdwActionRow">
-                                <property name="title">Passive Mass</property>
-                                <property name="subtitle">Receives forces from other particles</property>
+                                <property name="title">Active</property>
+                                <property name="subtitle">Determines whether this particle affects others</property>
                                 <child type="suffix">
-                                    <object class="GtkSpinButton" id="passive-mass-entry"/>
+                                    <object class="GtkCheckButton" id="active-entry"/>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Passive</property>
+                                <property name="subtitle">Determines whether this particle is affected by others</property>
+                                <child type="suffix">
+                                    <object class="GtkCheckButton" id="passive-entry"/>
                                 </child>
                             </object>
                         </child>
                     </object>
                 </child>
 
-
                 <child>
-                    <object class="GtkLabel">
-                        <property name="label">Appearance</property>
-                        <property name="halign">start</property>
-                        <style>
-                            <class name="title-4"/>
-                        </style>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkListBox">
-                        <property name="selection-mode">none</property>
-                        <style>
-                            <class name="boxed-list"/>
-                        </style>
+                    <object class="AdwPreferencesGroup">
+                        <property name="title">Appearance</property>
+                        <property name="description">Properties concerning how this particle is rendered</property>
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Color</property>

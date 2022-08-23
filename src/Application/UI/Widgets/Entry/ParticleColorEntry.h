@@ -29,7 +29,7 @@ namespace UI {
 
         }
 
-        void update(Color &value) override {
+        void update(const Color &value) override {
             show();
             set_rgba({value.r(), value.g(), value.b()});
         }

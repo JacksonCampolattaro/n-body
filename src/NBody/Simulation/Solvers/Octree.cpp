@@ -77,7 +77,7 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
 
         // Otherwise, this is a leaf node
         for (const auto &entity: _contents) {
-            auto entityMass = registry.get<ActiveMass>(entity).mass();
+            auto entityMass = registry.get<Mass>(entity).mass();
             _totalMass.mass() += entityMass;
             _centerOfMass = _centerOfMass + (entityMass * registry.get<Position>(entity));
         }

@@ -1,12 +1,12 @@
 #include <catch2/catch.hpp>
 
-#include <NBody/Physics/ActiveMass.h>
+#include <NBody/Physics/Mass.h>
 
 #include <iostream>
 
-using ActiveMass = NBody::Physics::ActiveMass;
+using ActiveMass = NBody::Physics::Mass;
 
-TEST_CASE("ActiveMass can be serialized and deserialized", "[ActiveMass]") {
+TEST_CASE("Mass can be serialized and deserialized", "[Mass]") {
 
     ActiveMass in = {2.0f};
 

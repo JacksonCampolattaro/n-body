@@ -26,18 +26,7 @@ NBody::Simulation::Particle &NBody::Simulation::Particle::setVelocity(const NBod
 }
 
 NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const float &mass) {
-    emplace_or_replace<NBody::Physics::ActiveMass>(mass);
-    emplace_or_replace<NBody::Physics::PassiveMass>(mass);
-    return *this;
-}
-
-NBody::Simulation::Particle &NBody::Simulation::Particle::setActiveMass(const NBody::Physics::ActiveMass &mass) {
-    emplace_or_replace<NBody::Physics::ActiveMass>(mass);
-    return *this;
-}
-
-NBody::Simulation::Particle &NBody::Simulation::Particle::setPassiveMass(const NBody::Physics::PassiveMass &mass) {
-    emplace_or_replace<NBody::Physics::PassiveMass>(mass);
+    emplace_or_replace<NBody::Physics::Mass>(mass);
     return *this;
 }
 
@@ -63,8 +52,12 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Physics::Velocity>(entity))
             e["velocity"] = s.get<NBody::Physics::Velocity>(entity);
 
-        if (s.all_of<NBody::Physics::ActiveMass>(entity))
-            e["mass"] = s.get<NBody::Physics::ActiveMass>(entity);
+        if (s.all_of<NBody::Physics::Mass>(entity))
+            e["mass"] = s.get<NBody::Physics::Mass>(entity);
+
+        e["active"] = s.all_of<NBody::Physics::ActiveTag>(entity);
+
+        e["passive"] = s.all_of<NBody::Physics::PassiveTag>(entity);
 
         if (s.all_of<NBody::Graphics::Color>(entity))
             e["color"] = s.get<NBody::Graphics::Color>(entity);
@@ -93,6 +86,12 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
 
+        if (!p.contains("active") || !p["active"].get<bool>())
+            particle.emplace<NBody::Physics::ActiveTag>();
+
+        if (!p.contains("passive") || !p["passive"].get<bool>())
+            particle.emplace<NBody::Physics::PassiveTag>();
+
         if (p.contains("color"))
             particle.setColor(p["color"].get<NBody::Graphics::Color>());
 
@@ -115,7 +114,27 @@ void NBody::Simulation::save(Gio::File &destination) const {
 void NBody::Simulation::load(Gio::File &source) {
     spdlog::debug("Loading JSON file from path \"{}\"", source.get_path());
     std::ifstream inputFile(source.get_path());
-     inputFile >> (*this);
+    inputFile >> (*this);
+}
+
+std::vector<NBody::Entity> NBody::Simulation::validEntities() {
+    std::vector<NBody::Entity> alive;
+    each([&](auto e) {
+        alive.push_back(e);
+    });
+    return alive;
+}
+
+void NBody::Simulation::removeParticle(std::size_t i) {
+    auto entity = view<const Physics::Position>()[i];
+    if (!valid(entity)) return;
+    destroy(entity);
+    signal_particle_removed.emit(i);
+    signal_changed.emit();
+}
+
+std::size_t NBody::Simulation::particleCount() const {
+    return size<Physics::Position>();
 }
 
 NBody::Physics::Position NBody::Simulation::averagePosition() const {
@@ -132,9 +151,9 @@ NBody::Physics::Position NBody::Simulation::averagePosition() const {
 float NBody::Simulation::totalMass() const {
     float totalMass = 0;
 
-    auto masses = view<const Physics::PassiveMass>();
+    auto masses = view<const Physics::Mass>();
     masses.each([&](const auto &mass) {
-       totalMass += mass.mass();
+        totalMass += mass.mass();
     });
 
     return totalMass;
@@ -144,7 +163,7 @@ NBody::Physics::Position NBody::Simulation::centerOfMass() const {
     Physics::Position average;
     float totalMass = 0;
 
-    auto massesAndPositions = view<const Physics::PassiveMass, const Physics::Position>();
+    auto massesAndPositions = view<const Physics::Mass, const Physics::Position>();
     massesAndPositions.each([&](const auto &mass, const auto &position) {
         average = average + (position * mass.mass());
         totalMass += mass.mass();
@@ -154,5 +173,5 @@ NBody::Physics::Position NBody::Simulation::centerOfMass() const {
 }
 
 std::size_t NBody::Simulation::interactionCount() const {
-    return view<const Physics::PassiveMass>().size() * view<const Physics::ActiveMass>().size();
+    return view<const Physics::PassiveTag>().size() * view<const Physics::ActiveTag>().size();
 }

@@ -24,7 +24,7 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
     _positionEntry.signal_changed.connect(camera.slot_moveTo);
 
     camera.signal_directionChanged.connect(_directionEntry.slot_changed);
-    _directionEntry.signal_changed.connect(camera.slot_moveTo);
+    // todo: Allow the user to modify the direction directly
     _directionEntry.set_sensitive(false);
 
     camera.signal_zoomChanged.connect(_zoomEntry.slot_changed);

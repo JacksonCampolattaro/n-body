@@ -7,8 +7,7 @@
 
 #include <NBody/Physics/Position.h>
 #include <NBody/Physics/Velocity.h>
-#include <NBody/Physics/ActiveMass.h>
-#include <NBody/Physics/PassiveMass.h>
+#include <NBody/Physics/Mass.h>
 #include <NBody/Graphics/Color.h>
 #include <NBody/Graphics/Sphere.h>
 
@@ -16,6 +15,7 @@
 
 #include <entt/entity/registry.hpp>
 #include <entt/entity/handle.hpp>
+#include <entt/entity/group.hpp>
 
 #include <glibmm/interface.h>
 
@@ -55,10 +55,6 @@ namespace NBody {
 
             Particle &setMass(const float &mass);
 
-            Particle &setActiveMass(const Physics::ActiveMass &mass);
-
-            Particle &setPassiveMass(const Physics::PassiveMass &mass);
-
             Particle &setColor(const Graphics::Color &color);
 
             Particle &setSphere(const Graphics::Sphere &sphere);
@@ -74,6 +70,14 @@ namespace NBody {
 
         void load(Gio::File &source);
 
+        std::vector<NBody::Entity> validEntities();
+
+        void removeParticle(std::size_t i);
+
+    public:
+
+        std::size_t particleCount() const;
+
         Physics::Position averagePosition() const;
 
         float totalMass() const;
@@ -86,6 +90,7 @@ namespace NBody {
 
         mutable sigc::signal<void()> signal_changed;
         sigc::signal<void(std::size_t)> signal_particles_added;
+        sigc::signal<void(std::size_t)> signal_particle_removed;
 
         mutable std::mutex mutex;
 

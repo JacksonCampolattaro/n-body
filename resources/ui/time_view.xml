@@ -37,7 +37,6 @@
                 <property name="hexpand">False</property>
                 <property name="width-chars">2</property>
                 <property name="halign">end</property>
-                <property name="xalign">right</property>
                 <property name="justify">right</property>
             </object>
         </child>

@@ -23,7 +23,7 @@ namespace UI {
             set_use_markup();
         }
 
-        void update(Color &value) override {
+        void update(const Color &value) override {
             show();
 
             auto hexString = fmt::format(
