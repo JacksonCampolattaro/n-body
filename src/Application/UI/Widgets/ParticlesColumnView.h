@@ -11,6 +11,9 @@
 #include <gtkmm/singleselection.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/window.h>
+#include <gtkmm/numericsorter.h>
+#include <gtkmm/expression.h>
+#include <gtkmm/sortlistmodel.h>
 
 #include <NBody/Simulation/Simulation.h>
 
