@@ -3,7 +3,6 @@
 //
 
 #include <gtkmm/scrolledwindow.h>
-#include <gtkmm/label.h>
 #include <gtkmm/eventcontrollerkey.h>
 
 #include "ParticlesColumnView.h"
@@ -19,10 +18,23 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _selectionModel = Gtk::SingleSelection::create(_particlesModel);
     _columnView.set_model(_selectionModel);
 
-    _columnView.append_column(Gtk::ColumnViewColumn::create(
+    auto idColumn = Gtk::ColumnViewColumn::create(
             "ID",
             BindableListItemFactory<ParticleIDView>::create()
-    ));
+    );
+    auto idSorter =
+            Gtk::NumericSorter<ENTT_ID_TYPE>::create(
+                    Gtk::ClosureExpression<ENTT_ID_TYPE>::create([](const Glib::RefPtr<Glib::ObjectBase> &item) {
+                        spdlog::debug("sorting");
+                        auto particle = std::dynamic_pointer_cast<NBody::Simulation::Particle>(item);
+                        assert(particle);
+                        return (ENTT_ID_TYPE) particle->entity();
+                    })
+            );
+    idColumn->set_sorter(idSorter);
+    _columnView.append_column(idColumn);
+    _columnView.sort_by_column(idColumn, Gtk::SortType::ASCENDING);
+
     _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Appearance",
             BindableListItemFactory<ParticleIconView>::create()
