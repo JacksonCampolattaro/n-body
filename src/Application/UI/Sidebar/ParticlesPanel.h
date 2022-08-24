@@ -16,8 +16,8 @@
 #include <gtkmm/actionbar.h>
 
 #include "../Widgets/LabeledWidget.h"
-#include "../Widgets/SaveSimulationDialog.h"
-#include "../Widgets/LoadSimulationDialog.h"
+#include "Application/UI/Windows/SaveSimulationDialog.h"
+#include "Application/UI/Windows/LoadSimulationDialog.h"
 #include "../Widgets/View/VectorView.h"
 
 #include "Panel.h"
@@ -45,12 +45,18 @@ namespace UI {
         UI::ParticlesColumnView _particlesView;
         Gtk::Window _particlesWindow;
 
+        ParticleEditorWindow _particleEditorWindow;
+
         SaveSimulationDialog _saveDialog;
         LoadSimulationDialog _loadDialog;
 
     public:
 
         ParticlesPanel(NBody::Simulation &simulation);
+
+    public:
+
+        sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> signal_open_particle;
 
     };
 
