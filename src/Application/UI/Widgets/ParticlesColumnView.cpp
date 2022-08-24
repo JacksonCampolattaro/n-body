@@ -15,7 +15,8 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     set_size_request(-1, 400);
 
     _particlesModel = ParticlesListModel::create(simulation);
-    _selectionModel = Gtk::SingleSelection::create(_particlesModel);
+    _selectionModel = Gtk::SingleSelection::create(
+            Gtk::SortListModel::create(_particlesModel, _columnView.get_sorter()));
     _columnView.set_model(_selectionModel);
 
     auto idColumn = Gtk::ColumnViewColumn::create(
@@ -25,7 +26,6 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     auto idSorter =
             Gtk::NumericSorter<ENTT_ID_TYPE>::create(
                     Gtk::ClosureExpression<ENTT_ID_TYPE>::create([](const Glib::RefPtr<Glib::ObjectBase> &item) {
-                        spdlog::debug("sorting");
                         auto particle = std::dynamic_pointer_cast<NBody::Simulation::Particle>(item);
                         assert(particle);
                         return (ENTT_ID_TYPE) particle->entity();
@@ -33,12 +33,11 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
             );
     idColumn->set_sorter(idSorter);
     _columnView.append_column(idColumn);
-    _columnView.sort_by_column(idColumn, Gtk::SortType::ASCENDING);
-
     _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Appearance",
             BindableListItemFactory<ParticleIconView>::create()
     ));
+    _columnView.sort_by_column(idColumn, Gtk::SortType::ASCENDING);
     _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Mass",
             BindableListItemFactory<ParticleMassView>::create()
@@ -107,8 +106,7 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
             if (auto deleted = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                     _selectionModel->get_selected_item())) {
-                _simulation.destroy(deleted->entity());
-                _simulation.signal_particle_removed.emit(_selectionModel->get_selected());
+                _simulation.removeParticle(deleted->entity());
             }
             _window.hide();
         }
