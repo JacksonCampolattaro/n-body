@@ -47,6 +47,7 @@ namespace UI {
             auto data = std::dynamic_pointer_cast<NBody::Simulation::Particle>(listItem->get_item());
             auto bindable = dynamic_cast<BindableType *>(listItem->get_child());
             if (data && bindable) {
+                assert(data->valid());
                 bindable->bind(data);
             }
         }

@@ -12,6 +12,7 @@ NBody::Simulation::Particle NBody::Simulation::newParticle() {
     particle.setPosition({0, 0, 0})
             .setVelocity({0, 0, 0});
 
+    signal_particle_added.emit(particle.entity());
     return particle;
 }
 
@@ -97,9 +98,12 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
 
         if (p.contains("sphere"))
             particle.setSphere(p["sphere"].get<NBody::Graphics::Sphere>());
+
+        // Notify any watchers that this particle has new data
+        if (particle.all_of<sigc::signal<void()>>())
+            particle.get<sigc::signal<void()>>().emit();
     }
 
-    s.signal_particles_added.emit(j["particles"].size());
     s.signal_changed.emit();
 
     spdlog::debug("Read {} particles", j["particles"].size());
@@ -120,16 +124,16 @@ void NBody::Simulation::load(Gio::File &source) {
 std::vector<NBody::Entity> NBody::Simulation::validEntities() {
     std::vector<NBody::Entity> alive;
     each([&](auto e) {
-        alive.push_back(e);
+        alive.emplace_back(e);
     });
     return alive;
 }
 
-void NBody::Simulation::removeParticle(std::size_t i) {
-    auto entity = view<const Physics::Position>()[i];
-    if (!valid(entity)) return;
+void NBody::Simulation::removeParticle(NBody::Entity entity) {
+
+    assert(valid(entity));
     destroy(entity);
-    signal_particle_removed.emit(i);
+    signal_particle_removed.emit(entity);
     signal_changed.emit();
 }
 
