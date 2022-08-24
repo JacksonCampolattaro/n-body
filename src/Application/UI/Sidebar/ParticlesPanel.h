@@ -16,9 +16,12 @@
 #include <gtkmm/actionbar.h>
 
 #include "../Widgets/LabeledWidget.h"
+#include "../Widgets/View/VectorView.h"
+
+#include "Application/UI/Windows/ParticleEditorWindow.h"
+#include "Application/UI/Windows/ParticleListWindow.h"
 #include "Application/UI/Windows/SaveSimulationDialog.h"
 #include "Application/UI/Windows/LoadSimulationDialog.h"
-#include "../Widgets/View/VectorView.h"
 
 #include "Panel.h"
 #include "Application/UI/Widgets/ParticlesColumnView.h"
@@ -42,10 +45,8 @@ namespace UI {
 
         Gtk::Label &_interactionCountLabel;
 
-        UI::ParticlesColumnView _particlesView;
-        Gtk::Window _particlesWindow;
-
         ParticleEditorWindow _particleEditorWindow;
+        ParticleListWindow _particlesListWindow;
 
         SaveSimulationDialog _saveDialog;
         LoadSimulationDialog _loadDialog;
