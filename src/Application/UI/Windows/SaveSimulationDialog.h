@@ -9,7 +9,7 @@
 #include <gtkmm/filechoosernative.h>
 #include <gtkmm/messagedialog.h>
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 namespace UI {
 

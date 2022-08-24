@@ -58,7 +58,6 @@ add_executable(NBody
         UI/Interactive.cpp UI/Interactive.h
         UI/Sidebar/Sidebar.cpp UI/Sidebar/Sidebar.h
         UI/Sidebar/Panel.h UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
-        UI/Widgets/LabeledWidget.h
         UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
         UI/Widgets/View/VectorView.h
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
@@ -67,7 +66,7 @@ add_executable(NBody
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/View/ParticleMassView.h
-        UI/Widgets/BindableListItemFactory.h UI/Widgets/View/ParticlePositionView.h UI/Widgets/View/ParticleVelocityView.h UI/Widgets/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Entry/ParticlePositionEntry.h UI/Widgets/Entry/ParticleVelocityEntry.h UI/Widgets/Entry/ParticleMassEntry.h UI/Widgets/Entry/ParticleColorEntry.h UI/Widgets/Entry/ParticleRadiusEntry.h UI/Widgets/View/ParticleColorView.h UI/Widgets/View/ParticleRadiusView.h UI/Widgets/View/ParticleIconView.h UI/Widgets/SaveSimulationDialog.cpp UI/Widgets/SaveSimulationDialog.h UI/Widgets/LoadSimulationDialog.cpp UI/Widgets/LoadSimulationDialog.h UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h UI/Widgets/View/TimeView.h UI/Widgets/Entry/ParticleTagEntry.h UI/Widgets/View/ParticleTagView.h UI/Widgets/View/ParticleIDView.h)
+        UI/Widgets/BindableListItemFactory.h UI/Widgets/View/ParticlePositionView.h UI/Widgets/View/ParticleVelocityView.h UI/Widgets/Bindable.h UI/Widgets/View/FloatView.h UI/Widgets/Entry/ParticlePositionEntry.h UI/Widgets/Entry/ParticleVelocityEntry.h UI/Widgets/Entry/ParticleMassEntry.h UI/Widgets/Entry/ParticleColorEntry.h UI/Widgets/Entry/ParticleRadiusEntry.h UI/Widgets/View/ParticleColorView.h UI/Widgets/View/ParticleRadiusView.h UI/Widgets/View/ParticleIconView.h UI/Windows/SaveSimulationDialog.cpp UI/Windows/SaveSimulationDialog.h UI/Windows/LoadSimulationDialog.cpp UI/Windows/LoadSimulationDialog.h UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h UI/Widgets/View/TimeView.h UI/Widgets/Entry/ParticleTagEntry.h UI/Widgets/View/ParticleTagView.h UI/Widgets/View/ParticleIDView.h UI/Windows/ParticleEditorWindow.cpp UI/Windows/ParticleEditorWindow.h UI/Windows/ParticleListWindow.cpp UI/Windows/ParticleListWindow.h)
 
 target_link_libraries(NBody PUBLIC
 

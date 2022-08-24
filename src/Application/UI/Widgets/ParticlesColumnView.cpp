@@ -15,7 +15,8 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     set_size_request(-1, 400);
 
     _particlesModel = ParticlesListModel::create(simulation);
-    _selectionModel = Gtk::SingleSelection::create(_particlesModel);
+    _selectionModel = Gtk::SingleSelection::create(
+            Gtk::SortListModel::create(_particlesModel, _columnView.get_sorter()));
     _columnView.set_model(_selectionModel);
 
     auto idColumn = Gtk::ColumnViewColumn::create(
@@ -25,7 +26,6 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     auto idSorter =
             Gtk::NumericSorter<ENTT_ID_TYPE>::create(
                     Gtk::ClosureExpression<ENTT_ID_TYPE>::create([](const Glib::RefPtr<Glib::ObjectBase> &item) {
-                        spdlog::debug("sorting");
                         auto particle = std::dynamic_pointer_cast<NBody::Simulation::Particle>(item);
                         assert(particle);
                         return (ENTT_ID_TYPE) particle->entity();
@@ -33,12 +33,11 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
             );
     idColumn->set_sorter(idSorter);
     _columnView.append_column(idColumn);
-    _columnView.sort_by_column(idColumn, Gtk::SortType::ASCENDING);
-
     _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Appearance",
             BindableListItemFactory<ParticleIconView>::create()
     ));
+    _columnView.sort_by_column(idColumn, Gtk::SortType::ASCENDING);
     _columnView.append_column(Gtk::ColumnViewColumn::create(
             "Mass",
             BindableListItemFactory<ParticleMassView>::create()
@@ -73,44 +72,21 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _scrolledWindow.set_child(_columnView);
     append(_scrolledWindow);
 
-    _window.set_child(_particleEntry);
-
-    // Show the particle window when the user selects a particle
     _columnView.signal_activate().connect([&](guint p) {
         if (auto selected = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                 _selectionModel->get_object(p))) {
-            _particleEntry.bind(selected);
-            _window.set_title("Particle #" + std::to_string((ENTT_ID_TYPE) selected->entity()));
-            _window.show();
-            _window.present();
+            signal_open_particle.emit(selected);
         }
     });
 
-    _selectionModel->signal_selection_changed().connect([&](guint p, guint n) {
-        spdlog::debug("Selection changed, p={} n={}", p, n);
-    });
-
-    // When the user closes the window, hide it
-    _window.signal_close_request().connect(
-            [&] {
-                _window.hide();
-                _selectionModel->unselect_all();
-                return true;
-            },
-            false
-    );
-
     auto keyController = Gtk::EventControllerKey::create();
-    keyController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
     keyController->signal_key_released().connect([&](guint keyval, guint keycode, Gdk::ModifierType state) {
 
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
             if (auto deleted = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                     _selectionModel->get_selected_item())) {
-                _simulation.destroy(deleted->entity());
-                _simulation.signal_particle_removed.emit(_selectionModel->get_selected());
+                _simulation.removeParticle(deleted->entity());
             }
-            _window.hide();
         }
     });
     add_controller(keyController);
