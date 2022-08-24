@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <gtkmm/applicationwindow.h>
 #include <fstream>
+#include <giomm/simpleactiongroup.h>
 
 #include "ParticlesPanel.h"
 
@@ -21,7 +22,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
                 _builder, "center-of-mass-position-view")),
         _interactionCountLabel(*_builder->get_widget<Gtk::Label>("interaction-count-label")),
         _simulation(simulation),
-        _particlesView(simulation),
+        _particlesListWindow(simulation),
         _saveDialog(simulation),
         _loadDialog(simulation) {
 
@@ -40,19 +41,11 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     });
     _simulation.signal_changed.emit();
 
-    _modifyButton.signal_clicked().connect([&] {
-        _particlesWindow.show();
-    });
+    _modifyButton.signal_clicked().connect(_particlesListWindow.slot_open());
 
-    _particlesWindow.set_title("Particles");
-    _particlesWindow.set_child(_particlesView);
-    _particlesWindow.signal_close_request().connect(
-            [&] {
-                _particlesWindow.hide();
-                return true;
-            },
-            false
-    );
+    signal_open_particle.connect(_particleEditorWindow.slot_open);
+    _particlesListWindow.signal_open_particle().connect(_particleEditorWindow.slot_open);
+    _simulation.signal_particle_removed.connect(sigc::hide(_particleEditorWindow.slot_close));
 
     _contents.set_expand();
     append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
@@ -67,4 +60,14 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         _loadDialog.show();
     });
 
+    auto actionGroup = Gio::SimpleActionGroup::create();
+
+    actionGroup->add_action("single",
+                            [&]() {
+                                auto particle =
+                                        std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
+                                signal_open_particle.emit(particle);
+                            });
+
+    insert_action_group("create-particle", actionGroup);
 }

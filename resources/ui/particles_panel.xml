@@ -8,12 +8,15 @@
         <section>
             <item>
                 <attribute name="label" translatable="yes">Add One Particle</attribute>
+                <attribute name="action">create-particle.single</attribute>
             </item>
             <item>
                 <attribute name="label" translatable="yes">Add a Grid of Particles</attribute>
+                <attribute name="action">create-particle.grid</attribute>
             </item>
             <item>
                 <attribute name="label" translatable="yes">Add an Orbiting Particle</attribute>
+                <attribute name="action">create-particle.orbit</attribute>
             </item>
         </section>
     </menu>
@@ -48,6 +51,7 @@
                                 <property name="hexpand">0</property>
                                 <property name="vexpand">0</property>
                                 <property name="valign">center</property>
+                                <property name="action-name">create-particle.single</property>
                                 <property name="icon-name">list-add-symbolic</property>
                                 <property name="menu-model">particle-creation-menu</property>
                             </object>
