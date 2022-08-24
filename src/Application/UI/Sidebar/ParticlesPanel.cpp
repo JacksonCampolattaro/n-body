@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include <gtkmm/applicationwindow.h>
 #include <fstream>
+#include <giomm/simpleactiongroup.h>
 
 #include "ParticlesPanel.h"
 
@@ -54,6 +55,10 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
             false
     );
 
+    signal_open_particle.connect(_particleEditorWindow.slot_open);
+    _particlesView.signal_open_particle.connect(_particleEditorWindow.slot_open);
+    _simulation.signal_particle_removed.connect(sigc::hide(_particleEditorWindow.slot_close));
+
     _contents.set_expand();
     append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
 
@@ -67,4 +72,14 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         _loadDialog.show();
     });
 
+    auto actionGroup = Gio::SimpleActionGroup::create();
+
+    actionGroup->add_action("single",
+                            [&]() {
+                                auto particle =
+                                        std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
+                                signal_open_particle.emit(particle);
+                            });
+
+    insert_action_group("create-particle", actionGroup);
 }

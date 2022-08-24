@@ -29,6 +29,7 @@
 #include "Application/UI/Widgets/View/ParticleRadiusView.h"
 #include "BindableListItemFactory.h"
 
+#include "Application/UI/Windows/ParticleEditorWindow.h"
 #include "Application/UI/Widgets/Entry/ParticleEntry.h"
 
 namespace UI {
@@ -43,12 +44,13 @@ namespace UI {
         Gtk::ScrolledWindow _scrolledWindow;
         Gtk::ColumnView _columnView;
 
-        ParticleEntry _particleEntry;
-        Gtk::Window _window;
-
     public:
 
         explicit ParticlesColumnView(NBody::Simulation &simulation);
+
+    public:
+
+        sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> signal_open_particle;
 
     };
 
