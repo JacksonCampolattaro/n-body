@@ -15,8 +15,8 @@ using NBody::Physics::ActiveTag;
 
 void NBody::BarnesHutSolver::step() {
 
-    auto targets = _simulation.group<const Position, const Mass, Velocity>(entt::get<PassiveTag>);
-    auto movableTargets = _simulation.group<Position, const Mass, const Velocity>(entt::get<PassiveTag>);
+    auto targets = _simulation.view<const Position, const Mass, Velocity, const PassiveTag>();
+    auto movableTargets = _simulation.view<Position, const Mass, const Velocity, const PassiveTag>();
 
     // Construct an octree from the actor particles
     _statusDispatcher.emit({"Building Octree"});

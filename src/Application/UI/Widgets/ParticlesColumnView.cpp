@@ -72,35 +72,14 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _scrolledWindow.set_child(_columnView);
     append(_scrolledWindow);
 
-    _window.set_child(_particleEntry);
-
-    // Show the particle window when the user selects a particle
     _columnView.signal_activate().connect([&](guint p) {
         if (auto selected = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                 _selectionModel->get_object(p))) {
-            _particleEntry.bind(selected);
-            _window.set_title("Particle #" + std::to_string((ENTT_ID_TYPE) selected->entity()));
-            _window.show();
-            _window.present();
+            signal_open_particle.emit(selected);
         }
     });
 
-    _selectionModel->signal_selection_changed().connect([&](guint p, guint n) {
-        spdlog::debug("Selection changed, p={} n={}", p, n);
-    });
-
-    // When the user closes the window, hide it
-    _window.signal_close_request().connect(
-            [&] {
-                _window.hide();
-                _selectionModel->unselect_all();
-                return true;
-            },
-            false
-    );
-
     auto keyController = Gtk::EventControllerKey::create();
-    keyController->set_propagation_phase(Gtk::PropagationPhase::BUBBLE);
     keyController->signal_key_released().connect([&](guint keyval, guint keycode, Gdk::ModifierType state) {
 
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
@@ -108,7 +87,6 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
                     _selectionModel->get_selected_item())) {
                 _simulation.removeParticle(deleted->entity());
             }
-            _window.hide();
         }
     });
     add_controller(keyController);
