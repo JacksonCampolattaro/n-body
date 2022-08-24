@@ -72,7 +72,7 @@ namespace NBody {
 
         std::vector<NBody::Entity> validEntities();
 
-        void removeParticle(std::size_t i);
+        void removeParticle(NBody::Entity e);
 
     public:
 
@@ -89,8 +89,8 @@ namespace NBody {
     public:
 
         mutable sigc::signal<void()> signal_changed;
-        sigc::signal<void(std::size_t)> signal_particles_added;
-        sigc::signal<void(std::size_t)> signal_particle_removed;
+        sigc::signal<void(NBody::Entity)> signal_particle_added;
+        sigc::signal<void(NBody::Entity)> signal_particle_removed;
 
         mutable std::mutex mutex;
 
