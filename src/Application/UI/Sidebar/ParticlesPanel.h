@@ -15,7 +15,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/actionbar.h>
 
-#include "../Widgets/LabeledWidget.h"
 #include "../Widgets/View/VectorView.h"
 
 #include "Application/UI/Windows/ParticleEditorWindow.h"

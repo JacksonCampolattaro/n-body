@@ -16,7 +16,6 @@
 #include <NBody/View/Renderers/InstancedFlatRenderer.h>
 
 #include "Panel.h"
-#include "../Widgets/LabeledWidget.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
 
 namespace UI {
