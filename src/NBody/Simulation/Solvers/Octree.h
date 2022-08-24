@@ -178,9 +178,6 @@ namespace NBody {
                                         const Physics::Mass &passiveMass,
                                         float theta) {
 
-            // Make sure the tree has been constructed
-            assert(!_root.isLeaf());
-
             return _root.applyRule(rule, _simulation, passivePosition, passiveMass, theta);
 
             Physics::Acceleration acceleration;
