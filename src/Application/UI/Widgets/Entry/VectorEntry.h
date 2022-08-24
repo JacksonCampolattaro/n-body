@@ -9,7 +9,6 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/builder.h>
 
 #include <spdlog/spdlog.h>
 
