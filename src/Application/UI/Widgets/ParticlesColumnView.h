@@ -29,8 +29,6 @@
 #include "Application/UI/Widgets/View/ParticleRadiusView.h"
 #include "BindableListItemFactory.h"
 
-#include "Application/UI/Windows/ParticleEditorWindow.h"
-#include "Application/UI/Widgets/Entry/ParticleEntry.h"
 
 namespace UI {
 
