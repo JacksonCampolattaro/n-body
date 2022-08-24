@@ -18,6 +18,7 @@
 #include "Panel.h"
 #include "../Widgets/LabeledWidget.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
+#include "Application/UI/Widgets/Entry/IntEntry.h"
 
 namespace UI {
 
@@ -31,6 +32,9 @@ namespace UI {
         FloatEntry &_zoomEntry;
         Gtk::ColorButton &_backgroundColorEntry;
         Gtk::ListBoxRow &_shaderDropdown;
+
+        SimpleSizeEntry &_recordingXSizeEntry;
+        SimpleSizeEntry &_recordingYSizeEntry;
 
     public:
 
