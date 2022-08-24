@@ -23,6 +23,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
         _interactionCountLabel(*_builder->get_widget<Gtk::Label>("interaction-count-label")),
         _simulation(simulation),
         _particlesListWindow(simulation),
+        _particleGridCreatorWindow(simulation),
         _saveDialog(simulation),
         _loadDialog(simulation) {
 
@@ -67,6 +68,11 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
                                 auto particle =
                                         std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
                                 signal_open_particle.emit(particle);
+                            });
+
+    actionGroup->add_action("grid",
+                            [&]() {
+                                _particleGridCreatorWindow.show();
                             });
 
     insert_action_group("create-particle", actionGroup);
