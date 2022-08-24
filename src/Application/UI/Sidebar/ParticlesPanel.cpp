@@ -22,7 +22,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
                 _builder, "center-of-mass-position-view")),
         _interactionCountLabel(*_builder->get_widget<Gtk::Label>("interaction-count-label")),
         _simulation(simulation),
-        _particlesView(simulation),
+        _particlesListWindow(simulation),
         _saveDialog(simulation),
         _loadDialog(simulation) {
 
@@ -41,22 +41,10 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     });
     _simulation.signal_changed.emit();
 
-    _modifyButton.signal_clicked().connect([&] {
-        _particlesWindow.show();
-    });
-
-    _particlesWindow.set_title("Particles");
-    _particlesWindow.set_child(_particlesView);
-    _particlesWindow.signal_close_request().connect(
-            [&] {
-                _particlesWindow.hide();
-                return true;
-            },
-            false
-    );
+    _modifyButton.signal_clicked().connect(_particlesListWindow.slot_open());
 
     signal_open_particle.connect(_particleEditorWindow.slot_open);
-    _particlesView.signal_open_particle.connect(_particleEditorWindow.slot_open);
+    _particlesListWindow.signal_open_particle().connect(_particleEditorWindow.slot_open);
     _simulation.signal_particle_removed.connect(sigc::hide(_particleEditorWindow.slot_close));
 
     _contents.set_expand();
