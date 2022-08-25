@@ -13,7 +13,9 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         _directionEntry(*Gtk::Builder::get_widget_derived<CompactDirectionEntry>(_builder, "camera-direction-entry")),
         _zoomEntry(*Gtk::Builder::get_widget_derived<FloatEntry>(_builder, "camera-zoom-entry")),
         _backgroundColorEntry(*_builder->get_widget<Gtk::ColorButton>("background-color-entry")),
-        _shaderDropdown(*_builder->get_widget<Gtk::ListBoxRow>("shader-dropdown")) {
+        _shaderDropdown(*_builder->get_widget<Gtk::ListBoxRow>("shader-dropdown")),
+        _recordingXSizeEntry(*Gtk::Builder::get_widget_derived<SimpleSizeEntry>(_builder, "recording-x-size-entry")),
+        _recordingYSizeEntry(*Gtk::Builder::get_widget_derived<SimpleSizeEntry>(_builder, "recording-y-size-entry")) {
 
     camera.setLagging(0.5);
 
@@ -64,4 +66,7 @@ UI::CameraPanel::CameraPanel(NBody::GtkmmArcBallCamera &camera) :
         }
         camera.signal_changed.emit();
     });
+
+    _recordingXSizeEntry.set_value(1920);
+    _recordingYSizeEntry.set_value(1080);
 }
