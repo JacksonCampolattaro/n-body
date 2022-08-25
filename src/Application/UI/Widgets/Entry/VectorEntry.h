@@ -9,7 +9,6 @@
 #include <gtkmm/popover.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/builder.h>
 
 #include <spdlog/spdlog.h>
 
@@ -62,6 +61,10 @@ namespace UI {
 
         void setValue(const glm::vec3 &value) {
             setValue(value.x, value.y, value.z);
+        }
+
+        glm::vec3 getValue() {
+            return {_x.get_value(), _y.get_value(), _z.get_value()};
         }
 
     private:
@@ -132,6 +135,10 @@ namespace UI {
         void setValue(const glm::vec3 &value) {
             setValue(value.x, value.y, value.z);
         };
+
+        glm::vec3 getValue() {
+            return _entry.getValue();
+        }
 
     private:
 

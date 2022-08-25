@@ -90,6 +90,8 @@ add_executable(NBody
         UI/Widgets/View/ParticleTagView.h
         UI/Widgets/View/ParticleIDView.h
         UI/Widgets/Entry/IntEntry.h
+        UI/Windows/ParticleGridCreatorWindow.cpp UI/Windows/ParticleGridCreatorWindow.h
+        UI/Widgets/ParticleGridCreator.cpp UI/Widgets/ParticleGridCreator.h
         )
 
 target_link_libraries(NBody PUBLIC

@@ -1,0 +1,82 @@
+//
+// Created by Jackson Campolattaro on 8/24/22.
+//
+
+#include "ParticleGridCreator.h"
+
+#include <giomm/simpleactiongroup.h>
+
+UI::ParticleGridCreator::ParticleGridCreator(NBody::Simulation &simulation) :
+        BuilderWidget("/ui/particle_grid_creator.xml"),
+        _simulation(simulation),
+        _gridCornerEntry(getWidget<CompactPositionEntry>("grid-corner-entry")),
+        _gridXSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-x-size-entry")),
+        _gridYSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-y-size-entry")),
+        _gridZSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-z-size-entry")),
+        _spacingEntry(getWidget<FloatEntry>("spacing-entry")),
+        _massEntry(getWidget<FloatEntry>("mass-entry")),
+        _velocityEntry(getWidget<CompactVelocityEntry>("velocity-entry")),
+        _activeEntry(getWidget<Gtk::CheckButton>("active-entry")),
+        _passiveEntry(getWidget<Gtk::CheckButton>("passive-entry")),
+        _colorEntry(getWidget<Gtk::ColorButton>("color-entry")),
+        _radiusEntry(getWidget<FloatEntry>("radius-entry")) {
+
+    auto actionGroup = Gio::SimpleActionGroup::create();
+    insert_action_group("grid-creator", actionGroup);
+    actionGroup->add_action("create",
+                            sigc::mem_fun(*this, &ParticleGridCreator::createGrid));
+
+    // Set some reasonable defaults
+    _gridXSizeEntry.setValue(10);
+    _gridYSizeEntry.setValue(10);
+    _gridZSizeEntry.setValue(10);
+    _spacingEntry.setValue(10.0f);
+    _massEntry.setValue(1.0f);
+    _activeEntry.set_active();
+    _passiveEntry.set_active();
+    _colorEntry.set_rgba(Gdk::RGBA("lightblue"));
+    _radiusEntry.setValue(1.0f);
+}
+
+void UI::ParticleGridCreator::createGrid() {
+
+    auto cornerPosition = _gridCornerEntry.getValue();
+    auto xSize = _gridXSizeEntry.getValue();
+    auto ySize = _gridYSizeEntry.getValue();
+    auto zSize = _gridZSizeEntry.getValue();
+    auto spacing = _spacingEntry.get_value();
+
+    auto mass = _massEntry.get_value();
+    auto velocity = _velocityEntry.getValue();
+    auto active = _activeEntry.get_active();
+    auto passive = _passiveEntry.get_active();
+
+    auto color = _colorEntry.get_rgba();
+    auto radius = _radiusEntry.get_value();
+
+    spdlog::debug("Generating a {}x{}x{} grid of particles", xSize, ySize, zSize);
+
+    for (int x = 0; x < xSize; ++x) {
+        for (int y = 0; y < ySize; ++y) {
+            for (int z = 0; z < zSize; ++z) {
+
+                auto particle = _simulation.newParticle();
+
+                auto offset = glm::vec3{spacing * x, spacing * y, spacing * z};
+                particle.setPosition(cornerPosition + offset);
+                particle.setMass((float) mass);
+                particle.setVelocity(velocity);
+                if (active) particle.emplace<NBody::Physics::ActiveTag>();
+                if (passive) particle.emplace<NBody::Physics::PassiveTag>();
+                particle.setColor({color.get_red(), color.get_green(), color.get_blue()});
+                particle.setSphere({(float) radius});
+
+                if (particle.all_of<sigc::signal<void()>>()) particle.get<sigc::signal<void()>>().emit();
+                _simulation.signal_changed.emit();
+            }
+        }
+    }
+
+    signal_done.emit();
+}
+

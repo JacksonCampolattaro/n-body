@@ -164,6 +164,18 @@ namespace NBody {
             // Save a list of physics-actor particles
             auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
             _particles = {actors.begin(), actors.end()};
+
+            // If the simulation has new particles, add them to the list
+            _simulation.signal_particle_added.connect([&](auto newEntity) {
+                _particles.push_back(newEntity);
+                // todo: mark the octree root as invalid
+            });
+
+            // If the simulation has particles removed, take them from the list
+            _simulation.signal_particle_removed.connect([&](auto removedEntity) {
+                _particles.erase(std::find(_particles.begin(), _particles.end(), removedEntity));
+                // todo: mark the octree root as invalid
+            });
         }
 
         void build(int maxDepth, int maxLeafSize) {
