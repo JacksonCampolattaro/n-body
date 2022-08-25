@@ -43,18 +43,18 @@ namespace NBody {
 
         ArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
-                const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-                ArcBall{cameraPosition, viewCenter, upDir, fov, windowSize} {
+                const Vector3 &upDir, Deg fov) :
+                ArcBall{cameraPosition, viewCenter, upDir, fov} {
 
             _renderer.select<InstancedPhongRenderer>();
         }
 
-        Matrix4 perspectiveProjection() {
+        Matrix4 perspectiveProjection(float aspectRatio) {
             return Matrix4::perspectiveProjection(
-                    fov(), Vector2{_windowSize}.aspectRatio(), 0.1f, 10000.0f);
+                    fov(), aspectRatio, 0.1f, 10000.0f);
         }
 
-        void draw(const Simulation &simulation);
+        void draw(const NBody::Simulation &simulation, const Vector2i &windowDimensions);
 
         const Color4 &backgroundColor() { return _backgroundColor; }
 

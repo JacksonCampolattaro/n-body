@@ -14,7 +14,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                 Vector3::zAxis(-20.0f),
                 {}, Vector3::yAxis(),
                 45.0_degf,
-                Vector2i{400, 400}
         },
         _view{_camera, _simulation},
         _sidebar(_camera, _simulation, rule, solver) {

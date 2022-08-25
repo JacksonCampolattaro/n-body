@@ -39,26 +39,14 @@ namespace NBody {
 
         sigc::slot<void(float, float, float)> slot_moveTo;
 
-        sigc::slot<bool(double, double)> slot_scroll;
-        sigc::slot<void(int, double, double)> slot_leftButtonPress;
-        sigc::slot<void(int, double, double)> slot_middleButtonPress;
-        sigc::slot<void(int, double, double)> slot_buttonRelease;
-        sigc::slot<void(double, double)> slot_mouseMotion;
-
     public:
 
         GtkmmArcBallCamera(
                 const Vector3 &cameraPosition, const Vector3 &viewCenter,
-                const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-                ArcBallCamera{cameraPosition, viewCenter, upDir, fov, windowSize} {
+                const Vector3 &upDir, Deg fov) :
+                ArcBallCamera{cameraPosition, viewCenter, upDir, fov} {
 
             slot_moveTo = sigc::mem_fun(*this, &GtkmmArcBallCamera::setPosition);
-
-            slot_scroll = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_scroll);
-            slot_leftButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_leftButtonPress);
-            slot_middleButtonPress = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_middleButtonPress);
-            slot_buttonRelease = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_buttonRelease);
-            slot_mouseMotion = sigc::mem_fun(*this, &GtkmmArcBallCamera::on_MouseMotion);
         }
 
         void setPosition(float x, float y, float z);
@@ -67,17 +55,15 @@ namespace NBody {
 
         void setBackgroundColor(const Gdk::RGBA &color);
 
-    private:
-
         bool on_scroll(double dx, double dy);
 
-        void on_leftButtonPress(int _, double x, double y);
+        void on_leftButtonPress(Vector2 mousePosNDC);
 
-        void on_middleButtonPress(int _, double x, double y);
+        void on_middleButtonPress(Vector2 mousePosNDC);
 
-        void on_buttonRelease(int _, double x, double y);
+        void on_buttonRelease();
 
-        void on_MouseMotion(double x, double y);
+        void on_mouseMotion(Vector2 mousePosNDC);
     };
 
 }

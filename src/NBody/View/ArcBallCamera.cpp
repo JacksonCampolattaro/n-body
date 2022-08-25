@@ -4,9 +4,13 @@
 
 #include "ArcBallCamera.h"
 
-void NBody::ArcBallCamera::draw(const NBody::Simulation &simulation) {
+void NBody::ArcBallCamera::draw(const NBody::Simulation &simulation, const Vector2i &windowDimensions) {
     std::scoped_lock l(simulation.mutex);
 
-    _renderer.draw(viewMatrix(), perspectiveProjection(), simulation);
+    _renderer.draw(
+            viewMatrix(),
+            perspectiveProjection(Vector2{windowDimensions}.aspectRatio()),
+            simulation
+    );
 }
 

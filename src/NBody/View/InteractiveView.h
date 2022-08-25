@@ -25,6 +25,10 @@ using namespace Math::Literals;
 namespace NBody {
 
     class InteractiveView : public View {
+    private:
+
+        Magnum::Vector2 toNDC(float x, float y);
+
     public:
 
         InteractiveView(GtkmmArcBallCamera &camera, Simulation &simulation);
