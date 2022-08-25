@@ -12,6 +12,7 @@
 #include <NBody/Simulation/Solver.h>
 
 #include <gtkmm/listboxrow.h>
+#include <gtkmm/togglebutton.h>
 #include <gtkmm/stack.h>
 #include <gtkmm/entry.h>
 

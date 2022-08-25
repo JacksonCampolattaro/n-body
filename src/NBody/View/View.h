@@ -17,7 +17,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 
-#include "ArcBallCamera.h"
+#include "Camera.h"
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -31,11 +31,11 @@ namespace NBody {
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
 
-        ArcBallCamera &_camera;
+        Camera &_camera;
 
     public:
 
-        View(ArcBallCamera &camera, const Simulation &simulation);
+        View(Camera &camera, const Simulation &simulation);
 
         void onRealize();
 

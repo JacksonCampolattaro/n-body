@@ -9,7 +9,7 @@
 
 #include "View.h"
 
-NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulation) :
+NBody::View::View(NBody::Camera &camera, const NBody::Simulation &simulation) :
         Gtk::GLArea(), _simulation(simulation), _camera(camera) {
 
     set_size_request(720, 480);
@@ -23,7 +23,7 @@ NBody::View::View(NBody::ArcBallCamera &camera, const NBody::Simulation &simulat
     signal_resize().connect(sigc::mem_fun(*this, &View::onResize));
 
     slot_renderNeeded = sigc::mem_fun(*this, &View::requestRender);
-    _camera.signal_changed.connect(slot_renderNeeded);
+    _camera.signal_changed().connect(slot_renderNeeded);
     _simulation.signal_changed.connect(slot_renderNeeded);
 }
 
@@ -55,23 +55,13 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     auto gtkmmDefaultFramebuffer = GL::Framebuffer::wrap(
             framebufferID,
             {{},
-             {get_width(), get_height()}}
+             {get_allocated_width(), get_allocated_height()}}
     );
 
-    // Set the background color
-    GL::Renderer::setClearColor(_camera.backgroundColor());
-
-    // Reset color and depth buffers
-    gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
-
-    _camera.draw(_simulation, {get_allocated_width(), get_allocated_height()});
+    _camera.draw(_simulation, gtkmmDefaultFramebuffer);
 
     // Restore external GL state
     GL::Context::current().resetState(GL::Context::State::EnterExternal);
-
-    // If the camera is moving, we need to render again as soon as possible
-    if (_camera.updateTransformation())
-        requestRender();
 
     signal_doneRendering.emit();
     return true;

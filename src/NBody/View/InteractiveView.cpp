@@ -4,13 +4,14 @@
 
 #include "InteractiveView.h"
 
-NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation) :
+NBody::InteractiveView::InteractiveView(NBody::ControllableCamera &camera, NBody::Simulation &simulation) :
         View(camera, simulation) {
 
     auto scrollController = Gtk::EventControllerScroll::create();
     scrollController->set_flags(Gtk::EventControllerScroll::Flags::BOTH_AXES);
     scrollController->signal_scroll().connect([&](auto dx, auto dy) {
-        return camera.on_scroll(dx, dy);
+        camera.scroll(dx, dy);
+        return false;
     }, false);
     add_controller(scrollController);
 
@@ -18,10 +19,10 @@ NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody
     leftClickController->set_touch_only(false);
     leftClickController->set_button(1);
     leftClickController->signal_pressed().connect([&](auto _, auto x, auto y) {
-        camera.on_leftButtonPress(toNDC(x, y));
+        camera.leftMousePress(toNDC(x, y));
     });
     leftClickController->signal_released().connect([&](auto _, auto x, auto y) {
-        camera.on_buttonRelease();
+        camera.mouseRelease();
     });
     add_controller(leftClickController);
 
@@ -29,10 +30,10 @@ NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody
     middleClickController->set_touch_only(false);
     middleClickController->set_button(2);
     middleClickController->signal_pressed().connect([&](auto _, auto x, auto y) {
-        camera.on_middleButtonPress(toNDC(x, y));
+        camera.rightMousePress(toNDC(x, y));
     });
     middleClickController->signal_released().connect([&](auto _, auto x, auto y) {
-        camera.on_buttonRelease();
+        camera.mouseRelease();
     });
     add_controller(middleClickController);
 
@@ -41,16 +42,16 @@ NBody::InteractiveView::InteractiveView(NBody::GtkmmArcBallCamera &camera, NBody
     rightClickController->set_touch_only(false);
     rightClickController->set_button(3);
     rightClickController->signal_pressed().connect([&](auto _, auto x, auto y) {
-        camera.on_middleButtonPress(toNDC(x, y));
+        camera.rightMousePress(toNDC(x, y));
     });
     rightClickController->signal_released().connect([&](auto _, auto x, auto y) {
-        camera.on_buttonRelease();
+        camera.mouseRelease();
     });
     add_controller(rightClickController);
 
     auto mouseMotionController = Gtk::EventControllerMotion::create();
     mouseMotionController->signal_motion().connect([&](auto x, auto y) {
-        camera.on_mouseMotion(toNDC(x, y));
+        camera.mouseMotion(toNDC(x, y));
     });
     add_controller(mouseMotionController);
 }
