@@ -16,7 +16,7 @@
 
 namespace UI {
 
-    class ParticleGridCreator : public BuilderWidget<"particle_grid_creator"> {
+    class ParticleGridCreator : public BuilderWidget {
     private:
 
         CompactPositionEntry &_gridCornerEntry;

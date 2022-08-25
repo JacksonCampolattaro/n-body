@@ -7,7 +7,7 @@
 #include <giomm/simpleactiongroup.h>
 
 UI::ParticleGridCreator::ParticleGridCreator(NBody::Simulation &simulation) :
-        BuilderWidget<"particle_grid_creator">(),
+        BuilderWidget("/ui/particle_grid_creator.xml"),
         _gridCornerEntry(getWidget<CompactPositionEntry>("grid-corner-entry")),
         _spacingEntry(getWidget<FloatEntry>("spacing-entry")),
         _massEntry(getWidget<FloatEntry>("mass-entry")),
