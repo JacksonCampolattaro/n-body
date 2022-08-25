@@ -13,7 +13,6 @@
 
 namespace UI {
 
-    template<StringLiteral ResPath>
     class BuilderWidget : public Gtk::Box {
     private:
 
@@ -27,8 +26,8 @@ namespace UI {
 
     public:
 
-        BuilderWidget() : Gtk::Box(),
-                          _builder(Gtk::Builder::create_from_resource(std::string("/ui/") + ResPath.value + ".xml")) {
+        BuilderWidget(const Glib::ustring &path) : Gtk::Box(),
+                          _builder(Gtk::Builder::create_from_resource(path)) {
             append(*_builder->get_widget<Gtk::Widget>("root"));
         }
 

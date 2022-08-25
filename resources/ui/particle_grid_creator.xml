@@ -41,8 +41,7 @@
                                 <child>
                                     <object class="AdwActionRow">
                                         <property name="title">Corner Position</property>
-                                        <property name="subtitle">Location of the start of the grid (smallest x, y, z)
-                                        </property>
+                                        <property name="subtitle">Location of the start of the grid (smallest x, y, z)</property>
                                         <child type="suffix">
                                             <object class="GtkButton" id="grid-corner-entry"/>
                                         </child>
@@ -52,8 +51,7 @@
                                 <child>
                                     <object class="AdwActionRow">
                                         <property name="title">Grid Dimensions</property>
-                                        <property name="subtitle">Number of particles along the x, y, and z axes
-                                        </property>
+                                        <property name="subtitle">Number of particles along the x, y, and z axes</property>
                                         <child type="suffix">
                                             <object class="GtkBox">
                                                 <property name="vexpand">False</property>
@@ -64,7 +62,7 @@
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label"> × </property>
+                                                        <property name="label">×</property>
                                                     </object>
                                                 </child>
                                                 <child>
@@ -72,7 +70,7 @@
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
-                                                        <property name="label"> × </property>
+                                                        <property name="label">×</property>
                                                     </object>
                                                 </child>
                                                 <child>
@@ -129,8 +127,7 @@
                                 <child>
                                     <object class="AdwActionRow">
                                         <property name="title">Passive</property>
-                                        <property name="subtitle">Determines if the particles are affected by others
-                                        </property>
+                                        <property name="subtitle">Determines if the particles are affected by others</property>
                                         <child type="suffix">
                                             <object class="GtkCheckButton" id="passive-entry"/>
                                         </child>
@@ -142,8 +139,7 @@
                         <child>
                             <object class="AdwPreferencesGroup">
                                 <property name="title">Appearance</property>
-                                <property name="description">Properties concerning how the particles are rendered
-                                </property>
+                                <property name="description">Properties concerning how the particles are rendered</property>
                                 <child>
                                     <object class="AdwActionRow">
                                         <property name="title">Color</property>
