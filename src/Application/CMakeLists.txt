@@ -79,8 +79,10 @@ add_executable(NBody
         UI/Widgets/View/ParticleColorView.h
         UI/Widgets/View/ParticleRadiusView.h
         UI/Widgets/View/ParticleIconView.h
-        UI/Widgets/SaveSimulationDialog.cpp UI/Widgets/SaveSimulationDialog.h
-        UI/Widgets/LoadSimulationDialog.cpp UI/Widgets/LoadSimulationDialog.h
+        UI/Windows/SaveSimulationDialog.cpp UI/Windows/SaveSimulationDialog.h
+        UI/Windows/LoadSimulationDialog.cpp UI/Windows/LoadSimulationDialog.h
+        UI/Windows/ParticleEditorWindow.cpp UI/Windows/ParticleEditorWindow.h
+        UI/Windows/ParticleListWindow.cpp UI/Windows/ParticleListWindow.h
         UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h
         UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h
         UI/Widgets/View/TimeView.h
