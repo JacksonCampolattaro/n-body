@@ -18,6 +18,7 @@
 #include "../Widgets/View/VectorView.h"
 
 #include "Application/UI/Windows/ParticleEditorWindow.h"
+#include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
 #include "Application/UI/Windows/SaveSimulationDialog.h"
 #include "Application/UI/Windows/LoadSimulationDialog.h"
@@ -45,6 +46,7 @@ namespace UI {
         Gtk::Label &_interactionCountLabel;
 
         ParticleEditorWindow _particleEditorWindow;
+        ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
         SaveSimulationDialog _saveDialog;

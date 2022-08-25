@@ -13,7 +13,6 @@ namespace UI {
 
     template<typename IntType>
     class IntEntry : public Gtk::SpinButton {
-
     public: // Signals
 
         sigc::signal<void(IntType)> signal_changed;
@@ -24,14 +23,15 @@ namespace UI {
 
     public:
 
+        typedef IntType ValueType;
+
         IntEntry(Gtk::SpinButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder) :
                 Gtk::SpinButton(cobject) {
 
             set_vexpand(false);
             set_valign(Gtk::Align::CENTER);
 
-            set_digits(0);
-            set_width_chars(10);
+            set_width_chars(std::numeric_limits<IntType>::digits10/2);
             set_range(std::numeric_limits<IntType>::lowest(), std::numeric_limits<IntType>::max());
             set_increments(1.0, 10.0);
 
@@ -54,6 +54,19 @@ namespace UI {
         }
     };
 
+    template<typename BaseIntEntry>
+    class PositiveIntEntry : public BaseIntEntry {
+    public:
+
+        PositiveIntEntry(Gtk::SpinButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder) :
+                BaseIntEntry(cobject, builder) {
+
+            this->set_range(1.0, std::numeric_limits<typename BaseIntEntry::ValueType>::max());
+        }
+    };
+
+    typedef PositiveIntEntry<IntEntry<std::size_t>> PositiveSizeEntry;
+
     template<typename IntType>
     class SimpleIntEntry : public IntEntry<IntType> {
     public:
@@ -68,6 +81,8 @@ namespace UI {
     };
 
     typedef SimpleIntEntry<std::size_t> SimpleSizeEntry;
+
+    typedef PositiveIntEntry<SimpleSizeEntry> SimplePositiveSizeEntry;
 
 };
 

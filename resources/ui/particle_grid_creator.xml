@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="vexpand">True</property>
+
+        <child>
+            <object class="AdwClamp">
+                <property name="maximum-size">600</property>
+                <property name="tightening-threshold">200</property>
+                <property name="halign">fill</property>
+                <property name="hexpand">1</property>
+
+                <property name="margin-top">16</property>
+                <property name="margin-bottom">16</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+
+                <property name="child">
+                    <object class="GtkBox" id="box">
+                        <property name="orientation">vertical</property>
+                        <property name="hexpand">True</property>
+                        <property name="spacing">16</property>
+
+                        <child>
+                            <object class="GtkLabel" id="label">
+                                <property name="label">Particle Grid Creator</property>
+                                <property name="halign">start</property>
+                                <style>
+                                    <class name="title-1"/>
+                                </style>
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="AdwPreferencesGroup">
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Corner Position</property>
+                                        <property name="subtitle">Location of the start of the grid (smallest x, y, z)</property>
+                                        <child type="suffix">
+                                            <object class="GtkButton" id="grid-corner-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Grid Dimensions</property>
+                                        <property name="subtitle">Number of particles along the x, y, and z axes</property>
+                                        <child type="suffix">
+                                            <object class="GtkBox">
+                                                <property name="vexpand">False</property>
+                                                <property name="valign">center</property>
+
+                                                <child>
+                                                    <object class="GtkSpinButton" id="grid-x-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel">
+                                                        <property name="label">×</property>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkSpinButton" id="grid-y-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel">
+                                                        <property name="label">×</property>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkSpinButton" id="grid-z-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Spacing</property>
+                                        <property name="subtitle">Distance between individual grid particles</property>
+                                        <child type="suffix">
+                                            <object class="GtkSpinButton" id="spacing-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="AdwPreferencesGroup">
+                                <property name="title">Physics</property>
+                                <property name="description">Physical properties of individual particles</property>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Mass</property>
+                                        <child type="suffix">
+                                            <object class="GtkSpinButton" id="mass-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Velocity</property>
+                                        <child type="suffix">
+                                            <object class="GtkButton" id="velocity-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Active</property>
+                                        <property name="subtitle">Determines whether the particles affect others
+                                        </property>
+                                        <child type="suffix">
+                                            <object class="GtkCheckButton" id="active-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Passive</property>
+                                        <property name="subtitle">Determines if the particles are affected by others</property>
+                                        <child type="suffix">
+                                            <object class="GtkCheckButton" id="passive-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+
+                        <child>
+                            <object class="AdwPreferencesGroup">
+                                <property name="title">Appearance</property>
+                                <property name="description">Properties concerning how the particles are rendered</property>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Color</property>
+                                        <child type="suffix">
+                                            <object class="GtkColorButton" id="color-entry">
+                                                <property name="hexpand">0</property>
+                                                <property name="vexpand">0</property>
+                                                <property name="valign">center</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Radius</property>
+                                        <child type="suffix">
+                                            <object class="GtkSpinButton" id="radius-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+
+                            </object>
+                        </child>
+
+                    </object>
+
+                </property>
+            </object>
+        </child>
+
+        <child>
+
+            <object class="GtkActionBar" id="action-bar">
+                <property name="vexpand">False</property>
+
+                <child type="end">
+                    <object class="GtkButton">
+                        <property name="label">Create</property>
+                        <property name="action-name">grid-creator.create</property>
+                        <style>
+                            <class name="suggested-action"/>
+                        </style>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
