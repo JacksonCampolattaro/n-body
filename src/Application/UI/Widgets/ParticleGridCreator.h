@@ -11,6 +11,7 @@
 #include <gtkmm/checkbutton.h>
 
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
+#include "Application/UI/Widgets/Entry/IntEntry.h"
 
 #include "BuilderWidget.h"
 
@@ -19,8 +20,12 @@ namespace UI {
     class ParticleGridCreator : public BuilderWidget {
     private:
 
+        NBody::Simulation &_simulation;
+
         CompactPositionEntry &_gridCornerEntry;
-        // todo: x, y, and z "nonzero int" entries
+        SimplePositiveSizeEntry &_gridXSizeEntry;
+        SimplePositiveSizeEntry &_gridYSizeEntry;
+        SimplePositiveSizeEntry &_gridZSizeEntry;
         FloatEntry &_spacingEntry;
 
         FloatEntry &_massEntry;
@@ -31,9 +36,15 @@ namespace UI {
         Gtk::ColorButton &_colorEntry;
         FloatEntry &_radiusEntry;
 
+        void createGrid();
+
     public:
 
         explicit ParticleGridCreator(NBody::Simulation &simulation);
+
+    public:
+
+        sigc::signal<void()> signal_done;
     };
 
 }
