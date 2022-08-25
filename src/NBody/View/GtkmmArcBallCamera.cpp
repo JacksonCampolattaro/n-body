@@ -34,41 +34,41 @@ bool NBody::GtkmmArcBallCamera::on_scroll(double dx, double dy) {
     return false;
 }
 
-void NBody::GtkmmArcBallCamera::on_leftButtonPress(int _, double x, double y) {
-    spdlog::trace("Left click signal received: x={}, y={}", x, y);
+void NBody::GtkmmArcBallCamera::on_leftButtonPress(Vector2 mousePosNDC) {
+    spdlog::trace("Left click signal received: x={}, y={}", mousePosNDC.x(), mousePosNDC.y());
 
-    initTransformation({static_cast<int>(x), static_cast<int>(y)});
+    initTransformation(mousePosNDC);
     _mode = TransformationMode::ROTATE;
 }
 
-void NBody::GtkmmArcBallCamera::on_middleButtonPress(int _, double x, double y) {
-    spdlog::trace("Middle click signal received: x={}, y={}", x, y);
+void NBody::GtkmmArcBallCamera::on_middleButtonPress(Vector2 mousePosNDC) {
+    spdlog::trace("Middle click signal received: x={}, y={}", mousePosNDC.x(), mousePosNDC.y());
 
-    initTransformation({static_cast<int>(x), static_cast<int>(y)});
+    initTransformation(mousePosNDC);
     _mode = TransformationMode::TRANSLATE;
 }
 
-void NBody::GtkmmArcBallCamera::on_buttonRelease(int _, double x, double y) {
+void NBody::GtkmmArcBallCamera::on_buttonRelease() {
     spdlog::trace("Mouse button released");
 
     _mode = TransformationMode::NONE;
     signal_changed.emit();
 }
 
-void NBody::GtkmmArcBallCamera::on_MouseMotion(double x, double y) {
+void NBody::GtkmmArcBallCamera::on_mouseMotion(Vector2 mousePosNDC) {
 
     if (_mode == TransformationMode::NONE) {
         return;
     }
 
     if (_mode == TransformationMode::ROTATE) {
-        rotate({static_cast<int>(x), static_cast<int>(y)});
+        rotate(mousePosNDC);
         Vector3 direction = _currentQRotation.toMatrix() * Vector3::zAxis();
         signal_directionChanged.emit(direction.x(), direction.y(), direction.z());
     }
 
     if (_mode == TransformationMode::TRANSLATE) {
-        translate({static_cast<int>(x), static_cast<int>(y)});
+        translate(mousePosNDC);
         signal_positionChanged.emit(_currentPosition.x(), _currentPosition.y(), _currentPosition.z());
     }
 

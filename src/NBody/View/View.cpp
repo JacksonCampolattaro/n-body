@@ -64,7 +64,7 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     // Reset color and depth buffers
     gtkmmDefaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
 
-    _camera.draw(_simulation);
+    _camera.draw(_simulation, {get_allocated_width(), get_allocated_height()});
 
     // Restore external GL state
     GL::Context::current().resetState(GL::Context::State::EnterExternal);
@@ -79,7 +79,6 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
 
 void NBody::View::onResize(int width, int height) {
     spdlog::trace("Resizing window");
-    _camera.reshape(Vector2i{get_allocated_width(), get_allocated_height()});
     queue_render();
 }
 
