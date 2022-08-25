@@ -120,9 +120,17 @@ namespace Magnum::Examples {
                 {translationNDC.x() * hw, translationNDC.y() * hh, 0.0f});
     }
 
-    void ArcBall::zoom(const Float delta) {
+    void ArcBall::zoom(Float delta) {
         // Don't allow zooming closer than -1.0
         _targetZooming = std::min(_targetZooming + delta, -1.0f);
+    }
+
+    void ArcBall::setZoom(Float zoom) {
+        _targetZooming = std::min(zoom, -1.0f);
+    }
+
+    void ArcBall::setPosition(const Vector3 &position) {
+        _targetPosition = position;
     }
 
     bool ArcBall::updateTransformation() {

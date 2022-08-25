@@ -79,8 +79,20 @@ namespace Magnum::Examples {
            Note that NDC position must be in [-1, -1] to [1, 1]. */
         void translateDelta(const Vector2 &translationNDC);
 
-        /* Zoom the camera (positive delta = zoom in, negative = zoom out) */
+        /* Zoom the camera (positive delta = zoom in, negative = setZoom out) */
         void zoom(Float delta);
+
+        void setZoom(Float zoom);
+
+        Float getZoom() const { return _targetZooming; };
+
+        void setPosition(const Vector3 &position);
+
+        Vector3 getPosition() const { return _targetPosition; }
+
+        Vector3 getDirection() const {
+            return _currentQRotation.toMatrix() * Vector3::zAxis();
+        };
 
         /* Field of view */
         Deg fov() const { return _fov; }
@@ -91,18 +103,13 @@ namespace Magnum::Examples {
         /* Get the camera's view transformation as a matrix */
         Matrix4 viewMatrix() const { return _view.toMatrix(); }
 
-        /* Get the camera's inverse view matrix (which also produces
-           transformation of the camera) */
-        Matrix4 inverseViewMatrix() const { return _inverseView.toMatrix(); }
-
-        /* Get the camera's transformation as a dual quaternion */
-        const DualQuaternion &transformation() const { return _inverseView; }
-
         /* Get the camera's transformation matrix */
         Matrix4 transformationMatrix() const { return _inverseView.toMatrix(); }
 
-        /* Return the distance from the camera position to the center view */
-        Float viewDistance() const { return Math::abs(_targetZooming); }
+        Matrix4 perspectiveProjection(float aspectRatio) {
+            return Matrix4::perspectiveProjection(
+                    fov(), aspectRatio, 0.1f, 10000.0f);
+        }
 
     protected:
         /* Update the camera transformations */

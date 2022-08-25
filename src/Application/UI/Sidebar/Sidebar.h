@@ -7,7 +7,7 @@
 #include <gtkmm/notebook.h>
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/ArcBallControllableCamera.h>
 
 #include "ParticlesPanel.h"
 #include "PhysicsPanel.h"
@@ -39,7 +39,7 @@ namespace UI {
 
     public:
 
-        Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
+        Sidebar(NBody::ArcBallControllableCamera &camera, NBody::Simulation &simulation,
                 NBody::Physics::Rule &rule, NBody::MultiSolver &solver);
 
     };

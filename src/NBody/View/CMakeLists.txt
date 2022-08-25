@@ -26,14 +26,12 @@ find_package(spdlog REQUIRED)
 
 add_library(View
         ArcBall.cpp ArcBall.h
-        ArcBallCamera.cpp ArcBallCamera.h
-        GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
         InteractiveView.cpp InteractiveView.h
         View.cpp View.h
         Renderer.h
         Renderers/MultiRenderer.h
         Renderers/InstancedPhongRenderer.cpp Renderers/InstancedPhongRenderer.h
-        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h)
+        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h Camera.h ArcBallControllableCamera.cpp ArcBallControllableCamera.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

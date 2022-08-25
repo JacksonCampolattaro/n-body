@@ -5,14 +5,14 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/View/View.h>
-#include <NBody/View/ArcBallCamera.h>
+#include <NBody/View/ArcBallControllableCamera.h>
 
 namespace UI {
 
     class Simple : public Gtk::ApplicationWindow  {
     private:
 
-        NBody::ArcBallCamera _camera;
+        NBody::ArcBallControllableCamera _camera;
         NBody::View _view;
 
         NBody::Simulation &_simulation;

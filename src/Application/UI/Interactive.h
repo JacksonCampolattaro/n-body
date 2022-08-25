@@ -5,7 +5,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/View/InteractiveView.h>
-#include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/ArcBallControllableCamera.h>
 
 #include "Sidebar/Sidebar.h"
 
@@ -14,7 +14,7 @@ namespace UI {
     class Interactive : public Gtk::ApplicationWindow {
     private:
 
-        NBody::GtkmmArcBallCamera _camera;
+        NBody::ArcBallControllableCamera _camera;
         NBody::Simulation &_simulation;
 
         NBody::InteractiveView _view;

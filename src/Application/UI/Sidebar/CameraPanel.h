@@ -8,7 +8,7 @@
 #include <gtkmm/listbox.h>
 #include <gtkmm/colorbutton.h>
 
-#include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/ArcBallControllableCamera.h>
 #include <NBody/View/Renderer.h>
 #include <NBody/View/Renderers/PhongRenderer.h>
 #include <NBody/View/Renderers/InstancedPhongRenderer.h>
@@ -37,7 +37,7 @@ namespace UI {
 
     public:
 
-        CameraPanel(NBody::GtkmmArcBallCamera &camera);
+        CameraPanel(NBody::ArcBallControllableCamera &camera);
 
     };
 

@@ -8,6 +8,10 @@
 #include "View.h"
 
 #include <gtkmm/glarea.h>
+#include <gtkmm/eventcontrollerscroll.h>
+#include <gtkmm/eventcontrollerkey.h>
+#include <gtkmm/eventcontrollermotion.h>
+#include <gtkmm/gestureclick.h>
 
 #include <Magnum/Platform/GLContext.h>
 #include <Magnum/Math/Color.h>
@@ -16,8 +20,6 @@
 #include <Magnum/GL/Renderer.h>
 
 #include <optional>
-
-#include "GtkmmArcBallCamera.h"
 
 using namespace Magnum;
 using namespace Math::Literals;
@@ -31,7 +33,7 @@ namespace NBody {
 
     public:
 
-        InteractiveView(GtkmmArcBallCamera &camera, Simulation &simulation);
+        InteractiveView(ControllableCamera &camera, Simulation &simulation);
     };
 
 }
