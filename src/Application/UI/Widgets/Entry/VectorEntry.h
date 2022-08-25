@@ -63,6 +63,10 @@ namespace UI {
             setValue(value.x, value.y, value.z);
         }
 
+        glm::vec3 getValue() {
+            return {_x.get_value(), _y.get_value(), _z.get_value()};
+        }
+
     private:
 
         void on_edited() {
@@ -131,6 +135,10 @@ namespace UI {
         void setValue(const glm::vec3 &value) {
             setValue(value.x, value.y, value.z);
         };
+
+        glm::vec3 getValue() {
+            return _entry.getValue();
+        }
 
     private:
 

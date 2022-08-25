@@ -11,6 +11,8 @@ UI::ParticleGridCreatorWindow::ParticleGridCreatorWindow(NBody::Simulation &simu
     set_title("Particle Grid Creator Wizard");
     set_child(_particleGridCreator);
 
+    _particleGridCreator.signal_done.connect([&]() { hide(); });
+
     signal_close_request().connect(
             [&] {
                 hide();

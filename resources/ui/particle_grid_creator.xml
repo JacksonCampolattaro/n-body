@@ -58,7 +58,9 @@
                                                 <property name="valign">center</property>
 
                                                 <child>
-                                                    <object class="GtkSpinButton" id="grid-x-size-entry"/>
+                                                    <object class="GtkSpinButton" id="grid-x-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
@@ -66,7 +68,9 @@
                                                     </object>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkSpinButton" id="grid-y-size-entry"/>
+                                                    <object class="GtkSpinButton" id="grid-y-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
                                                 </child>
                                                 <child>
                                                     <object class="GtkLabel">
@@ -74,7 +78,9 @@
                                                     </object>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkSpinButton" id="grid-z-size-entry"/>
+                                                    <object class="GtkSpinButton" id="grid-z-size-entry">
+                                                        <property name="value">10</property>
+                                                    </object>
                                                 </child>
                                             </object>
                                         </child>
