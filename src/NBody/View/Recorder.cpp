@@ -4,8 +4,16 @@
 
 #include "Recorder.h"
 
-#include <gtkmm.h>
 
+Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(GL::Texture2D &texture) {
+    auto image = texture.image(0, {GL::PixelFormat::RGB, GL::PixelType::UnsignedByte});
+    auto data = reinterpret_cast<guint8 *>(image.data().data());
+    return Gdk::Pixbuf::create_from_data(
+            data, Gdk::Colorspace::RGB, false, 8,
+            image.size().x(), image.size().y(),
+            (int) image.pixels().stride()[0]
+    )->flip(false);
+}
 
 NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation) :
         _camera(camera), _simulation(simulation), _context(Gdk::Display::get_default()->create_gl_context()) {
@@ -33,7 +41,5 @@ void NBody::Recorder::takeImage(const Vector2i &resolution) {
 
     _camera.draw(_simulation, framebuffer);
 
-    DebugTools::screenshot(framebuffer, "/Users/jackcamp/Documents/n_body/scenarios/test.tga");
-
-    GL::Context::current().resetState(GL::Context::State::EnterExternal);
+    NBody::toPixbuf(color)->save("/Users/jackcamp/Documents/n_body/scenarios/test.png", "png");
 }
