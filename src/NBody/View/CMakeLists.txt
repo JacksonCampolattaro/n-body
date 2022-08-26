@@ -4,6 +4,8 @@ find_package(Magnum REQUIRED
         MeshTools
         Primitives
         Shaders
+        DebugTools
+        WindowlessCglApplication
         )
 if (MAGNUM_TARGET_GLES AND NOT MAGNUM_TARGET_DESKTOP_GLES)
     find_package(Magnum REQUIRED EglContext)
@@ -31,7 +33,7 @@ add_library(View
         Renderer.h
         Renderers/MultiRenderer.h
         Renderers/InstancedPhongRenderer.cpp Renderers/InstancedPhongRenderer.h
-        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h Camera.h ArcBallControllableCamera.cpp ArcBallControllableCamera.h)
+        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h Camera.h ArcBallControllableCamera.cpp ArcBallControllableCamera.h Recorder.cpp Recorder.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -51,6 +53,8 @@ target_link_libraries(View PUBLIC
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+        Magnum::DebugTools
+        Magnum::WindowlessCglApplication
         )
 
 

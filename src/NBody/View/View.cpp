@@ -6,6 +6,10 @@
 #include <glibmm/main.h>
 
 #include <thread>
+#include <Magnum/GL/Texture.h>
+#include <Magnum/GL/Renderbuffer.h>
+#include <Magnum/GL/TextureFormat.h>
+#include <Magnum/GL/RenderbufferFormat.h>
 
 #include "View.h"
 
@@ -59,6 +63,16 @@ bool NBody::View::onRender(const Glib::RefPtr<Gdk::GLContext> &) {
     );
 
     _camera.draw(_simulation, gtkmmDefaultFramebuffer);
+
+//    GL::Texture2D color;
+//    GL::Renderbuffer depthStencil;
+//    color.setStorage(1, GL::TextureFormat::RGBA8, {100, 100});
+//    depthStencil.setStorage(GL::RenderbufferFormat::Depth24Stencil8, {100, 100});
+//    GL::Framebuffer framebuffer{{{}, {100, 100}}};
+//    framebuffer.attachTexture(GL::Framebuffer::ColorAttachment{0}, color, 0);
+//    framebuffer.attachRenderbuffer(GL::Framebuffer::BufferAttachment::DepthStencil, depthStencil);
+//    _camera.draw(_simulation, framebuffer);
+//    DebugTools::screenshot(framebuffer, "/Users/jackcamp/Documents/n_body/scenarios/test2.tga");
 
     // Restore external GL state
     GL::Context::current().resetState(GL::Context::State::EnterExternal);

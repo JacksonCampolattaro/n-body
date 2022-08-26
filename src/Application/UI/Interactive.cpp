@@ -37,5 +37,4 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     });
 
     _view.set_cursor(Gdk::Cursor::create("crosshair"));
-
 }
