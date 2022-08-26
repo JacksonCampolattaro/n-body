@@ -17,13 +17,16 @@
 #include <Magnum/GL/PixelFormat.h>
 #include <Magnum/GL/Context.h>
 #include <Magnum/Image.h>
-#include <Magnum/DebugTools/Screenshot.h>
 
 #include <gdkmm/display.h>
+#include <gdkmm/pixbuf.h>
+#include <gdkmm/glcontext.h>
 
 namespace NBody {
 
     using namespace Magnum;
+
+    Glib::RefPtr<Gdk::Pixbuf> toPixbuf(GL::Texture2D &texture);
 
     class Recorder {
     private:
