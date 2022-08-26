@@ -16,12 +16,10 @@
 #include <Magnum/GL/RenderbufferFormat.h>
 #include <Magnum/GL/PixelFormat.h>
 #include <Magnum/GL/Context.h>
-#include <Magnum/Platform/GLContext.h>
-#include <Magnum/Platform/WindowlessCglApplication.h>
 #include <Magnum/Image.h>
 #include <Magnum/DebugTools/Screenshot.h>
 
-#include <gdkmm.h>
+#include <gdkmm/display.h>
 
 namespace NBody {
 

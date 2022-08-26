@@ -4,6 +4,8 @@
 
 #include "Recorder.h"
 
+#include <gtkmm.h>
+
 
 NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation) :
         _camera(camera), _simulation(simulation) {
@@ -13,8 +15,8 @@ NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simula
 void NBody::Recorder::takeImage(const Vector2i &resolution) {
     spdlog::debug("Taking a screenshot");
 
-    Magnum::Platform::WindowlessGLContext context{{}};
-    context.makeCurrent();
+    auto context = Gdk::Display::get_default()->create_gl_context();
+    context->make_current();
 
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
