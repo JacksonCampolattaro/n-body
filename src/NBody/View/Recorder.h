@@ -31,6 +31,8 @@ namespace NBody {
         const Simulation &_simulation;
         Camera &_camera;
 
+        Glib::RefPtr<Gdk::GLContext> _context;
+
     public:
 
         Recorder(Camera &camera, const Simulation &simulation);
