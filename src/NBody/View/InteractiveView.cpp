@@ -5,7 +5,7 @@
 #include "InteractiveView.h"
 
 NBody::InteractiveView::InteractiveView(NBody::ControllableCamera &camera, NBody::Simulation &simulation) :
-        View(camera, simulation) {
+        SimpleView(camera, simulation) {
 
     auto scrollController = Gtk::EventControllerScroll::create();
     scrollController->set_flags(Gtk::EventControllerScroll::Flags::BOTH_AXES);

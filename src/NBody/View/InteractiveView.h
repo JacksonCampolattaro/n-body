@@ -5,7 +5,7 @@
 #ifndef N_BODY_INTERACTIVEVIEW_H
 #define N_BODY_INTERACTIVEVIEW_H
 
-#include "View.h"
+#include "SimpleView.h"
 
 #include <gtkmm/glarea.h>
 #include <gtkmm/eventcontrollerscroll.h>
@@ -26,7 +26,7 @@ using namespace Math::Literals;
 
 namespace NBody {
 
-    class InteractiveView : public View {
+    class InteractiveView : public SimpleView {
     private:
 
         Magnum::Vector2 toNDC(float x, float y);

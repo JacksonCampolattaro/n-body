@@ -22,7 +22,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     auto &content = *builder->get_widget<Gtk::Box>("ContentBox");
 
     _view.set_hexpand();
-    solver.signal_finished().connect(_view.slot_renderNeeded);
 
     flap.append(_sidebar);
     content.append(_view);
@@ -32,7 +31,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     flap.get_preferred_size(min, natural);
     flap.set_size_request(natural.get_width(), natural.get_height());
 
-    _view.signal_doneRendering.connect([&]() {
+    _view.signal_doneRendering().connect([&]() {
         spdlog::trace("done rendering");
     });
 
