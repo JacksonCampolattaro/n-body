@@ -62,6 +62,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
     });
 
     auto actionGroup = Gio::SimpleActionGroup::create();
+    insert_action_group("create-particle", actionGroup);
 
     actionGroup->add_action("single",
                             [&]() {
@@ -74,6 +75,4 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
                             [&]() {
                                 _particleGridCreatorWindow.show();
                             });
-
-    insert_action_group("create-particle", actionGroup);
 }

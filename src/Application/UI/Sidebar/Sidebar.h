@@ -8,6 +8,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/View/ArcBallControllableCamera.h>
+#include <NBody/View/Recorder.h>
 
 #include "ParticlesPanel.h"
 #include "PhysicsPanel.h"
@@ -19,6 +20,8 @@ namespace UI {
 
     class Sidebar : public Gtk::Box {
     private:
+
+        NBody::Recorder _recorder;
 
         Gtk::Notebook _notebook;
 

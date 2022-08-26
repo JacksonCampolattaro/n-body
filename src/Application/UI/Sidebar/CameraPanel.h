@@ -9,6 +9,7 @@
 #include <gtkmm/colorbutton.h>
 
 #include <NBody/View/ArcBallControllableCamera.h>
+#include <NBody/View/Recorder.h>
 #include <NBody/View/Renderer.h>
 #include <NBody/View/Renderers/PhongRenderer.h>
 #include <NBody/View/Renderers/InstancedPhongRenderer.h>
@@ -37,7 +38,7 @@ namespace UI {
 
     public:
 
-        CameraPanel(NBody::ArcBallControllableCamera &camera);
+        CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder);
 
     };
 

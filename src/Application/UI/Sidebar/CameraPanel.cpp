@@ -5,8 +5,9 @@
 #include "CameraPanel.h"
 
 #include <adwaita.h>
+#include <giomm/simpleactiongroup.h>
 
-UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera) :
+UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder) :
         Panel("Camera"),
         _builder(Gtk::Builder::create_from_resource("/ui/camera_panel.xml")),
         _positionEntry(*Gtk::Builder::get_widget_derived<CompactPositionEntry>(_builder, "camera-position-entry")),
@@ -77,4 +78,16 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera) :
 
     _recordingXSizeEntry.set_value(1920);
     _recordingYSizeEntry.set_value(1080);
+
+    auto actionGroup = Gio::SimpleActionGroup::create();
+    insert_action_group("recorder", actionGroup);
+
+    actionGroup->add_action("screenshot",
+                            [&]() {
+                                recorder.takeImage({
+                                                           (int) _recordingXSizeEntry.getValue(),
+                                                           (int) _recordingYSizeEntry.getValue()
+                                                   });
+                            });
+
 }

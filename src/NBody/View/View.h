@@ -11,6 +11,7 @@
 
 #include <Magnum/Platform/GLContext.h>
 #include <Magnum/Math/Color.h>
+#include <Magnum/DebugTools/Screenshot.h>
 
 #include <Magnum/GL/Framebuffer.h>
 #include <Magnum/GL/Renderer.h>

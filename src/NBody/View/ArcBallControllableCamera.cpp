@@ -41,6 +41,8 @@ void NBody::ArcBallControllableCamera::draw(const NBody::Simulation &simulation,
     if (_arcBall.updateTransformation())
         signal_changed().emit();
 
+    framebuffer.bind();
+
     // Set the background color
     GL::Renderer::setClearColor(getBackgroundColor());
 
