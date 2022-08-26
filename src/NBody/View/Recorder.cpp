@@ -8,15 +8,14 @@
 
 
 NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation) :
-        _camera(camera), _simulation(simulation) {
+        _camera(camera), _simulation(simulation), _context(Gdk::Display::get_default()->create_gl_context()) {
 
 }
 
 void NBody::Recorder::takeImage(const Vector2i &resolution) {
     spdlog::debug("Taking a screenshot");
 
-    auto context = Gdk::Display::get_default()->create_gl_context();
-    context->make_current();
+    _context->make_current();
 
     GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
     GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
