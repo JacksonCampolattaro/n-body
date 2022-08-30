@@ -90,4 +90,6 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Re
                                                    });
                             });
 
+    recorder.startRecording();
+
 }

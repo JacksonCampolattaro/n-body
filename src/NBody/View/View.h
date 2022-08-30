@@ -84,7 +84,7 @@ namespace NBody {
             auto defaultFramebuffer = GL::Framebuffer::wrap(
                     framebufferID,
                     {{},
-                     {get_allocated_width(), get_allocated_height()}}
+                     {get_allocated_width()*get_scale_factor(), get_allocated_height()*get_scale_factor()}}
             );
 
             // Invoke the subclass's render function
