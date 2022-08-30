@@ -26,7 +26,7 @@ namespace NBody {
 
     using namespace Magnum;
 
-    Glib::RefPtr<Gdk::Pixbuf> toPixbuf(GL::Texture2D &texture);
+    Glib::RefPtr<Gdk::Pixbuf> toPixbuf(const Image2D &texture);
 
     class Recorder {
     private:
@@ -36,9 +36,17 @@ namespace NBody {
 
         Glib::RefPtr<Gdk::GLContext> _context;
 
+        std::vector<Image2D> _video;
+
     public:
 
         Recorder(Camera &camera, const Simulation &simulation);
+
+        Image2D snapshot(const Vector2i &resolution);
+
+        void startRecording();
+
+        void encodeVideo();
 
         void takeImage(const Vector2i &resolution);
 
