@@ -90,6 +90,12 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Re
                                                    });
                             });
 
-    recorder.startRecording();
+    actionGroup->add_action("start-video",
+                            [&]() {
+                                recorder.startVideo({
+                                                            (int) _recordingXSizeEntry.getValue(),
+                                                            (int) _recordingYSizeEntry.getValue()
+                                                    });
+                            });
 
 }
