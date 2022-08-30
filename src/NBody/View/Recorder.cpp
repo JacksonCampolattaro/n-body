@@ -7,7 +7,6 @@
 
 #include "VideoOutputStream.h"
 
-#define STREAM_DURATION   10.0
 #define STREAM_FRAME_RATE 60
 
 Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(const Image2D &image) {
@@ -19,16 +18,16 @@ Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(const Image2D &image) {
     )->flip(false);
 }
 
-NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation) :
-        _camera(camera), _simulation(simulation), _context(Gdk::Display::get_default()->create_gl_context()) {
+NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation, sigc::signal<void()> &trigger) :
+        _camera(camera), _simulation(simulation), _trigger(trigger),
+        _context(Gdk::Display::get_default()->create_gl_context()) {
 }
 
 void NBody::Recorder::takeImage(const Vector2i &resolution) {
 
     NBody::toPixbuf(snapshot(resolution))->save("/Users/jackcamp/Documents/n_body/scenarios/test.png", "png");
 
-    // todo: testing
-    spdlog::debug("Video contains {} frames", _video.size());
+    // todo: For testing
     encodeVideo();
 }
 
@@ -38,12 +37,8 @@ void NBody::Recorder::encodeVideo() {
 
     VideoOutputStream stream{filename, _video[0].size(), STREAM_FRAME_RATE};
 
-    for (const auto &frame : _video) {
-
-        //Magnum::Debug{} << Magnum::Debug::color << Magnum::Debug::packed << frame.pixels<Color3ub>();
-
+    for (const auto &frame : _video)
         stream.writeFrame(frame);
-    }
 }
 
 Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
@@ -70,9 +65,13 @@ Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
     return color.image(0, {GL::PixelFormat::RGB, GL::PixelType::UnsignedByte});
 }
 
-void NBody::Recorder::startRecording() {
+void NBody::Recorder::startVideo(const Vector2i &resolution) {
 
-    _simulation.signal_changed.connect([&](){
-       _video.emplace_back(snapshot({500, 500}));
+    // Take the first frame of the video
+    _video.emplace_back(snapshot(resolution));
+
+    // Collect another frame each time the simulation steps
+    _trigger.connect([&](){
+       _video.emplace_back(snapshot(_video[0].size()));
     });
 }

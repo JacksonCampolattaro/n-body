@@ -33,6 +33,7 @@ namespace NBody {
 
         const Simulation &_simulation;
         Camera &_camera;
+        sigc::signal<void()> &_trigger;
 
         Glib::RefPtr<Gdk::GLContext> _context;
 
@@ -40,11 +41,11 @@ namespace NBody {
 
     public:
 
-        Recorder(Camera &camera, const Simulation &simulation);
+        Recorder(Camera &camera, const Simulation &simulation, sigc::signal<void()> &trigger);
 
         Image2D snapshot(const Vector2i &resolution);
 
-        void startRecording();
+        void startVideo(const Vector2i &resolution);
 
         void encodeVideo();
 

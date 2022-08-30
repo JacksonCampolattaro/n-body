@@ -101,9 +101,8 @@ public:
     void close();
 
     bool writeFrame(const Magnum::Image2D &image) {
-
-        spdlog::debug("{} {} -> {} {}", image.size().x(), image.size().y(),
-                      rgb_frame->width, rgb_frame->height);
+        assert(image.size().x() == rgb_frame->width);
+        assert(image.size().y() == rgb_frame->height);
 
         auto pixels = image.pixels<Magnum::Color3ub>();
         uint8_t *data = rgb_frame->data[0];
