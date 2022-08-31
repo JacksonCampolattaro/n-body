@@ -48,7 +48,7 @@ namespace NBody {
 
         Image2D snapshot(const Vector2i &resolution);
 
-        void startVideo(const Vector2i &resolution, int frameRate);
+        void startVideo(const std::string& filePath, const Vector2i &resolution, int frameRate);
 
         void stopVideo();
 
