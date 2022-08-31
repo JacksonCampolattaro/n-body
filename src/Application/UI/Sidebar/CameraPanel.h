@@ -19,6 +19,7 @@
 #include "Panel.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
 #include "Application/UI/Widgets/Entry/IntEntry.h"
+#include "Application/UI/Widgets/VideoRecorder.h"
 
 namespace UI {
 
@@ -33,8 +34,7 @@ namespace UI {
         Gtk::ColorButton &_backgroundColorEntry;
         Gtk::ListBoxRow &_shaderDropdown;
 
-        SimpleSizeEntry &_recordingXSizeEntry;
-        SimpleSizeEntry &_recordingYSizeEntry;
+        VideoRecorder &_videoRecorder;
 
     public:
 

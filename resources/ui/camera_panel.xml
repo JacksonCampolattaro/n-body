@@ -39,7 +39,6 @@
             </object>
         </child>
 
-
         <child>
             <object class="AdwPreferencesGroup">
                 <property name="title">Style</property>
@@ -76,57 +75,9 @@
         </child>
 
         <child>
-            <object class="AdwPreferencesGroup">
-                <property name="title">Recording</property>
-                <child type="header-suffix">
-                    <object class="GtkButton" id="image-button">
-                        <property name="label">Screenshot</property>
-                        <property name="action-name">recorder.screenshot</property>
-                    </object>
-                </child>
-                <!--                <child type="header-suffix">-->
-                <!--                    <object class="GtkCheckButton" id="record-button"/>-->
-                <!--                </child>-->
-                <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Resolution</property>
-                        <child type="suffix">
-                            <object class="GtkBox">
-                                <property name="vexpand">False</property>
-                                <property name="valign">center</property>
-
-                                <child>
-                                    <object class="GtkSpinButton" id="recording-x-size-entry"/>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">×</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkSpinButton" id="recording-y-size-entry"/>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-
-                <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Start a recording</property>
-                        <child type="suffix">
-                            <object class="GtkButton" id="modify-button">
-                                <property name="hexpand">0</property>
-                                <property name="vexpand">0</property>
-                                <property name="valign">center</property>
-                                <property name="label">Record</property>
-                                <property name="action-name">recorder.start-video</property>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-            </object>
+            <object class="GtkBox" id="video-recorder"/>
         </child>
+
     </object>
 
 </interface>

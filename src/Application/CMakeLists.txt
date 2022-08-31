@@ -92,7 +92,7 @@ add_executable(NBody
         UI/Widgets/Entry/IntEntry.h
         UI/Windows/ParticleGridCreatorWindow.cpp UI/Windows/ParticleGridCreatorWindow.h
         UI/Widgets/ParticleGridCreator.cpp UI/Widgets/ParticleGridCreator.h
-        )
+        UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h)
 
 target_link_libraries(NBody PUBLIC
 
