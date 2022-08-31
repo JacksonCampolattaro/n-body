@@ -19,6 +19,7 @@
         <file>ui/time_view.xml</file>
         <file>ui/particle_grid_creator.xml</file>
         <file>ui/particle_grid_creator_window.xml</file>
+        <file>ui/video_recorder.xml</file>
     </gresource>
 
     <gresource prefix="/NBody">

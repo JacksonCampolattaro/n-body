@@ -26,12 +26,9 @@ NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simula
 void NBody::Recorder::takeImage(const Vector2i &resolution) {
 
     NBody::toPixbuf(snapshot(resolution))->save("/Users/jackcamp/Documents/n_body/scenarios/test.png", "png");
-
-    // todo: For testing
-    encodeVideo();
 }
 
-void NBody::Recorder::encodeVideo() {
+void NBody::Recorder::encodeVideo(int frameRate) {
 
     auto filename = "/Users/jackcamp/Documents/n_body/scenarios/test.mp4";
 
@@ -69,9 +66,25 @@ void NBody::Recorder::startVideo(const Vector2i &resolution) {
 
     // Take the first frame of the video
     _video.emplace_back(snapshot(resolution));
+    signal_recordedFrame.emit();
 
     // Collect another frame each time the simulation steps
-    _trigger.connect([&](){
+    _connection = _trigger.connect([&](){
        _video.emplace_back(snapshot(_video[0].size()));
+        signal_recordedFrame.emit();
     });
+}
+
+void NBody::Recorder::stopVideo() {
+    _connection.block();
+}
+
+void NBody::Recorder::resumeVideo() {
+    _connection.unblock();
+}
+
+void NBody::Recorder::resetVideo() {
+    _connection.disconnect();
+    _connection = {};
+    _video.clear();
 }

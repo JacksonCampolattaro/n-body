@@ -33,7 +33,9 @@ namespace NBody {
 
         const Simulation &_simulation;
         Camera &_camera;
+
         sigc::signal<void()> &_trigger;
+        sigc::connection _connection;
 
         Glib::RefPtr<Gdk::GLContext> _context;
 
@@ -47,19 +49,23 @@ namespace NBody {
 
         void startVideo(const Vector2i &resolution);
 
-        void encodeVideo();
+        void stopVideo();
+
+        void resumeVideo();
+
+        void resetVideo();
+
+        void encodeVideo(int frameRate);
 
         void takeImage(const Vector2i &resolution);
 
-//        void startVideo();
-//
-//        void stopVideo();
-//
-//        void resetVideo();
-//
-//    private:
-//
-//        void takeFrame();
+    public:
+
+        std::size_t getFrameCount() const { return _video.size(); }
+
+    public:
+
+        sigc::signal<void()> signal_recordedFrame;
     };
 
 }

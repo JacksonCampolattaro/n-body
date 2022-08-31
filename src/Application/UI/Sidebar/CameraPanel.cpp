@@ -15,8 +15,7 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Re
         _zoomEntry(*Gtk::Builder::get_widget_derived<FloatEntry>(_builder, "camera-zoom-entry")),
         _backgroundColorEntry(*_builder->get_widget<Gtk::ColorButton>("background-color-entry")),
         _shaderDropdown(*_builder->get_widget<Gtk::ListBoxRow>("shader-dropdown")),
-        _recordingXSizeEntry(*Gtk::Builder::get_widget_derived<SimpleSizeEntry>(_builder, "recording-x-size-entry")),
-        _recordingYSizeEntry(*Gtk::Builder::get_widget_derived<SimpleSizeEntry>(_builder, "recording-y-size-entry")) {
+        _videoRecorder(*Gtk::Builder::get_widget_derived<VideoRecorder>(_builder, "video-recorder", recorder)) {
 
 
     auto root = _builder->get_widget<Gtk::Widget>("root");
@@ -76,26 +75,8 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Re
         camera.signal_changed().emit();
     });
 
-    _recordingXSizeEntry.set_value(1920);
-    _recordingYSizeEntry.set_value(1080);
+//    _recordingXSizeEntry.set_value(1920);
+//    _recordingYSizeEntry.set_value(1080);
 
-    auto actionGroup = Gio::SimpleActionGroup::create();
-    insert_action_group("recorder", actionGroup);
-
-    actionGroup->add_action("screenshot",
-                            [&]() {
-                                recorder.takeImage({
-                                                           (int) _recordingXSizeEntry.getValue(),
-                                                           (int) _recordingYSizeEntry.getValue()
-                                                   });
-                            });
-
-    actionGroup->add_action("start-video",
-                            [&]() {
-                                recorder.startVideo({
-                                                            (int) _recordingXSizeEntry.getValue(),
-                                                            (int) _recordingYSizeEntry.getValue()
-                                                    });
-                            });
 
 }
