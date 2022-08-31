@@ -47,10 +47,9 @@ Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
     return color.image(0, {GL::PixelFormat::RGB, GL::PixelType::UnsignedByte});
 }
 
-void NBody::Recorder::startVideo(const Vector2i &resolution, int frameRate) {
+void NBody::Recorder::startVideo(const std::string &filePath, const Vector2i &resolution, int frameRate) {
 
-    _outputStream = std::make_unique<VideoOutputStream>("/Users/jackcamp/Documents/n_body/scenarios/test.mp4",
-                                                        resolution, frameRate);
+    _outputStream = std::make_unique<VideoOutputStream>(filePath, resolution, frameRate);
 
     // Take the first frame of the video
     _outputStream->writeFrame(snapshot(resolution));
