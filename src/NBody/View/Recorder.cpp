@@ -4,11 +4,6 @@
 
 #include "Recorder.h"
 
-
-#include "VideoOutputStream.h"
-
-#define STREAM_FRAME_RATE 60
-
 Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(const Image2D &image) {
     auto data = reinterpret_cast<const guint8 *>(image.data().data());
     return Gdk::Pixbuf::create_from_data(
@@ -26,16 +21,6 @@ NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simula
 void NBody::Recorder::takeImage(const Vector2i &resolution) {
 
     NBody::toPixbuf(snapshot(resolution))->save("/Users/jackcamp/Documents/n_body/scenarios/test.png", "png");
-}
-
-void NBody::Recorder::encodeVideo(int frameRate) {
-
-    auto filename = "/Users/jackcamp/Documents/n_body/scenarios/test.mp4";
-
-    VideoOutputStream stream{filename, _video[0].size(), STREAM_FRAME_RATE};
-
-    for (const auto &frame : _video)
-        stream.writeFrame(frame);
 }
 
 Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
@@ -62,29 +47,24 @@ Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
     return color.image(0, {GL::PixelFormat::RGB, GL::PixelType::UnsignedByte});
 }
 
-void NBody::Recorder::startVideo(const Vector2i &resolution) {
+void NBody::Recorder::startVideo(const Vector2i &resolution, int frameRate) {
+
+    _outputStream = std::make_unique<VideoOutputStream>("/Users/jackcamp/Documents/n_body/scenarios/test.mp4",
+                                                        resolution, frameRate);
 
     // Take the first frame of the video
-    _video.emplace_back(snapshot(resolution));
+    _outputStream->writeFrame(snapshot(resolution));
     signal_recordedFrame.emit();
 
     // Collect another frame each time the simulation steps
-    _connection = _trigger.connect([&](){
-       _video.emplace_back(snapshot(_video[0].size()));
+    _connection = _trigger.connect([&]() {
+        _outputStream->writeFrame(snapshot({_outputStream->frame->width, _outputStream->frame->height}));
         signal_recordedFrame.emit();
     });
 }
 
 void NBody::Recorder::stopVideo() {
-    _connection.block();
-}
-
-void NBody::Recorder::resumeVideo() {
-    _connection.unblock();
-}
-
-void NBody::Recorder::resetVideo() {
     _connection.disconnect();
     _connection = {};
-    _video.clear();
+    _outputStream.reset();
 }

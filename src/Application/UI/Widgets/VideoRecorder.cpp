@@ -39,7 +39,7 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
                                 recorder.startVideo({
                                                             _xSize.get_value_as_int(),
                                                             _ySize.get_value_as_int()
-                                                    });
+                                                    }, _frameRate.get_value_as_int());
                                 _liveFrameRateLabel.set_text(Glib::ustring::format(_frameRate.get_value_as_int()));
                                 _liveResolutionLabel.set_text(Glib::ustring::format(
                                         _xSize.get_value_as_int(), "×", _ySize.get_value_as_int()
@@ -50,23 +50,6 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
     actionGroup->add_action("stop",
                             [&]() {
                                 recorder.stopVideo();
-                                _stack.set_visible_child("preview");
-                            });
-
-    actionGroup->add_action("resume",
-                            [&]() {
-                                recorder.resumeVideo();
-                                _stack.set_visible_child("recording");
-                            });
-
-    actionGroup->add_action("save",
-                            [&]() {
-                                recorder.encodeVideo(_frameRate.get_value_as_int());
-                            });
-
-    actionGroup->add_action("reset",
-                            [&]() {
-                                recorder.resetVideo();
                                 _stack.set_visible_child("not-started");
                             });
 
