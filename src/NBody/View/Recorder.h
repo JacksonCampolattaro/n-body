@@ -6,6 +6,7 @@
 #define N_BODY_RECORDER_H
 
 #include "Camera.h"
+#include "VideoOutputStream.h"
 
 #include <NBody/Simulation/Simulation.h>
 
@@ -39,7 +40,7 @@ namespace NBody {
 
         Glib::RefPtr<Gdk::GLContext> _context;
 
-        std::vector<Image2D> _video;
+        std::unique_ptr<VideoOutputStream> _outputStream;
 
     public:
 
@@ -47,21 +48,15 @@ namespace NBody {
 
         Image2D snapshot(const Vector2i &resolution);
 
-        void startVideo(const Vector2i &resolution);
+        void startVideo(const Vector2i &resolution, int frameRate);
 
         void stopVideo();
-
-        void resumeVideo();
-
-        void resetVideo();
-
-        void encodeVideo(int frameRate);
 
         void takeImage(const Vector2i &resolution);
 
     public:
 
-        std::size_t getFrameCount() const { return _video.size(); }
+        std::size_t getFrameCount() const { return _outputStream->frame->pts - 1; }
 
     public:
 
