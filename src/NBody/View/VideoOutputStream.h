@@ -64,7 +64,7 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
-#define STREAM_PIX_FMT    AV_PIX_FMT_YUV420P /* default pix_fmt */
+#define STREAM_PIX_FMT AV_PIX_FMT_YUV420P
 
 #define SCALE_FLAGS SWS_BICUBIC
 
@@ -120,7 +120,18 @@ public:
                   rgb_frame->linesize, 0, enc->height, frame->data,
                   frame->linesize);
 
+        supportedFormats(); // todo testing
         return writeFrame(frame);
+    }
+
+    static void supportedFormats() {
+        void *iter = nullptr;
+        while (const AVCodec *codec = av_codec_iterate(&iter)) {
+           if (av_codec_is_encoder(codec) && codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO) {
+               spdlog::debug("codec: {}", codec->name);
+           }
+        }
+
     }
 
 private:

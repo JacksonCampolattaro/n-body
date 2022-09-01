@@ -52,11 +52,11 @@ namespace NBody {
 
         void stopVideo();
 
-        void takeImage(const Vector2i &resolution);
+        Glib::RefPtr<Gdk::Pixbuf> takeImage(const Vector2i &resolution);
 
     public:
 
-        std::size_t getFrameCount() const { return _outputStream->frame->pts - 1; }
+        std::size_t getFrameCount() const { return _outputStream->frame->pts; }
 
     public:
 

@@ -9,6 +9,7 @@
 #include "Application/UI/Widgets/Entry/IntEntry.h"
 #include "Application/UI/Widgets/View/TimeView.h"
 #include "Application/UI/Windows/VideoFileChooserDialog.h"
+#include "Application/UI/Windows/ImageFileChooserDialog.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
@@ -27,11 +28,13 @@ namespace UI {
 
         Gtk::Stack &_stack;
 
+        ImageFileChooserDialog _imageFileChooser;
+        VideoFileChooserDialog _videoFileChooser;
+
         SimplePositiveSizeEntry &_xSize;
         SimplePositiveSizeEntry &_ySize;
         SimplePositiveSizeEntry &_frameRate;
         Gtk::Button &_fileChooserButton;
-        VideoFileChooserDialog _fileChooser;
 
         Gtk::Label &_liveFrameCountLabel;
         Gtk::Label &_liveFrameRateLabel;

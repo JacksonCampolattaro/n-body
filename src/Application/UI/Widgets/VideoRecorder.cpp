@@ -24,26 +24,27 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
 
     _frameRate.set_value(24);
 
-    _fileChooserButton.signal_clicked().connect(sigc::mem_fun(_fileChooser, &VideoFileChooserDialog::show));
-    _fileChooser.signal_fileSelected.connect([&]() {
-        _fileChooserButton.set_label(_fileChooser.prettyPath(20));
+    _fileChooserButton.signal_clicked().connect(sigc::mem_fun(_videoFileChooser, &VideoFileChooserDialog::show));
+    _videoFileChooser.signal_fileSelected.connect([&]() {
+        _fileChooserButton.set_label(_videoFileChooser.prettyPath(20));
         _startAction->set_enabled(true);
     });
-    _fileChooser.set_current_name("out.mp4");
+    _videoFileChooser.set_current_name("out.mp4");
 
     auto actionGroup = Gio::SimpleActionGroup::create();
     insert_action_group("recorder", actionGroup);
 
     actionGroup->add_action("screenshot", [&]() {
-        recorder.takeImage({
+        auto image = recorder.takeImage({
                                    _xSize.get_value_as_int(),
                                    _ySize.get_value_as_int()
                            });
+        _imageFileChooser.save(image);
     });
 
     _startAction = actionGroup->add_action("start", [&]() {
 
-        recorder.startVideo(_fileChooser.get_file()->get_path(),
+        recorder.startVideo(_videoFileChooser.get_file()->get_path(),
                             {
                                     _xSize.get_value_as_int(),
                                     _ySize.get_value_as_int()
@@ -74,6 +75,7 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         _liveUncompressedSizeLabel.set_text(Glib::ustring::format(
                 frameCount * frameSize * 3 / 1000000
         ));
-        //_fileChooser.get_file()->query_info()->get_attribute_uint64("standard::size");
+        //_videoFileChooser.get_file()->query_info()->get_attribute_uint64("standard::size");
     });
+
 }
