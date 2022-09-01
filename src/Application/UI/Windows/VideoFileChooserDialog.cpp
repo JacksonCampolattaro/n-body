@@ -2,7 +2,6 @@
 // Created by Jackson Campolattaro on 8/31/22.
 //
 
-#include <gtkmm/dialog.h>
 #include "VideoFileChooserDialog.h"
 
 UI::VideoFileChooserDialog::VideoFileChooserDialog() :

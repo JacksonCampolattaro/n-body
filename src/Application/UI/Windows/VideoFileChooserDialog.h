@@ -5,6 +5,7 @@
 #ifndef N_BODY_VIDEOFILECHOOSERDIALOG_H
 #define N_BODY_VIDEOFILECHOOSERDIALOG_H
 
+#include <gtkmm/dialog.h>
 #include <gtkmm/filechoosernative.h>
 #include <glibmm/refptr.h>
 

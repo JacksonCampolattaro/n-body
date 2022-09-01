@@ -18,9 +18,8 @@ NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simula
         _context(Gdk::Display::get_default()->create_gl_context()) {
 }
 
-void NBody::Recorder::takeImage(const Vector2i &resolution) {
-
-    NBody::toPixbuf(snapshot(resolution))->save("/Users/jackcamp/Documents/n_body/scenarios/test.png", "png");
+Glib::RefPtr<Gdk::Pixbuf>  NBody::Recorder::takeImage(const Vector2i &resolution) {
+    return NBody::toPixbuf(snapshot(resolution));
 }
 
 Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
