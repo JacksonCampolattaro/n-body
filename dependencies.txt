@@ -1,5 +1,5 @@
 spdlog-devel
-rapidjson-devel
+nlohmann-json
 glm-devel
 gtkmm30-devel
 magnum
