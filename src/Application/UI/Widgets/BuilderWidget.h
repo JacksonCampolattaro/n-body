@@ -9,29 +9,36 @@
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
 
-#include "Application/UI/Widgets/View/VectorView.h" // TODO move StringLiteral type
-
 namespace UI {
 
-    class BuilderWidget : public Gtk::Box {
+    template<class OwnerWidget>
+    class BuilderWidget : public OwnerWidget {
     private:
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
-    protected:
-
-        // todo: This widget could potentially be built by another builder
-        //template<typename ...Args>
-        //BuilderWidget(typename Gtk::Box::ObjectBase *cobject, const Glib::RefPtr<Gtk::Builder> &builder, Args ...args);
-
     public:
 
-        BuilderWidget(const Glib::ustring &path) : Gtk::Box(),
-                          _builder(Gtk::Builder::create_from_resource(path)) {
-            append(*_builder->get_widget<Gtk::Widget>("root"));
+        BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
+                      const Glib::RefPtr<Gtk::Builder> &builder,
+                      const Glib::ustring &path) :
+                OwnerWidget(cobject),
+                _builder(Gtk::Builder::create_from_resource(path)) {
+
+            // Determine if this is a widget with multiple children (e.g. Box)
+            constexpr bool multiChild = requires(OwnerWidget &w, Gtk::Widget &child) {
+                w.append(child);
+            };
+
+            // Use the appropriate function to add the root widget
+            if constexpr(multiChild)
+                OwnerWidget::append(getWidget<Gtk::Widget>("root"));
+            else
+                OwnerWidget::set_child(getWidget<Gtk::Widget>("root"));
+
         }
 
-        const Glib::RefPtr<Gtk::Builder> &builder() const { return _builder; };
+        [[nodiscard]] const Glib::RefPtr<Gtk::Builder> &builder() const { return _builder; };
 
         template<class W>
         W &getWidget(const Glib::ustring &name) {
@@ -47,7 +54,6 @@ namespace UI {
                 return *Gtk::Builder::get_widget_derived<W>(_builder, name);
             else
                 return *_builder->get_widget<W>(name);
-
         };
 
     };

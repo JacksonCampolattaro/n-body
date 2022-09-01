@@ -38,12 +38,12 @@
 
 namespace Magnum::Examples {
 
-/* Implementation of Ken Shoemake's arcball camera with smooth navigation
-   feature: https://www.talisman.org/~erlkonig/misc/shoemake92-arcball.pdf */
+    /* Implementation of Ken Shoemake's arcball camera with smooth navigation
+       feature: https://www.talisman.org/~erlkonig/misc/shoemake92-arcball.pdf */
     class ArcBall {
     public:
         ArcBall(const Vector3 &cameraPosition, const Vector3 &viewCenter,
-                const Vector3 &upDir, Deg fov, const Vector2i &windowSize);
+                const Vector3 &upDir, Deg fov);
 
         /* Set the camera view parameters: eye position, view center, up
            direction */
@@ -52,9 +52,6 @@ namespace Magnum::Examples {
 
         /* Reset the camera to its initial position, view center, and up dir */
         void reset();
-
-        /* Update screen size after the window has been resized */
-        void reshape(const Vector2i &windowSize) { _windowSize = windowSize; }
 
         /* Update any unfinished transformation due to lagging, return true if
            the camera matrices have changed */
@@ -68,22 +65,34 @@ namespace Magnum::Examples {
 
         /* Initialize the first (screen) mouse position for camera
            transformation. This should be called in mouse pressed event. */
-        void initTransformation(const Vector2i &mousePos);
+        void initTransformation(const Vector2 &mousePosNDC);
 
         /* Rotate the camera from the previous (screen) mouse position to the
            current (screen) position */
-        void rotate(const Vector2i &mousePos);
+        void rotate(const Vector2 &mousePosNDC);
 
         /* Translate the camera from the previous (screen) mouse position to
            the current (screen) mouse position */
-        void translate(const Vector2i &mousePos);
+        void translate(const Vector2 &mousePosNDC);
 
         /* Translate the camera by the delta amount of (NDC) mouse position.
            Note that NDC position must be in [-1, -1] to [1, 1]. */
         void translateDelta(const Vector2 &translationNDC);
 
-        /* Zoom the camera (positive delta = zoom in, negative = zoom out) */
+        /* Zoom the camera (positive delta = zoom in, negative = setZoom out) */
         void zoom(Float delta);
+
+        void setZoom(Float zoom);
+
+        Float getZoom() const { return _targetZooming; };
+
+        void setPosition(const Vector3 &position);
+
+        Vector3 getPosition() const { return _targetPosition; }
+
+        Vector3 getDirection() const {
+            return _currentQRotation.toMatrix() * Vector3::zAxis();
+        };
 
         /* Field of view */
         Deg fov() const { return _fov; }
@@ -94,18 +103,13 @@ namespace Magnum::Examples {
         /* Get the camera's view transformation as a matrix */
         Matrix4 viewMatrix() const { return _view.toMatrix(); }
 
-        /* Get the camera's inverse view matrix (which also produces
-           transformation of the camera) */
-        Matrix4 inverseViewMatrix() const { return _inverseView.toMatrix(); }
-
-        /* Get the camera's transformation as a dual quaternion */
-        const DualQuaternion &transformation() const { return _inverseView; }
-
         /* Get the camera's transformation matrix */
         Matrix4 transformationMatrix() const { return _inverseView.toMatrix(); }
 
-        /* Return the distance from the camera position to the center view */
-        Float viewDistance() const { return Math::abs(_targetZooming); }
+        Matrix4 perspectiveProjection(float aspectRatio) {
+            return Matrix4::perspectiveProjection(
+                    fov(), aspectRatio, 0.1f, 10000.0f);
+        }
 
     protected:
         /* Update the camera transformations */
@@ -117,7 +121,6 @@ namespace Magnum::Examples {
         Vector2 screenCoordToNDC(const Vector2i &mousePos) const;
 
         Deg _fov;
-        Vector2i _windowSize;
 
         Vector2 _prevMousePosNDC;
         Float _lagging{};

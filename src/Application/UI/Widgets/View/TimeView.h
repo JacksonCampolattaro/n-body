@@ -43,7 +43,10 @@ namespace UI {
             _secondsLabel.set_text(std::to_string(seconds.count()));
             _millisecondsLabel.set_text(std::to_string(milliseconds.count()));
 
+            // This is a hack, I should replace this with stringstream formatting
             if (_secondsLabel.get_text().size() == 1) _secondsLabel.set_text("0" + _secondsLabel.get_text());
+            if (_millisecondsLabel.get_text().size() == 1) _millisecondsLabel.set_text("00" + _millisecondsLabel.get_text());
+            if (_millisecondsLabel.get_text().size() == 2) _millisecondsLabel.set_text("0" + _millisecondsLabel.get_text());
         }
 
     };

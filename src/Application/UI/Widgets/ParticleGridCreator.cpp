@@ -6,8 +6,10 @@
 
 #include <giomm/simpleactiongroup.h>
 
-UI::ParticleGridCreator::ParticleGridCreator(NBody::Simulation &simulation) :
-        BuilderWidget("/ui/particle_grid_creator.xml"),
+UI::ParticleGridCreator::ParticleGridCreator(Gtk::Box::BaseObjectType *cobject,
+                                             const Glib::RefPtr<Gtk::Builder> &builder,
+                                             NBody::Simulation &simulation) :
+        BuilderWidget<Gtk::Box>(cobject, builder, "/ui/particle_grid_creator.xml"),
         _simulation(simulation),
         _gridCornerEntry(getWidget<CompactPositionEntry>("grid-corner-entry")),
         _gridXSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-x-size-entry")),
@@ -79,4 +81,3 @@ void UI::ParticleGridCreator::createGrid() {
 
     signal_done.emit();
 }
-

@@ -5,9 +5,13 @@
 #ifndef N_BODY_INTERACTIVEVIEW_H
 #define N_BODY_INTERACTIVEVIEW_H
 
-#include "View.h"
+#include "SimpleView.h"
 
 #include <gtkmm/glarea.h>
+#include <gtkmm/eventcontrollerscroll.h>
+#include <gtkmm/eventcontrollerkey.h>
+#include <gtkmm/eventcontrollermotion.h>
+#include <gtkmm/gestureclick.h>
 
 #include <Magnum/Platform/GLContext.h>
 #include <Magnum/Math/Color.h>
@@ -17,17 +21,19 @@
 
 #include <optional>
 
-#include "GtkmmArcBallCamera.h"
-
 using namespace Magnum;
 using namespace Math::Literals;
 
 namespace NBody {
 
-    class InteractiveView : public View {
+    class InteractiveView : public SimpleView {
+    private:
+
+        Magnum::Vector2 toNDC(float x, float y);
+
     public:
 
-        InteractiveView(GtkmmArcBallCamera &camera, Simulation &simulation);
+        InteractiveView(ControllableCamera &camera, Simulation &simulation);
     };
 
 }

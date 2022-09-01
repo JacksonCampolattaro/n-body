@@ -14,7 +14,9 @@ namespace UI {
     class ParticleGridCreatorWindow : public Gtk::Window {
     private:
 
-        ParticleGridCreator _particleGridCreator;
+        Glib::RefPtr<Gtk::Builder> _builder;
+
+        ParticleGridCreator &_particleGridCreator;
 
     public:
 

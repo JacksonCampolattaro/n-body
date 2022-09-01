@@ -5,8 +5,9 @@
 #include "ParticleGridCreatorWindow.h"
 
 UI::ParticleGridCreatorWindow::ParticleGridCreatorWindow(NBody::Simulation &simulation) :
-        _particleGridCreator(simulation) {
-
+        _builder(Gtk::Builder::create_from_resource("/ui/particle_grid_creator_window.xml")),
+        _particleGridCreator(*Gtk::Builder::get_widget_derived<ParticleGridCreator>(
+                _builder, "grid-creator", simulation)) {
 
     set_title("Particle Grid Creator Wizard");
     set_child(_particleGridCreator);

@@ -7,13 +7,14 @@
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/icontheme.h>
 
-UI::Sidebar::Sidebar(NBody::GtkmmArcBallCamera &camera, NBody::Simulation &simulation,
+UI::Sidebar::Sidebar(NBody::ArcBallControllableCamera &camera, NBody::Simulation &simulation,
                      NBody::Physics::Rule &rule, NBody::MultiSolver &solver) :
         Gtk::Box(Gtk::Orientation::HORIZONTAL),
+        _recorder(camera, simulation, solver.signal_finished()),
         _notebook(),
         _bodiesPanel(simulation),
         _physicsPanel(rule),
-        _cameraPanel(camera),
+        _cameraPanel(camera, _recorder),
         _solverPanel(solver),
         _runPanel(solver) {
 

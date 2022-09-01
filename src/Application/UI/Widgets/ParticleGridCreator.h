@@ -17,7 +17,7 @@
 
 namespace UI {
 
-    class ParticleGridCreator : public BuilderWidget {
+    class ParticleGridCreator : public BuilderWidget<Gtk::Box> {
     private:
 
         NBody::Simulation &_simulation;
@@ -40,7 +40,9 @@ namespace UI {
 
     public:
 
-        explicit ParticleGridCreator(NBody::Simulation &simulation);
+        ParticleGridCreator(Gtk::Box::BaseObjectType *cobject,
+                            const Glib::RefPtr<Gtk::Builder> &builder,
+                            NBody::Simulation &simulation);
 
     public:
 

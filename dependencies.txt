@@ -1,7 +1,8 @@
 spdlog-devel
-rapidjson-devel
+nlohmann-json
 glm-devel
-gtkmm30-devel
+gtkmm40-devel
 magnum
 doxygen
 python3-pygments
+ffmpeg

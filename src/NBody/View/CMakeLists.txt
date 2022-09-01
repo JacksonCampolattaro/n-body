@@ -4,6 +4,7 @@ find_package(Magnum REQUIRED
         MeshTools
         Primitives
         Shaders
+        DebugTools
         )
 if (MAGNUM_TARGET_GLES AND NOT MAGNUM_TARGET_DESKTOP_GLES)
     find_package(Magnum REQUIRED EglContext)
@@ -21,19 +22,41 @@ endif ()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
 pkg_check_modules(adwaita REQUIRED IMPORTED_TARGET libadwaita-1)
+pkg_check_modules(avcodec REQUIRED IMPORTED_TARGET
+        libavdevice
+        libavformat
+        libavfilter
+        libavcodec
+        libswresample
+        libswscale
+        libavutil
+        )
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBRARIES})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBRARY_DIRS})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LDFLAGS})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_INCLUDE_DIRS})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_CFLAGS})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_VERSION})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_PREFIX})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_INCLUDEDIR})
+MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBDIR})
 
 find_package(spdlog REQUIRED)
 
 add_library(View
         ArcBall.cpp ArcBall.h
-        ArcBallCamera.cpp ArcBallCamera.h
-        GtkmmArcBallCamera.cpp GtkmmArcBallCamera.h
         InteractiveView.cpp InteractiveView.h
-        View.cpp View.h
+        SimpleView.cpp SimpleView.h
         Renderer.h
         Renderers/MultiRenderer.h
         Renderers/InstancedPhongRenderer.cpp Renderers/InstancedPhongRenderer.h
-        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h)
+        Renderers/PhongRenderer.cpp Renderers/PhongRenderer.h
+        Renderers/FlatRenderer.cpp Renderers/FlatRenderer.h
+        Renderers/InstancedFlatRenderer.cpp Renderers/InstancedFlatRenderer.h
+        Camera.h
+        ArcBallControllableCamera.cpp ArcBallControllableCamera.h
+        Recorder.cpp Recorder.h
+        View.h VideoOutputStream.cpp VideoOutputStream.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -53,6 +76,9 @@ target_link_libraries(View PUBLIC
         Magnum::MeshTools
         Magnum::Primitives
         Magnum::Shaders
+        Magnum::DebugTools
+
+        PkgConfig::avcodec
         )
 
 

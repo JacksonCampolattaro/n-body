@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkBox" id="root">
+        <property name="orientation">vertical</property>
+        <property name="vexpand">True</property>
+        <property name="spacing">16</property>
+
+        <child>
+
+            <object class="GtkStack" id="recorder-stack">
+
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">not-started</property>
+                        <property name="title">Not Started</property>
+                        <property name="child">
+
+                            <object class="AdwPreferencesGroup">
+                                <property name="title">Recording</property>
+
+                                <child type="header-suffix">
+                                    <object class="GtkBox">
+                                        <property name="vexpand">False</property>
+                                        <property name="valign">center</property>
+                                        <property name="spacing">8</property>
+
+                                        <child>
+                                            <object class="GtkButton" id="screenshot-button">
+                                                <property name="label">Screenshot</property>
+                                                <property name="action-name">recorder.screenshot</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="start-recording-button">
+                                                <property name="label">Start Recording</property>
+                                                <property name="action-name">recorder.start</property>
+                                            </object>
+                                        </child>
+                                    </object>
+
+                                </child>
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Resolution</property>
+                                        <child type="suffix">
+                                            <object class="GtkBox">
+                                                <property name="vexpand">False</property>
+                                                <property name="valign">center</property>
+                                                <property name="spacing">4</property>
+
+                                                <child>
+                                                    <object class="GtkSpinButton" id="x-size-entry"/>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkLabel">
+                                                        <property name="label">×</property>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkSpinButton" id="y-size-entry"/>
+                                                </child>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">Frame Rate</property>
+                                        <child type="suffix">
+                                            <object class="GtkSpinButton" id="frame-rate-entry"/>
+                                        </child>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="AdwActionRow">
+                                        <property name="title">File Path</property>
+                                        <child type="suffix">
+                                            <object class="GtkButton" id="file-chooser-button">
+                                                <property name="vexpand">False</property>
+                                                <property name="valign">center</property>
+                                                <style>
+                                                    <class name="body"/>
+                                                </style>
+
+                                                <property name="label">(Select a File)</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                            </object>
+
+                        </property>
+                    </object>
+                </child>
+
+                <child>
+                    <object class="GtkStackPage">
+                        <property name="name">recording</property>
+                        <property name="title">Recording</property>
+                        <property name="child">
+
+                            <object class="AdwPreferencesGroup">
+                                <property name="title">Recording</property>
+
+                                <child type="header-suffix">
+                                    <object class="GtkButton" id="stop-recording-button">
+                                        <property name="label">Stop</property>
+                                        <property name="action-name">recorder.stop</property>
+                                        <style>
+                                            <class name="destructive-action"/>
+                                        </style>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkFrame">
+                                        <child>
+                                            <object class="GtkBox" id="box">
+                                                <property name="orientation">vertical</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="spacing">8</property>
+                                                <property name="margin-top">16</property>
+                                                <property name="margin-bottom">16</property>
+                                                <property name="margin-start">16</property>
+                                                <property name="margin-end">16</property>
+
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="spacing">8</property>
+
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">Frames:</property>
+                                                                <property name="halign">start</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="live-frame-count-label">
+                                                                <style>
+                                                                    <class name="numeric"/>
+                                                                </style>
+                                                                <property name="label">0</property>
+                                                                <property name="halign">end</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="spacing">8</property>
+
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">Frame rate:</property>
+                                                                <property name="halign">start</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="live-frame-rate-label">
+                                                                <style>
+                                                                    <class name="numeric"/>
+                                                                </style>
+                                                                <property name="label">0</property>
+                                                                <property name="halign">end</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">fps</property>
+                                                                <property name="halign">end</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="spacing">8</property>
+
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">Play Time:</property>
+                                                                <property name="halign">start</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox" id="live-play-time-view">
+                                                                <property name="halign">end</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+
+                                                <child>
+                                                    <object class="GtkSeparator"/>
+                                                </child>
+
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="spacing">8</property>
+
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">Resolution:</property>
+                                                                <property name="halign">start</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="live-resolution-label">
+                                                                <property name="halign">end</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+
+                                                <child>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="spacing">8</property>
+
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">Uncompressed size:</property>
+                                                                <property name="halign">start</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="live-uncompressed-size-label">
+                                                                <style>
+                                                                    <class name="numeric"/>
+                                                                </style>
+                                                                <property name="label">0</property>
+                                                                <property name="halign">end</property>
+                                                                <property name="hexpand">True</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label">MB</property>
+                                                                <property name="halign">end</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+
+                            </object>
+
+                        </property>
+                    </object>
+                </child>
+
+            </object>
+        </child>
+
+    </object>
+
+</interface>

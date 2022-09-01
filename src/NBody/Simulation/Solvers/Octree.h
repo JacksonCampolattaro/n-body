@@ -28,7 +28,7 @@ namespace NBody {
             std::span<NBody::Entity> _contents;
 
             Physics::Position _center;
-            float _sideLength;
+            float _sideLength = 1.0f;
 
             Physics::Position _centerOfMass;
             Physics::Mass _totalMass;

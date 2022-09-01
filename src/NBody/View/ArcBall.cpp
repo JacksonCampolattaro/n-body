@@ -56,8 +56,8 @@ namespace Magnum::Examples {
     }
 
     ArcBall::ArcBall(const Vector3 &eye, const Vector3 &viewCenter,
-                     const Vector3 &upDir, Deg fov, const Vector2i &windowSize) :
-            _fov{fov}, _windowSize{windowSize} {
+                     const Vector3 &upDir, Deg fov) :
+            _fov{fov} {
         setViewParameters(eye, viewCenter, upDir);
     }
 
@@ -92,12 +92,11 @@ namespace Magnum::Examples {
         _lagging = lagging;
     }
 
-    void ArcBall::initTransformation(const Vector2i &mousePos) {
-        _prevMousePosNDC = screenCoordToNDC(mousePos);
+    void ArcBall::initTransformation(const Vector2 &mousePosNDC) {
+        _prevMousePosNDC = mousePosNDC;
     }
 
-    void ArcBall::rotate(const Vector2i &mousePos) {
-        const Vector2 mousePosNDC = screenCoordToNDC(mousePos);
+    void ArcBall::rotate(const Vector2 &mousePosNDC) {
         const Quaternion currentQRotation = ndcToArcBall(mousePosNDC);
         const Quaternion prevQRotation = ndcToArcBall(_prevMousePosNDC);
         _prevMousePosNDC = mousePosNDC;
@@ -105,8 +104,7 @@ namespace Magnum::Examples {
                 (currentQRotation * prevQRotation * _targetQRotation).normalized();
     }
 
-    void ArcBall::translate(const Vector2i &mousePos) {
-        const Vector2 mousePosNDC = screenCoordToNDC(mousePos);
+    void ArcBall::translate(const Vector2 &mousePosNDC) {
         const Vector2 translationNDC = mousePosNDC - _prevMousePosNDC;
         _prevMousePosNDC = mousePosNDC;
         translateDelta(translationNDC);
@@ -116,14 +114,23 @@ namespace Magnum::Examples {
         /* Half size of the screen viewport at the view center and perpendicular
            with the viewDir */
         const Float hh = Math::abs(_targetZooming) * Math::tan(_fov * 0.5f);
-        const Float hw = hh * Vector2{_windowSize}.aspectRatio();
+        const Float hw = hh; // window dimensions can be ignored
 
         _targetPosition += _inverseView.transformVector(
                 {translationNDC.x() * hw, translationNDC.y() * hh, 0.0f});
     }
 
-    void ArcBall::zoom(const Float delta) {
-        _targetZooming += delta;
+    void ArcBall::zoom(Float delta) {
+        // Don't allow zooming closer than -1.0
+        _targetZooming = std::min(_targetZooming + delta, -1.0f);
+    }
+
+    void ArcBall::setZoom(Float zoom) {
+        _targetZooming = std::min(zoom, -1.0f);
+    }
+
+    void ArcBall::setPosition(const Vector3 &position) {
+        _targetPosition = position;
     }
 
     bool ArcBall::updateTransformation() {
@@ -169,11 +176,6 @@ namespace Magnum::Examples {
                 DualQuaternion{_currentQRotation} *
                 DualQuaternion::translation(_currentPosition);
         _inverseView = _view.inverted();
-    }
-
-    Vector2 ArcBall::screenCoordToNDC(const Vector2i &mousePos) const {
-        return {mousePos.x() * 2.0f / _windowSize.x() - 1.0f,
-                1.0f - 2.0f * mousePos.y() / _windowSize.y()};
     }
 
 }

@@ -18,6 +18,8 @@
         <file>ui/particle_entry.xml</file>
         <file>ui/time_view.xml</file>
         <file>ui/particle_grid_creator.xml</file>
+        <file>ui/particle_grid_creator_window.xml</file>
+        <file>ui/video_recorder.xml</file>
     </gresource>
 
     <gresource prefix="/NBody">
@@ -39,8 +41,6 @@
         <file>icons/frame_next.svg</file>
         <file>icons/render_animation.svg</file>
         <file>icons/node_material.svg</file>
-
-        <file>stylesheet/style.css</file>
 
     </gresource>
 </gresources>

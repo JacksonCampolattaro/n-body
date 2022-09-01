@@ -12,9 +12,8 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _simulation{simulation},
         _camera{
                 Vector3::zAxis(-20.0f),
-                {}, Vector3::yAxis(),
+                Vector3::yAxis(),
                 45.0_degf,
-                Vector2i{400, 400}
         },
         _view{_camera, _simulation},
         _sidebar(_camera, _simulation, rule, solver) {
@@ -23,7 +22,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     auto &content = *builder->get_widget<Gtk::Box>("ContentBox");
 
     _view.set_hexpand();
-    solver.signal_finished().connect(_view.slot_renderNeeded);
 
     flap.append(_sidebar);
     content.append(_view);
@@ -33,10 +31,9 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     flap.get_preferred_size(min, natural);
     flap.set_size_request(natural.get_width(), natural.get_height());
 
-    _view.signal_doneRendering.connect([&]() {
+    _view.signal_doneRendering().connect([&]() {
         spdlog::trace("done rendering");
     });
 
     _view.set_cursor(Gdk::Cursor::create("crosshair"));
-
 }

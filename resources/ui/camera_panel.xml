@@ -39,7 +39,6 @@
             </object>
         </child>
 
-
         <child>
             <object class="AdwPreferencesGroup">
                 <property name="title">Style</property>
@@ -76,36 +75,9 @@
         </child>
 
         <child>
-            <object class="AdwPreferencesGroup">
-                <property name="title">Recording</property>
-                <child type="header-suffix">
-                    <object class="GtkCheckButton" id="record-button"/>
-                </child>
-                <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Resolution</property>
-                        <child type="suffix">
-                            <object class="GtkBox">
-                                <property name="vexpand">False</property>
-                                <property name="valign">center</property>
-
-                                <child>
-                                    <object class="GtkSpinButton" id="recording-x-size-entry"/>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="label"> × </property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkSpinButton" id="recording-y-size-entry"/>
-                                </child>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-            </object>
+            <object class="GtkBox" id="video-recorder"/>
         </child>
+
     </object>
 
 </interface>

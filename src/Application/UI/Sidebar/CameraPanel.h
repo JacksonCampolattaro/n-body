@@ -8,7 +8,8 @@
 #include <gtkmm/listbox.h>
 #include <gtkmm/colorbutton.h>
 
-#include <NBody/View/GtkmmArcBallCamera.h>
+#include <NBody/View/ArcBallControllableCamera.h>
+#include <NBody/View/Recorder.h>
 #include <NBody/View/Renderer.h>
 #include <NBody/View/Renderers/PhongRenderer.h>
 #include <NBody/View/Renderers/InstancedPhongRenderer.h>
@@ -18,6 +19,7 @@
 #include "Panel.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
 #include "Application/UI/Widgets/Entry/IntEntry.h"
+#include "Application/UI/Widgets/VideoRecorder.h"
 
 namespace UI {
 
@@ -32,12 +34,11 @@ namespace UI {
         Gtk::ColorButton &_backgroundColorEntry;
         Gtk::ListBoxRow &_shaderDropdown;
 
-        SimpleSizeEntry &_recordingXSizeEntry;
-        SimpleSizeEntry &_recordingYSizeEntry;
+        VideoRecorder &_videoRecorder;
 
     public:
 
-        CameraPanel(NBody::GtkmmArcBallCamera &camera);
+        CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder);
 
     };
 
