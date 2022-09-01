@@ -5,3 +5,4 @@ gtkmm30-devel
 magnum
 doxygen
 python3-pygments
+ffmpeg
