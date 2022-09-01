@@ -70,7 +70,6 @@ namespace UI {
     private:
 
         void on_edited() {
-            spdlog::trace("Camera position manually edited");
             signal_changed.emit((float) _x.get_value(), (float) _y.get_value(), (float) _z.get_value());
         }
 
@@ -95,20 +94,6 @@ namespace UI {
 
     public:
 
-        //        VectorEntry() : signal_changed(_entry.signal_changed) {
-        //            //add_css_class("editable");
-        //
-        //            set_child(_preview);
-        //
-        //            _popover.set_child(_entry);
-        //            _popover.set_parent(_preview);
-        //
-        //            signal_clicked().connect(sigc::mem_fun(_popover, &Gtk::Popover::popup));
-        //
-        //            slot_changed = sigc::mem_fun<void, VectorEntry, VectorEntry, float, float, float>(*this,
-        //                                                                                                    &VectorEntry::setValue);
-        //        }
-
         CompactVectorEntry(Gtk::Button::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
                 : Gtk::Button(cobject),
                   signal_changed(_entry.signal_changed) {
@@ -125,6 +110,8 @@ namespace UI {
             slot_changed = sigc::mem_fun<void, CompactVectorEntry, CompactVectorEntry, float, float, float>(
                     *this, &CompactVectorEntry::setValue
             );
+
+            signal_changed.connect([&](float x, float y, float z) { _preview.setValue(x, y, z); });
         }
 
         void setValue(float x, float y, float z) {
