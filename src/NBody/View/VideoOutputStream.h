@@ -36,13 +36,8 @@
  */
 
 #include <string>
-
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <cmath>
-#include <cassert>
 #include <utility>
+#include <map>
 
 #include <Magnum/Magnum.h>
 #include <Magnum/Math/Vector2.h>
@@ -50,17 +45,31 @@
 #include <Magnum/Image.h>
 #include <Corrade/Containers/StridedArrayView.h>
 
+#include <glibmm/ustring.h>
+
 #include <spdlog/spdlog.h>
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <cassert>
+
 extern "C" {
+
 #include <libavutil/avassert.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
 #include <libavutil/mathematics.h>
 #include <libavutil/timestamp.h>
+
 #include <libavcodec/avcodec.h>
+#include <libavcodec/codec_desc.h>
+
 #include <libavformat/avformat.h>
+
 #include <libswscale/swscale.h>
+
 #include <libswresample/swresample.h>
 }
 
@@ -120,18 +129,31 @@ public:
                   rgb_frame->linesize, 0, enc->height, frame->data,
                   frame->linesize);
 
-        supportedFormats(); // todo testing
         return writeFrame(frame);
     }
 
-    static void supportedFormats() {
+    static std::map<std::string, std::vector<std::string>> supportedExtensions() {
+        std::map<std::string, std::vector<std::string>> extensions;
         void *iter = nullptr;
-        while (const AVCodec *codec = av_codec_iterate(&iter)) {
-           if (av_codec_is_encoder(codec) && codec->type == AVMediaType::AVMEDIA_TYPE_VIDEO) {
-               spdlog::debug("codec: {}", codec->name);
-           }
+        while (const AVOutputFormat *format = av_muxer_iterate(&iter)) {
+
+            // Skip formats without mimetypes
+            if (!format->mime_type || !format->extensions) continue;
+
+            // Only add video formats
+            if (std::string{format->mime_type}.starts_with("video")) {
+                extensions.try_emplace({format->name});
+
+                // Split up the comma-separated-list of extensions
+                std::stringstream stream{format->extensions};
+                std::string extension;
+                while (std::getline(stream, extension, ',')) {
+                    extensions[{format->name}].emplace_back(extension);
+                }
+            }
         }
 
+        return extensions;
     }
 
 private:

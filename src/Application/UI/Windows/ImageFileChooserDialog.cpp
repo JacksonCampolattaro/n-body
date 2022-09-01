@@ -6,6 +6,7 @@
 
 #include <utility>
 #include <filesystem>
+#include <fmt/format.h>
 
 UI::ImageFileChooserDialog::ImageFileChooserDialog() :
         Gtk::FileChooserNative("Choose an file to save the image",
@@ -14,6 +15,26 @@ UI::ImageFileChooserDialog::ImageFileChooserDialog() :
 
     set_current_name("out.png");
     signal_response().connect(sigc::mem_fun(*this, &ImageFileChooserDialog::on_response));
+
+    for (const auto &format: Gdk::Pixbuf::get_formats()) {
+
+        // Convert the list of extensions to std::strings (useful for formatting)
+        const auto &ustringExtensions = format.get_extensions();
+        std::vector<std::string> extensions;
+        std::transform(ustringExtensions.begin(), ustringExtensions.end(),
+                       std::back_inserter(extensions),
+                       [](const auto &ustring) { return std::string{ustring}; });
+
+        // Create a filter with a descriptive name, and a list of appropriate extensions
+        auto filter = Gtk::FileFilter::create();
+        filter->set_name(fmt::format("{} (.{})", format.get_name().raw(), fmt::join(extensions, ", .")));
+        for (const auto &extension: format.get_extensions())
+            filter->add_suffix(extension);
+        add_filter(filter);
+
+        // When we encounter the png filetype, set its filter as the default
+        if (format.get_name() == "png") set_filter(filter);
+    }
 }
 
 void UI::ImageFileChooserDialog::save(Glib::RefPtr<Gdk::Pixbuf> image) {
