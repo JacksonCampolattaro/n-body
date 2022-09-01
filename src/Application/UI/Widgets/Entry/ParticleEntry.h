@@ -30,14 +30,17 @@ namespace UI {
 
     class ParticleEntry : public BuilderWidget<Gtk::Box> {
     private:
+        std::shared_ptr<NBody::Simulation::Particle> _particle = {};
 
         ParticlePositionEntry &_positionEntry;
         ParticleVelocityEntry &_velocityEntry;
 
+        Gtk::CheckButton &_physicsCheckButton;
         ParticleMassEntry &_massEntry;
         ParticleActiveTagEntry &_activeEntry;
         ParticlePassiveTagEntry &_passiveEntry;
 
+        Gtk::CheckButton &_appearanceCheckButton;
         ParticleColorEntry &_colorEntry;
         ParticleRadiusEntry &_radiusEntry;
 

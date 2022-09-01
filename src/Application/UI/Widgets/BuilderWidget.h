@@ -34,11 +34,17 @@ namespace UI {
     public:
 
         BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
+                      const Glib::RefPtr<Gtk::Builder> &builderh) :
+                OwnerWidget(cobject),
+                _builder(builder) {
+            setup();
+        }
+
+        BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
                       const Glib::RefPtr<Gtk::Builder> &builder,
                       const Glib::ustring &path) :
                 OwnerWidget(cobject),
                 _builder(Gtk::Builder::create_from_resource(path)) {
-
             setup();
         }
 

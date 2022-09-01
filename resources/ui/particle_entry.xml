@@ -55,6 +55,16 @@
                     <object class="AdwPreferencesGroup">
                         <property name="title">Physics</property>
                         <property name="description">Properties concerning interactions with other particles</property>
+
+                        <child type="header-suffix">
+                            <object class="GtkCheckButton" id="physics-checkbutton">
+                                <property name="margin-start">8</property>
+                                <style>
+                                    <class name="selection-mode"/>
+                                </style>
+                            </object>
+                        </child>
+
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Mass</property>
@@ -88,6 +98,16 @@
                     <object class="AdwPreferencesGroup">
                         <property name="title">Appearance</property>
                         <property name="description">Properties concerning how this particle is rendered</property>
+
+                        <child type="header-suffix">
+                            <object class="GtkCheckButton" id="appearance-checkbutton">
+                                <property name="margin-start">8</property>
+                                <style>
+                                    <class name="selection-mode"/>
+                                </style>
+                            </object>
+                        </child>
+
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Color</property>

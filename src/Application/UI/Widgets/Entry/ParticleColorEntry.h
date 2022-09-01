@@ -22,18 +22,21 @@ namespace UI {
         ParticleColorEntry(Gtk::ColorButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
                 : Gtk::ColorButton(cobject) {
 
+            set_rgba(Gdk::RGBA{"lightblue"});
+
             signal_color_set().connect([&]() {
                 auto rgba = get_rgba();
                 changed(Color{rgba.get_red(), rgba.get_green(), rgba.get_blue()});
             });
-
         }
 
         void update(const Color &value) override {
-            show();
+            set_sensitive(true);
             set_rgba({value.r(), value.g(), value.b()});
         }
-        void update() override { hide(); };
+        void update() override {
+            set_sensitive(false);
+        };
     };
 }
 
