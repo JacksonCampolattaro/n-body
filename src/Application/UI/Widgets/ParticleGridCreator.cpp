@@ -74,10 +74,10 @@ void UI::ParticleGridCreator::createGrid() {
                 particle.setSphere({(float) radius});
 
                 if (particle.all_of<sigc::signal<void()>>()) particle.get<sigc::signal<void()>>().emit();
-                _simulation.signal_changed.emit();
             }
         }
     }
 
+    _simulation.signal_changed.emit();
     signal_done.emit();
 }
