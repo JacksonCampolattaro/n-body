@@ -7,19 +7,14 @@
 
 
 UI::ParticleEntry::ParticleEntry() :
-        Gtk::Box(Gtk::Orientation::HORIZONTAL),
-        _builder(Gtk::Builder::create_from_resource("/ui/particle_entry.xml")),
-        _positionEntry(*Gtk::Builder::get_widget_derived<ParticlePositionEntry>(_builder, "position-entry")),
-        _velocityEntry(*Gtk::Builder::get_widget_derived<ParticleVelocityEntry>(_builder, "velocity-entry")),
-        _massEntry(*Gtk::Builder::get_widget_derived<ParticleMassEntry>(_builder, "mass-entry")),
-        _activeEntry(*Gtk::Builder::get_widget_derived<ParticleActiveTagEntry>(_builder, "active-entry")),
-        _passiveEntry(*Gtk::Builder::get_widget_derived<ParticlePassiveTagEntry>(_builder, "passive-entry")),
-        _colorEntry(*Gtk::Builder::get_widget_derived<ParticleColorEntry>(_builder, "color-entry")),
-        _radiusEntry(*Gtk::Builder::get_widget_derived<ParticleRadiusEntry>(_builder, "radius-entry")) {
-
-    auto root = _builder->get_widget<Gtk::Widget>("root");
-    append(*root);
-}
+        BuilderWidget<Gtk::Box>("/ui/particle_entry.xml"),
+        _positionEntry(getWidget<ParticlePositionEntry>("position-entry")),
+        _velocityEntry(getWidget<ParticleVelocityEntry>("velocity-entry")),
+        _massEntry(getWidget<ParticleMassEntry>("mass-entry")),
+        _activeEntry(getWidget<ParticleActiveTagEntry>("active-entry")),
+        _passiveEntry(getWidget<ParticlePassiveTagEntry>("passive-entry")),
+        _colorEntry(getWidget<ParticleColorEntry>("color-entry")),
+        _radiusEntry(getWidget<ParticleRadiusEntry>("radius-entry")) {}
 
 void UI::ParticleEntry::bind(std::shared_ptr<NBody::Simulation::Particle> &particle) {
 

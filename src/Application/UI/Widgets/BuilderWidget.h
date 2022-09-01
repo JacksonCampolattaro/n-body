@@ -17,13 +17,7 @@ namespace UI {
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
-    public:
-
-        BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
-                      const Glib::RefPtr<Gtk::Builder> &builder,
-                      const Glib::ustring &path) :
-                OwnerWidget(cobject),
-                _builder(Gtk::Builder::create_from_resource(path)) {
+        void setup() {
 
             // Determine if this is a widget with multiple children (e.g. Box)
             constexpr bool multiChild = requires(OwnerWidget &w, Gtk::Widget &child) {
@@ -35,7 +29,23 @@ namespace UI {
                 OwnerWidget::append(getWidget<Gtk::Widget>("root"));
             else
                 OwnerWidget::set_child(getWidget<Gtk::Widget>("root"));
+        }
 
+    public:
+
+        BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
+                      const Glib::RefPtr<Gtk::Builder> &builder,
+                      const Glib::ustring &path) :
+                OwnerWidget(cobject),
+                _builder(Gtk::Builder::create_from_resource(path)) {
+
+            setup();
+        }
+
+        BuilderWidget(const Glib::ustring &path) :
+                OwnerWidget(),
+                _builder(Gtk::Builder::create_from_resource(path)) {
+            setup();
         }
 
         [[nodiscard]] const Glib::RefPtr<Gtk::Builder> &builder() const { return _builder; };
