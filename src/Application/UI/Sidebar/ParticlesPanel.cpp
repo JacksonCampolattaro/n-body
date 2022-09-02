@@ -68,6 +68,7 @@ UI::ParticlesPanel::ParticlesPanel(NBody::Simulation &simulation) :
                             [&]() {
                                 auto particle =
                                         std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
+                                particle->setMass(1.0f);
                                 signal_open_particle.emit(particle);
                             });
 

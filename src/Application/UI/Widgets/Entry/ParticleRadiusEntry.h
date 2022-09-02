@@ -26,11 +26,13 @@ namespace UI {
         }
 
         void update(const Sphere &value) override {
-            show();
+            set_sensitive(true);
             setValue(value.radius());
         }
 
-        void update() override { hide(); };
+        void update() override {
+            set_sensitive(false);
+        };
     };
 }
 

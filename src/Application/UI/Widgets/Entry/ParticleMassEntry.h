@@ -26,11 +26,13 @@ namespace UI {
         }
 
         void update(const Mass &value) override {
-            show();
+            set_sensitive(true);
             setValue(value.mass());
         }
 
-        void update() override { hide(); };
+        void update() override {
+            set_sensitive(false);
+        };
     };
 }
 

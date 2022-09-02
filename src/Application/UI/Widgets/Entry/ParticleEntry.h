@@ -15,6 +15,7 @@
 #include <gtkmm/colorbutton.h>
 #include <gtkmm/checkbutton.h>
 
+#include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/View/VectorView.h"
 #include "VectorEntry.h"
 
@@ -27,18 +28,19 @@
 
 namespace UI {
 
-    class ParticleEntry : public Gtk::Box {
+    class ParticleEntry : public BuilderWidget<Gtk::Box> {
     private:
-
-        Glib::RefPtr<Gtk::Builder> _builder;
+        std::shared_ptr<NBody::Simulation::Particle> _particle = {};
 
         ParticlePositionEntry &_positionEntry;
         ParticleVelocityEntry &_velocityEntry;
 
+        Gtk::CheckButton &_physicsCheckButton;
         ParticleMassEntry &_massEntry;
         ParticleActiveTagEntry &_activeEntry;
         ParticlePassiveTagEntry &_passiveEntry;
 
+        Gtk::CheckButton &_appearanceCheckButton;
         ParticleColorEntry &_colorEntry;
         ParticleRadiusEntry &_radiusEntry;
 
