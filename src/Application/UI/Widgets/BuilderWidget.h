@@ -34,10 +34,12 @@ namespace UI {
     public:
 
         BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
-                      const Glib::RefPtr<Gtk::Builder> &builderh) :
+                      const Glib::RefPtr<Gtk::Builder> &builder) :
                 OwnerWidget(cobject),
                 _builder(builder) {
-            setup();
+
+            // We don't need to invoke setup() here,
+            // because this widget and all of its children are part of the same file
         }
 
         BuilderWidget(typename OwnerWidget::BaseObjectType *cobject,
@@ -48,7 +50,7 @@ namespace UI {
             setup();
         }
 
-        BuilderWidget(const Glib::ustring &path) :
+        explicit BuilderWidget(const Glib::ustring &path) :
                 OwnerWidget(),
                 _builder(Gtk::Builder::create_from_resource(path)) {
             setup();
@@ -56,18 +58,19 @@ namespace UI {
 
         [[nodiscard]] const Glib::RefPtr<Gtk::Builder> &builder() const { return _builder; };
 
-        template<class W>
-        W &getWidget(const Glib::ustring &name) {
+        template<class W, typename... Args>
+        W &getWidget(const Glib::ustring &name, Args &&... args) {
 
             // Determine if the widget is a user-created type, based on its constructor
             constexpr bool isDerived = requires(typename W::BaseObjectType *baseObject,
-                                                const Glib::RefPtr<Gtk::Builder> &b) {
-                W(baseObject, b);
+                                                const Glib::RefPtr<Gtk::Builder> &b,
+                                                Args &&... a) {
+                W(baseObject, b, std::forward<Args>(a)...);
             };
 
             // Invoke the appropriate builder function, depending on whether the widget is a built-in
             if constexpr(isDerived)
-                return *Gtk::Builder::get_widget_derived<W>(_builder, name);
+                return *Gtk::Builder::get_widget_derived<W>(_builder, name, std::forward<Args>(args)...);
             else
                 return *_builder->get_widget<W>(name);
         };

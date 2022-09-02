@@ -11,7 +11,7 @@
 
 namespace UI {
 
-    class Interactive : public Gtk::ApplicationWindow {
+    class Interactive : public BuilderWidget<Gtk::ApplicationWindow> {
     private:
 
         NBody::ArcBallControllableCamera _camera;
