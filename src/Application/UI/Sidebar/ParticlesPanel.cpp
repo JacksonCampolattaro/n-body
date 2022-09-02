@@ -43,8 +43,8 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
     _particlesListWindow.signal_open_particle().connect(_particleEditorWindow.slot_open);
     _simulation.signal_particle_removed.connect(sigc::hide(_particleEditorWindow.slot_close));
 
-//    _contents.set_expand();
-//    append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
+    //    _contents.set_expand();
+    //    append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
 
     auto &saveButton = getWidget<Gtk::Button>("save-button");
     saveButton.signal_clicked().connect([&] {
@@ -59,8 +59,9 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
 
     // todo: action group also works if it's attached to the ApplicationWindow,
     // in the future, UI::Interactive should be responsible for most action groups
+    auto *root = (Gtk::ApplicationWindow *) get_root(); // this is a hack.
     auto actionGroup = Gio::SimpleActionGroup::create();
-    getWidget<Gtk::Widget>("add-button").insert_action_group("create-particle", actionGroup);
+    root->insert_action_group("create-particle", actionGroup);
 
     actionGroup->add_action("single",
                             [&]() {
