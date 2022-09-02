@@ -1,8 +1,10 @@
 
 find_package(nlohmann_json REQUIRED)
-find_package(SigC++ REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(TBB REQUIRED)
+
+find_package(PkgConfig)
+pkg_check_modules(sigc++ REQUIRED IMPORTED_TARGET sigc++-3.0)
 
 include(FetchContent)
 FetchContent_Declare(entt
@@ -33,9 +35,9 @@ target_link_libraries(Simulation PUBLIC
         nlohmann_json::nlohmann_json
 
         PkgConfig::gtkmm
+        PkgConfig::sigc++
 
         spdlog::spdlog
-        ${SIGCPP_LIBRARIES}
         TBB::tbb
         )
 

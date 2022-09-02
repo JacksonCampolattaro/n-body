@@ -9,9 +9,6 @@ project(n_body)
 # Set C++ version
 set(CMAKE_CXX_STANDARD 20)
 
-# Make our modules available
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules")
-
 # Include our targets
 add_subdirectory(src)
 #add_subdirectory(docs)
