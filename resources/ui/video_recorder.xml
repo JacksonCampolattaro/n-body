@@ -29,7 +29,7 @@
                                         <child>
                                             <object class="GtkButton" id="screenshot-button">
                                                 <property name="label">Screenshot</property>
-                                                <property name="action-name">recorder.screenshot</property>
+                                                <property name="action-name">win.test</property>
                                             </object>
                                         </child>
 

@@ -1,6 +1,10 @@
 #include <spdlog/spdlog.h>
 #include <fstream>
 
+#include <glibmm/variant.h>
+#include <glibmm/variantiter.h>
+#include <glibmm/varianttype.h>
+
 #include <adwaita.h>
 
 #include "Application.h"
@@ -36,16 +40,21 @@ void Application::on_activate() {
 
     add_window(*interactive);
     interactive->present();
+
+//    add_action_with_parameter("open", Glib::VARIANT_TYPE_BYTESTRING,
+//                              [&](const Glib::VariantBase &file) {
+//                                  auto path = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(file).get();
+//                                  on_open({Gio::File::create_for_path(path)}, "");
+//                              });
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {
-    spdlog::debug("open");
 
     for (const auto &file: files) {
         spdlog::info("Loading scenario from file: {}", file->get_parse_name().c_str());
 
         // TODO: Temporary solution, this should be done in the background using read_async()
-        std::ifstream scenario_data{file->get_parse_name().c_str()};
+        std::ifstream scenario_data{file->get_parse_name().raw()};
         json data = json::parse(scenario_data);
         from_json(data, _simulation);
 

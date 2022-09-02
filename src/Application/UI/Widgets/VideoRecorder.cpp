@@ -22,18 +22,12 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         _liveResolutionLabel(getWidget<Gtk::Label>("live-resolution-label")),
         _liveUncompressedSizeLabel(getWidget<Gtk::Label>("live-uncompressed-size-label")) {
 
-
-    // todo: action group also works if it's attached to the ApplicationWindow,
-    // in the future, UI::Interactive should be responsible for all most groups
-    auto actionGroup = Gio::SimpleActionGroup::create();
-    getWidget<Gtk::Box>("controls-box").insert_action_group("recorder", actionGroup);
-
     _xSize.set_value(1920);
     _ySize.set_value(1080);
 
     _frameRate.set_value(24);
 
-    actionGroup->add_action("screenshot", [&]() {
+    _screenshotButton.signal_clicked().connect([&]() {
         auto image = recorder.takeImage({
                                                 _xSize.get_value_as_int(),
                                                 _ySize.get_value_as_int()
@@ -41,7 +35,7 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         _imageFileChooser.save(image);
     });
 
-    _startAction = actionGroup->add_action("start", [&]() {
+    _startRecordingButton.signal_clicked().connect([&]() {
 
         recorder.startVideo(_videoFileChooser.get_file()->get_path(),
                             {
@@ -55,9 +49,9 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         ));
         _stack.set_visible_child("recording");
     });
-    _startAction->set_enabled(false);
+    _startRecordingButton.set_sensitive(false);
 
-    actionGroup->add_action("stop", [&]() {
+    _stopRecordingButton.signal_clicked().connect([&]() {
         recorder.stopVideo();
         _stack.set_visible_child("not-started");
     });
@@ -79,7 +73,7 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
     _fileChooserButton.signal_clicked().connect(sigc::mem_fun(_videoFileChooser, &VideoFileChooserDialog::show));
     _videoFileChooser.signal_fileSelected.connect([&]() {
         _fileChooserButton.set_label(_videoFileChooser.prettyPath(20));
-        _startAction->set_enabled(true);
+        _startRecordingButton.set_sensitive(true);
     });
     _videoFileChooser.set_current_name("out.mp4");
 

@@ -56,6 +56,9 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
         _loadDialog.show();
     });
 
+
+    // todo: action group also works if it's attached to the ApplicationWindow,
+    // in the future, UI::Interactive should be responsible for most action groups
     auto actionGroup = Gio::SimpleActionGroup::create();
     getWidget<Gtk::Widget>("add-button").insert_action_group("create-particle", actionGroup);
 
@@ -64,6 +67,8 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
                                 auto particle =
                                         std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
                                 particle->setMass(1.0f);
+                                particle->setSphere({1.0f});
+                                particle->setColor(Magnum::Color3::green(0.8));
                                 signal_open_particle.emit(particle);
                             });
 
