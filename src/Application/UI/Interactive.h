@@ -21,14 +21,16 @@ namespace UI {
     class Interactive : public BuilderWidget<Gtk::ApplicationWindow> {
     private:
 
-        NBody::ArcBallControllableCamera _camera;
         NBody::Simulation &_simulation;
 
+        NBody::ArcBallControllableCamera _camera;
         NBody::InteractiveView _view;
+        NBody::Recorder _recorder;
 
         ParticlesPanel &_particlesPanel;
         PhysicsPanel &_physicsPanel;
         SolverPanel &_solverPanel;
+        CameraPanel &_cameraPanel;
 
     public:
 

@@ -7,19 +7,16 @@
 #include <adwaita.h>
 #include <giomm/simpleactiongroup.h>
 
-UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder) :
-        Panel("Camera"),
-        _builder(Gtk::Builder::create_from_resource("/ui/camera_panel.xml")),
-        _positionEntry(*Gtk::Builder::get_widget_derived<CompactPositionEntry>(_builder, "camera-position-entry")),
-        _directionEntry(*Gtk::Builder::get_widget_derived<CompactDirectionEntry>(_builder, "camera-direction-entry")),
-        _zoomEntry(*Gtk::Builder::get_widget_derived<FloatEntry>(_builder, "camera-zoom-entry")),
-        _backgroundColorEntry(*_builder->get_widget<Gtk::ColorButton>("background-color-entry")),
-        _shaderDropdown(*_builder->get_widget<Gtk::ListBoxRow>("shader-dropdown")),
-        _videoRecorder(*Gtk::Builder::get_widget_derived<VideoRecorder>(_builder, "video-recorder", recorder)) {
-
-
-    auto root = _builder->get_widget<Gtk::Widget>("root");
-    _contents.append(*root);
+UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
+                             const Glib::RefPtr<Gtk::Builder> &builder,
+                             NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder) :
+        BuilderWidget<Gtk::Box>(cobject, builder, "/ui/camera_panel.xml"),
+        _positionEntry(getWidget<CompactPositionEntry>("camera-position-entry")),
+        _directionEntry(getWidget<CompactDirectionEntry>("camera-direction-entry")),
+        _zoomEntry(getWidget<FloatEntry>("camera-zoom-entry")),
+        _backgroundColorEntry(getWidget<Gtk::ColorButton>("background-color-entry")),
+        _shaderDropdown(getWidget<Gtk::ListBoxRow>("shader-dropdown")),
+        _videoRecorder(getWidget<VideoRecorder>("video-recorder", recorder)) {
 
     camera.signal_changed().connect([&]() {
         _zoomEntry.setValue(camera.getZoom());
@@ -74,9 +71,5 @@ UI::CameraPanel::CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Re
         }
         camera.signal_changed().emit();
     });
-
-//    _recordingXSizeEntry.set_value(1920);
-//    _recordingYSizeEntry.set_value(1080);
-
 
 }

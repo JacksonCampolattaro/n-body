@@ -16,10 +16,12 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                 45.0_degf,
         },
         _view{_camera, _simulation},
+        _recorder{_camera, _simulation, solver.signal_finished()},
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
-        _solverPanel(getWidget<SolverPanel>("solver-panel", solver))
-        {
+        _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
+        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder))
+{
 
     auto &content = getWidget<Gtk::Box>("ContentBox");
 

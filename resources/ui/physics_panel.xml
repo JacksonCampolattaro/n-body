@@ -20,7 +20,7 @@
 
                 <child>
                     <object class="GtkLabel">
-                        <property name="label">Particles</property>
+                        <property name="label">Physics</property>
                         <property name="halign">start</property>
                         <style>
                             <class name="title-1"/>

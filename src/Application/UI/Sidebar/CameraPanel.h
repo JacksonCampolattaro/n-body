@@ -16,14 +16,14 @@
 #include <NBody/View/Renderers/FlatRenderer.h>
 #include <NBody/View/Renderers/InstancedFlatRenderer.h>
 
-#include "Panel.h"
+#include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
 #include "Application/UI/Widgets/Entry/IntEntry.h"
 #include "Application/UI/Widgets/VideoRecorder.h"
 
 namespace UI {
 
-    class CameraPanel : public Panel {
+    class CameraPanel : public BuilderWidget<Gtk::Box> {
     private:
 
         Glib::RefPtr<Gtk::Builder> _builder;
@@ -38,7 +38,9 @@ namespace UI {
 
     public:
 
-        CameraPanel(NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder);
+        CameraPanel(Gtk::Box::BaseObjectType *cobject,
+                    const Glib::RefPtr<Gtk::Builder> &builder,
+                    NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder);
 
     };
 

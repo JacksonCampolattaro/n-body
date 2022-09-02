@@ -53,9 +53,7 @@
                                 </child>
 
                                 <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Content 2</property>
-                                    </object>
+                                    <object class="GtkBox" id="camera-panel"/>
                                 </child>
                                 <child type="tab">
                                     <object class="GtkImage">
@@ -65,9 +63,7 @@
                                 </child>
 
                                 <child>
-                                    <object class="GtkLabel">
-                                        <property name="label">Content 2</property>
-                                    </object>
+                                    <object class="GtkBox" id="run-panel"/>
                                 </child>
                                 <child type="tab">
                                     <object class="GtkImage">
