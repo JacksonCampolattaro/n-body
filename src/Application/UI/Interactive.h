@@ -31,6 +31,7 @@ namespace UI {
         PhysicsPanel &_physicsPanel;
         SolverPanel &_solverPanel;
         CameraPanel &_cameraPanel;
+        RunPanel &_runPanel;
 
     public:
 

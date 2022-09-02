@@ -20,8 +20,8 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
-        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder))
-{
+        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder)),
+        _runPanel(getWidget<RunPanel>("run-panel", solver)) {
 
     auto &content = getWidget<Gtk::Box>("ContentBox");
 
@@ -29,9 +29,9 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     content.append(_view);
 
     // Make sure the sidebar doesn't get squeezed too tight
-//    Gtk::Requisition min, natural;
-//    flap.get_preferred_size(min, natural);
-//    flap.set_size_request(natural.get_width(), natural.get_height());
+    //    Gtk::Requisition min, natural;
+    //    flap.get_preferred_size(min, natural);
+    //    flap.set_size_request(natural.get_width(), natural.get_height());
 
     _view.signal_doneRendering().connect([&]() {
         spdlog::trace("done rendering");

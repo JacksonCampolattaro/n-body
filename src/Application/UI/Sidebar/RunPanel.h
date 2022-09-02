@@ -5,30 +5,28 @@
 #ifndef N_BODY_RUNPANEL_H
 #define N_BODY_RUNPANEL_H
 
-#include "Panel.h"
-#include "../Widgets/View/FloatView.h"
-#include "../Widgets/View/TimeView.h"
+#include <deque>
 
-#include <NBody/Simulation/Solver.h>
+#include <sigc++/sigc++.h>
 
 #include <gtkmm/listboxrow.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/stack.h>
 #include <gtkmm/entry.h>
 
-#include <sigc++/sigc++.h>
+#include <NBody/Simulation/Solver.h>
 
-#include <deque>
+#include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/View/FloatView.h"
+#include "Application/UI/Widgets/View/TimeView.h"
 
 namespace UI {
 
-    class RunPanel : public Panel {
+    class RunPanel : public BuilderWidget<Gtk::Box> {
     private:
 
         NBody::Solver &_solver;
         sigc::connection _idler;
-
-        Glib::RefPtr<Gtk::Builder> _builder;
 
         Gtk::ListBoxRow &_runModeDropdown;
 
@@ -56,9 +54,12 @@ namespace UI {
 
     public:
 
-        RunPanel(NBody::Solver &solver);
+        RunPanel(Gtk::Box::BaseObjectType *cobject,
+                 const Glib::RefPtr<Gtk::Builder> &builder,
+                 NBody::Solver &solver);
 
         void run(std::size_t n = 1);
+
         void stop();
 
     };

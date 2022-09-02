@@ -18,37 +18,24 @@ static std::string validate(const std::string &in) {
     return filtered.empty() ? "1" : filtered;
 }
 
-UI::RunPanel::RunPanel(NBody::Solver &solver) :
-        Panel("Run"),
+UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
+                       const Glib::RefPtr<Gtk::Builder> &builder,
+                       NBody::Solver &solver) :
+        BuilderWidget<Gtk::Box>(cobject, builder, "/ui/run_panel.xml"),
         _solver(solver),
-        _builder(Gtk::Builder::create_from_resource("/ui/run_panel.xml")),
-        _runModeDropdown(*_builder->get_widget<Gtk::ListBoxRow>("run-mode-dropdown")),
-        _statusLabel(*_builder->get_widget<Gtk::Label>("status-label")),
-        _runContinuouslyButton(*_builder->get_widget<Gtk::ToggleButton>("run-continuously-button")),
-        _runOneStepButton(*_builder->get_widget<Gtk::ToggleButton>("run-one-step-button")),
-        _runNStepsButton(*_builder->get_widget<Gtk::ToggleButton>("run-n-steps-button")),
-        _stepCountEntry(*_builder->get_widget<Gtk::Entry>("step-count-entry")),
-        _runControllerStack(*_builder->get_widget<Gtk::Stack>("run-controller-stack")),
-        _iterationsLabel(*_builder->get_widget<Gtk::Label>("iterations-label")),
-        _stepTimeLabel(
-                *Gtk::Builder::get_widget_derived<PreciseFloatView>(_builder, "step-time-label")
-        ),
-        _averageStepTimeLabel(
-                *Gtk::Builder::get_widget_derived<PreciseFloatView>(_builder, "average-step-time-label")
-        ),
-        _computeTimeView(
-                *Gtk::Builder::get_widget_derived<TimeView>(_builder, "compute-time-view")
-        ),
-        _remainingTime(*_builder->get_widget<Gtk::Box>("remaining-time")),
-        _remainingTimeView(
-                *Gtk::Builder::get_widget_derived<TimeView>(_builder, "remaining-time-view")
-        ) {
-
-    auto root = _builder->get_widget<Gtk::Widget>("root");
-    _contents.append(*root);
-    _contents.set_expand();
-    append(*_builder->get_widget<Gtk::ActionBar>("action-bar"));
-
+        _runModeDropdown(getWidget<Gtk::ListBoxRow>("run-mode-dropdown")),
+        _statusLabel(getWidget<Gtk::Label>("status-label")),
+        _runContinuouslyButton(getWidget<Gtk::ToggleButton>("run-continuously-button")),
+        _runOneStepButton(getWidget<Gtk::ToggleButton>("run-one-step-button")),
+        _runNStepsButton(getWidget<Gtk::ToggleButton>("run-n-steps-button")),
+        _stepCountEntry(getWidget<Gtk::Entry>("step-count-entry")),
+        _runControllerStack(getWidget<Gtk::Stack>("run-controller-stack")),
+        _iterationsLabel(getWidget<Gtk::Label>("iterations-label")),
+        _stepTimeLabel(getWidget<PreciseFloatView>("step-time-label")),
+        _averageStepTimeLabel(getWidget<PreciseFloatView>("average-step-time-label")),
+        _computeTimeView(getWidget<TimeView>("compute-time-view")),
+        _remainingTime(getWidget<Gtk::Box>("remaining-time")),
+        _remainingTimeView(getWidget<TimeView>("remaining-time-view")) {
 
     _runControllerStack.set_visible_child("continuous");
     _remainingTime.hide();
