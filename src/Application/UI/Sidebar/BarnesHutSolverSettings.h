@@ -5,21 +5,17 @@
 #ifndef N_BODY_BARNESHUTSOLVERSETTINGS_H
 #define N_BODY_BARNESHUTSOLVERSETTINGS_H
 
-#include "../Widgets/Entry/FloatEntry.h"
-
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 
-#include <gtkmm/box.h>
-#include <gtkmm/builder.h>
+#include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/Entry/FloatEntry.h"
 
 namespace UI {
 
-    class BarnesHutSolverSettings : public Gtk::Box {
+    class BarnesHutSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
         NBody::BarnesHutSolver &_solver;
-
-        Glib::RefPtr<Gtk::Builder> _builder;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;

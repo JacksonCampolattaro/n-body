@@ -8,20 +8,25 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Physics/Rule.h>
 
-#include "Panel.h"
+#include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/Entry/FloatEntry.h"
 
 namespace UI {
 
     using NBody::Physics::Rule;
 
-    class PhysicsPanel : public Panel {
+    class PhysicsPanel : public BuilderWidget<Gtk::Box> {
     private:
 
         Rule &_rule;
 
+        FloatEntry &_gravityEntry;
+
     public:
 
-        PhysicsPanel(Rule &rule);
+        PhysicsPanel(Gtk::Box::BaseObjectType *cobject,
+                     const Glib::RefPtr<Gtk::Builder> &builder,
+                     Rule &rule);
 
     };
 

@@ -15,25 +15,22 @@
 #include <gtkmm/button.h>
 #include <gtkmm/actionbar.h>
 
-#include "../Widgets/View/VectorView.h"
-
 #include "Application/UI/Windows/ParticleEditorWindow.h"
 #include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
 #include "Application/UI/Windows/SaveSimulationDialog.h"
 #include "Application/UI/Windows/LoadSimulationDialog.h"
 
-#include "Panel.h"
 #include "Application/UI/Widgets/ParticlesColumnView.h"
+#include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/View/VectorView.h"
 
 namespace UI {
 
-    class ParticlesPanel : public Panel {
+    class ParticlesPanel : public BuilderWidget<Gtk::Box> {
     private:
 
         NBody::Simulation &_simulation;
-
-        Glib::RefPtr<Gtk::Builder> _builder;
 
         Gtk::Button &_modifyButton;
 
@@ -54,7 +51,9 @@ namespace UI {
 
     public:
 
-        ParticlesPanel(NBody::Simulation &simulation);
+        ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
+                       const Glib::RefPtr<Gtk::Builder> &builder,
+                       NBody::Simulation &simulation);
 
     public:
 

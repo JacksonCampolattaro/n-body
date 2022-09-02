@@ -7,18 +7,16 @@
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <adwaita.h>
 
-UI::SolverPanel::SolverPanel(NBody::MultiSolver &multiSolver) :
-        Panel("Solver"),
+UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
+                             const Glib::RefPtr<Gtk::Builder> &builder,
+                             NBody::MultiSolver &multiSolver) :
+        BuilderWidget<Gtk::Box>(cobject, builder, "/ui/solver_panel.xml"),
         _multiSolver(multiSolver),
         _naiveSolverSettings(multiSolver.getSolver<NBody::NaiveSolver>()),
         _barnesHutSolverSettings(multiSolver.getSolver<NBody::BarnesHutSolver>()),
-        _builder(Gtk::Builder::create_from_resource("/ui/solver_panel.xml")),
-        _solverDropdown(*_builder->get_widget<Gtk::ListBoxRow>("solver-dropdown")),
-        _solverStack(*_builder->get_widget<Gtk::Stack>("stack")),
-        _maxThreadCountEntry(*_builder->get_widget<Gtk::SpinButton>("thread-count-int-entry")) {
-
-    auto root = _builder->get_widget<Gtk::Widget>("root");
-    _contents.append(*root);
+        _solverDropdown(getWidget<Gtk::ListBoxRow>("solver-dropdown")),
+        _solverStack(getWidget<Gtk::Stack>("stack")),
+        _maxThreadCountEntry(getWidget<Gtk::SpinButton>("thread-count-int-entry")) {
 
     _solverStack.add(_naiveSolverSettings, "naive");
     _solverStack.add(_barnesHutSolverSettings, "barnes-hut");

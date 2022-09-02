@@ -6,8 +6,15 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/View/InteractiveView.h>
 #include <NBody/View/ArcBallControllableCamera.h>
+#include <NBody/View/Recorder.h>
 
-#include "Sidebar/Sidebar.h"
+#include "Application/UI/Widgets/BuilderWidget.h"
+
+#include "Sidebar/ParticlesPanel.h"
+#include "Sidebar/PhysicsPanel.h"
+#include "Sidebar/CameraPanel.h"
+#include "Sidebar/SolverPanel.h"
+#include "Sidebar/RunPanel.h"
 
 namespace UI {
 
@@ -18,7 +25,10 @@ namespace UI {
         NBody::Simulation &_simulation;
 
         NBody::InteractiveView _view;
-        Sidebar _sidebar;
+
+        ParticlesPanel &_particlesPanel;
+        PhysicsPanel &_physicsPanel;
+        SolverPanel &_solverPanel;
 
     public:
 

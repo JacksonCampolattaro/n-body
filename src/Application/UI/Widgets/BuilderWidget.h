@@ -9,6 +9,8 @@
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
 
+#include <spdlog/spdlog.h>
+
 namespace UI {
 
     template<class OwnerWidget>

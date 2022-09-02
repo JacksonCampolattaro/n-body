@@ -15,8 +15,7 @@ void UI::LoadSimulationDialog::show() {
     );
 
     auto filter_json = Gtk::FileFilter::create();
-    filter_json->set_name("JSON File");
-    filter_json->add_mime_type("application/json");
+    filter_json->set_name("JSON File (.json)");
     filter_json->add_suffix("json");
     chooser->add_filter(filter_json);
 

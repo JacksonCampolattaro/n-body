@@ -2,17 +2,13 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
-    <object class="GtkListBox" id="root">
-        <property name="selection-mode">none</property>
-        <style>
-            <class name="boxed-list"/>
-        </style>
+
+    <object class="AdwPreferencesGroup" id="root">
 
         <child>
             <object class="AdwActionRow">
                 <property name="title">Theta</property>
-                <property name="subtitle">Higher values trade accuracy for speed
-                </property>
+                <property name="subtitle">Higher values trade accuracy for speed</property>
                 <child type="suffix">
                     <object class="GtkSpinButton" id="theta-float-entry">
                         <property name="hexpand">0</property>
@@ -52,5 +48,6 @@
                 </child>
             </object>
         </child>
+
     </object>
 </interface>

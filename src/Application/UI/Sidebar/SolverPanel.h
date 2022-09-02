@@ -14,13 +14,14 @@
 #include <gtkmm/dropdown.h>
 #include <gtkmm/listboxrow.h>
 
-#include "Panel.h"
 #include "NaiveSolverSettings.h"
 #include "BarnesHutSolverSettings.h"
 
+#include "Application/UI/Widgets/BuilderWidget.h"
+
 namespace UI {
 
-    class SolverPanel : public Panel {
+    class SolverPanel : public BuilderWidget<Gtk::Box> {
     private:
 
         NBody::MultiSolver &_multiSolver;
@@ -28,15 +29,15 @@ namespace UI {
         NaiveSolverSettings _naiveSolverSettings;
         BarnesHutSolverSettings _barnesHutSolverSettings;
 
-        Glib::RefPtr<Gtk::Builder> _builder;
-
         Gtk::ListBoxRow &_solverDropdown;
         Gtk::Stack &_solverStack;
         Gtk::SpinButton &_maxThreadCountEntry;
 
     public:
 
-        SolverPanel(NBody::MultiSolver &multiSolver);
+        SolverPanel(Gtk::Box::BaseObjectType *cobject,
+                    const Glib::RefPtr<Gtk::Builder> &builder,
+                    NBody::MultiSolver &multiSolver);
 
     };
 

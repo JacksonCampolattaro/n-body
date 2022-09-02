@@ -3,63 +3,80 @@
     <requires lib="gtk" version="4.0"/>
     <requires lib="adwaita" version="1.0"/>
 
-    <object class="GtkBox" id="root">
-        <property name="orientation">vertical</property>
+
+    <object class="AdwClamp" id="root">
+        <property name="maximum-size">1000</property>
+        <property name="tightening-threshold">500</property>
         <property name="hexpand">True</property>
-        <property name="spacing">16</property>
+
+        <property name="margin-top">16</property>
+        <property name="margin-bottom">16</property>
+        <property name="margin-start">16</property>
+        <property name="margin-end">16</property>
 
         <child>
-            <object class="GtkListBox">
-                <property name="selection-mode">none</property>
-                <style>
-                    <class name="boxed-list"/>
-                </style>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">True</property>
+                <property name="spacing">16</property>
+
                 <child>
-                    <object class="AdwComboRow" id="solver-dropdown">
-                        <property name="title">Algorithm</property>
-                        <property name="subtitle">Approach to compute pair-wise interactions</property>
-                        <property name="model">
-                            <object class="GtkStringList">
-                                <items>
-                                    <item>Naive</item>
-                                    <item>Barnes-Hut</item>
-                                    <item>Placeholder</item>
-                                </items>
-                            </object>
-                        </property>
+                    <object class="GtkLabel">
+                        <property name="label">Solver</property>
+                        <property name="halign">start</property>
+                        <style>
+                            <class name="title-1"/>
+                        </style>
                     </object>
                 </child>
+
                 <child>
-                    <object class="AdwActionRow">
-                        <property name="title">Maximum Thread Count</property>
-                        <property name="subtitle">Actual thread usage depends on availability</property>
-                        <child type="suffix">
-                            <object class="GtkSpinButton" id="thread-count-int-entry">
-                                <property name="hexpand">0</property>
-                                <property name="vexpand">0</property>
-                                <property name="valign">center</property>
-                                <property name="climb-rate">1.0</property>
-                                <property name="digits">0</property>
+                    <object class="AdwPreferencesGroup">
+
+                        <child>
+                            <object class="AdwComboRow" id="solver-dropdown">
+                                <property name="title">Algorithm</property>
+                                <property name="subtitle">Approach to compute pair-wise interactions</property>
+                                <property name="model">
+                                    <object class="GtkStringList">
+                                        <items>
+                                            <item>Naive</item>
+                                            <item>Barnes-Hut</item>
+                                            <item>Placeholder</item>
+                                        </items>
+                                    </object>
+                                </property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title">Maximum Thread Count</property>
+                                <property name="subtitle">Actual thread usage depends on availability</property>
+                                <child type="suffix">
+                                    <object class="GtkSpinButton" id="thread-count-int-entry">
+                                        <property name="hexpand">0</property>
+                                        <property name="vexpand">0</property>
+                                        <property name="valign">center</property>
+                                        <property name="climb-rate">1.0</property>
+                                        <property name="digits">0</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
                 </child>
-            </object>
-        </child>
 
-        <child>
-            <object class="GtkLabel">
-                <property name="label">Algorithm Settings</property>
-                <property name="halign">start</property>
-                <style>
-                    <class name="title-4"/>
-                </style>
-            </object>
-        </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
+                        <property name="title">Algorithm Settings</property>
 
-        <child>
-            <object class="GtkStack" id="stack">
-                <property name="transition-type">none</property>
+                        <child>
+                            <object class="GtkStack" id="stack">
+                                <property name="transition-type">none</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
             </object>
         </child>
     </object>

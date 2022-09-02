@@ -3,17 +3,16 @@
 //
 
 #include "PhysicsPanel.h"
-#include "Application/UI/Widgets/Entry/FloatEntry.h"
 
-UI::PhysicsPanel::PhysicsPanel(NBody::Physics::Rule &rule) : Panel("Physics"), _rule(rule) {
+UI::PhysicsPanel::PhysicsPanel(Gtk::Box::BaseObjectType *cobject,
+                               const Glib::RefPtr<Gtk::Builder> &builder,
+                               NBody::Physics::Rule &rule) :
+        BuilderWidget<Gtk::Box>(cobject, builder, "/ui/physics_panel.xml"),
+        _rule(rule),
+        _gravityEntry(getWidget<FloatEntry>("gravity-entry")) {
 
-    auto builder = Gtk::Builder::create_from_resource("/ui/physics_panel.xml");
-    auto root = builder->get_widget<Gtk::Widget>("root");
-    _contents.append(*root);
-
-    auto &gEntry = *Gtk::Builder::get_widget_derived<FloatEntry>(builder, "GFloatEntry");
-    gEntry.set_value(rule.g());
-    gEntry.signal_changed.connect([&] (float g) {
+    _gravityEntry.set_value(rule.g());
+    _gravityEntry.signal_changed.connect([&](float g) {
         rule.g() = g;
     });
 }

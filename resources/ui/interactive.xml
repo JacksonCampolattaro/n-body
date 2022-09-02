@@ -14,15 +14,68 @@
                         <property name="hexpand">True</property>
                         <property name="flap-position">end</property>
                         <property name="modal">True</property>
-                        <property name="fold-threshold-policy">natural</property>
+                        <property name="fold-threshold-policy">minimum</property>
                         <property name="transition-type">over</property>
 
                         <property name="flap">
-                            <object class="GtkBox" id="FlapBox">
+                            <object class="GtkNotebook">
+                                <property name="tab-pos">left</property>
                                 <property name="hexpand">False</property>
-                                <style>
-                                    <class name="background"/>
-                                </style>
+
+                                <child>
+                                    <object class="GtkBox" id="particles-panel"/>
+                                </child>
+                                <child type="tab">
+                                    <object class="GtkImage">
+                                        <property name="icon-name">nbody-particles-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkBox" id="physics-panel"/>
+                                </child>
+                                <child type="tab">
+                                    <object class="GtkImage">
+                                        <property name="icon-name">nbody-physics-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkBox" id="solver-panel"/>
+                                </child>
+                                <child type="tab">
+                                    <object class="GtkImage">
+                                        <property name="icon-name">nbody-solver-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Content 2</property>
+                                    </object>
+                                </child>
+                                <child type="tab">
+                                    <object class="GtkImage">
+                                        <property name="icon-name">nbody-camera-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                    </object>
+                                </child>
+
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="label">Content 2</property>
+                                    </object>
+                                </child>
+                                <child type="tab">
+                                    <object class="GtkImage">
+                                        <property name="icon-name">nbody-run-symbolic</property>
+                                        <property name="pixel-size">32</property>
+                                    </object>
+                                </child>
+
                             </object>
                         </property>
 
