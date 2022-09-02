@@ -57,7 +57,7 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
     });
 
     auto actionGroup = Gio::SimpleActionGroup::create();
-    insert_action_group("create-particle", actionGroup);
+    getWidget<Gtk::Widget>("add-button").insert_action_group("create-particle", actionGroup);
 
     actionGroup->add_action("single",
                             [&]() {

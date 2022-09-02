@@ -31,11 +31,15 @@ namespace UI {
         ImageFileChooserDialog _imageFileChooser;
         VideoFileChooserDialog _videoFileChooser;
 
+        Gtk::Button &_screenshotButton;
+
+        Gtk::Button &_startRecordingButton;
         SimplePositiveSizeEntry &_xSize;
         SimplePositiveSizeEntry &_ySize;
         SimplePositiveSizeEntry &_frameRate;
         Gtk::Button &_fileChooserButton;
 
+        Gtk::Button &_stopRecordingButton;
         Gtk::Label &_liveFrameCountLabel;
         Gtk::Label &_liveFrameRateLabel;
         TimeView &_liveRunTimeView;

@@ -20,7 +20,7 @@ void NBody::NaiveSolver::step() {
 
     auto actors = _simulation.view<const Position, const Mass, const ActiveTag>();
     auto targets = _simulation.view<const Position, const Mass, Velocity, const PassiveTag>();
-    auto movableTargets = _simulation.view<Position, const Mass, const Velocity, const PassiveTag>();
+    auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
 
     // Update accelerations and velocities
     {

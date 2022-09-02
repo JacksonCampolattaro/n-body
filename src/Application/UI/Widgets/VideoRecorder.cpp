@@ -9,36 +9,35 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
                                  NBody::Recorder &recorder) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/video_recorder.xml"),
         _stack(getWidget<Gtk::Stack>("recorder-stack")),
+        _screenshotButton(getWidget<Gtk::Button>("screenshot-button")),
+        _startRecordingButton(getWidget<Gtk::Button>("start-recording-button")),
         _xSize(getWidget<SimplePositiveSizeEntry>("x-size-entry")),
         _ySize(getWidget<SimplePositiveSizeEntry>("y-size-entry")),
         _frameRate(getWidget<SimplePositiveSizeEntry>("frame-rate-entry")),
         _fileChooserButton(getWidget<Gtk::Button>("file-chooser-button")),
+        _stopRecordingButton(getWidget<Gtk::Button>("stop-recording-button")),
         _liveFrameCountLabel(getWidget<Gtk::Label>("live-frame-count-label")),
         _liveFrameRateLabel(getWidget<Gtk::Label>("live-frame-rate-label")),
         _liveRunTimeView(getWidget<TimeView>("live-play-time-view")),
         _liveResolutionLabel(getWidget<Gtk::Label>("live-resolution-label")),
         _liveUncompressedSizeLabel(getWidget<Gtk::Label>("live-uncompressed-size-label")) {
 
+
+    // todo: action group also works if it's attached to the ApplicationWindow,
+    // in the future, UI::Interactive should be responsible for all most groups
+    auto actionGroup = Gio::SimpleActionGroup::create();
+    getWidget<Gtk::Box>("controls-box").insert_action_group("recorder", actionGroup);
+
     _xSize.set_value(1920);
     _ySize.set_value(1080);
 
     _frameRate.set_value(24);
 
-    _fileChooserButton.signal_clicked().connect(sigc::mem_fun(_videoFileChooser, &VideoFileChooserDialog::show));
-    _videoFileChooser.signal_fileSelected.connect([&]() {
-        _fileChooserButton.set_label(_videoFileChooser.prettyPath(20));
-        _startAction->set_enabled(true);
-    });
-    _videoFileChooser.set_current_name("out.mp4");
-
-    auto actionGroup = Gio::SimpleActionGroup::create();
-    insert_action_group("recorder", actionGroup);
-
     actionGroup->add_action("screenshot", [&]() {
         auto image = recorder.takeImage({
-                                   _xSize.get_value_as_int(),
-                                   _ySize.get_value_as_int()
-                           });
+                                                _xSize.get_value_as_int(),
+                                                _ySize.get_value_as_int()
+                                        });
         _imageFileChooser.save(image);
     });
 
@@ -75,7 +74,13 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         _liveUncompressedSizeLabel.set_text(Glib::ustring::format(
                 frameCount * frameSize * 3 / 1000000
         ));
-        //_videoFileChooser.get_file()->query_info()->get_attribute_uint64("standard::size");
     });
+
+    _fileChooserButton.signal_clicked().connect(sigc::mem_fun(_videoFileChooser, &VideoFileChooserDialog::show));
+    _videoFileChooser.signal_fileSelected.connect([&]() {
+        _fileChooserButton.set_label(_videoFileChooser.prettyPath(20));
+        _startAction->set_enabled(true);
+    });
+    _videoFileChooser.set_current_name("out.mp4");
 
 }

@@ -9,7 +9,6 @@
         <property name="spacing">16</property>
 
         <child>
-
             <object class="GtkStack" id="recorder-stack">
 
                 <child>
@@ -22,7 +21,7 @@
                                 <property name="title">Recording</property>
 
                                 <child type="header-suffix">
-                                    <object class="GtkBox">
+                                    <object class="GtkBox" id="controls-box">
                                         <property name="vexpand">False</property>
                                         <property name="valign">center</property>
                                         <property name="spacing">8</property>
@@ -33,6 +32,7 @@
                                                 <property name="action-name">recorder.screenshot</property>
                                             </object>
                                         </child>
+
                                         <child>
                                             <object class="GtkButton" id="start-recording-button">
                                                 <property name="label">Start Recording</property>
@@ -112,7 +112,7 @@
                                 <child type="header-suffix">
                                     <object class="GtkButton" id="stop-recording-button">
                                         <property name="label">Stop</property>
-                                        <property name="action-name">recorder.stop</property>
+                                        <!--                                        <property name="action-name">recorder.stop</property>-->
                                         <style>
                                             <class name="destructive-action"/>
                                         </style>
