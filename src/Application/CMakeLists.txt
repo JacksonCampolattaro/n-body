@@ -1,15 +1,11 @@
 
 # Add necessary libraries
 find_package(spdlog REQUIRED)
-find_package(Gtkmm REQUIRED)
-
-# Include LibAdwaita
-pkg_check_modules(ADWAITA REQUIRED libadwaita-1)
-link_directories(${ADWAITA_LIBRARY_DIRS})
-include_directories(${ADWAITA_INCLUDE_DIRS})
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
+pkg_check_modules(adwaita REQUIRED IMPORTED_TARGET libadwaita-1)
 
 # Add resource files
-find_package(Gio REQUIRED)
 find_program(GLIB_COMPILE_RESOURCES NAMES glib-compile-resources REQUIRED)
 set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/resources)
 set(GRESOURCE_C resources.c)
@@ -92,7 +88,10 @@ add_executable(NBody
         UI/Widgets/Entry/IntEntry.h
         UI/Windows/ParticleGridCreatorWindow.cpp UI/Windows/ParticleGridCreatorWindow.h
         UI/Widgets/ParticleGridCreator.cpp UI/Widgets/ParticleGridCreator.h
-        UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h)
+        UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h
+        UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h
+        UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h
+        )
 
 target_link_libraries(NBody PUBLIC
 
@@ -100,6 +99,6 @@ target_link_libraries(NBody PUBLIC
         NBody::View
 
         spdlog::spdlog
-        ${GTKMM_LIBRARIES}
-        ${ADWAITA_LIBRARIES}
+        PkgConfig::gtkmm
+        PkgConfig::adwaita
         )

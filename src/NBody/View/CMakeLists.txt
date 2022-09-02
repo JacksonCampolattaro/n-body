@@ -31,15 +31,6 @@ pkg_check_modules(avcodec REQUIRED IMPORTED_TARGET
         libswscale
         libavutil
         )
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBRARIES})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBRARY_DIRS})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LDFLAGS})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_INCLUDE_DIRS})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_CFLAGS})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_VERSION})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_PREFIX})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_INCLUDEDIR})
-MESSAGE(STATUS "@@@@@@@@@@@@@@@@@ " ${avcodec_LIBDIR})
 
 find_package(spdlog REQUIRED)
 
