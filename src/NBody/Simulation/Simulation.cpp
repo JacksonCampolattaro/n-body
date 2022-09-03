@@ -87,10 +87,10 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
 
-        if (!p.contains("active") || !p["active"].get<bool>())
+        if (!p.contains("active") || p["active"].get<bool>())
             particle.emplace<NBody::Physics::ActiveTag>();
 
-        if (!p.contains("passive") || !p["passive"].get<bool>())
+        if (!p.contains("passive") || p["passive"].get<bool>())
             particle.emplace<NBody::Physics::PassiveTag>();
 
         if (p.contains("color"))

@@ -22,7 +22,7 @@ namespace UI {
 
     public:
 
-        sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> &signal_open_particle();
+        sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> &signal_openParticle();
 
         sigc::slot<void()> slot_open();
 

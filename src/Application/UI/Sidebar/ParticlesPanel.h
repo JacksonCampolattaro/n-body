@@ -42,13 +42,6 @@ namespace UI {
 
         Gtk::Label &_interactionCountLabel;
 
-        ParticleEditorWindow _particleEditorWindow;
-        ParticleGridCreatorWindow _particleGridCreatorWindow;
-        ParticleListWindow _particlesListWindow;
-
-        SaveSimulationDialog _saveDialog;
-        LoadSimulationDialog _loadDialog;
-
     public:
 
         ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
@@ -58,6 +51,8 @@ namespace UI {
     public:
 
         sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> signal_open_particle;
+
+        Glib::SignalProxy<void()> signal_openList();
 
     };
 

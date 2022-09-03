@@ -20,6 +20,10 @@ namespace UI {
 
         ParticleEditorWindow();
 
+        std::shared_ptr<NBody::Simulation::Particle> currentParticle() {
+            return _particleEntry.currentParticle();
+        };
+
     public:
 
         sigc::slot<void(std::shared_ptr<NBody::Simulation::Particle> &)> slot_open;

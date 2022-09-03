@@ -62,3 +62,7 @@ void UI::ParticleEntry::bind(std::shared_ptr<NBody::Simulation::Particle> &parti
         _particle->get<sigc::signal<void()>>().emit();
     });
 }
+
+std::shared_ptr<NBody::Simulation::Particle> UI::ParticleEntry::currentParticle() {
+    return _particle;
+}

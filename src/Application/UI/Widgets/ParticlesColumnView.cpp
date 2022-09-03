@@ -75,7 +75,7 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     _columnView.signal_activate().connect([&](guint p) {
         if (auto selected = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
                 _selectionModel->get_object(p))) {
-            signal_open_particle.emit(selected);
+            signal_openParticle.emit(selected);
         }
     });
 

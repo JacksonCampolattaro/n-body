@@ -18,8 +18,8 @@ UI::ParticleListWindow::ParticleListWindow(NBody::Simulation &simulation) : _par
     );
 }
 
-sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> &UI::ParticleListWindow::signal_open_particle() {
-    return _particlesColumnView.signal_open_particle;
+sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> &UI::ParticleListWindow::signal_openParticle() {
+    return _particlesColumnView.signal_openParticle;
 }
 
 sigc::slot<void()> UI::ParticleListWindow::slot_open() {

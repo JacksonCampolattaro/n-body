@@ -50,6 +50,7 @@ namespace UI {
 
         void bind(std::shared_ptr<NBody::Simulation::Particle> &particle);
 
+        std::shared_ptr<NBody::Simulation::Particle> currentParticle();
     };
 
 }

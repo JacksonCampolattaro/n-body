@@ -33,6 +33,13 @@ namespace UI {
         CameraPanel &_cameraPanel;
         RunPanel &_runPanel;
 
+        ParticleEditorWindow _particleEditorWindow;
+        ParticleGridCreatorWindow _particleGridCreatorWindow;
+        ParticleListWindow _particlesListWindow;
+
+        LoadSimulationDialog _loadSimulationDialog;
+        SaveSimulationDialog _saveSimulationDialog;
+
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
