@@ -8,6 +8,7 @@
 #include <optional>
 
 #include <gtkmm/glarea.h>
+#include <gtkmm/builder.h>
 
 #include <Magnum/Platform/GLContext.h>
 #include <Magnum/Math/Color.h>
@@ -34,9 +35,7 @@ namespace NBody {
 
         Platform::GLContext _context{NoCreate, 0, nullptr};
 
-    public:
-
-        View() {
+        void setup() {
 
             set_required_version(3, 2);
             set_has_depth_buffer(true);
@@ -47,6 +46,18 @@ namespace NBody {
                 make_current();
                 _context.create();
             });
+        }
+
+    public:
+
+        View() {
+            setup();
+        }
+
+        View(Gtk::GLArea::BaseObjectType *cobject,
+             const Glib::RefPtr<Gtk::Builder> &builder) :
+                Gtk::GLArea(cobject) {
+            setup();
         }
 
         virtual void onRender(GL::Framebuffer &defaultFramebuffer) = 0;
@@ -84,7 +95,7 @@ namespace NBody {
             auto defaultFramebuffer = GL::Framebuffer::wrap(
                     framebufferID,
                     {{},
-                     {get_allocated_width()*get_scale_factor(), get_allocated_height()*get_scale_factor()}}
+                     {get_allocated_width() * get_scale_factor(), get_allocated_height() * get_scale_factor()}}
             );
 
             // Invoke the subclass's render function

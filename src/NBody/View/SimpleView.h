@@ -32,9 +32,15 @@ namespace NBody {
 
         Camera &_camera;
 
+        void setup();
+
     public:
 
         SimpleView(Camera &camera, const Simulation &simulation);
+
+        SimpleView(Gtk::GLArea::BaseObjectType *cobject,
+                   const Glib::RefPtr<Gtk::Builder> &builder,
+                   Camera &camera, const Simulation &simulation);
 
         void onRender(GL::Framebuffer &defaultFramebuffer) override;
 

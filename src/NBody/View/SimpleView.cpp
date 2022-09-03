@@ -13,13 +13,26 @@
 
 #include "SimpleView.h"
 
-NBody::SimpleView::SimpleView(NBody::Camera &camera, const NBody::Simulation &simulation) :
-        View(), _simulation(simulation), _camera(camera) {
+void NBody::SimpleView::setup() {
 
     set_size_request(720, 480);
 
     _camera.signal_changed().connect(slot_renderNeeded());
     _simulation.signal_changed.connect(slot_renderNeeded());
+}
+
+NBody::SimpleView::SimpleView(NBody::Camera &camera, const NBody::Simulation &simulation) :
+        View(), _simulation(simulation), _camera(camera) {
+
+    setup();
+}
+
+NBody::SimpleView::SimpleView(Gtk::GLArea::BaseObjectType *cobject,
+                              const Glib::RefPtr<Gtk::Builder> &builder,
+                              NBody::Camera &camera, const NBody::Simulation &simulation) :
+        View(cobject, builder), _simulation(simulation), _camera(camera) {
+
+    setup();
 }
 
 void NBody::SimpleView::onRender(GL::Framebuffer &defaultFramebuffer) {

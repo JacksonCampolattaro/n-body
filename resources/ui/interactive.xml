@@ -78,7 +78,7 @@
                         <property name="content">
                             <object class="GtkOverlay">
                                 <child>
-                                    <object class="GtkBox" id="ContentBox">
+                                    <object class="GtkGLArea" id="view">
                                         <property name="hexpand">True</property>
                                     </object>
                                 </child>
