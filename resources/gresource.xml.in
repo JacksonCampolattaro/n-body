@@ -4,8 +4,6 @@
     <gresource>
         <file>ui/interactive.xml</file>
 
-        <file>ui/panel.xml</file>
-
         <file>ui/physics_panel.xml</file>
         <file>ui/particles_panel.xml</file>
         <file>ui/solver_panel.xml</file>
