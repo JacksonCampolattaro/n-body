@@ -9,6 +9,7 @@
 
 #include <span>
 #include <set>
+#include <stack>
 #include "NBody/Physics/Rule.h"
 
 using NBody::Physics::Position;

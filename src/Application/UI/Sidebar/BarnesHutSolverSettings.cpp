@@ -11,6 +11,10 @@ UI::BarnesHutSolverSettings::BarnesHutSolverSettings(NBody::BarnesHutSolver &sol
         _maxDepthEntry(getWidget<Gtk::SpinButton>("tree-depth-int-entry")),
         _maxLeafSizeEntry(getWidget<Gtk::SpinButton>("leaf-size-int-entry")) {
 
+    signal_show().connect([&]() {
+       spdlog::debug("Enabling Barnes-Hut Solver");
+    });
+
     _thetaEntry.setValue(_solver.theta());
     _thetaEntry.signal_changed.connect([&](float v) {
         _solver.theta() = v;

@@ -4,6 +4,8 @@
 
 #include "NaiveSolver.h"
 
+#include <execution>
+
 #include <glm/glm.hpp>
 
 #include <tbb/tbb.h>

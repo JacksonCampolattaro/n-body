@@ -14,6 +14,9 @@
 #include <gtkmm/dropdown.h>
 #include <gtkmm/listboxrow.h>
 
+#include <gtkmm/singleselection.h>
+#include <gtkmm/label.h>
+
 #include "NaiveSolverSettings.h"
 #include "BarnesHutSolverSettings.h"
 
@@ -28,8 +31,9 @@ namespace UI {
 
         NaiveSolverSettings _naiveSolverSettings;
         BarnesHutSolverSettings _barnesHutSolverSettings;
+        Gtk::Label _placeholderSolverSettings{"(This is a Placeholder)"};
 
-        Gtk::ListBoxRow &_solverDropdown;
+        Gtk::DropDown &_solverDropdown;
         Gtk::Stack &_solverStack;
         Gtk::SpinButton &_maxThreadCountEntry;
 
