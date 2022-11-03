@@ -33,7 +33,7 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
                 xyz101,
                 xyz011,
                 xyz111
-        ) = split<2>(_contents, registry);
+        ) = split<2>(_contents, registry, _center);
 
         // Initialize 8 child nodes
         float childSideLength = sideLength / 2.0f;

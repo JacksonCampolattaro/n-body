@@ -31,8 +31,8 @@ namespace UI {
             set_vexpand(false);
             set_valign(Gtk::Align::CENTER);
 
-            set_width_chars(std::numeric_limits<IntType>::digits10/2);
-            set_range(std::numeric_limits<IntType>::lowest(), std::numeric_limits<IntType>::max());
+            set_width_chars(std::numeric_limits<IntType>::digits10 / 2);
+            set_range((double) std::numeric_limits<IntType>::lowest(), (double) std::numeric_limits<IntType>::max());
             set_increments(1.0, 10.0);
 
             signal_value_changed().connect([&]() {
@@ -61,7 +61,7 @@ namespace UI {
         PositiveIntEntry(Gtk::SpinButton::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder) :
                 BaseIntEntry(cobject, builder) {
 
-            this->set_range(1.0, std::numeric_limits<typename BaseIntEntry::ValueType>::max());
+            this->set_range(1.0, (double) std::numeric_limits<typename BaseIntEntry::ValueType>::max());
         }
     };
 

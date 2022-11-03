@@ -105,7 +105,7 @@ void VideoOutputStream::open() {
     /* open the codec */
     ret = avcodec_open2(c, codec, nullptr);
     if (ret < 0) {
-        fprintf(stderr, "Could not open video codec: %s\n", av_err2str(ret));
+        fprintf(stderr, "Could not open video codec: %s\n", avErrorToString(ret));
         exit(1);
     }
 
@@ -145,7 +145,7 @@ void VideoOutputStream::open() {
     ret = avio_open(&formatContext->pb, _filePath.c_str(), AVIO_FLAG_WRITE);
     if (ret < 0) {
         fprintf(stderr, "Could not open '%s': %s\n", _filePath.c_str(),
-                av_err2str(ret));
+                avErrorToString(ret));
         exit(1);
     }
 
@@ -153,7 +153,7 @@ void VideoOutputStream::open() {
     ret = avformat_write_header(formatContext, nullptr);
     if (ret < 0) {
         fprintf(stderr, "Error occurred when opening output file: %s\n",
-                av_err2str(ret));
+                avErrorToString(ret));
         exit(1);
     }
 }

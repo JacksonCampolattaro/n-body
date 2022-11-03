@@ -17,6 +17,49 @@ using NBody::Physics::Velocity;
 using NBody::Physics::Mass;
 using NBody::Physics::ActiveTag;
 
+namespace {
+
+    template<int Dimension>
+    [[nodiscard]] auto
+    split(std::span<NBody::Entity> &entities,
+          const NBody::Simulation &registry,
+          const NBody::Physics::Position &center) {
+
+        auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
+            return (registry.template get<NBody::Physics::Position>(entity))[Dimension] < center[Dimension];
+        });
+
+        std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
+        std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
+        assert(less.size() + more.size() == entities.size());
+
+        // This can be done with std::arrays, using something like:
+        // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
+        // Or this:
+        // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
+        return std::tuple_cat(split<Dimension - 1>(less, registry, center),
+                              split<Dimension - 1>(more, registry, center));
+    }
+
+    template<>
+    [[nodiscard]] auto
+    split<0>(std::span<NBody::Entity> &entities,
+             const NBody::Simulation &registry,
+                                 const NBody::Physics::Position &center) {
+
+        auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
+            return (registry.template get<NBody::Physics::Position>(entity))[0] < center[0];
+        });
+
+        std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
+        std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
+        assert(less.size() + more.size() == entities.size());
+
+        return std::tuple{less, more};
+    }
+
+}
+
 namespace NBody {
 
     class Octree {
@@ -55,40 +98,6 @@ namespace NBody {
             [[nodiscard]] const std::array<OctreeNode, 8> &children() const { return *_children; }
 
             [[nodiscard]] const std::span<NBody::Entity> &particles() const { return _contents; }
-
-            template<int Dimension>
-            [[nodiscard]] auto
-            split(std::span<NBody::Entity> &entities, const NBody::Simulation &registry) const {
-
-                auto c = std::partition(entities.begin(), entities.end(), [&](Entity entity) {
-                    return (registry.template get<Physics::Position>(entity))[Dimension] < _center[Dimension];
-                });
-
-                std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
-                std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
-                assert(less.size() + more.size() == entities.size());
-
-                // This can be done with std::arrays, using something like:
-                // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
-                // Or this:
-                // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
-                return std::tuple_cat(split<Dimension - 1>(less, registry), split<Dimension - 1>(more, registry));
-            }
-
-            template<>
-            [[nodiscard]] auto
-            split<0>(std::span<NBody::Entity> &entities, const NBody::Simulation &registry) const {
-
-                auto c = std::partition(entities.begin(), entities.end(), [&](Entity entity) {
-                    return (registry.template get<Physics::Position>(entity))[0] < _center[0];
-                });
-
-                std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
-                std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
-                assert(less.size() + more.size() == entities.size());
-
-                return std::tuple{less, more};
-            }
 
             [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, Simulation &simulation,
                                                           const Physics::Position &passivePosition,

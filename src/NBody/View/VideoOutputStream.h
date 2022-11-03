@@ -56,7 +56,6 @@
 #include <cassert>
 
 extern "C" {
-
 #include <libavutil/avassert.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
@@ -76,6 +75,12 @@ extern "C" {
 #define STREAM_PIX_FMT AV_PIX_FMT_YUV420P
 
 #define SCALE_FLAGS SWS_BICUBIC
+
+
+static char *avErrorToString(int errnum) {
+    static char errorString[AV_ERROR_MAX_STRING_SIZE];
+    return av_make_error_string(&errorString[0], AV_ERROR_MAX_STRING_SIZE, errnum);
+}
 
 class VideoOutputStream {
 public:
@@ -189,7 +194,7 @@ private:
         ret = avcodec_send_frame(enc, f);
         if (ret < 0) {
             fprintf(stderr, "Error sending a frame to the encoder: %s\n",
-                    av_err2str(ret));
+                    avErrorToString(ret));
             exit(1);
         }
 
@@ -198,7 +203,7 @@ private:
             if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                 break;
             else if (ret < 0) {
-                fprintf(stderr, "Error encoding a frame: %s\n", av_err2str(ret));
+                fprintf(stderr, "Error encoding a frame: %s\n", avErrorToString(ret));
                 exit(1);
             }
 
@@ -212,7 +217,7 @@ private:
              * its contents and resets pkt), so that no unreferencing is necessary.
              * This would be different if one used av_write_frame(). */
             if (ret < 0) {
-                fprintf(stderr, "Error while writing output packet: %s\n", av_err2str(ret));
+                fprintf(stderr, "Error while writing output packet: %s\n", avErrorToString(ret));
                 exit(1);
             }
         }
