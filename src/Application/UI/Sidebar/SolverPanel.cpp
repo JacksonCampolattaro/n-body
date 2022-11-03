@@ -16,7 +16,13 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
         _barnesHutSolverSettings(multiSolver.getSolver<NBody::BarnesHutSolver>()),
         _solverDropdown(getWidget<Gtk::DropDown>("solver-dropdown")),
         _solverStack(getWidget<Gtk::Stack>("stack")),
-        _maxThreadCountEntry(getWidget<Gtk::SpinButton>("thread-count-int-entry")) {
+        _maxThreadCountEntry(getWidget<Gtk::SpinButton>("thread-count-int-entry")),
+        _timeStepEntry(getWidget<PositiveFloatEntry>("time-step-float-entry")) {
+
+    _timeStepEntry.setValue(NBody::Solver::timeStep());
+    _timeStepEntry.signal_changed.connect([&](float t) {
+       NBody::Solver::timeStep() = t;
+    });
 
     _maxThreadCountEntry.set_range(1, std::numeric_limits<float>::max());
     _maxThreadCountEntry.set_increments(1.0, 10.0);

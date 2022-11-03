@@ -36,6 +36,7 @@ namespace UI {
         Gtk::DropDown &_solverDropdown;
         Gtk::Stack &_solverStack;
         Gtk::SpinButton &_maxThreadCountEntry;
+        PositiveFloatEntry &_timeStepEntry;
 
     public:
 

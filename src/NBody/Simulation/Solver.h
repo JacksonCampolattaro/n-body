@@ -21,9 +21,10 @@ namespace NBody {
     class Solver {
     protected:
 
+        inline static float _dt = 0.001;
+
         Simulation &_simulation;
         Physics::Rule &_rule;
-        float _dt = 0.001;
         std::size_t _maxThreadCount = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism);
 
         sigc::signal<void()> _signal_finished;
@@ -73,6 +74,8 @@ namespace NBody {
         std::size_t &maxThreadCount() { return _maxThreadCount; }
 
         const std::size_t &maxThreadCount() const { return _maxThreadCount; }
+
+        static float &timeStep() { return Solver::_dt; }
 
     public:
 
