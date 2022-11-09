@@ -24,13 +24,7 @@ namespace UI {
             _liveEntities = {validParticles.begin(), validParticles.end()};
             std::sort(_liveEntities.begin(), _liveEntities.end());
 
-            simulation.signal_particle_added.connect([&](NBody::Entity entity) {
-
-                auto iterator = std::upper_bound(_liveEntities.begin(), _liveEntities.end(), entity);
-                auto index = iterator - _liveEntities.begin();
-                _liveEntities.insert(iterator, entity);
-                items_changed(index, 0, 1);
-            });
+            simulation.signal_particles_added.connect(sigc::mem_fun(*this, &ParticlesListModel::add_particles));
 
             simulation.signal_particle_removed.connect([&](NBody::Entity entity) {
 
@@ -64,6 +58,8 @@ namespace UI {
 
         NBody::Simulation &_simulation;
         std::vector<NBody::Entity> _liveEntities;
+
+        void add_particles(const std::vector<NBody::Entity> &particles);
 
     };
 

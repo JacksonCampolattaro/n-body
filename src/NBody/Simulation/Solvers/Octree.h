@@ -176,8 +176,7 @@ namespace NBody {
             _particles = {actors.begin(), actors.end()};
 
             // If the simulation has new particles, add them to the list
-            _simulation.signal_particle_added.connect([&](auto newEntity) {
-                _particles.push_back(newEntity);
+            _simulation.signal_particles_added.connect([&](auto newEntities) {
                 // todo: mark the octree root as invalid
             });
 

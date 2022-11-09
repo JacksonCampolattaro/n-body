@@ -12,7 +12,7 @@ NBody::Simulation::Particle NBody::Simulation::newParticle() {
     particle.setPosition({0, 0, 0})
             .setVelocity({0, 0, 0});
 
-    signal_particle_added.emit(particle.entity());
+    signal_particles_added.emit({particle.entity()});
     return particle;
 }
 
