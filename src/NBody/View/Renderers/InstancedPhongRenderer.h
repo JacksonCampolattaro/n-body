@@ -16,6 +16,12 @@ namespace NBody {
     using namespace Math::Literals;
 
     class InstancedPhongRenderer : public Renderer {
+    private:
+
+        std::optional<Shaders::PhongGL> _shader{NoCreate};
+
+        std::optional<GL::Mesh> _mesh;
+
     public:
 
         void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) override;

@@ -5,7 +5,7 @@
 #include "Sphere.h"
 
 GL::Mesh NBody::Graphics::Sphere::mesh() {
-    return MeshTools::compile(Primitives::icosphereSolid(3));
+    return MeshTools::compile(Primitives::icosphereSolid(2));
 }
 
 void NBody::Graphics::to_json(json &j, const NBody::Graphics::Sphere &s) {
