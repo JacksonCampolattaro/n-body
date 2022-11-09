@@ -15,6 +15,8 @@
 #include "Sidebar/CameraPanel.h"
 #include "Sidebar/SolverPanel.h"
 #include "Sidebar/RunPanel.h"
+#include "Application/UI/Windows/SimulationFileSaverDialog.h"
+#include "Application/UI/Windows/SimulationFileLoaderDialog.h"
 
 namespace UI {
 
@@ -38,8 +40,13 @@ namespace UI {
         ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
-        LoadSimulationDialog _loadSimulationDialog;
-        SaveSimulationDialog _saveSimulationDialog;
+//        LoadSimulationDialog _loadSimulationDialog;
+//        SaveSimulationDialog _saveSimulationDialog;
+
+        NBody::SimulationFileManager _fileManager;
+        SimulationFileSaverDialog _simulationSaverDialog;
+        SimulationFileLoaderDialog _simulationLoaderDialog;
+
 
     public:
 

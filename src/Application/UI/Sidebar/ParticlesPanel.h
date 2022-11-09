@@ -18,8 +18,7 @@
 #include "Application/UI/Windows/ParticleEditorWindow.h"
 #include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
-#include "Application/UI/Windows/SaveSimulationDialog.h"
-#include "Application/UI/Windows/LoadSimulationDialog.h"
+#include "Application/UI/Windows/SimulationFileSaverDialog.h"
 
 #include "Application/UI/Widgets/ParticlesColumnView.h"
 #include "Application/UI/Widgets/BuilderWidget.h"
@@ -46,7 +45,8 @@ namespace UI {
 
         ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
                        const Glib::RefPtr<Gtk::Builder> &builder,
-                       NBody::Simulation &simulation);
+                       NBody::Simulation &simulation,
+                       NBody::SimulationFileManager &fileManager);
 
     public:
 

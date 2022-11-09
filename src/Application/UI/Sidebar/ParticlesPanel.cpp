@@ -11,7 +11,8 @@
 
 UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
                                    const Glib::RefPtr<Gtk::Builder> &builder,
-                                   NBody::Simulation &simulation) :
+                                   NBody::Simulation &simulation,
+                                   NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/particles_panel.xml"),
         _simulation(simulation),
         _modifyButton(getWidget<Gtk::Button>("modify-button")),

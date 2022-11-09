@@ -77,8 +77,6 @@ add_executable(NBody
         UI/Widgets/View/ParticleColorView.h
         UI/Widgets/View/ParticleRadiusView.h
         UI/Widgets/View/ParticleIconView.h
-        UI/Windows/SaveSimulationDialog.cpp UI/Windows/SaveSimulationDialog.h
-        UI/Windows/LoadSimulationDialog.cpp UI/Windows/LoadSimulationDialog.h
         UI/Windows/ParticleEditorWindow.cpp UI/Windows/ParticleEditorWindow.h
         UI/Windows/ParticleListWindow.cpp UI/Windows/ParticleListWindow.h
         UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h
@@ -93,7 +91,8 @@ add_executable(NBody
         UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h
         UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h
         UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h
-        )
+        SimulationFileManager.cpp SimulationFileManager.h
+        UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h)
 
 target_link_libraries(NBody PUBLIC
 
