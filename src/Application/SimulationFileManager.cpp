@@ -53,6 +53,7 @@ void NBody::SimulationFileManager::open(const Glib::RefPtr<Gio::File> &file) {
     }
 
     _simulation.signal_particles_added.emit(entities);
+    _simulation.signal_changed.emit();
 }
 
 void NBody::SimulationFileManager::save() {

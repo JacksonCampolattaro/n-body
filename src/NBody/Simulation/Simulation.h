@@ -90,7 +90,7 @@ namespace NBody {
 
         mutable sigc::signal<void()> signal_changed;
         sigc::signal<void(const std::vector<NBody::Entity> &)> signal_particles_added;
-        sigc::signal<void(NBody::Entity)> signal_particle_removed;
+        sigc::signal<void(const std::vector<NBody::Entity> &)> signal_particles_removed;
 
         mutable std::mutex mutex;
 

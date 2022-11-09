@@ -133,7 +133,7 @@ void NBody::Simulation::removeParticle(NBody::Entity entity) {
 
     assert(valid(entity));
     destroy(entity);
-    signal_particle_removed.emit(entity);
+    signal_particles_removed.emit({entity});
     signal_changed.emit();
 }
 

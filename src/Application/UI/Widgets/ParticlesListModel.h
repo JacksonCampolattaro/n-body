@@ -24,18 +24,9 @@ namespace UI {
             _liveEntities = {validParticles.begin(), validParticles.end()};
             std::sort(_liveEntities.begin(), _liveEntities.end());
 
-            simulation.signal_particles_added.connect(sigc::mem_fun(*this, &ParticlesListModel::add_particles));
+            simulation.signal_particles_added.connect(sigc::mem_fun(*this, &ParticlesListModel::addParticles));
+            simulation.signal_particles_removed.connect(sigc::mem_fun(*this, &ParticlesListModel::removeParticles));
 
-            simulation.signal_particle_removed.connect([&](NBody::Entity entity) {
-
-                // Remove the particle from the set
-                auto iterator = std::find(_liveEntities.begin(), _liveEntities.end(), entity);
-                auto index = iterator - _liveEntities.begin();
-                _liveEntities.erase(iterator);
-
-                // Notify the UI that an particle was removed, and where in the set it appeared
-                items_changed(index, 1, 0);
-            });
         }
 
         static Glib::RefPtr<ParticlesListModel> create(NBody::Simulation &simulation) {
@@ -59,7 +50,9 @@ namespace UI {
         NBody::Simulation &_simulation;
         std::vector<NBody::Entity> _liveEntities;
 
-        void add_particles(const std::vector<NBody::Entity> &particles);
+        void addParticles(const std::vector<NBody::Entity> &particles);
+
+        void removeParticles(const std::vector<NBody::Entity> &particles);
 
     };
 

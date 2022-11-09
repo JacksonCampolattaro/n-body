@@ -6,7 +6,7 @@
 
 #include <span>
 
-void UI::ParticlesListModel::add_particles(const std::vector<NBody::Entity> &particles) {
+void UI::ParticlesListModel::addParticles(const std::vector<NBody::Entity> &particles) {
 
     // Break the particles list into groups of adjacent particles
     auto groupBegin = particles.begin();
@@ -29,4 +29,18 @@ void UI::ParticlesListModel::add_particles(const std::vector<NBody::Entity> &par
         groupEnd = groupBegin + 1;
     }
 
+}
+
+void UI::ParticlesListModel::removeParticles(const std::vector<NBody::Entity> &particles) {
+
+    for (auto particle : particles) {
+
+        // Remove the particle from the set
+        auto iterator = std::find(_liveEntities.begin(), _liveEntities.end(), particle);
+        auto index = iterator - _liveEntities.begin();
+        _liveEntities.erase(iterator);
+
+        // Notify the UI that a particle was removed, and where in the set it appeared
+        items_changed(index, 1, 0);
+    }
 }

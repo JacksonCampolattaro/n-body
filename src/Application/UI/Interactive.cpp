@@ -28,10 +28,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _runPanel(getWidget<RunPanel>("run-panel", solver)),
         _particlesListWindow(simulation),
         _particleEditorWindow(),
-        _particleGridCreatorWindow(simulation)
-//        _loadSimulationDialog(simulation),
-//        _saveSimulationDialog(simulation)
-        {
+        _particleGridCreatorWindow(simulation) {
 
     // Make sure the sidebar doesn't get squeezed too tight
     //    Gtk::Requisition min, natural;
@@ -41,8 +38,9 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
     _particlesPanel.signal_openList().connect(_particlesListWindow.slot_open());
 
     _particlesListWindow.signal_openParticle().connect(_particleEditorWindow.slot_open);
-    _simulation.signal_particle_removed.connect([&](const auto &particle) {
-        if (_particleEditorWindow.currentParticle() && *_particleEditorWindow.currentParticle() == particle)
+    _simulation.signal_particles_removed.connect([&](const auto &particles) {
+        if (_particleEditorWindow.currentParticle() &&
+            std::find(particles.begin(), particles.end(), *_particleEditorWindow.currentParticle()) != particles.end())
             _particleEditorWindow.hide();
     });
 
