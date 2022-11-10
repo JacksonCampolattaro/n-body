@@ -40,12 +40,7 @@ namespace UI {
         ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
-//        LoadSimulationDialog _loadSimulationDialog;
-//        SaveSimulationDialog _saveSimulationDialog;
-
         NBody::SimulationFileManager _fileManager;
-        SimulationFileSaverDialog _simulationSaverDialog;
-        SimulationFileLoaderDialog _simulationLoaderDialog;
 
 
     public:

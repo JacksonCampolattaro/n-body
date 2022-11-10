@@ -93,7 +93,9 @@ add_executable(NBody
         UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h
         UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h
         SimulationFileManager.cpp SimulationFileManager.h
-        UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h)
+        UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h
+        UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h
+        )
 
 target_link_libraries(NBody PUBLIC
 

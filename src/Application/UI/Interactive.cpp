@@ -19,8 +19,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _view(getWidget<NBody::InteractiveView>("view", _camera, _simulation)),
         _recorder{_camera, _simulation, solver.signal_finished()},
         _fileManager{simulation},
-        _simulationSaverDialog{_fileManager},
-        _simulationLoaderDialog{_fileManager},
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, _fileManager)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
@@ -31,9 +29,9 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _particleGridCreatorWindow(simulation) {
 
     // Make sure the sidebar doesn't get squeezed too tight
-    //    Gtk::Requisition min, natural;
-    //    getWidget<Gtk::Notebook>("panel").get_preferred_size(min, natural);
-    //    getWidget<Gtk::Notebook>("panel").set_size_request(natural.get_width(), natural.get_height());
+    Gtk::Requisition min, natural;
+    getWidget<Gtk::Notebook>("panel").get_preferred_size(min, natural);
+    getWidget<Gtk::Notebook>("panel").set_size_request((natural.get_width() + min.get_width()) / 2, natural.get_height());
 
     _particlesPanel.signal_openList().connect(_particlesListWindow.slot_open());
 
@@ -55,7 +53,4 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _particleEditorWindow.slot_open.operator()(particle);
     });
     particleCreatorActionGroup->add_action("new-grid", _particleGridCreatorWindow.slot_open());
-
-    particleCreatorActionGroup->add_action("load-file", [&]() { _simulationLoaderDialog.show(); });
-    particleCreatorActionGroup->add_action("save-file", [&]() { _simulationSaverDialog.show(); });
 }

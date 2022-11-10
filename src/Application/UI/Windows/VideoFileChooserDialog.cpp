@@ -6,8 +6,6 @@
 
 #include <NBody/View/VideoOutputStream.h>
 
-#include <ranges>
-
 UI::VideoFileChooserDialog::VideoFileChooserDialog() :
         Gtk::FileChooserNative(
                 "Choose an output file for the video",

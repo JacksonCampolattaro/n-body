@@ -18,11 +18,14 @@
 #include "Application/UI/Windows/ParticleEditorWindow.h"
 #include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
-#include "Application/UI/Windows/SimulationFileSaverDialog.h"
 
 #include "Application/UI/Widgets/ParticlesColumnView.h"
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/View/VectorView.h"
+
+#include "Application/SimulationFileManager.h"
+#include "Application/UI/Windows/SimulationFileSaverDialog.h"
+#include "Application/UI/Windows/SimulationFileLoaderDialog.h"
 
 namespace UI {
 
@@ -40,6 +43,13 @@ namespace UI {
         PositionView &_centerOfMassPositionView;
 
         Gtk::Label &_interactionCountLabel;
+
+        Gtk::Button &_saveButton;
+        Gtk::Button &_openButton;
+
+        NBody::SimulationFileManager &_fileManager;
+        SimulationFileSaverDialog _simulationSaverDialog;
+        SimulationFileLoaderDialog _simulationLoaderDialog;
 
     public:
 

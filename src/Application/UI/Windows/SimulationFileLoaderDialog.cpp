@@ -4,18 +4,16 @@
 
 #include "SimulationFileLoaderDialog.h"
 
-UI::SimulationFileLoaderDialog::SimulationFileLoaderDialog(NBody::SimulationFileManager &fileManager) :
+#include <spdlog/spdlog.h>
+
+UI::SimulationFileLoaderDialog::SimulationFileLoaderDialog() :
         Gtk::FileChooserNative(
                 "Load scenario from file",
                 Gtk::FileChooser::Action::OPEN,
                 "Select",
                 "Cancel"
-        ),
-        _fileManager(fileManager) {
+        ) {
 
-
-    // todo: should default to the location the data was last loaded from
-    set_current_name("out.json");
 
     auto filter_json = Gtk::FileFilter::create();
     filter_json->set_name("JSON File (.json)");
@@ -27,11 +25,13 @@ UI::SimulationFileLoaderDialog::SimulationFileLoaderDialog(NBody::SimulationFile
     filter_any->add_pattern("*");
     add_filter(filter_any);
 
-    signal_response().connect([&](int response_id) {
+    signal_response().connect(sigc::mem_fun(*this, &SimulationFileLoaderDialog::on_response));
+}
 
-        // Save the file if the user chose a destination
-        if (response_id == Gtk::ResponseType::ACCEPT && get_file()) {
-            _fileManager.open(get_file());
-        }
-    });
+void UI::SimulationFileLoaderDialog::on_response(int response_id) {
+
+    // Save the file if the user chose a destination
+    if (response_id == Gtk::ResponseType::ACCEPT && get_file()) {
+        signal_fileSelected.emit(get_file());
+    }
 }
