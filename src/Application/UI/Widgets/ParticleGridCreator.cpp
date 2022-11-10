@@ -56,13 +56,17 @@ void UI::ParticleGridCreator::createGrid() {
     auto color = _colorEntry.get_rgba();
     auto radius = _radiusEntry.get_value();
 
-    spdlog::debug("Generating a {}x{}x{} grid of particles", xSize, ySize, zSize);
+    spdlog::debug("Generating a {}x{}x{} grid of entities", xSize, ySize, zSize);
 
+    std::vector<NBody::Entity> entities{xSize * ySize * zSize};
+    _simulation.create(entities.begin(), entities.end());
+
+    auto currentEntity = entities.begin();
     for (int x = 0; x < xSize; ++x) {
         for (int y = 0; y < ySize; ++y) {
             for (int z = 0; z < zSize; ++z) {
 
-                auto particle = _simulation.newParticle();
+                NBody::Simulation::Particle particle = {_simulation, *(currentEntity++)};
 
                 auto offset = glm::vec3{spacing * x, spacing * y, spacing * z};
                 particle.setPosition(cornerPosition + offset);
@@ -78,6 +82,7 @@ void UI::ParticleGridCreator::createGrid() {
         }
     }
 
+    _simulation.signal_particles_added.emit(entities);
     _simulation.signal_changed.emit();
     signal_done.emit();
 }
