@@ -76,8 +76,6 @@ void UI::ParticleGridCreator::createGrid() {
                 if (passive) particle.emplace<NBody::Physics::PassiveTag>();
                 particle.setColor({color.get_red(), color.get_green(), color.get_blue()});
                 particle.setSphere({(float) radius});
-
-                if (particle.all_of<sigc::signal<void()>>()) particle.get<sigc::signal<void()>>().emit();
             }
         }
     }

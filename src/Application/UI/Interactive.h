@@ -40,13 +40,12 @@ namespace UI {
         ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
-        NBody::SimulationFileManager _fileManager;
-
 
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::MultiSolver &solver);
+                    NBody::Simulation &simulation, NBody::Physics::Rule &rule,
+                    NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager);
     };
 
 }

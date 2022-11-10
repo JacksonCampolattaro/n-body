@@ -176,12 +176,14 @@ namespace NBody {
 
             // If the simulation has new particles, add them to the list
             _simulation.signal_particles_added.connect([&](auto newEntities) {
-                // todo: mark the octree root as invalid
+                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+                _particles = {actors.begin(), actors.end()};
             });
 
             // If the simulation has particles removed, take them from the list
             _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                // todo: mark the octree root as invalid
+                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+                _particles = {actors.begin(), actors.end()};
             });
         }
 

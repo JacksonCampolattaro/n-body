@@ -8,7 +8,8 @@
 #include <gtkmm/notebook.h>
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::MultiSolver &solver) :
+                             NBody::Simulation &simulation, NBody::Physics::Rule &rule,
+                             NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::ApplicationWindow>(cobject, builder),
         _simulation{simulation},
         _camera{
@@ -18,8 +19,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         },
         _view(getWidget<NBody::InteractiveView>("view", _camera, _simulation)),
         _recorder{_camera, _simulation, solver.signal_finished()},
-        _fileManager{simulation},
-        _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, _fileManager)),
+        _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, fileManager)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
         _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder)),
