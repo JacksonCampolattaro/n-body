@@ -56,6 +56,20 @@ void NBody::SimulationFileManager::open(const Glib::RefPtr<Gio::File> &file) {
     _simulation.signal_changed.emit();
 }
 
+void NBody::SimulationFileManager::close() {
+    _simulation.clear<
+            Physics::Position,
+            Physics::Velocity,
+            float,
+            NBody::Physics::ActiveTag,
+            NBody::Physics::PassiveTag,
+            NBody::Graphics::Color,
+            NBody::Graphics::Sphere,
+            sigc::signal<void()>
+    >();
+    _simulation.signal_changed.emit();
+}
+
 void NBody::SimulationFileManager::save() {
     saveAs(_file);
 }

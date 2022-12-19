@@ -44,12 +44,13 @@ namespace UI {
 
         Gtk::Label &_interactionCountLabel;
 
-        Gtk::Button &_saveButton;
-        Gtk::Button &_openButton;
-
         NBody::SimulationFileManager &_fileManager;
         SimulationFileSaverDialog _simulationSaverDialog;
         SimulationFileLoaderDialog _simulationLoaderDialog;
+
+        ParticleEditorWindow _particleEditorWindow;
+        ParticleGridCreatorWindow _particleGridCreatorWindow;
+
 
     public:
 

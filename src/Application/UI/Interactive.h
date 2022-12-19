@@ -37,7 +37,6 @@ namespace UI {
         RunPanel &_runPanel;
 
         ParticleEditorWindow _particleEditorWindow;
-        ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
 

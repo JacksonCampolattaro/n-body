@@ -55,4 +55,5 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
             spdlog::error("Unrecognized solver selected");
 
     });
+    _multiSolver.select<NBody::NaiveSolver>();
 }

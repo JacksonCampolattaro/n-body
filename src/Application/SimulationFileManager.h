@@ -22,10 +22,14 @@ namespace NBody {
         SimulationFileManager(NBody::Simulation &simulation);
 
         void open(const Glib::RefPtr<Gio::File> &file);
+        void close();
+
         void save();
         void saveAs(const Glib::RefPtr<Gio::File> &file);
 
         bool canSave();
+
+
 
     };
 

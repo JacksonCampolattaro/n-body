@@ -25,8 +25,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder)),
         _runPanel(getWidget<RunPanel>("run-panel", solver)),
         _particlesListWindow(simulation),
-        _particleEditorWindow(),
-        _particleGridCreatorWindow(simulation) {
+        _particleEditorWindow() {
 
     // Make sure the sidebar doesn't get squeezed too tight
     Gtk::Requisition min, natural;
@@ -41,16 +40,4 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
             std::find(particles.begin(), particles.end(), *_particleEditorWindow.currentParticle()) != particles.end())
             _particleEditorWindow.hide();
     });
-
-    auto particleCreatorActionGroup = Gio::SimpleActionGroup::create();
-    insert_action_group("particles", particleCreatorActionGroup);
-
-    particleCreatorActionGroup->add_action("new-single", [&]() {
-        auto particle = std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
-        particle->setMass(1.0f);
-        particle->setSphere({1.0f});
-        particle->setColor(Magnum::Color3::green(0.8));
-        _particleEditorWindow.slot_open.operator()(particle);
-    });
-    particleCreatorActionGroup->add_action("new-grid", _particleGridCreatorWindow.slot_open());
 }

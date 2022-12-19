@@ -21,6 +21,36 @@
         </section>
     </menu>
 
+    <menu id="file-saver-menu">
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Save</attribute>
+                <attribute name="action">saver.save</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">Save As</attribute>
+                <attribute name="action">saver.save-as</attribute>
+            </item>
+        </section>
+    </menu>
+
+    <menu id="file-loader-menu">
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Open</attribute>
+                <attribute name="action">loader.open</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">Import</attribute>
+                <attribute name="action">loader.import</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">New</attribute>
+                <attribute name="action">loader.new</attribute>
+            </item>
+        </section>
+    </menu>
+
     <object class="GtkBox" id="root">
         <property name="orientation">vertical</property>
 
@@ -258,27 +288,23 @@
         <child>
             <object class="GtkActionBar" id="action-bar">
                 <child type="end">
-                    <object class="GtkButton" id="open-button">
-                        <property name="child">
-                            <object class="AdwButtonContent">
-                                <property name="icon-name">document-open</property>
-                                <property name="label" translatable="yes">_Open</property>
-                                <property name="use-underline">True</property>
-                            </object>
-                        </property>
-<!--                        <property name="action-name">particles.load-file</property>-->
+                    <object class="AdwSplitButton" id="open-button">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">document-open</property>
+                        <property name="menu-model">file-loader-menu</property>
+                        <property name="action-name">loader.open</property>
                     </object>
                 </child>
                 <child type="end">
-                    <object class="GtkButton" id="save-button">
-                        <property name="child">
-                            <object class="AdwButtonContent">
-                                <property name="icon-name">document-save</property>
-                                <property name="label" translatable="yes">_Save</property>
-                                <property name="use-underline">True</property>
-                            </object>
-                        </property>
-<!--                        <property name="action-name">particles.load-file</property>-->
+                    <object class="AdwSplitButton" id="save-button">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">document-save</property>
+                        <property name="menu-model">file-saver-menu</property>
+                        <property name="action-name">saver.save</property>
                     </object>
                 </child>
             </object>
