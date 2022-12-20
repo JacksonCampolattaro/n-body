@@ -34,8 +34,6 @@ namespace UI {
 
         NBody::Simulation &_simulation;
 
-        Gtk::Button &_modifyButton;
-
         Gtk::Label &_countLabel;
         PositionView &_averagePositionView;
 
@@ -48,7 +46,6 @@ namespace UI {
         SimulationFileSaverDialog _simulationSaverDialog;
         SimulationFileLoaderDialog _simulationLoaderDialog;
 
-        ParticleEditorWindow _particleEditorWindow;
         ParticleGridCreatorWindow _particleGridCreatorWindow;
 
 
@@ -62,8 +59,6 @@ namespace UI {
     public:
 
         sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> signal_open_particle;
-
-        Glib::SignalProxy<void()> signal_openList();
 
     };
 

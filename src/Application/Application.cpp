@@ -25,7 +25,6 @@ Glib::RefPtr<Application> Application::create() {
 }
 
 void Application::on_activate() {
-    spdlog::debug("activate");
 
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
@@ -42,12 +41,6 @@ void Application::on_activate() {
 
     add_window(*interactive);
     interactive->present();
-
-    //    add_action_with_parameter("open", Glib::VARIANT_TYPE_BYTESTRING,
-    //                              [&](const Glib::VariantBase &file) {
-    //                                  auto path = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(file).get();
-    //                                  on_open({Gio::File::create_for_path(path)}, "");
-    //                              });
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {

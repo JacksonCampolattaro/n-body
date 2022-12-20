@@ -8,15 +8,15 @@
         <section>
             <item>
                 <attribute name="label" translatable="yes">Add One Particle</attribute>
-                <attribute name="action">particles.new-single</attribute>
+                <attribute name="action">particle-creator.new-single</attribute>
             </item>
             <item>
                 <attribute name="label" translatable="yes">Add a Grid of Particles</attribute>
-                <attribute name="action">particles.new-grid</attribute>
+                <attribute name="action">particle-creator.new-grid</attribute>
             </item>
             <item>
                 <attribute name="label" translatable="yes">Add an Orbiting Particle</attribute>
-                <attribute name="action">particles.new-orbit</attribute>
+                <attribute name="action">particle-creator.new-orbit</attribute>
             </item>
         </section>
     </menu>
@@ -93,6 +93,7 @@
                                                 <property name="vexpand">0</property>
                                                 <property name="valign">center</property>
                                                 <property name="label">Open</property>
+                                                <property name="action-name">particles.show</property>
                                             </object>
                                         </child>
                                     </object>
@@ -108,7 +109,7 @@
                                                 <property name="valign">center</property>
                                                 <property name="icon-name">list-add-symbolic</property>
                                                 <property name="menu-model">particle-creation-menu</property>
-                                                <property name="action-name">particles.new-single</property>
+                                                <property name="action-name">particle-creator.new-single</property>
                                             </object>
                                         </child>
                                     </object>

@@ -16,13 +16,11 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/particles_panel.xml"),
         _simulation(simulation),
         _fileManager(fileManager),
-        _modifyButton(getWidget<Gtk::Button>("modify-button")),
         _countLabel(getWidget<Gtk::Label>("count-label")),
         _averagePositionView(getWidget<PositionView>("average-position-view")),
         _totalMassView(getWidget<PreciseFloatView>("total-mass-label")),
         _centerOfMassPositionView(getWidget<PositionView>("center-of-mass-position-view")),
         _interactionCountLabel(getWidget<Gtk::Label>("interaction-count-label")),
-        _particleEditorWindow(),
         _particleGridCreatorWindow(simulation) {
 
     _simulation.signal_changed.connect([&]() {
@@ -43,7 +41,7 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
             sigc::mem_fun(_fileManager, &NBody::SimulationFileManager::open));
 
     auto loaderActionGroup = Gio::SimpleActionGroup::create();
-    loaderActionGroup->add_action("open", [&](){
+    loaderActionGroup->add_action("open", [&]() {
         _fileManager.close();
         _simulationLoaderDialog.show();
     });
@@ -63,12 +61,11 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
         particle->setSphere({1.0f});
         particle->setColor(Magnum::Color3::green(0.8));
         simulation.signal_changed.emit();
-        _particleEditorWindow.slot_open.operator()(particle);
+        activate_action(
+                "particles.show-particle",
+                Glib::Variant<ENTT_ID_TYPE>::create((ENTT_ID_TYPE) particle->entity())
+        );
     });
     particleCreatorActionGroup->add_action("new-grid", _particleGridCreatorWindow.slot_open());
-    dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("particles", particleCreatorActionGroup);
-}
-
-Glib::SignalProxy<void()> UI::ParticlesPanel::signal_openList() {
-    return _modifyButton.signal_clicked();
+    dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("particle-creator", particleCreatorActionGroup);
 }
