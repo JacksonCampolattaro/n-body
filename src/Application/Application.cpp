@@ -48,7 +48,7 @@ void Application::on_open(const Application::type_vec_files &files, const Glib::
     for (const auto &file: files) {
         spdlog::info("Loading scenario from file: {}", file->get_parse_name().c_str());
 
-        _fileManager.open(file);
+        _fileManager.openPath(file);
 
         std::ifstream scenario_data{file->get_parse_name().raw()};
         json data = json::parse(scenario_data);

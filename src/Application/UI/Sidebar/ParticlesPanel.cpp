@@ -35,23 +35,15 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
     });
     _simulation.signal_changed.emit();
 
-    _simulationSaverDialog.signal_fileSelected.connect(
-            sigc::mem_fun(_fileManager, &NBody::SimulationFileManager::saveAs));
-    _simulationLoaderDialog.signal_fileSelected.connect(
-            sigc::mem_fun(_fileManager, &NBody::SimulationFileManager::open));
-
     auto loaderActionGroup = Gio::SimpleActionGroup::create();
-    loaderActionGroup->add_action("open", [&]() {
-        _fileManager.close();
-        _simulationLoaderDialog.show();
-    });
-    loaderActionGroup->add_action("import", sigc::mem_fun(_simulationLoaderDialog, &SimulationFileLoaderDialog::show));
-    loaderActionGroup->add_action("new", sigc::mem_fun(_fileManager, &NBody::SimulationFileManager::close));
+    loaderActionGroup->add_action("open", _fileManager.slot_open);
+    loaderActionGroup->add_action("import", _fileManager.slot_import);
+    loaderActionGroup->add_action("new", _fileManager.slot_close);
     dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("loader", loaderActionGroup);
 
     auto saverActionGroup = Gio::SimpleActionGroup::create();
-    saverActionGroup->add_action("save", sigc::mem_fun(_fileManager, &NBody::SimulationFileManager::save));
-    saverActionGroup->add_action("save-as", sigc::mem_fun(_simulationSaverDialog, &SimulationFileSaverDialog::show));
+    saverActionGroup->add_action("save", _fileManager.slot_save);
+    saverActionGroup->add_action("save-as", _fileManager.slot_saveAs);
     dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("saver", saverActionGroup);
 
     auto particleCreatorActionGroup = Gio::SimpleActionGroup::create();

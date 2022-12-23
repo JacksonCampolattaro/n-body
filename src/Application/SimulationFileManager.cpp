@@ -7,11 +7,28 @@
 #include <spdlog/spdlog.h>
 
 NBody::SimulationFileManager::SimulationFileManager(NBody::Simulation &simulation) :
-        _simulation(simulation) {}
+        _simulation(simulation) {
 
-void NBody::SimulationFileManager::open(const Glib::RefPtr<Gio::File> &file) {
-    // todo: close currently open file
-    _file = file;
+
+    slot_open = sigc::mem_fun(*this, &SimulationFileManager::open);
+    slot_close = sigc::mem_fun(*this, &SimulationFileManager::close);
+    slot_import = sigc::mem_fun(*this, &SimulationFileManager::import);
+    slot_saveAs = sigc::mem_fun(*this, &SimulationFileManager::saveAs);
+    slot_save = sigc::mem_fun(*this, &SimulationFileManager::save);
+
+    _importerDialog.signal_fileSelected.connect(
+            sigc::mem_fun(*this, &NBody::SimulationFileManager::importFromPath));
+    _openerDialog.signal_fileSelected.connect(
+            sigc::mem_fun(*this, &NBody::SimulationFileManager::openPath));
+    _saverDialog.signal_fileSelected.connect(
+            sigc::mem_fun(*this, &NBody::SimulationFileManager::saveToPath));
+}
+
+void NBody::SimulationFileManager::import() {
+    _importerDialog.show();
+}
+
+void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> &file) {
 
     spdlog::debug("Opening JSON file at path \"{}\"", _file->get_path());
     std::ifstream inputFile(_file->get_path());
@@ -56,6 +73,17 @@ void NBody::SimulationFileManager::open(const Glib::RefPtr<Gio::File> &file) {
     _simulation.signal_changed.emit();
 }
 
+void NBody::SimulationFileManager::open() {
+    _openerDialog.show();
+    // todo: close existing file
+}
+
+void NBody::SimulationFileManager::openPath(const Glib::RefPtr<Gio::File> &file) {
+    close();
+    _file = file;
+    importFromPath(file);
+}
+
 void NBody::SimulationFileManager::close() {
     _simulation.clear<
             Physics::Position,
@@ -70,11 +98,15 @@ void NBody::SimulationFileManager::close() {
     _simulation.signal_changed.emit();
 }
 
-void NBody::SimulationFileManager::save() {
-    saveAs(_file);
+void NBody::SimulationFileManager::saveAs() {
+    _saverDialog.show();
 }
 
-void NBody::SimulationFileManager::saveAs(const Glib::RefPtr<Gio::File> &file) {
+void NBody::SimulationFileManager::save() {
+    saveToPath(_file);
+}
+
+void NBody::SimulationFileManager::saveToPath(const Glib::RefPtr<Gio::File> &file) {
     _file = file;
     _simulation.save(*_file);
 }

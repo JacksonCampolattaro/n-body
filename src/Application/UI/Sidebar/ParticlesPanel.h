@@ -24,8 +24,6 @@
 #include "Application/UI/Widgets/View/VectorView.h"
 
 #include "Application/SimulationFileManager.h"
-#include "Application/UI/Windows/SimulationFileSaverDialog.h"
-#include "Application/UI/Windows/SimulationFileLoaderDialog.h"
 
 namespace UI {
 
@@ -43,8 +41,6 @@ namespace UI {
         Gtk::Label &_interactionCountLabel;
 
         NBody::SimulationFileManager &_fileManager;
-        SimulationFileSaverDialog _simulationSaverDialog;
-        SimulationFileLoaderDialog _simulationLoaderDialog;
 
         ParticleGridCreatorWindow _particleGridCreatorWindow;
 
