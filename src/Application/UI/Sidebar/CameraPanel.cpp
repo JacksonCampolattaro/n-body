@@ -37,9 +37,10 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
 
     _directionEntry.set_sensitive(false);
 
+    _backgroundColorEntry.set_use_alpha();
     _backgroundColorEntry.signal_color_set().connect([&]() {
         auto color = _backgroundColorEntry.get_rgba();
-        camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue()});
+        camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()});
     });
 
     // Set the chosen background color based on the selected style
@@ -47,7 +48,7 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
         _backgroundColorEntry.set_rgba({0.12, 0.12, 0.1, 1.0});
     else _backgroundColorEntry.set_rgba({0.9, 0.9, 0.92, 1.0});
     auto color = _backgroundColorEntry.get_rgba();
-    camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue()});
+    camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()});
 
     camera.renderer().select<NBody::InstancedPhongRenderer>();
     _shaderDropdown.connect_property_changed("selected", [&]() {

@@ -5,19 +5,18 @@
 #include <gtkmm.h>
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Simulation/Solvers/NaiveSolver.h>
-#include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
-
 #include <NBody/Physics/Rule.h>
+
+#include "SimulationFileManager.h"
 
 class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
-    //NBody::BarnesHutSolver _solver;
     NBody::MultiSolver _solver;
     NBody::Physics::Rule _rule{1.0};
+    NBody::SimulationFileManager _fileManager;
 
 protected:
 
@@ -30,6 +29,8 @@ public:
 protected:
 
     void on_activate() override;
+
+    int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options) override;
 
     void on_open(const Gio::Application::type_vec_files &files,
                  const Glib::ustring &hint) override;

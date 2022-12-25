@@ -7,7 +7,6 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/filechoosernative.h>
-#include <glibmm/refptr.h>
 
 namespace UI {
 

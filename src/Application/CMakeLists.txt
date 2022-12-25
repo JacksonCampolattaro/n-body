@@ -56,12 +56,13 @@ add_executable(NBody
         UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h
         UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h
         UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
+        UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
+        UI/Widgets/ParticlesListModel.cpp UI/Widgets/ParticlesListModel.h
         UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
         UI/Widgets/View/VectorView.h
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
         UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
-        UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
         UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
         UI/Widgets/View/ParticleMassView.h
         UI/Widgets/BindableListItemFactory.h
@@ -77,8 +78,6 @@ add_executable(NBody
         UI/Widgets/View/ParticleColorView.h
         UI/Widgets/View/ParticleRadiusView.h
         UI/Widgets/View/ParticleIconView.h
-        UI/Windows/SaveSimulationDialog.cpp UI/Windows/SaveSimulationDialog.h
-        UI/Windows/LoadSimulationDialog.cpp UI/Windows/LoadSimulationDialog.h
         UI/Windows/ParticleEditorWindow.cpp UI/Windows/ParticleEditorWindow.h
         UI/Windows/ParticleListWindow.cpp UI/Windows/ParticleListWindow.h
         UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h
@@ -93,6 +92,9 @@ add_executable(NBody
         UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h
         UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h
         UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h
+        SimulationFileManager.cpp SimulationFileManager.h
+        UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h
+        UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h
         )
 
 target_link_libraries(NBody PUBLIC

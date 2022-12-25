@@ -14,8 +14,20 @@
 Application::Application() :
         Gtk::Application(
                 "com.github.JacksonCampolattaro.nbody",
-                Gio::Application::Flags::HANDLES_OPEN
-        ), _solver(_simulation, _rule) {}
+                Gio::Application::Flags::HANDLES_OPEN |
+                Gio::Application::Flags::HANDLES_COMMAND_LINE
+        ),
+        _solver(_simulation, _rule),
+        _fileManager(_simulation) {
+
+    add_main_option_entry(
+            OptionType::STRING,
+            "verbosity",
+            'v',
+            "Selects a logging level. ",
+            "{error|info|debug|trace}"
+    );
+}
 
 Glib::RefPtr<Application> Application::create() {
     spdlog::set_level(spdlog::level::debug);
@@ -23,7 +35,6 @@ Glib::RefPtr<Application> Application::create() {
 }
 
 void Application::on_activate() {
-    spdlog::debug("activate");
 
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
@@ -32,7 +43,7 @@ void Application::on_activate() {
     auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
     auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(
             builder, "primary-window",
-            _simulation, _rule, _solver
+            _simulation, _rule, _solver, _fileManager
     );
 
     // Apply LibAdwaita styling
@@ -40,12 +51,18 @@ void Application::on_activate() {
 
     add_window(*interactive);
     interactive->present();
+}
 
-//    add_action_with_parameter("open", Glib::VARIANT_TYPE_BYTESTRING,
-//                              [&](const Glib::VariantBase &file) {
-//                                  auto path = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(file).get();
-//                                  on_open({Gio::File::create_for_path(path)}, "");
-//                              });
+int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options) {
+
+    if (options->contains("verbosity")) {
+        Glib::ustring verbosity;
+        options->lookup_value("verbosity", verbosity);
+        spdlog::set_level(spdlog::level::from_str(verbosity.raw()));
+        spdlog::debug("Log level: \"{}\"", spdlog::level::to_string_view(spdlog::get_level()));
+    }
+
+    return Gtk::Application::on_handle_local_options(options);
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {
@@ -53,16 +70,14 @@ void Application::on_open(const Application::type_vec_files &files, const Glib::
     for (const auto &file: files) {
         spdlog::info("Loading scenario from file: {}", file->get_parse_name().c_str());
 
-        // TODO: Temporary solution, this should be done in the background using read_async()
+        _fileManager.openPath(file);
+
         std::ifstream scenario_data{file->get_parse_name().raw()};
         json data = json::parse(scenario_data);
-        from_json(data, _simulation);
-
         if (data.contains("G"))
             _rule.g() = data["G"].get<float>();
 
         spdlog::debug("Successfully loaded scenario with {} particles", _simulation.size());
-        spdlog::trace("Scenario contents:\n{}", data.dump(4));
     }
 
     activate();

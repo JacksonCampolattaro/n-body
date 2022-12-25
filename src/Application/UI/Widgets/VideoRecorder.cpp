@@ -75,6 +75,5 @@ UI::VideoRecorder::VideoRecorder(Gtk::Box::BaseObjectType *cobject,
         _fileChooserButton.set_label(_videoFileChooser.prettyPath(20));
         _startRecordingButton.set_sensitive(true);
     });
-    _videoFileChooser.set_current_name("out.mp4");
 
 }

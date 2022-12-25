@@ -83,11 +83,12 @@ UI::ParticlesColumnView::ParticlesColumnView(NBody::Simulation &simulation) :
     keyController->signal_key_released().connect([&](guint keyval, guint keycode, Gdk::ModifierType state) {
 
         if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) {
-            if (auto deleted = std::dynamic_pointer_cast<NBody::Simulation::Particle>(
-                    _selectionModel->get_selected_item())) {
+            if (auto deleted =
+                    std::dynamic_pointer_cast<NBody::Simulation::Particle>(_selectionModel->get_selected_item())) {
                 _simulation.removeParticle(deleted->entity());
             }
         }
+        _selectionModel->set_selected(GTK_INVALID_LIST_POSITION);
     });
     add_controller(keyController);
 

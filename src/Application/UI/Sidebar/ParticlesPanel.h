@@ -18,12 +18,12 @@
 #include "Application/UI/Windows/ParticleEditorWindow.h"
 #include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
-#include "Application/UI/Windows/SaveSimulationDialog.h"
-#include "Application/UI/Windows/LoadSimulationDialog.h"
 
 #include "Application/UI/Widgets/ParticlesColumnView.h"
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/View/VectorView.h"
+
+#include "Application/SimulationFileManager.h"
 
 namespace UI {
 
@@ -31,8 +31,6 @@ namespace UI {
     private:
 
         NBody::Simulation &_simulation;
-
-        Gtk::Button &_modifyButton;
 
         Gtk::Label &_countLabel;
         PositionView &_averagePositionView;
@@ -42,17 +40,21 @@ namespace UI {
 
         Gtk::Label &_interactionCountLabel;
 
+        NBody::SimulationFileManager &_fileManager;
+
+        ParticleGridCreatorWindow _particleGridCreatorWindow;
+
+
     public:
 
         ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
                        const Glib::RefPtr<Gtk::Builder> &builder,
-                       NBody::Simulation &simulation);
+                       NBody::Simulation &simulation,
+                       NBody::SimulationFileManager &fileManager);
 
     public:
 
         sigc::signal<void(std::shared_ptr<NBody::Simulation::Particle> &)> signal_open_particle;
-
-        Glib::SignalProxy<void()> signal_openList();
 
     };
 

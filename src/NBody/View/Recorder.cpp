@@ -7,7 +7,7 @@
 Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(const Image2D &image) {
     auto data = reinterpret_cast<const guint8 *>(image.data().data());
     return Gdk::Pixbuf::create_from_data(
-            data, Gdk::Colorspace::RGB, false, 8,
+            data, Gdk::Colorspace::RGB, true, 8,
             image.size().x(), image.size().y(),
             (int) image.pixels().stride()[0]
     )->flip(false);
@@ -43,7 +43,7 @@ Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
     _camera.draw(_simulation, framebuffer);
 
     // Return the color buffer, as an image
-    return color.image(0, {GL::PixelFormat::RGB, GL::PixelType::UnsignedByte});
+    return color.image(0, {GL::PixelFormat::RGBA, GL::PixelType::UnsignedByte});
 }
 
 void NBody::Recorder::startVideo(const std::string &filePath, const Vector2i &resolution, int frameRate) {

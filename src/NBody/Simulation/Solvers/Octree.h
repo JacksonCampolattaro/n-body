@@ -45,7 +45,7 @@ namespace {
     [[nodiscard]] auto
     split<0>(std::span<NBody::Entity> &entities,
              const NBody::Simulation &registry,
-                                 const NBody::Physics::Position &center) {
+             const NBody::Physics::Position &center) {
 
         auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
             return (registry.template get<NBody::Physics::Position>(entity))[0] < center[0];
@@ -168,23 +168,22 @@ namespace NBody {
 
     public:
 
-        Octree(NBody::Simulation &simulation) : _simulation(
-                simulation) {
+        explicit Octree(NBody::Simulation &simulation) : _simulation(simulation) {
 
             // Save a list of physics-actor particles
             auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
             _particles = {actors.begin(), actors.end()};
 
             // If the simulation has new particles, add them to the list
-            _simulation.signal_particle_added.connect([&](auto newEntity) {
-                _particles.push_back(newEntity);
-                // todo: mark the octree root as invalid
+            _simulation.signal_particles_added.connect([&](auto newEntities) {
+                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+                _particles = {actors.begin(), actors.end()};
             });
 
             // If the simulation has particles removed, take them from the list
-            _simulation.signal_particle_removed.connect([&](auto removedEntity) {
-                _particles.erase(std::find(_particles.begin(), _particles.end(), removedEntity));
-                // todo: mark the octree root as invalid
+            _simulation.signal_particles_removed.connect([&](auto removedEntities) {
+                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+                _particles = {actors.begin(), actors.end()};
             });
         }
 

@@ -4,6 +4,7 @@
     <requires lib="adwaita" version="1.0"/>
 
     <object class="AdwPreferencesGroup" id="root">
+        <property name="hexpand">True</property>
 
         <child>
             <object class="AdwActionRow">

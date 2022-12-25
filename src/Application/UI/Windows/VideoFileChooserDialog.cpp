@@ -6,12 +6,12 @@
 
 #include <NBody/View/VideoOutputStream.h>
 
-#include <ranges>
-
 UI::VideoFileChooserDialog::VideoFileChooserDialog() :
-        Gtk::FileChooserNative("Choose an output file for the video",
-                               Gtk::FileChooser::Action::SAVE,
-                               "Select", "Cancel") {
+        Gtk::FileChooserNative(
+                "Choose an output file for the video",
+                Gtk::FileChooser::Action::SAVE,
+                "Select", "Cancel"
+        ) {
 
     set_modal();
 

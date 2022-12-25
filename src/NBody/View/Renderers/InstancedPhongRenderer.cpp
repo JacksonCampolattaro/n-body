@@ -5,12 +5,20 @@
 #include "InstancedPhongRenderer.h"
 
 void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) {
-    auto shader = Shaders::PhongGL{
-            Shaders::PhongGL::Flag::NoSpecular |
-            Shaders::PhongGL::Flag::VertexColor |
-            Shaders::PhongGL::Flag::InstancedTransformation
-    };
-    auto mesh = NBody::Graphics::Sphere::mesh();
+
+    // Allocate the shader & mesh, if this hasn't been done before
+    if (!_shader || !_mesh) {
+
+        _shader = Shaders::PhongGL{
+                Shaders::PhongGL::Flag::NoSpecular |
+                Shaders::PhongGL::Flag::VertexColor |
+                Shaders::PhongGL::Flag::InstancedTransformation
+        };
+        _mesh = NBody::Graphics::Sphere::mesh();
+    }
+
+    auto &shader = *_shader;
+    auto &mesh = *_mesh;
 
     auto spheresView = simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
 

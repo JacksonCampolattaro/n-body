@@ -15,6 +15,8 @@
 #include "Sidebar/CameraPanel.h"
 #include "Sidebar/SolverPanel.h"
 #include "Sidebar/RunPanel.h"
+#include "Application/UI/Windows/SimulationFileSaverDialog.h"
+#include "Application/UI/Windows/SimulationFileLoaderDialog.h"
 
 namespace UI {
 
@@ -35,16 +37,14 @@ namespace UI {
         RunPanel &_runPanel;
 
         ParticleEditorWindow _particleEditorWindow;
-        ParticleGridCreatorWindow _particleGridCreatorWindow;
         ParticleListWindow _particlesListWindow;
 
-        LoadSimulationDialog _loadSimulationDialog;
-        SaveSimulationDialog _saveSimulationDialog;
 
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::Simulation &simulation, NBody::Physics::Rule &rule, NBody::MultiSolver &solver);
+                    NBody::Simulation &simulation, NBody::Physics::Rule &rule,
+                    NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager);
     };
 
 }
