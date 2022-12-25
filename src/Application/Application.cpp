@@ -14,10 +14,20 @@
 Application::Application() :
         Gtk::Application(
                 "com.github.JacksonCampolattaro.nbody",
-                Gio::Application::Flags::HANDLES_OPEN
+                Gio::Application::Flags::HANDLES_OPEN |
+                Gio::Application::Flags::HANDLES_COMMAND_LINE
         ),
         _solver(_simulation, _rule),
-        _fileManager(_simulation) {}
+        _fileManager(_simulation) {
+
+    add_main_option_entry(
+            OptionType::STRING,
+            "verbosity",
+            'v',
+            "Selects a logging level. ",
+            "{error|info|debug|trace}"
+    );
+}
 
 Glib::RefPtr<Application> Application::create() {
     spdlog::set_level(spdlog::level::debug);
@@ -41,6 +51,18 @@ void Application::on_activate() {
 
     add_window(*interactive);
     interactive->present();
+}
+
+int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options) {
+
+    if (options->contains("verbosity")) {
+        Glib::ustring verbosity;
+        options->lookup_value("verbosity", verbosity);
+        spdlog::set_level(spdlog::level::from_str(verbosity.raw()));
+        spdlog::debug("Log level: \"{}\"", spdlog::level::to_string_view(spdlog::get_level()));
+    }
+
+    return Gtk::Application::on_handle_local_options(options);
 }
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {

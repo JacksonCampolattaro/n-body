@@ -30,6 +30,8 @@ protected:
 
     void on_activate() override;
 
+    int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options) override;
+
     void on_open(const Gio::Application::type_vec_files &files,
                  const Glib::ustring &hint) override;
 
