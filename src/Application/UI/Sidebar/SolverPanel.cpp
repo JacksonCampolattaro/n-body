@@ -21,7 +21,7 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
 
     _timeStepEntry.setValue(NBody::Solver::timeStep());
     _timeStepEntry.signal_changed.connect([&](float t) {
-       NBody::Solver::timeStep() = t;
+        NBody::Solver::timeStep() = t;
     });
 
     _maxThreadCountEntry.set_range(1, std::numeric_limits<float>::max());
@@ -55,5 +55,17 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
             spdlog::error("Unrecognized solver selected");
 
     });
-    _multiSolver.select<NBody::NaiveSolver>();
+
+    // Make sure the UI matches the selected solver
+    // todo: this is an awful way of going about this
+    if (_multiSolver.name() == "Naive"){
+        _solverStack.set_visible_child("naive");
+        _solverDropdown.set_selected(0);
+    }
+    else if (_multiSolver.name() == "Barnes-Hut"){
+        _solverStack.set_visible_child("barnes-hut");
+        _solverDropdown.set_selected(1);
+    }
+    else
+        spdlog::error("Unrecognized solver selected");
 }

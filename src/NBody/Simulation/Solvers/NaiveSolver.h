@@ -14,6 +14,8 @@ namespace NBody {
 
         NaiveSolver(Simulation &simulation, Physics::Rule &rule) : Solver(simulation, rule) {}
 
+        std::string name() override { return "Naive"; };
+
         void step() override;
     };
 

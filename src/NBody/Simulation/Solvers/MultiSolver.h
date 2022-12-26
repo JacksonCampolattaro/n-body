@@ -23,6 +23,8 @@ namespace NBody {
                 Solver(simulation, rule),
                 _activeSolver(&getSolver<NaiveSolver>()) {}
 
+        std::string name() override { return activeSolver().name(); };
+
         template<class SolverType>
         SolverType &getSolver() {
             static SolverType solver{_simulation, _rule};
@@ -37,6 +39,7 @@ namespace NBody {
         void select() {
             _activeSolver = &getSolver<SolverType>();
             _currentStatusConnection = _activeSolver->signal_status().connect(signal_status().make_slot());
+            spdlog::debug("selected {} solver", _activeSolver->name());
         }
 
         void step() override {

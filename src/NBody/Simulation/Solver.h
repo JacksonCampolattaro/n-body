@@ -65,6 +65,8 @@ namespace NBody {
             _thread.reset();
         }
 
+        virtual std::string name() = 0;
+
         virtual void step() = 0;
 
         Simulation &simulation() { return _simulation; }

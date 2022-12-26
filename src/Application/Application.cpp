@@ -77,8 +77,6 @@ void Application::on_activate() {
 
     Gtk::IconTheme::get_for_display(Gdk::Display::get_default())->add_resource_path("/NBody/icons/");
 
-    _solver.select<NBody::BarnesHutSolver>();
-
     auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
     auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(
             builder, "primary-window",
@@ -104,28 +102,33 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
     if (options->contains("solver")) {
         Glib::ustring solver;
         options->lookup_value("solver", solver);
-        spdlog::debug("Using {} solver", solver.raw());
-        // todo
+
+        if (solver == "naive")
+            _solver.select<NBody::NaiveSolver>();
+        else if (solver == "barnes-hut")
+            _solver.select<NBody::BarnesHutSolver>();
+
+        spdlog::debug("Using {} solver", _solver.name());
+    }
+
+    if (options->contains("timestep")) {
+        double timestep;
+        options->lookup_value("timestep", timestep);
+        NBody::Solver::timeStep() = (float) timestep;
+        spdlog::debug("Time step set to {}", NBody::Solver::timeStep());
+    }
+
+    if (options->contains("gravity")) {
+        double gravity;
+        options->lookup_value("gravity", gravity);
+        _rule.g() = (float) gravity;
+        spdlog::debug("Gravitational constant set to {}", _rule.g());
     }
 
     if (options->contains("iterations")) {
         int iterations;
         options->lookup_value("iterations", iterations);
         spdlog::debug("Running {} iterations", iterations);
-        // todo
-    }
-
-    if (options->contains("timestep")) {
-        double timestep;
-        options->lookup_value("timestep", timestep);
-        spdlog::debug("Time step set to {}", timestep);
-        // todo
-    }
-
-    if (options->contains("gravity")) {
-        double gravity;
-        options->lookup_value("gravity", gravity);
-        spdlog::debug("Gravitational constant set to {}", gravity);
         // todo
     }
 
