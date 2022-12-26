@@ -14,8 +14,7 @@
 Application::Application() :
         Gtk::Application(
                 "com.github.JacksonCampolattaro.nbody",
-                Gio::Application::Flags::HANDLES_OPEN |
-                Gio::Application::Flags::HANDLES_COMMAND_LINE
+                Gio::Application::Flags::HANDLES_OPEN
         ),
         _solver(_simulation, _rule),
         _fileManager(_simulation) {
@@ -24,8 +23,48 @@ Application::Application() :
             OptionType::STRING,
             "verbosity",
             'v',
-            "Selects a logging level. ",
-            "{error|info|debug|trace}"
+            "Selects a logging level",
+            "{off|error|info|debug|trace}"
+    );
+
+    add_main_option_entry(
+            OptionType::STRING,
+            "solver",
+            's',
+            "Selects a solving algorithm",
+            "{naive|barnes-hut}"
+    );
+
+    add_main_option_entry(
+            OptionType::INT,
+            "iterations",
+            'i',
+            "Runs the specified number of iterations",
+            "<iterations>"
+    );
+
+    add_main_option_entry(
+            OptionType::FILENAME,
+            "output-file",
+            'o',
+            "Sets the file path to write result to",
+            "<path>"
+    );
+
+    add_main_option_entry(
+            OptionType::DOUBLE,
+            "timestep",
+            't',
+            "Sets the base time step used for integration",
+            "<time step>"
+    );
+
+    add_main_option_entry(
+            OptionType::DOUBLE,
+            "gravity",
+            'G',
+            "Sets the constant of gravity",
+            "<gravitational constant>"
     );
 }
 
@@ -60,6 +99,34 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
         options->lookup_value("verbosity", verbosity);
         spdlog::set_level(spdlog::level::from_str(verbosity.raw()));
         spdlog::debug("Log level: \"{}\"", spdlog::level::to_string_view(spdlog::get_level()));
+    }
+
+    if (options->contains("solver")) {
+        Glib::ustring solver;
+        options->lookup_value("solver", solver);
+        spdlog::debug("Using {} solver", solver.raw());
+        // todo
+    }
+
+    if (options->contains("iterations")) {
+        int iterations;
+        options->lookup_value("iterations", iterations);
+        spdlog::debug("Running {} iterations", iterations);
+        // todo
+    }
+
+    if (options->contains("timestep")) {
+        double timestep;
+        options->lookup_value("timestep", timestep);
+        spdlog::debug("Time step set to {}", timestep);
+        // todo
+    }
+
+    if (options->contains("gravity")) {
+        double gravity;
+        options->lookup_value("gravity", gravity);
+        spdlog::debug("Gravitational constant set to {}", gravity);
+        // todo
     }
 
     return Gtk::Application::on_handle_local_options(options);
