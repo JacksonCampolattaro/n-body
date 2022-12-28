@@ -57,15 +57,15 @@ add_executable(NBody
         UI/Sidebar/CameraPanel.cpp UI/Sidebar/CameraPanel.h
         UI/Sidebar/SolverPanel.cpp UI/Sidebar/SolverPanel.h
         UI/Sidebar/RunPanel.cpp UI/Sidebar/RunPanel.h
-        UI/Widgets/ParticlesListModel.cpp UI/Widgets/ParticlesListModel.h
+        UI/ParticlesListModel.cpp UI/ParticlesListModel.h
         UI/Widgets/Entry/ParticleEntry.cpp UI/Widgets/Entry/ParticleEntry.h
         UI/Widgets/View/VectorView.h
         UI/Widgets/Entry/VectorEntry.cpp UI/Widgets/Entry/VectorEntry.h
         UI/Widgets/BuilderWidget.h
         UI/Widgets/Entry/FloatEntry.cpp UI/Widgets/Entry/FloatEntry.h
-        UI/Widgets/ParticlesColumnView.cpp UI/Widgets/ParticlesColumnView.h
+        UI/Widgets/ListView/ParticlesColumnView.cpp UI/Widgets/ListView/ParticlesColumnView.h
         UI/Widgets/View/ParticleMassView.h
-        UI/Widgets/BindableListItemFactory.h
+        UI/BindableListItemFactory.h
         UI/Widgets/View/ParticlePositionView.h
         UI/Widgets/View/ParticleVelocityView.h
         UI/Widgets/Bindable.h
@@ -92,10 +92,10 @@ add_executable(NBody
         UI/Widgets/VideoRecorder.cpp UI/Widgets/VideoRecorder.h
         UI/Windows/VideoFileChooserDialog.cpp UI/Windows/VideoFileChooserDialog.h
         UI/Windows/ImageFileChooserDialog.cpp UI/Windows/ImageFileChooserDialog.h
-        SimulationFileManager.cpp SimulationFileManager.h
+        UI/SimulationFileManager.cpp UI/SimulationFileManager.h
         UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h
         UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h
-        )
+        UI/Widgets/ListView/StackView.cpp UI/Widgets/ListView/StackView.h UI/Widgets/ListView/DropDownView.cpp UI/Widgets/ListView/DropDownView.h)
 
 target_link_libraries(NBody PUBLIC
 

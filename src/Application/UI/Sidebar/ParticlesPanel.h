@@ -19,11 +19,11 @@
 #include "Application/UI/Windows/ParticleGridCreatorWindow.h"
 #include "Application/UI/Windows/ParticleListWindow.h"
 
-#include "Application/UI/Widgets/ParticlesColumnView.h"
+#include "Application/UI/Widgets/ListView/ParticlesColumnView.h"
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/View/VectorView.h"
 
-#include "Application/SimulationFileManager.h"
+#include "Application/UI/SimulationFileManager.h"
 
 namespace UI {
 

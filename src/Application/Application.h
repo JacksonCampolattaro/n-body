@@ -1,14 +1,13 @@
 #ifndef N_BODY_APPLICATION_H
 #define N_BODY_APPLICATION_H
 
+#include "Application/UI/SimulationFileManager.h"
 
 #include <gtkmm.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
 #include <NBody/Physics/Rule.h>
-
-#include "SimulationFileManager.h"
 
 class Application : public Gtk::Application {
 private:
@@ -30,7 +29,7 @@ protected:
 
     void on_activate() override;
 
-    int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options) override;
+    int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options) override;
 
     void on_open(const Gio::Application::type_vec_files &files,
                  const Glib::ustring &hint) override;

@@ -18,7 +18,7 @@ namespace NBody {
 
     typedef std::array<char, 64> Status;
 
-    class Solver {
+    class Solver : public Glib::Object {
     protected:
 
         inline static float _dt = 0.001;
@@ -38,7 +38,12 @@ namespace NBody {
 
     public:
 
-        Solver(Simulation &simulation, Physics::Rule &rule) : _simulation(simulation), _rule(rule) {
+
+        Solver(Simulation &simulation, Physics::Rule &rule) :
+                Glib::ObjectBase(typeid(NBody::Solver)),
+                Glib::Object(),
+                _simulation(simulation), _rule(rule) {
+
             _slot_step = sigc::mem_fun(*this, &Solver::on_step);
 
             // When the underlying solver announces that it's complete...
@@ -64,6 +69,8 @@ namespace NBody {
                 _thread->join();
             _thread.reset();
         }
+
+        virtual std::string id() = 0;
 
         virtual std::string name() = 0;
 

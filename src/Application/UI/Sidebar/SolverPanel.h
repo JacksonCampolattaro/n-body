@@ -5,6 +5,9 @@
 #ifndef N_BODY_SOLVERPANEL_H
 #define N_BODY_SOLVERPANEL_H
 
+#include "Application/UI/Widgets/ListView/StackView.h"
+#include "Application/UI/Widgets/ListView/DropDownView.h"
+
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
 
@@ -28,15 +31,11 @@ namespace UI {
     private:
 
         NBody::MultiSolver &_multiSolver;
-
-        NaiveSolverSettings _naiveSolverSettings;
-        BarnesHutSolverSettings _barnesHutSolverSettings;
-        Gtk::Label _placeholderSolverSettings{"(This is a Placeholder)"};
-
-        Gtk::DropDown &_solverDropdown;
-        Gtk::Stack &_solverStack;
         Gtk::SpinButton &_maxThreadCountEntry;
         PositiveFloatEntry &_timeStepEntry;
+
+        DropDownView &_solverDropdown;
+        StackView &_solverStack;
 
     public:
 

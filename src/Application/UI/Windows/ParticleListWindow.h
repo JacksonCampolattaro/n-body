@@ -7,7 +7,7 @@
 
 #include <gtkmm/window.h>
 
-#include "Application/UI/Widgets/ParticlesColumnView.h"
+#include "Application/UI/Widgets/ListView/ParticlesColumnView.h"
 
 namespace UI {
 

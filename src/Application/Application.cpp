@@ -96,17 +96,13 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
         Glib::ustring verbosity;
         options->lookup_value("verbosity", verbosity);
         spdlog::set_level(spdlog::level::from_str(verbosity.raw()));
-        spdlog::debug("Log level: \"{}\"", spdlog::level::to_string_view(spdlog::get_level()));
+        spdlog::debug("Log level: {}", spdlog::level::to_string_view(spdlog::get_level()));
     }
 
     if (options->contains("solver")) {
-        Glib::ustring solver;
-        options->lookup_value("solver", solver);
-
-        if (solver == "naive")
-            _solver.select<NBody::NaiveSolver>();
-        else if (solver == "barnes-hut")
-            _solver.select<NBody::BarnesHutSolver>();
+        Glib::ustring solverID;
+        options->lookup_value("solver", solverID);
+        _solver.select(solverID);
 
         spdlog::debug("Using {} solver", _solver.name());
     }

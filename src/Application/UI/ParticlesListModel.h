@@ -10,7 +10,7 @@
 #include <giomm/listmodel.h>
 #include <spdlog/spdlog.h>
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 namespace UI {
 
