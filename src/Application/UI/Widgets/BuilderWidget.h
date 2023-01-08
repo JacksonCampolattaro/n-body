@@ -71,10 +71,15 @@ namespace UI {
             };
 
             // Invoke the appropriate builder function, depending on whether the widget is a built-in
+            W *widget;
             if constexpr(isDerived)
-                return *Gtk::Builder::get_widget_derived<W>(_builder, name, std::forward<Args>(args)...);
+                widget = Gtk::Builder::get_widget_derived<W>(_builder, name, std::forward<Args>(args)...);
             else
-                return *_builder->get_widget<W>(name);
+                widget = _builder->get_widget<W>(name);
+
+            // todo: in the future, it might be better to throw an error
+            if (!widget) spdlog::error("Failed to retrieve widget with name \"{}\"", name.raw());
+            return *widget;
         };
 
     };

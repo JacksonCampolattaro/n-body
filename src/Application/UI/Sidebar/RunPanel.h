@@ -5,20 +5,27 @@
 #ifndef N_BODY_RUNPANEL_H
 #define N_BODY_RUNPANEL_H
 
-#include <deque>
+#include "ContinuousRunnerController.h"
+#include "OneStepRunnerController.h"
+#include "NStepsRunnerController.h"
 
-#include <sigc++/sigc++.h>
+#include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/View/FloatView.h"
+#include "Application/UI/Widgets/View/TimeView.h"
+#include "Application/UI/Widgets/ListView/DropDownView.h"
+#include "Application/UI/Widgets/ListView/StackView.h"
+
+#include <NBody/Simulation/Solver.h>
+#include <NBody/Simulation/Runners/MultiRunner.h>
 
 #include <gtkmm/listboxrow.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/stack.h>
 #include <gtkmm/entry.h>
 
-#include <NBody/Simulation/Solver.h>
+#include <sigc++/sigc++.h>
 
-#include "Application/UI/Widgets/BuilderWidget.h"
-#include "Application/UI/Widgets/View/FloatView.h"
-#include "Application/UI/Widgets/View/TimeView.h"
+#include <deque>
 
 namespace UI {
 
@@ -28,16 +35,11 @@ namespace UI {
         NBody::Solver &_solver;
         sigc::connection _idler;
 
-        Gtk::ListBoxRow &_runModeDropdown;
+        NBody::MultiRunner _multiRunner;
+        DropDownView &_runnerDropdown;
+        StackView &_runnerStack;
 
         Gtk::Label &_statusLabel;
-
-        Gtk::ToggleButton &_runContinuouslyButton;
-        Gtk::ToggleButton &_runOneStepButton;
-        Gtk::ToggleButton &_runNStepsButton;
-        Gtk::Entry &_stepCountEntry;
-
-        Gtk::Stack &_runControllerStack;
 
         Gtk::Label &_iterationsLabel;
         PreciseFloatView &_stepTimeLabel;
@@ -56,11 +58,7 @@ namespace UI {
 
         RunPanel(Gtk::Box::BaseObjectType *cobject,
                  const Glib::RefPtr<Gtk::Builder> &builder,
-                 NBody::Solver &solver);
-
-        void run(std::size_t n = 1);
-
-        void stop();
+                 NBody::Solver &solver, NBody::MultiRunner &runner);
 
     };
 

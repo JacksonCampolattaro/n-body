@@ -15,9 +15,9 @@
 #include <gtkmm/expression.h>
 #include <gtkmm/sortlistmodel.h>
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
-#include "ParticlesListModel.h"
+#include "Application/UI/ParticlesListModel.h"
 
 #include "Application/UI/Widgets/View/ParticleIDView.h"
 #include "Application/UI/Widgets/View/ParticleIconView.h"
@@ -27,7 +27,7 @@
 #include "Application/UI/Widgets/View/ParticleVelocityView.h"
 #include "Application/UI/Widgets/View/ParticleColorView.h"
 #include "Application/UI/Widgets/View/ParticleRadiusView.h"
-#include "BindableListItemFactory.h"
+#include "Application/UI/BindableListItemFactory.h"
 
 
 namespace UI {

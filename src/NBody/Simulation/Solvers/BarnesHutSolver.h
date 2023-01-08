@@ -28,6 +28,9 @@ namespace NBody {
                 Solver(simulation, rule),
                 _octree(std::make_unique<Octree>(simulation)) {}
 
+        std::string id() override { return "barnes-hut"; };
+        std::string name() override { return "Barnes-Hut"; };
+
         void step() override;
 
         float &theta() { return _theta; }

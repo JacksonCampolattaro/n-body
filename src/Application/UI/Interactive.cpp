@@ -8,7 +8,7 @@
 #include <gtkmm/notebook.h>
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::Simulation &simulation, NBody::Physics::Rule &rule,
+                             NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Rule &rule,
                              NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::ApplicationWindow>(cobject, builder),
         _simulation{simulation},
@@ -23,7 +23,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
         _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder)),
-        _runPanel(getWidget<RunPanel>("run-panel", solver)),
+        _runPanel(getWidget<RunPanel>("run-panel", solver, runner)),
         _particlesListWindow(simulation),
         _particleEditorWindow() {
 
@@ -42,8 +42,6 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
 
     auto particlesActionGroup = Gio::SimpleActionGroup::create();
     particlesActionGroup->add_action("show", _particlesListWindow.slot_open());
-    dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("particles", particlesActionGroup);
-
     particlesActionGroup->add_action_with_parameter(
             "show-particle", Glib::VARIANT_TYPE_UINT32,
             [&](const Glib::VariantBase &v) {
@@ -54,5 +52,19 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                 _particleEditorWindow.slot_open.operator()(entity);
             }
     );
+    dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("particles", particlesActionGroup);
 
+    //auto runActionGroup = Gio::SimpleActionGroup::create();
+    //particlesActionGroup->add_action("one-step", runner.slot_runOneStep());
+    //    particlesActionGroup->add_action_with_parameter(
+    //            "show-particle", Glib::VARIANT_TYPE_UINT32,
+    //            [&](const Glib::VariantBase &v) {
+    //                assert(v.is_of_type(Glib::VARIANT_TYPE_UINT32));
+    //                auto id = Glib::VariantBase::cast_dynamic<Glib::Variant<ENTT_ID_TYPE>>(v).get();
+    //                auto entity = std::make_shared<NBody::Simulation::Particle>(
+    //                        _simulation, static_cast<NBody::Entity>(id));
+    //                _particleEditorWindow.slot_open.operator()(entity);
+    //            }
+    //    );
+    //dynamic_cast<Gtk::Window *>(get_root())->insert_action_group("run", runActionGroup);
 }

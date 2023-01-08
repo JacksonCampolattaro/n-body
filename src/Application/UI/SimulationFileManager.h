@@ -5,10 +5,10 @@
 #ifndef N_BODY_SIMULATIONFILEMANAGER_H
 #define N_BODY_SIMULATIONFILEMANAGER_H
 
-#include "UI/Windows/SimulationFileLoaderDialog.h"
-#include "UI/Windows/SimulationFileSaverDialog.h"
+#include "Application/UI/Windows/SimulationFileLoaderDialog.h"
+#include "Application/UI/Windows/SimulationFileSaverDialog.h"
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 #include <giomm/file.h>
 

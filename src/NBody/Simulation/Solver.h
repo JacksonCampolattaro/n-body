@@ -18,7 +18,7 @@ namespace NBody {
 
     typedef std::array<char, 64> Status;
 
-    class Solver {
+    class Solver : public Glib::Object {
     protected:
 
         inline static float _dt = 0.001;
@@ -38,7 +38,12 @@ namespace NBody {
 
     public:
 
-        Solver(Simulation &simulation, Physics::Rule &rule) : _simulation(simulation), _rule(rule) {
+
+        Solver(Simulation &simulation, Physics::Rule &rule) :
+                Glib::ObjectBase(typeid(NBody::Solver)),
+                Glib::Object(),
+                _simulation(simulation), _rule(rule) {
+
             _slot_step = sigc::mem_fun(*this, &Solver::on_step);
 
             // When the underlying solver announces that it's complete...
@@ -65,6 +70,10 @@ namespace NBody {
             _thread.reset();
         }
 
+        virtual std::string id() = 0;
+
+        virtual std::string name() = 0;
+
         virtual void step() = 0;
 
         Simulation &simulation() { return _simulation; }
@@ -76,6 +85,10 @@ namespace NBody {
         const std::size_t &maxThreadCount() const { return _maxThreadCount; }
 
         static float &timeStep() { return Solver::_dt; }
+
+        void runStep() {
+
+        }
 
     public:
 
@@ -113,11 +126,11 @@ namespace NBody {
                 auto startTime = std::chrono::steady_clock::now();
                 step();
                 auto finishTime = std::chrono::steady_clock::now();
-
                 std::chrono::duration<double> duration = finishTime - startTime;
+
+                _statusDispatcher.emit({"Finished step"});
                 _computeTimeDispatcher.emit(duration);
                 spdlog::trace("Finished simulation step in {} s", duration.count());
-                _statusDispatcher.emit({"Finished step"});
 
                 // Notify the main thread that we're finished (so we can join)
                 _dispatcher.emit();

@@ -21,7 +21,8 @@ add_library(Simulation
         Solvers/MultiSolver.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.cpp Solvers/BarnesHutSolver.h
-        Solvers/Octree.cpp Solvers/Octree.h)
+        Solvers/Octree.cpp Solvers/Octree.h Runner.h
+        Runners/OneStepRunner.cpp Runners/OneStepRunner.h Runners/NStepsRunner.cpp Runners/NStepsRunner.h Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h Runners/MultiRunner.h )
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -41,6 +42,6 @@ target_link_libraries(Simulation PUBLIC
         TBB::tbb
         )
 
-add_library(NBody::Simulation ALIAS Simulation)
+add_library(NBody::Simulation ALIAS Simulation )
 
 add_subdirectory(test)
