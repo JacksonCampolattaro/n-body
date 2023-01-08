@@ -4,6 +4,7 @@
 #include <gtkmm/applicationwindow.h>
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Runner.h>
 #include <NBody/View/InteractiveView.h>
 #include <NBody/View/ArcBallControllableCamera.h>
 #include <NBody/View/Recorder.h>
@@ -43,7 +44,7 @@ namespace UI {
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::Simulation &simulation, NBody::Physics::Rule &rule,
+                    NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Rule &rule,
                     NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager);
     };
 

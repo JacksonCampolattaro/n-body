@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkBox" id="root">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">true</property>
+        <property name="halign">end</property>
+        <style>
+            <class name="linked"/>
+        </style>
+
+        <child>
+            <object class="GtkEntry" id="step-count-entry">
+                <style>
+                    <class name="suggested-action"/>
+                </style>
+                <property name="max-width-chars" translatable="yes">10</property>
+                <property name="placeholder-text" translatable="yes">Step Count</property>
+                <property name="text" translatable="yes">100</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkToggleButton" id="run-button">
+                <style>
+                    <class name="suggested-action"/>
+                </style>
+                <property name="hexpand">true</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Start</property>
+            </object>
+        </child>
+    </object>
+</interface>

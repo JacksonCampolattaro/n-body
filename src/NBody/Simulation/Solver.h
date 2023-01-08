@@ -86,6 +86,10 @@ namespace NBody {
 
         static float &timeStep() { return Solver::_dt; }
 
+        void runStep() {
+
+        }
+
     public:
 
         sigc::signal<void()> &signal_finished() { return _signal_finished; };
@@ -122,11 +126,11 @@ namespace NBody {
                 auto startTime = std::chrono::steady_clock::now();
                 step();
                 auto finishTime = std::chrono::steady_clock::now();
-
                 std::chrono::duration<double> duration = finishTime - startTime;
+
+                _statusDispatcher.emit({"Finished step"});
                 _computeTimeDispatcher.emit(duration);
                 spdlog::trace("Finished simulation step in {} s", duration.count());
-                _statusDispatcher.emit({"Finished step"});
 
                 // Notify the main thread that we're finished (so we can join)
                 _dispatcher.emit();

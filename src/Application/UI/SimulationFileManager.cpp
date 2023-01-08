@@ -110,3 +110,7 @@ void NBody::SimulationFileManager::saveToPath(const Glib::RefPtr<Gio::File> &fil
     _file = file;
     _simulation.save(*_file);
 }
+
+bool NBody::SimulationFileManager::canSave() {
+    return (bool) _file;
+}

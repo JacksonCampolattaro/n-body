@@ -20,16 +20,13 @@ static std::string validate(const std::string &in) {
 
 UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
                        const Glib::RefPtr<Gtk::Builder> &builder,
-                       NBody::Solver &solver) :
+                       NBody::Solver &solver, NBody::MultiRunner &runner) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/run_panel.xml"),
         _solver(solver),
-        _runModeDropdown(getWidget<Gtk::ListBoxRow>("run-mode-dropdown")),
+        _multiRunner(runner),
+        _runnerDropdown(getWidget<DropDownView>("run-mode-dropdown")),
         _statusLabel(getWidget<Gtk::Label>("status-label")),
-        _runContinuouslyButton(getWidget<Gtk::ToggleButton>("run-continuously-button")),
-        _runOneStepButton(getWidget<Gtk::ToggleButton>("run-one-step-button")),
-        _runNStepsButton(getWidget<Gtk::ToggleButton>("run-n-steps-button")),
-        _stepCountEntry(getWidget<Gtk::Entry>("step-count-entry")),
-        _runControllerStack(getWidget<Gtk::Stack>("run-controller-stack")),
+        _runnerStack(getWidget<StackView>("run-controller-stack")),
         _iterationsLabel(getWidget<Gtk::Label>("iterations-label")),
         _stepTimeLabel(getWidget<PreciseFloatView>("step-time-label")),
         _averageStepTimeLabel(getWidget<PreciseFloatView>("average-step-time-label")),
@@ -37,49 +34,26 @@ UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
         _remainingTime(getWidget<Gtk::Box>("remaining-time")),
         _remainingTimeView(getWidget<TimeView>("remaining-time-view")) {
 
-    _runControllerStack.set_visible_child("continuous");
-    _remainingTime.hide();
-    _runModeDropdown.connect_property_changed("selected", [&]() {
-        switch (_runModeDropdown.get_property<guint>("selected")) {
-            case 0:
-                _runControllerStack.set_visible_child("continuous");
-                _remainingTime.hide();
-                break;
-            case 1:
-                _runControllerStack.set_visible_child("one-step");
-                _remainingTime.hide();
-                break;
-            case 2:
-                _runControllerStack.set_visible_child("n-steps");
-                _remainingTime.show();
-                break;
-            default:
-                spdlog::error("Unrecognized run mode selected");
-                break;
-        }
-    });
+    _runnerDropdown.set_expression(Gtk::ClosureExpression<Glib::ustring>::create(
+            [&](const Glib::RefPtr<Glib::ObjectBase> &item) {
+                return std::dynamic_pointer_cast<NBody::Runner>(item)->name();
+            }
+    ));
+    _runnerDropdown.set_model(_multiRunner.selectionModel());
 
-    _runContinuouslyButton.signal_toggled().connect([&] {
-        if (_runContinuouslyButton.get_active())
-            run(std::numeric_limits<std::size_t>::max());
-        else
-            stop();
-    });
-
-    _runOneStepButton.signal_toggled().connect([&] {
-        if (_runOneStepButton.get_active())
-            run(1);
-        else
-            stop();
-    });
-
-    _runNStepsButton.signal_toggled().connect([&] {
-        if (_runNStepsButton.get_active()) {
-            _stepCountEntry.set_text(validate(_stepCountEntry.get_text()));
-            run(std::stoi(_stepCountEntry.get_text()));
-        } else
-            stop();
-    });
+    _runnerStack.set_expression(Gtk::ClosureExpression<Gtk::Widget *>::create(
+            [&](const Glib::RefPtr<Glib::ObjectBase> &item) -> Gtk::Widget * {
+                auto runner = std::dynamic_pointer_cast<NBody::Runner>(item);
+                if (runner->id() == "continuous")
+                    return new ContinuousRunnerController((NBody::ContinuousRunner &) *runner);
+                if (runner->id() == "one-step")
+                    return new OneStepRunnerController((NBody::OneStepRunner &) *runner);
+                if (runner->id() == "n-steps")
+                    return new NStepsRunnerController((NBody::NStepsRunner &) *runner);
+                else return new Gtk::Label{"Unrecognized Runner"};
+            }
+    ));
+    _runnerStack.set_model(_multiRunner.selectionModel());
 
     solver.signal_finished().connect([&] {
         _iterations++;
@@ -105,32 +79,32 @@ UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
     });
 }
 
-void UI::RunPanel::run(std::size_t n) {
-    spdlog::debug("Running {} steps", n);
+//void UI::RunPanel::run(std::size_t n) {
+//    spdlog::debug("Running {} steps", n);
+//
+//    _runnerDropdown.set_sensitive(false);
+//
+//    _currentIterations = 1;
+//    _idler = Glib::signal_timeout().connect([this, n] {
+//
+//        _solver.slot_step()();
+//
+//        _stepCountEntry.set_progress_fraction((double) _currentIterations / (double) n);
+//        auto averageDuration = std::reduce(_stepTimes.begin(), _stepTimes.end()) / _stepTimes.size();
+//        _remainingTimeView.setValue(averageDuration * (n - _currentIterations));
+//
+//        if (_currentIterations >= n)
+//            stop();
+//
+//        return true;
+//    }, 1);
+//}
 
-    _runModeDropdown.set_sensitive(false);
-
-    _currentIterations = 1;
-    _idler = Glib::signal_timeout().connect([this, n] {
-
-        _solver.slot_step()();
-
-        _stepCountEntry.set_progress_fraction((double) _currentIterations / (double) n);
-        auto averageDuration = std::reduce(_stepTimes.begin(), _stepTimes.end()) / _stepTimes.size();
-        _remainingTimeView.setValue(averageDuration * (n - _currentIterations));
-
-        if (_currentIterations >= n)
-            stop();
-
-        return true;
-    }, 1);
-}
-
-void UI::RunPanel::stop() {
-    _idler.disconnect();
-    _runContinuouslyButton.set_active(false);
-    _runOneStepButton.set_active(false);
-    _runNStepsButton.set_active(false);
-    _stepCountEntry.set_progress_fraction(0.0);
-    _runModeDropdown.set_sensitive(true);
-}
+//void UI::RunPanel::stop() {
+//    _idler.disconnect();
+//    _runContinuouslyButton.set_active(false);
+//    //_runOneStepButton.set_active(false);
+//    _runNStepsButton.set_active(false);
+//    _stepCountEntry.set_progress_fraction(0.0);
+//    _runnerDropdown.set_sensitive(true);
+//}

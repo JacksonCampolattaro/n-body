@@ -13,6 +13,10 @@
         <file>ui/naive_solver_settings.xml</file>
         <file>ui/barnes_hut_solver_settings.xml</file>
 
+        <file>ui/continuous_runner_controller.xml</file>
+        <file>ui/one_step_runner_controller.xml</file>
+        <file>ui/n_steps_runner_controller.xml</file>
+
         <file>ui/particle_entry.xml</file>
         <file>ui/time_view.xml</file>
         <file>ui/particle_grid_creator.xml</file>

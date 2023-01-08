@@ -17,6 +17,7 @@ Application::Application() :
                 Gio::Application::Flags::HANDLES_OPEN
         ),
         _solver(_simulation, _rule),
+        _runner(_solver),
         _fileManager(_simulation) {
 
     add_main_option_entry(
@@ -80,7 +81,7 @@ void Application::on_activate() {
     auto builder = Gtk::Builder::create_from_resource("/ui/interactive.xml");
     auto interactive = Gtk::Builder::get_widget_derived<UI::Interactive>(
             builder, "primary-window",
-            _simulation, _rule, _solver, _fileManager
+            _simulation, _runner, _rule, _solver, _fileManager
     );
 
     // Apply LibAdwaita styling
@@ -125,7 +126,8 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
         int iterations;
         options->lookup_value("iterations", iterations);
         spdlog::debug("Running {} iterations", iterations);
-        // todo
+        _runner.select<NBody::NStepsRunner>();
+        _runner.get<NBody::NStepsRunner>().start(iterations);
     }
 
     return Gtk::Application::on_handle_local_options(options);
@@ -133,17 +135,20 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
 
 void Application::on_open(const Application::type_vec_files &files, const Glib::ustring &hint) {
 
-    for (const auto &file: files) {
-        spdlog::info("Loading scenario from file: {}", file->get_parse_name().c_str());
+    _fileManager.close();
 
-        _fileManager.openPath(file);
+    for (const auto &file: files) {
+
+        if (!_fileManager.canSave())
+            _fileManager.openPath(file);
+        else
+            _fileManager.importFromPath(file);
 
         std::ifstream scenario_data{file->get_parse_name().raw()};
         json data = json::parse(scenario_data);
         if (data.contains("G"))
             _rule.g() = data["G"].get<float>();
 
-        spdlog::debug("Successfully loaded scenario with {} particles", _simulation.size());
     }
 
     activate();

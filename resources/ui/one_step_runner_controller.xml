@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="GtkBox" id="root">
+        <property name="hexpand">true</property>
+        <property name="halign">end</property>
+        <child>
+            <object class="GtkToggleButton" id="step-button">
+                <style>
+                    <class name="suggested-action"/>
+                </style>
+                <property name="hexpand">true</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Step</property>
+            </object>
+        </child>
+    </object>
+</interface>

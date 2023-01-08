@@ -7,6 +7,7 @@
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
+#include <NBody/Simulation/Runners/MultiRunner.h>
 #include <NBody/Physics/Rule.h>
 
 class Application : public Gtk::Application {
@@ -16,6 +17,7 @@ private:
     NBody::MultiSolver _solver;
     NBody::Physics::Rule _rule{1.0};
     NBody::SimulationFileManager _fileManager;
+    NBody::MultiRunner _runner;
 
 protected:
 
@@ -35,6 +37,8 @@ protected:
                  const Glib::ustring &hint) override;
 
 private:
+
+    void registerActions();
 
 };
 
