@@ -20,7 +20,7 @@ void NBody::BarnesHutSolver::step() {
 
     // Construct an octree from the actor particles
     _statusDispatcher.emit({"Building Octree"});
-    _octree->build(_maxDepth, _maxLeafSize);
+    _octree->refine();
 
     // Use the octree to estimate forces on each passive particle, and update their velocity
     _statusDispatcher.emit({"Computing Velocities"});
@@ -30,7 +30,14 @@ void NBody::BarnesHutSolver::step() {
         auto &velocity = targets.get<Velocity>(e);
 
         assert(_octree);
-        auto acceleration = _octree->applyRule(_rule, targetPosition, targetMass, _theta);
+        auto acceleration = computeAcceleration(
+                _octree->root(),
+                simulation().view<const Position, const Mass, const ActiveTag>(),
+                targetPosition,
+                targetMass,
+                _rule,
+                _theta
+        );
 
         velocity += acceleration * _dt;
     });

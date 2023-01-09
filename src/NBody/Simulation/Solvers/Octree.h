@@ -9,7 +9,9 @@
 #include <set>
 #include <stack>
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
+
+#include "Tree.h"
 
 #include <NBody/Simulation/Simulation.h>
 
@@ -24,12 +26,13 @@ namespace {
 
     template<int Dimension>
     [[nodiscard]] auto
-    split(std::span<NBody::Entity> &entities,
-          const NBody::Simulation &registry,
-          const NBody::Physics::Position &center) {
+    partition(std::span<NBody::Entity> &entities,
+              const entt::basic_view<entt::entity, entt::exclude_t<>,
+                      const Position, const Mass, const ActiveTag> &activeParticles,
+              const NBody::Physics::Position &center) {
 
         auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
-            return (registry.template get<NBody::Physics::Position>(entity))[Dimension] < center[Dimension];
+            return (activeParticles.get<const Position>(entity))[Dimension] < center[Dimension];
         });
 
         std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
@@ -40,18 +43,19 @@ namespace {
         // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
         // Or this:
         // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
-        return std::tuple_cat(split<Dimension - 1>(less, registry, center),
-                              split<Dimension - 1>(more, registry, center));
+        return std::tuple_cat(partition<Dimension - 1>(less, activeParticles, center),
+                              partition<Dimension - 1>(more, activeParticles, center));
     }
 
     template<>
     [[nodiscard]] auto
-    split<0>(std::span<NBody::Entity> &entities,
-             const NBody::Simulation &registry,
-             const NBody::Physics::Position &center) {
+    partition<0>(std::span<NBody::Entity> &entities,
+                 const entt::basic_view<entt::entity, entt::exclude_t<>,
+                         const Position, const Mass, const ActiveTag> &activeParticles,
+                 const NBody::Physics::Position &center) {
 
         auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
-            return (registry.template get<NBody::Physics::Position>(entity))[0] < center[0];
+            return (activeParticles.get<const Position>(entity))[0] < center[0];
         });
 
         std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
@@ -63,6 +67,143 @@ namespace {
 
 }
 
+namespace NBody {
+
+    class OctreeNode : public NodeBase<OctreeNode> {
+    private:
+
+        std::vector<OctreeNode> _children;
+
+        Position _center;
+        float _sideLength;
+
+        Mass _totalMass;
+        Position _centerOfMass;
+
+    public:
+
+        OctreeNode(std::span<Entity> contents,
+                   const Position &center = {0.0f, 0.0f, 0.0f},
+                   float sideLength = 10000.0f) :
+                NodeBase<OctreeNode>(contents),
+                _center(center),
+                _sideLength(sideLength) {}
+
+        using NodeBase<OctreeNode>::contents;
+        using NodeBase<OctreeNode>::isLeaf;
+        using NodeBase<OctreeNode>::averagePosition;
+
+        [[nodiscard]] Position &center() { return _center; }
+
+        [[nodiscard]] const Position &center() const { return _center; }
+
+        [[nodiscard]] const float &sideLength() const { return _sideLength; }
+
+        [[nodiscard]] float &sideLength() { return _sideLength; }
+
+        std::vector<OctreeNode> &children() { return _children; }
+
+        const std::vector<OctreeNode> &children() const { return _children; }
+
+        [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
+
+        [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
+
+        void split(const entt::basic_view<entt::entity, entt::exclude_t<>,
+                const Position, const Mass, const ActiveTag> &activeParticles) {
+
+            std::span<NBody::Entity>
+                    xyz000,
+                    xyz100,
+                    xyz010,
+                    xyz110,
+                    xyz001,
+                    xyz101,
+                    xyz011,
+                    xyz111;
+
+            std::tie(
+                    xyz000,
+                    xyz100,
+                    xyz010,
+                    xyz110,
+                    xyz001,
+                    xyz101,
+                    xyz011,
+                    xyz111
+            ) = partition<2>(contents(), activeParticles, _center);
+
+            // Initialize 8 child nodes
+            float childSideLength = sideLength() / 2.0f;
+            _children = {{
+                                 {xyz000,
+                                  center() + glm::vec3{-childSideLength, -childSideLength, -childSideLength},
+                                  childSideLength},
+                                 {xyz001,
+                                  center() + glm::vec3{-childSideLength, -childSideLength, childSideLength},
+                                  childSideLength},
+                                 {xyz010,
+                                  center() + glm::vec3{-childSideLength, childSideLength, -childSideLength},
+                                  childSideLength},
+                                 {xyz011,
+                                  center() + glm::vec3{-childSideLength, childSideLength, childSideLength},
+                                  childSideLength},
+                                 {xyz100,
+                                  center() + glm::vec3{childSideLength, -childSideLength, -childSideLength},
+                                  childSideLength},
+                                 {xyz101,
+                                  center() + glm::vec3{childSideLength, -childSideLength, childSideLength},
+                                  childSideLength},
+                                 {xyz110,
+                                  center() + glm::vec3{childSideLength, childSideLength, -childSideLength},
+                                  childSideLength},
+                                 {xyz111,
+                                  center() + glm::vec3{childSideLength, childSideLength, childSideLength},
+                                  childSideLength}
+                         }};
+        }
+
+
+        void summarize(const entt::basic_view<entt::entity, entt::exclude_t<>,
+                const Position, const Mass, const ActiveTag> &activeParticles) {
+
+
+            if (isLeaf()) {
+
+                for (const auto &entity: contents()) {
+                    auto entityMass = activeParticles.get<const Mass>(entity).mass();
+                    _totalMass.mass() += entityMass;
+                    _centerOfMass = _centerOfMass + (entityMass * activeParticles.get<const Position>(entity));
+                }
+                _centerOfMass = _centerOfMass / _totalMass.mass();
+
+            } else {
+
+                for (const auto &child: children()) {
+                    _totalMass.mass() += child.totalMass().mass();
+                    _centerOfMass = _centerOfMass + (child.centerOfMass() * child.totalMass().mass());
+                }
+                _centerOfMass = _centerOfMass / _totalMass.mass();
+
+            }
+        }
+
+        void merge() {
+            _children.clear();
+        }
+
+    };
+
+    class Octree : public TreeBase<OctreeNode> {
+    public:
+
+        Octree(Simulation &simulation) : TreeBase<OctreeNode>(simulation) {}
+
+        void build() override;
+    };
+}
+
+/*
 namespace NBody {
 
     class Octree {
@@ -248,5 +389,6 @@ namespace NBody {
     };
 
 }
+*/
 
 #endif //N_BODY_OCTREE_H
