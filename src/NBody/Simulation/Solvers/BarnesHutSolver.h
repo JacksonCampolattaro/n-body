@@ -19,7 +19,7 @@ namespace NBody {
 
         std::unique_ptr<Octree> _octree;
         float _theta = 0.4f;
-        int _maxDepth = 10;
+        int _maxDepth = 20;
         int _maxLeafSize = 64;
 
     public:

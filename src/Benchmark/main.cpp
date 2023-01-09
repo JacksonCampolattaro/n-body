@@ -45,6 +45,7 @@ float weightedL2Norm(const Simulation &a, const Simulation &b) {
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
+    Glib::init();
 
     // Test parameters
     std::size_t N = 10'000;
@@ -87,13 +88,13 @@ int main(int argc, char *argv[]) {
     referenceFile << std::setw(4) << j;
     referenceFile.close();
 
-    // Create reference & candidate simulations by loading the initial conditions
+    // Create reference & barnesHut simulations by loading the initial conditions
     Simulation initial;
     from_json(j, initial);
     Simulation reference;
     from_json(j, reference);
-    Simulation candidate;
-    from_json(j, candidate);
+    Simulation barnesHut;
+    from_json(j, barnesHut);
 
 
     // Run a reference simulation with the naive solver
@@ -111,10 +112,10 @@ int main(int argc, char *argv[]) {
     // Run an approximate simulation using another solver
     spdlog::info("Performing Barnes-Hut Simulation");
     display.restart(iterations);
-    BarnesHutSolver barnesHut{candidate, gravity};
+    BarnesHutSolver barnesHutSolver{barnesHut, gravity};
     startTime = std::chrono::steady_clock::now();
     for (int i = 0; i < iterations; ++i) {
-        barnesHut.step();
+        barnesHutSolver.step();
         display += 1;
     }
     finishTime = std::chrono::steady_clock::now();
@@ -125,16 +126,16 @@ int main(int argc, char *argv[]) {
     naiveFile << reference;
     naiveFile.close();
     std::ofstream barnesHutFile{"test-bh.json"};
-    barnesHutFile << candidate;
+    barnesHutFile << barnesHut;
     barnesHutFile.close();
 
     // Determine the difference between the initial conditions and the reference simulation
     spdlog::info("L2(naive, init) = {}", L2Norm(initial, reference));
     spdlog::info("wL2(naive, init) = {}", weightedL2Norm(initial, reference));
 
-    // Determine the difference between the two simulations
-    spdlog::info("L2(naive, bh) = {}", L2Norm(reference, candidate));
-    spdlog::info("wL2(naive, bh) = {}", weightedL2Norm(reference, candidate));
+    // Determine the difference between each simulation and the reference
+    spdlog::info("L2(naive, bh) = {}", L2Norm(reference, barnesHut));
+    spdlog::info("wL2(naive, bh) = {}", weightedL2Norm(reference, barnesHut));
 
     // Print time & accuracy results
     spdlog::info("time(naive) = {}", naiveTime.count());

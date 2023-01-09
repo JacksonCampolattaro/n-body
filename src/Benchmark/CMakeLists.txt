@@ -1,7 +1,7 @@
 
 # Add necessary libraries
 find_package(spdlog REQUIRED)
-
+find_package(Matplot++ REQUIRED)
 
 add_executable(Benchmark
         main.cpp)
@@ -12,4 +12,5 @@ target_link_libraries(Benchmark PUBLIC
         NBody::View
 
         spdlog::spdlog
+        Matplot++::matplot
         )
