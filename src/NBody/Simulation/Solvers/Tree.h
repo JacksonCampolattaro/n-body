@@ -32,15 +32,18 @@ namespace NBody {
         NodeBase(std::span<Entity> contents) : _contents(std::move(contents)) {}
 
         template<typename... Context>
-        void refine(std::size_t maxDepth, Context &&...context) {
+        void refine(std::size_t maxDepth,
+                    std::function<bool(const NodeImplementation &)> splitCriterion,
+                    Context &&...context) {
+
             if (_contents.empty()) return;
 
-            if (contents().size() > 1 && maxDepth > 0) {
+            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this)) {
 
                 split(std::forward<Context>(context)...);
 
                 for (auto &child: children())
-                    child.refine(maxDepth - 1, std::forward<Context>(context)...);
+                    child.refine(maxDepth - 1, splitCriterion, std::forward<Context>(context)...);
 
             } else {
                 merge();

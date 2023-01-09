@@ -195,200 +195,29 @@ namespace NBody {
     };
 
     class Octree : public TreeBase<OctreeNode> {
+    private:
+
+        int _maxDepth = 16;
+        int _maxLeafSize = 64;
+
     public:
 
         Octree(Simulation &simulation) : TreeBase<OctreeNode>(simulation) {}
 
-        void build() override;
-    };
-}
-
-/*
-namespace NBody {
-
-    class Octree {
-    private:
-
-        class OctreeNode {
-        private:
-
-            std::unique_ptr<std::array<OctreeNode, 8>> _children;
-            std::span<NBody::Entity> _contents;
-
-            Physics::Position _center;
-            float _sideLength = 1.0f;
-
-            Physics::Position _centerOfMass;
-            Physics::Mass _totalMass;
-
-        public:
-
-            // todo Maybe this can be removed?
-            OctreeNode() = default;
-
-            // Recursive constructor is gross, this will be replaced
-            OctreeNode(std::span<NBody::Entity> contents, const NBody::Simulation &registry,
-                       Physics::Position center, float sideLength, int maxDepth, int maxLeafSize);
-
-
-            [[nodiscard]] float sideLength() const { return _sideLength; }
-
-            [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
-
-            [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
-
-            [[nodiscard]] bool isLeaf() const { return !_children; }
-
-            [[nodiscard]] const std::array<OctreeNode, 8> &children() const { return *_children; }
-
-            [[nodiscard]] const std::span<NBody::Entity> &particles() const { return _contents; }
-
-            [[nodiscard]] Physics::Acceleration applyRule(const Physics::Rule &rule, Simulation &simulation,
-                                                          const Physics::Position &passivePosition,
-                                                          const Physics::Mass &passiveMass,
-                                                          float theta) const {
-
-                // Empty nodes can be ignored
-                if (_contents.empty()) return Physics::Acceleration{};
-
-                if ((_sideLength / glm::distance((glm::vec3) passivePosition, (glm::vec3) centerOfMass())) < theta) {
-
-                    // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
-                    return rule(centerOfMass(),
-                                totalMass(),
-                                passivePosition, passiveMass);
-
-                } else {
-
-                    // Otherwise, the node can't be summarized
-                    if (isLeaf()) {
-
-                        auto actors = simulation.group<const Position, const Mass>(entt::get<const ActiveTag>);
-
-                        // If this is a leaf node, interact with all particles contained
-                        return std::transform_reduce(
-                                _contents.begin(), _contents.end(),
-                                Physics::Acceleration{}, std::plus{},
-                                [&](auto entity) {
-                                    return rule(actors.get<const Position>(entity),
-                                                actors.get<const Mass>(entity),
-                                                passivePosition, passiveMass);
-                                });
-
-                    } else {
-
-                        // If it's a non-leaf node, descend the tree (recursive case)
-                        return std::transform_reduce(
-                                children().begin(), children().end(),
-                                Physics::Acceleration{}, std::plus{},
-                                [&](const auto &child) {
-                                    return child.applyRule(rule, simulation, passivePosition, passiveMass, theta);
-                                });
-                    }
-
-                }
-            }
-
-            std::string toString(const std::string &padding = "") {
-                std::stringstream out;
-                out << padding << std::to_string(_contents.size());
-
-                if (_children)
-                    for (auto &child: *_children)
-                        out << "\n" << child.toString(padding + "   ");
-
-                return out.str();
-            }
-
+        void build() override {
+            root().refine(_maxDepth,
+                          [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
+                          simulation().view<const Position, const Mass, const ActiveTag>());
         };
 
-    private:
+        int &maxDepth() { return _maxDepth; }
 
-        NBody::Simulation &_simulation;
+        const int &maxDepth() const { return _maxDepth; }
 
-        OctreeNode _root;
+        int &maxLeafSize() { return _maxLeafSize; }
 
-        std::vector<NBody::Entity> _particles;
-
-    public:
-
-        explicit Octree(NBody::Simulation &simulation) : _simulation(simulation) {
-
-            // Save a list of physics-actor particles
-            auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
-            _particles = {actors.begin(), actors.end()};
-
-            // If the simulation has new particles, add them to the list
-            _simulation.signal_particles_added.connect([&](auto newEntities) {
-                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
-                _particles = {actors.begin(), actors.end()};
-            });
-
-            // If the simulation has particles removed, take them from the list
-            _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
-                _particles = {actors.begin(), actors.end()};
-            });
-        }
-
-        void build(int maxDepth, int maxLeafSize) {
-            _root = OctreeNode{
-                    {_particles}, _simulation, {}, (2 << 20),
-                    maxDepth, maxLeafSize
-            };
-        }
-
-        Physics::Acceleration applyRule(const Physics::Rule &rule,
-                                        const Physics::Position &passivePosition,
-                                        const Physics::Mass &passiveMass,
-                                        float theta) {
-
-            return _root.applyRule(rule, _simulation, passivePosition, passiveMass, theta);
-
-            Physics::Acceleration acceleration;
-
-            std::stack<const OctreeNode *> nodes;
-            nodes.emplace(&_root);
-
-            while (!nodes.empty()) {
-
-                const auto &n = *nodes.top();
-                nodes.pop();
-
-                float sideLengthOverDistance =
-                        n.sideLength() / glm::distance((glm::vec3) passivePosition, (glm::vec3) n.centerOfMass());
-                if (sideLengthOverDistance < theta) {
-
-                    // Base case 1: node is sufficiently far
-                    acceleration += rule(n.centerOfMass(), n.totalMass(), passivePosition, passiveMass);
-
-                } else if (n.isLeaf()) {
-
-                    // Base case 2: we've reached a leaf node
-                    acceleration += std::transform_reduce(
-                            n.particles().begin(), n.particles().end(),
-                            Physics::Acceleration{}, std::plus{},
-                            [&](auto entity) {
-                                return rule(_simulation.get<Position>(entity),
-                                            _simulation.get<Mass>(entity),
-                                            passivePosition, passiveMass);
-                            });
-
-                } else {
-
-                    // Recursive case: the node isn't far enough, and we need to look at its children
-                    for (const auto &child: n.children())
-                        nodes.emplace(&child);
-                }
-            }
-
-            return acceleration;
-        }
-
-
+        const int &maxLeafSize() const { return _maxLeafSize; }
     };
-
 }
-*/
 
 #endif //N_BODY_OCTREE_H
