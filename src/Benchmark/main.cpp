@@ -61,6 +61,11 @@ float maxSquaredError(const Simulation &a, const Simulation &b) {
     );
 }
 
+float fractionalError(std::function<float(const Simulation &, const Simulation &)> metric,
+                      const Simulation &initial, const Simulation &reference, const Simulation &candidate) {
+    return metric(reference, candidate) / metric(initial, reference);
+}
+
 template<typename SolverType>
 std::chrono::duration<float> timedRun(Simulation &simulation, Physics::Rule &rule, std::size_t iterations) {
     boost::progress_display display(iterations);
@@ -72,11 +77,11 @@ std::chrono::duration<float> timedRun(Simulation &simulation, Physics::Rule &rul
     }
     auto finishTime = std::chrono::steady_clock::now();
     std::cout << std::endl;
-    return (finishTime - startTime) / iterations;
+    return (finishTime - startTime);
 }
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     Glib::init();
 
     // Test parameters
@@ -145,17 +150,24 @@ int main(int argc, char *argv[]) {
     barnesHutFile << barnesHut;
     barnesHutFile.close();
 
-    // Determine the difference between the initial conditions and the reference simulation
-    spdlog::info("L2(naive, init) = {}", L2Norm(initial, reference));
-    spdlog::info("wL2(naive, init) = {}", weightedL2Norm(initial, reference));
-    spdlog::info("max^2(naive, init) = {}", maxSquaredError(initial, reference));
-
-    // Determine the difference between each simulation and the reference
-    spdlog::info("L2(naive, bh) = {}", L2Norm(reference, barnesHut));
-    spdlog::info("wL2(naive, bh) = {}", weightedL2Norm(reference, barnesHut));
-    spdlog::info("max^2(naive, bh) = {}", maxSquaredError(reference, barnesHut));
+    float L2 = fractionalError(&L2Norm, initial, reference, barnesHut);
+    float weightedL2 = fractionalError(&weightedL2Norm, initial, reference, barnesHut);
+    float maxSquared = fractionalError(&maxSquaredError, initial, reference, barnesHut);
+    spdlog::info("Error:\n"
+                 "\tL2\t\t\t= {}%\n"
+                 "\tWeighted L2\t= {}%\n"
+                 "\tMax Squared\t= {}%\n",
+                 L2 * 100.0f, weightedL2 * 100.0f, maxSquared * 100.0f);
 
     // Print time & accuracy results
-    spdlog::info("time(naive) = {}", naiveTime.count());
-    spdlog::info("time(bh) = {}", barnesHutTime.count());
+    float speedup = (naiveTime.count() - barnesHutTime.count()) / naiveTime.count();
+    spdlog::info("Performance:\n"
+                 "\t{} iterations\t= {}s → {}s\n"
+                 "\t1 iteration\t\t= {}s → {}s\n"
+                 "\tspeedup\t\t\t= {}%\n",
+                 iterations, naiveTime.count(), barnesHutTime.count(),
+                 naiveTime.count() / iterations, barnesHutTime.count() / iterations,
+                 speedup * 100.0f
+    );
+
 }
