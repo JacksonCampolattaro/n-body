@@ -21,8 +21,8 @@ add_library(Simulation
         Solvers/Tree.h
         Solvers/MultiSolver.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
-        Solvers/BarnesHutSolver.cpp Solvers/BarnesHutSolver.h
-        Solvers/Octree.cpp Solvers/Octree.h Runner.h
+        Solvers/BarnesHutSolver.h
+        Solvers/Octree.h Runner.h
         Runners/OneStepRunner.cpp Runners/OneStepRunner.h Runners/NStepsRunner.cpp Runners/NStepsRunner.h Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h Runners/MultiRunner.h )
 
 target_include_directories(Simulation PUBLIC
