@@ -9,6 +9,8 @@
 
 #include <boost/progress.hpp>
 
+#include <NBody/Physics/Rule.h>
+
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
@@ -39,9 +41,39 @@ float weightedL2Norm(const Simulation &a, const Simulation &b) {
                                      return glm::distance2(
                                              (glm::vec3) a.get<Position>(x),
                                              (glm::vec3) b.get<Position>(y)
-                                     ) * a.get<Mass>(x).mass();
+                                     ) * std::pow(a.get<Mass>(x).mass(), 2.0f);
                                  }
     ) / (float) std::distance(aValues.begin(), aValues.end());
+}
+
+float maxSquaredError(const Simulation &a, const Simulation &b) {
+    auto aValues = a.view<const Position, const Mass>();
+    auto bValues = b.view<const Position, const Mass>();
+    return std::transform_reduce(aValues.begin(), aValues.end(), bValues.begin(), 0.0f,
+                                 [&](float x, float y) {
+                                     return std::max(x, y);
+                                 },
+                                 [&](const auto &x, const auto &y) {
+                                     return glm::distance2(
+                                             (glm::vec3) a.get<Position>(x),
+                                             (glm::vec3) b.get<Position>(y)
+                                     );
+                                 }
+    );
+}
+
+template<typename SolverType>
+std::chrono::duration<float> timedRun(Simulation &simulation, Physics::Rule &rule, std::size_t iterations) {
+    boost::progress_display display(iterations);
+    SolverType solver{simulation, rule};
+    auto startTime = std::chrono::steady_clock::now();
+    for (int i = 0; i < iterations; ++i) {
+        solver.step();
+        ++display;
+    }
+    auto finishTime = std::chrono::steady_clock::now();
+    std::cout << std::endl;
+    return (finishTime - startTime) / iterations;
 }
 
 int main(int argc, char *argv[]) {
@@ -49,8 +81,8 @@ int main(int argc, char *argv[]) {
     Glib::init();
 
     // Test parameters
-    std::size_t N = 10'000;
-    std::size_t iterations = 50;
+    std::size_t N = 1'000;
+    std::size_t iterations = 1'000;
     std::uint32_t seed = 42;
 
     std::mt19937 generator{seed};
@@ -100,27 +132,11 @@ int main(int argc, char *argv[]) {
 
     // Run a reference simulation with the naive solver
     spdlog::info("Performing Naive Simulation");
-    boost::progress_display display(iterations);
-    NaiveSolver naive{reference, gravity};
-    auto startTime = std::chrono::steady_clock::now();
-    for (int i = 0; i < iterations; ++i) {
-        naive.step();
-        display += 1;
-    }
-    auto finishTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double> naiveTime = (finishTime - startTime) / iterations;
+    auto naiveTime = timedRun<NaiveSolver>(reference, gravity, iterations);
 
     // Run an approximate simulation using another solver
     spdlog::info("Performing Barnes-Hut Simulation");
-    display.restart(iterations);
-    BarnesHutSolver barnesHutSolver{barnesHut, gravity};
-    startTime = std::chrono::steady_clock::now();
-    for (int i = 0; i < iterations; ++i) {
-        barnesHutSolver.step();
-        display += 1;
-    }
-    finishTime = std::chrono::steady_clock::now();
-    std::chrono::duration<double> barnesHutTime = (finishTime - startTime) / iterations;
+    auto barnesHutTime = timedRun<BarnesHutSolver>(barnesHut, gravity, iterations);
 
     // Save both simulations for later reference
     std::ofstream naiveFile{"test-naive.json"};
@@ -133,10 +149,12 @@ int main(int argc, char *argv[]) {
     // Determine the difference between the initial conditions and the reference simulation
     spdlog::info("L2(naive, init) = {}", L2Norm(initial, reference));
     spdlog::info("wL2(naive, init) = {}", weightedL2Norm(initial, reference));
+    spdlog::info("max^2(naive, init) = {}", maxSquaredError(initial, reference));
 
     // Determine the difference between each simulation and the reference
     spdlog::info("L2(naive, bh) = {}", L2Norm(reference, barnesHut));
     spdlog::info("wL2(naive, bh) = {}", weightedL2Norm(reference, barnesHut));
+    spdlog::info("max^2(naive, bh) = {}", maxSquaredError(reference, barnesHut));
 
     // Print time & accuracy results
     spdlog::info("time(naive) = {}", naiveTime.count());
