@@ -5,6 +5,7 @@
 #ifndef N_BODY_TYPEDDISPATCHER_H
 #define N_BODY_TYPEDDISPATCHER_H
 
+#include <spdlog/spdlog.h>
 #include <glibmm/dispatcher.h>
 #include <boost/lockfree/queue.hpp>
 
@@ -39,6 +40,9 @@ namespace NBody {
         sigc::signal<void(T)> &signal() { return _signal; };
 
         void emit(const T &value) {
+            // There's no point in emitting a value if the signal isn't connected to anything
+            if (signal().empty()) return;
+
             _queue.push(value);
             _dispatcher.emit();
         }
