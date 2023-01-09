@@ -5,11 +5,14 @@
 #ifndef N_BODY_OCTREE_H
 #define N_BODY_OCTREE_H
 
-#include <NBody/Simulation/Simulation.h>
-
 #include <span>
 #include <set>
 #include <stack>
+
+#include "spdlog/spdlog.h"
+
+#include <NBody/Simulation/Simulation.h>
+
 #include "NBody/Physics/Rule.h"
 
 using NBody::Physics::Position;
