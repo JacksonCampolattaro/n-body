@@ -4,6 +4,7 @@
 
 #include "Octree.h"
 
+/*
 NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const NBody::Simulation &registry,
                                       Position center, float sideLength,
                                       int maxDepth, int maxLeafSize)
@@ -87,4 +88,9 @@ NBody::Octree::OctreeNode::OctreeNode(std::span<NBody::Entity> contents, const N
     for (const auto &entity: _contents) {
         assert(registry.valid(entity));
     }
+}
+*/
+
+void NBody::Octree::build() {
+    root().refine(16, simulation().view<const Position, const Mass, const ActiveTag>());
 }
