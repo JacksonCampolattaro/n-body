@@ -91,7 +91,22 @@ namespace NBody {
 
         using NodeBase<OctreeNode>::contents;
         using NodeBase<OctreeNode>::isLeaf;
-        using NodeBase<OctreeNode>::averagePosition;
+
+        [[nodiscard]] std::vector<OctreeNode> &children() { return _children; }
+
+        [[nodiscard]] const std::vector<OctreeNode> &children() const { return _children; }
+
+        [[nodiscard]] BoundingBox boundingBox() const {
+            glm::vec3 dimensions{_sideLength, _sideLength, _sideLength};
+            return {
+                    {_center - dimensions},
+                    {_center + dimensions}
+            };
+        }
+
+        [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
+
+        [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
         [[nodiscard]] Position &center() { return _center; }
 
@@ -100,14 +115,6 @@ namespace NBody {
         [[nodiscard]] const float &sideLength() const { return _sideLength; }
 
         [[nodiscard]] float &sideLength() { return _sideLength; }
-
-        std::vector<OctreeNode> &children() { return _children; }
-
-        const std::vector<OctreeNode> &children() const { return _children; }
-
-        [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
-
-        [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
         void split(const entt::basic_view<entt::entity, entt::exclude_t<>,
                 const Position, const Mass, const ActiveTag> &activeParticles) {
@@ -167,6 +174,8 @@ namespace NBody {
         void summarize(const entt::basic_view<entt::entity, entt::exclude_t<>,
                 const Position, const Mass, const ActiveTag> &activeParticles) {
 
+            _totalMass = 0.0f;
+            _centerOfMass = {0.0f, 0.0f, 0.0f};
 
             if (isLeaf()) {
 
@@ -205,9 +214,17 @@ namespace NBody {
         Octree(Simulation &simulation) : TreeBase<OctreeNode>(simulation) {}
 
         void build() override {
-            root().refine(_maxDepth,
-                          [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
-                          simulation().view<const Position, const Mass, const ActiveTag>());
+
+            BoundingBox boundingBox = simulation().boundingBox();
+            glm::vec3 dimensions = boundingBox.dimensions();
+            root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
+            root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
+
+            root().refine(
+                    _maxDepth,
+                    [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
+                    simulation().view<const Position, const Mass, const ActiveTag>()
+            );
         };
 
         int &maxDepth() { return _maxDepth; }

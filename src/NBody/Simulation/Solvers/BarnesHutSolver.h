@@ -8,6 +8,7 @@
 #include "../Solver.h"
 
 #include "Octree.h"
+#include "LinearBVH.h"
 
 #include <tbb/parallel_for_each.h>
 
@@ -35,7 +36,7 @@ namespace NBody {
             auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
 
             // Construct an octree from the actor particles
-            _statusDispatcher.emit({"Building Octree"});
+            _statusDispatcher.emit({"Building Tree"});
             _tree->refine();
 
             // Use the octree to estimate forces on each passive particle, and update their velocity
@@ -103,6 +104,18 @@ namespace NBody {
         int &maxLeafSize() { return tree().maxLeafSize(); }
 
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
+    };
+
+    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH> {
+    public:
+
+        LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
+                BarnesHutSolverBase<LinearBVH>(simulation, rule) {}
+
+        std::string id() override { return "linear-bvh"; };
+
+        std::string name() override { return "Linear-BVH"; };
+
     };
 
 }
