@@ -23,7 +23,7 @@ add_library(Simulation
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
         Solvers/Octree.h Runner.h
-        Runners/OneStepRunner.cpp Runners/OneStepRunner.h Runners/NStepsRunner.cpp Runners/NStepsRunner.h Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h Runners/MultiRunner.h )
+        Runners/OneStepRunner.cpp Runners/OneStepRunner.h Runners/NStepsRunner.cpp Runners/NStepsRunner.h Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h Runners/MultiRunner.h Solvers/LinearBVH.h Solvers/MortonSort.h BoundingBox.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

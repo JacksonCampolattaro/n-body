@@ -23,7 +23,6 @@ namespace NBody {
     private:
 
         std::span<Entity> _contents;
-        Position _averagePosition{0.0f, 0.0f, 0.0f};
 
     public:
 
@@ -56,8 +55,6 @@ namespace NBody {
 
         [[nodiscard]] std::span<Entity> &contents() { return _contents; };
 
-        [[nodiscard]] const Position &averagePosition() const { return _averagePosition; }
-
         [[nodiscard]] std::size_t depth() const {
             if (isLeaf()) return 0;
             std::size_t maxDepth = 0;
@@ -75,8 +72,6 @@ namespace NBody {
         [[nodiscard]] auto &boundingBox() const { return implementation().boundingBox(); }
 
     protected:
-
-        [[nodiscard]] Position &averagePosition() { return _averagePosition; }
 
         template<typename... Context>
         void split(Context &&...context) { implementation().split(std::forward<Context>(context)...); }
@@ -151,6 +146,8 @@ namespace NBody {
 
         [[nodiscard]] const Simulation &simulation() const { return _simulation; }
 
+        [[nodiscard]]  Simulation &simulation() { return _simulation; }
+
         [[nodiscard]] std::vector<Entity> &indices() { return _indices; }
 
         [[nodiscard]] const std::vector<Entity> &indices() const { return _indices; }
@@ -175,11 +172,11 @@ namespace NBody {
         // Empty nodes can be ignored
         if (node.contents().empty()) return Physics::Acceleration{};
 
-        if ((node.sideLength() / glm::distance((glm::vec3) passivePosition, (glm::vec3) node.centerOfMass())) < theta) {
+        if ((node.boundingBox().diagonalLength() /
+             glm::distance((glm::vec3) passivePosition, (glm::vec3) node.centerOfMass())) < theta) {
 
             // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
-            return rule(node.centerOfMass(),
-                        node.totalMass(),
+            return rule(node.centerOfMass(), node.totalMass(),
                         passivePosition, passiveMass);
 
         } else {
