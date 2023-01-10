@@ -10,9 +10,9 @@
 #include <span>
 #include <numeric>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rule.h"
 
-#include "../Simulation.h"
+#include "NBody/Simulation/Simulation.h"
 
 namespace NBody {
 

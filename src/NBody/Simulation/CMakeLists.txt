@@ -17,13 +17,22 @@ pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.6
 
 add_library(Simulation
         Simulation.h Simulation.cpp
+        BoundingBox.h
         Solver.h
-        Solvers/Tree.h
+        Solvers/Trees/Tree.h
         Solvers/MultiSolver.h
+        Solvers/MortonSort.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
-        Solvers/Octree.h Runner.h
-        Runners/OneStepRunner.cpp Runners/OneStepRunner.h Runners/NStepsRunner.cpp Runners/NStepsRunner.h Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h Runners/MultiRunner.h Solvers/LinearBVH.h Solvers/MortonSort.h BoundingBox.h)
+        Solvers/Trees/DescentCriterion.h
+        Solvers/Trees/Octree.h
+        Solvers/Trees/LinearBVH.h
+        Runner.h
+        Runners/MultiRunner.h
+        Runners/OneStepRunner.cpp Runners/OneStepRunner.h
+        Runners/NStepsRunner.cpp Runners/NStepsRunner.h
+        Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
+        )
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -43,6 +52,6 @@ target_link_libraries(Simulation PUBLIC
         TBB::tbb
         )
 
-add_library(NBody::Simulation ALIAS Simulation )
+add_library(NBody::Simulation ALIAS Simulation)
 
 add_subdirectory(test)

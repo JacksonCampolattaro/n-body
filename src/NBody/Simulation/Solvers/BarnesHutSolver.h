@@ -7,8 +7,10 @@
 
 #include "../Solver.h"
 
-#include "Octree.h"
-#include "LinearBVH.h"
+#include "Trees/DescentCriterion.h"
+
+#include "Trees/Octree.h"
+#include "Trees/LinearBVH.h"
 
 #include <tbb/parallel_for_each.h>
 
@@ -17,12 +19,12 @@
 
 namespace NBody {
 
-    template<typename TreeType>
+    template<typename TreeType, typename DescentCriterionType>
     class BarnesHutSolverBase : public Solver {
     private:
 
         std::unique_ptr<TreeType> _tree;
-        float _theta = 0.4f;
+        DescentCriterionType _descentCriterion{0.4f};
 
     public:
 
@@ -49,11 +51,11 @@ namespace NBody {
                 assert(_tree);
                 auto acceleration = computeAcceleration(
                         _tree->root(),
+                        _descentCriterion,
                         simulation().template view<const Position, const Mass, const ActiveTag>(),
                         targetPosition,
                         targetMass,
-                        _rule,
-                        _theta
+                        _rule
                 );
 
                 velocity += acceleration * _dt;
@@ -81,17 +83,73 @@ namespace NBody {
 
         const TreeType &tree() const { return *_tree; }
 
-        float &theta() { return _theta; }
+        float &theta() { return _descentCriterion.theta(); }
 
-        const float &theta() const { return _theta; }
+        const float &theta() const { return _descentCriterion.theta(); }
+
+    protected:
+
+        inline Acceleration computeAcceleration(const typename TreeType::Node &node,
+                                                DescentCriterionType &descentCriterion,
+                                                const entt::basic_view<
+                                                        entt::entity, entt::exclude_t<>,
+                                                        const Position, const Mass, const ActiveTag
+                                                > &activeParticles,
+                                                const Position &passivePosition,
+                                                const Mass &passiveMass,
+                                                const Rule &rule) {
+
+            // Empty nodes can be ignored
+            if (node.contents().empty()) return Physics::Acceleration{};
+
+            if (descentCriterion(node, passivePosition)) {
+
+                // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
+                return rule(node.centerOfMass(), node.totalMass(),
+                            passivePosition, passiveMass);
+
+            } else {
+
+                // Otherwise, the node can't be summarized
+                if (node.isLeaf()) {
+
+                    // If this is a leaf node, interact with all particles contained
+                    return std::transform_reduce(
+                            node.contents().begin(), node.contents().end(),
+                            Physics::Acceleration{}, std::plus{},
+                            [&](auto entity) {
+                                return rule(activeParticles.get<const Position>(entity),
+                                            activeParticles.get<const Mass>(entity),
+                                            passivePosition, passiveMass);
+                            }
+                    );
+
+                } else {
+
+                    // If it's a non-leaf node, descend the tree (recursive case)
+                    return std::transform_reduce(
+                            node.children().begin(), node.children().end(),
+                            Physics::Acceleration{}, std::plus{},
+                            [&](const auto &child) {
+                                return computeAcceleration(
+                                        child, descentCriterion,
+                                        activeParticles,
+                                        passivePosition, passiveMass,
+                                        rule
+                                );
+                            }
+                    );
+                }
+            }
+        }
 
     };
 
-    class BarnesHutSolver : public BarnesHutSolverBase<Octree> {
+    class BarnesHutSolver : public BarnesHutSolverBase<Octree, DescentCriterion::SideLengthOverDistance> {
     public:
 
         BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<Octree>(simulation, rule) {}
+                BarnesHutSolverBase<Octree, DescentCriterion::SideLengthOverDistance>(simulation, rule) {}
 
         std::string id() override { return "barnes-hut"; };
 
@@ -106,11 +164,11 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH> {
+    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance> {
     public:
 
         LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<LinearBVH>(simulation, rule) {}
+                BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance>(simulation, rule) {}
 
         std::string id() override { return "linear-bvh"; };
 
