@@ -42,7 +42,9 @@ namespace NBody {
 
         Position &max() { return _max; }
 
-        [[nodiscard]] glm::vec3 dimensions() const { return _max - _min; }
+        [[nodiscard]] glm::vec3 diagonal() const { return _max - _min; }
+
+        [[nodiscard]] glm::vec3 dimensions() const { return diagonal(); }
 
         [[nodiscard]] float diagonalLength() const { return glm::distance((glm::vec3) _min, (glm::vec3) _max); }
 

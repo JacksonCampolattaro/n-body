@@ -7,9 +7,9 @@
 
 #include "Tree.h"
 
-#include "MortonSort.h"
+#include "NBody/Simulation/Solvers/MortonSort.h"
 
-#include "../BoundingBox.h"
+#include "NBody/Simulation/BoundingBox.h"
 
 namespace NBody {
 

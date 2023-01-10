@@ -13,7 +13,7 @@
 
 #include "Tree.h"
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 #include "NBody/Physics/Rule.h"
 
@@ -25,11 +25,10 @@ using NBody::Physics::ActiveTag;
 namespace {
 
     template<int Dimension>
-    [[nodiscard]] auto
-    partition(std::span<NBody::Entity> &entities,
-              const entt::basic_view<entt::entity, entt::exclude_t<>,
-                      const Position, const Mass, const ActiveTag> &activeParticles,
-              const NBody::Physics::Position &center) {
+    [[nodiscard]] auto partition(std::span<NBody::Entity> &entities,
+                                 const entt::basic_view<entt::entity, entt::exclude_t<>,
+                                         const Position, const Mass, const ActiveTag> &activeParticles,
+                                 const NBody::Physics::Position &center) {
 
         auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
             return (activeParticles.get<const Position>(entity))[Dimension] < center[Dimension];
@@ -48,8 +47,7 @@ namespace {
     }
 
     template<>
-    [[nodiscard]] auto
-    partition<0>(std::span<NBody::Entity> &entities,
+    [[nodiscard]] auto partition<0>(std::span<NBody::Entity> &entities,
                  const entt::basic_view<entt::entity, entt::exclude_t<>,
                          const Position, const Mass, const ActiveTag> &activeParticles,
                  const NBody::Physics::Position &center) {
