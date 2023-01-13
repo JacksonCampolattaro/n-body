@@ -9,8 +9,8 @@
 
 namespace NBody {
 
-    template<typename TreeNode>
-    class ActiveTreeNode : public TreeNode {
+    template<typename NodeImplementation>
+    class ActiveNode : public NodeImplementation {
     private:
 
         Mass _totalMass{0.0f};
@@ -18,11 +18,11 @@ namespace NBody {
 
     public:
 
-        using TreeNode::TreeNode;
-        using TreeNode::isLeaf;
-        using TreeNode::contents;
-        using TreeNode::children;
-        using TreeNode::boundingBox;
+        using NodeImplementation::NodeImplementation;
+        using NodeImplementation::isLeaf;
+        using NodeImplementation::contents;
+        using NodeImplementation::children;
+        using NodeImplementation::boundingBox;
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
             return {simulation.group<const Position, const Mass>(entt::get<ActiveTag>).begin(),
@@ -36,7 +36,7 @@ namespace NBody {
         template<typename ViewType>
         void summarize(const ViewType &activeParticles) {
 
-            TreeNode::summarize(activeParticles);
+            NodeImplementation::summarize(activeParticles);
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};

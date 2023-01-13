@@ -5,13 +5,13 @@
 #ifndef N_BODY_COMPREHENSIVETREENODE_H
 #define N_BODY_COMPREHENSIVETREENODE_H
 
-#include "ActiveTreeNode.h"
-#include "PassiveTreeNode.h"
+#include "ActiveNode.h"
+#include "PassiveNode.h"
 
 namespace NBody {
 
     template<typename TreeNode>
-    class ComprehensiveTreeNode : public ActiveTreeNode<PassiveTreeNode<TreeNode>> {
+    class ComprehensiveTreeNode : public ActiveNode<PassiveNode<TreeNode>> {
     public:
 
         using TreeNode::TreeNode;

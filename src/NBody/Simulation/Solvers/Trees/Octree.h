@@ -12,7 +12,7 @@
 #include <spdlog/spdlog.h>
 
 #include "Tree.h"
-#include "ActiveTreeNode.h"
+#include "ActiveNode.h"
 
 #include "NBody/Simulation/Simulation.h"
 
@@ -198,9 +198,9 @@ namespace NBody {
         const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    class OctreeNode : public ActiveTreeNode<OctreeNodeBase<OctreeNode>> {
+    class OctreeNode : public ActiveNode<OctreeNodeBase<OctreeNode>> {
     public:
-        using ActiveTreeNode::ActiveTreeNode;
+        using ActiveNode::ActiveNode;
     };
 
     class Octree : public OctreeBase<OctreeNode> {

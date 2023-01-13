@@ -6,21 +6,21 @@
 #define N_BODY_FIELDOCTREE_H
 
 #include "Octree.h"
-#include "PassiveTreeNode.h"
+#include "PassiveNode.h"
 
 namespace NBody {
 
-    class FieldOctreeNode : public PassiveTreeNode<OctreeNodeBase<FieldOctreeNode>> {
+    class FieldOctreeNode : public PassiveNode<OctreeNodeBase<FieldOctreeNode>> {
     public:
 
-        using PassiveTreeNode::PassiveTreeNode;
-//        using PassiveTreeNode::children;
-//        using PassiveTreeNode::boundingBox;
-//        using PassiveTreeNode::center;
-//        using PassiveTreeNode::sideLength;
-//        using PassiveTreeNode::acceleration;
-//        using PassiveTreeNode::summarize;
-//        using PassiveTreeNode::collapseAccelerations;
+        using PassiveNode::PassiveNode;
+//        using PassiveNode::children;
+//        using PassiveNode::boundingBox;
+//        using PassiveNode::center;
+//        using PassiveNode::sideLength;
+//        using PassiveNode::acceleration;
+//        using PassiveNode::summarize;
+//        using PassiveNode::collapseAccelerations;
 
     };
 
