@@ -5,7 +5,7 @@
 #ifndef N_BODY_LINEARBVHSOLVERSETTINGS_H
 #define N_BODY_LINEARBVHSOLVERSETTINGS_H
 
-#include <NBody/Simulation/Solvers/BarnesHutSolver.h>
+#include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/FloatEntry.h"

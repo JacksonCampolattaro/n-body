@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solver.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
+#include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 
 #include <gtkmm/singleselection.h>
 #include <giomm/liststore.h>

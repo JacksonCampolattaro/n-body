@@ -12,6 +12,7 @@
 #include <spdlog/spdlog.h>
 
 #include "Tree.h"
+#include "ActiveTreeNode.h"
 
 #include "NBody/Simulation/Simulation.h"
 
@@ -24,75 +25,65 @@ using NBody::Physics::ActiveTag;
 
 namespace {
 
-    template<int Dimension>
+    template<int Dimension, typename ViewType>
     [[nodiscard]] auto partition(std::span<NBody::Entity> &entities,
-                                 const entt::basic_view<entt::entity, entt::exclude_t<>,
-                                         const Position, const Mass, const ActiveTag> &activeParticles,
+                                 const ViewType &positions,
                                  const NBody::Physics::Position &center) {
 
         auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
-            return (activeParticles.get<const Position>(entity))[Dimension] < center[Dimension];
+            return (positions.template get<const Position>(entity))[Dimension] < center[Dimension];
         });
 
         std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
         std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
         assert(less.size() + more.size() == entities.size());
 
-        // This can be done with std::arrays, using something like:
-        // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
-        // Or this:
-        // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
-        return std::tuple_cat(partition<Dimension - 1>(less, activeParticles, center),
-                              partition<Dimension - 1>(more, activeParticles, center));
-    }
+        if constexpr(Dimension == 0) {
 
-    template<>
-    [[nodiscard]] auto partition<0>(std::span<NBody::Entity> &entities,
-                 const entt::basic_view<entt::entity, entt::exclude_t<>,
-                         const Position, const Mass, const ActiveTag> &activeParticles,
-                 const NBody::Physics::Position &center) {
+            // Base case
+            return std::tuple{less, more};
 
-        auto c = std::partition(entities.begin(), entities.end(), [&](NBody::Entity entity) {
-            return (activeParticles.get<const Position>(entity))[0] < center[0];
-        });
+        } else {
 
-        std::span less{&*entities.begin(), static_cast<std::size_t>(c - entities.begin())};
-        std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
-        assert(less.size() + more.size() == entities.size());
+            // This can be done with std::arrays, using something like:
+            // https://stackoverflow.com/questions/10604794/convert-stdtuple-to-stdarray-c11
+            // Or this:
+            // https://stackoverflow.com/questions/45287195/combine-two-or-more-arrays-of-different-size-to-one-array-at-compiletime
+            return std::tuple_cat(partition<Dimension - 1>(less, positions, center),
+                                  partition<Dimension - 1>(more, positions, center));
+        }
 
-        return std::tuple{less, more};
     }
 
 }
 
 namespace NBody {
 
-    class OctreeNode : public NodeBase<OctreeNode> {
+    template<typename OctreeNodeImplementation>
+    class OctreeNodeBase : public NodeBase<OctreeNodeImplementation> {
     private:
 
-        std::vector<OctreeNode> _children;
+        std::vector<OctreeNodeImplementation> _children;
 
-        Position _center;
-        float _sideLength;
-
-        Mass _totalMass;
-        Position _centerOfMass;
+        Position _center{0.0f, 0.0f, 0.0f};
+        float _sideLength{1.0f};
 
     public:
 
-        OctreeNode(std::span<Entity> contents,
-                   const Position &center = {0.0f, 0.0f, 0.0f},
-                   float sideLength = 10000.0f) :
-                NodeBase<OctreeNode>(contents),
-                _center(center),
-                _sideLength(sideLength) {}
+        using NodeBase<OctreeNodeImplementation>::NodeBase;
+        using NodeBase<OctreeNodeImplementation>::contents;
+        using NodeBase<OctreeNodeImplementation>::isLeaf;
 
-        using NodeBase<OctreeNode>::contents;
-        using NodeBase<OctreeNode>::isLeaf;
+        template<typename ViewType>
+        void summarize(const ViewType &_) {}
 
-        [[nodiscard]] std::vector<OctreeNode> &children() { return _children; }
+        OctreeNodeBase(std::span<Entity> contents, const Position &center, float sideLength) :
+                NodeBase<OctreeNodeImplementation>(contents),
+                _center(center), _sideLength(sideLength) {}
 
-        [[nodiscard]] const std::vector<OctreeNode> &children() const { return _children; }
+        [[nodiscard]] std::vector<OctreeNodeImplementation> &children() { return _children; }
+
+        [[nodiscard]] const std::vector<OctreeNodeImplementation> &children() const { return _children; }
 
         [[nodiscard]] BoundingBox boundingBox() const {
             glm::vec3 dimensions{_sideLength, _sideLength, _sideLength};
@@ -102,10 +93,6 @@ namespace NBody {
             };
         }
 
-        [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
-
-        [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
-
         [[nodiscard]] Position &center() { return _center; }
 
         [[nodiscard]] const Position &center() const { return _center; }
@@ -114,8 +101,8 @@ namespace NBody {
 
         [[nodiscard]] float &sideLength() { return _sideLength; }
 
-        void split(const entt::basic_view<entt::entity, entt::exclude_t<>,
-                const Position, const Mass, const ActiveTag> &activeParticles) {
+        template<typename PositionViewType>
+        void split(const PositionViewType &positions) {
 
             std::span<NBody::Entity>
                     xyz000,
@@ -136,7 +123,7 @@ namespace NBody {
                     xyz101,
                     xyz011,
                     xyz111
-            ) = partition<2>(contents(), activeParticles, _center);
+            ) = partition<2>(contents(), positions, _center);
 
             // Initialize 8 child nodes
             float childSideLength = sideLength() / 2.0f;
@@ -168,40 +155,14 @@ namespace NBody {
                          }};
         }
 
-
-        void summarize(const entt::basic_view<entt::entity, entt::exclude_t<>,
-                const Position, const Mass, const ActiveTag> &activeParticles) {
-
-            _totalMass = 0.0f;
-            _centerOfMass = {0.0f, 0.0f, 0.0f};
-
-            if (isLeaf()) {
-
-                for (const auto &entity: contents()) {
-                    auto entityMass = activeParticles.get<const Mass>(entity).mass();
-                    _totalMass.mass() += entityMass;
-                    _centerOfMass = _centerOfMass + (entityMass * activeParticles.get<const Position>(entity));
-                }
-                _centerOfMass = _centerOfMass / _totalMass.mass();
-
-            } else {
-
-                for (const auto &child: children()) {
-                    _totalMass.mass() += child.totalMass().mass();
-                    _centerOfMass = _centerOfMass + (child.centerOfMass() * child.totalMass().mass());
-                }
-                _centerOfMass = _centerOfMass / _totalMass.mass();
-
-            }
-        }
-
         void merge() {
             _children.clear();
         }
 
     };
 
-    class Octree : public TreeBase<OctreeNode> {
+    template<typename OctreeNodeImplementation>
+    class OctreeBase : public TreeBase<OctreeNodeImplementation> {
     private:
 
         int _maxDepth = 16;
@@ -209,7 +170,10 @@ namespace NBody {
 
     public:
 
-        Octree(Simulation &simulation) : TreeBase<OctreeNode>(simulation) {}
+        OctreeBase(Simulation &simulation) : TreeBase<OctreeNodeImplementation>(simulation) {}
+
+        using TreeBase<OctreeNodeImplementation>::simulation;
+        using TreeBase<OctreeNodeImplementation>::root;
 
         void build() override {
 
@@ -221,7 +185,7 @@ namespace NBody {
             root().refine(
                     _maxDepth,
                     [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
-                    simulation().view<const Position, const Mass, const ActiveTag>()
+                    simulation().template view<const Position, const Mass, const ActiveTag>()
             );
         };
 
@@ -233,6 +197,17 @@ namespace NBody {
 
         const int &maxLeafSize() const { return _maxLeafSize; }
     };
+
+    class OctreeNode : public ActiveTreeNode<OctreeNodeBase<OctreeNode>> {
+    public:
+        using ActiveTreeNode::ActiveTreeNode;
+    };
+
+    class Octree : public OctreeBase<OctreeNode> {
+    public:
+        using OctreeBase::OctreeBase;
+    };
+
 }
 
 #endif //N_BODY_OCTREE_H
