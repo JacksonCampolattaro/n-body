@@ -43,6 +43,8 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     return new NaiveSolverSettings((NBody::NaiveSolver &) *solver);
                 if (solver->id() == "barnes-hut")
                     return new BarnesHutSolverSettings((NBody::BarnesHutSolver &) *solver);
+                if (solver->id() == "linear-bvh")
+                    return new LinearBVHSolverSettings((NBody::LinearBVHSolver &) *solver);
                 else return new Gtk::Label{"Unrecognized Solver"};
             }
     ));

@@ -22,6 +22,7 @@
 
 #include "NaiveSolverSettings.h"
 #include "BarnesHutSolverSettings.h"
+#include "LinearBVHSolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 

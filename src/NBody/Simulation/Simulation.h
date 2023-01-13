@@ -29,6 +29,8 @@
 #include <glibmm/dispatcher.h>
 #include <giomm/file.h>
 
+#include "BoundingBox.h"
+
 using nlohmann::json;
 using std::istream;
 using std::ostream;
@@ -85,6 +87,8 @@ namespace NBody {
         Physics::Position centerOfMass() const;
 
         std::size_t interactionCount() const;
+
+        BoundingBox boundingBox() const;
 
     public:
 

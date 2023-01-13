@@ -3,6 +3,7 @@
 //
 
 #include <spdlog/spdlog.h>
+#include <glm/common.hpp>
 #include "Simulation.h"
 
 NBody::Simulation::Particle NBody::Simulation::newParticle() {
@@ -178,4 +179,15 @@ NBody::Physics::Position NBody::Simulation::centerOfMass() const {
 
 std::size_t NBody::Simulation::interactionCount() const {
     return view<const Physics::PassiveTag>().size() * view<const Physics::ActiveTag>().size();
+}
+
+NBody::BoundingBox NBody::Simulation::boundingBox() const {
+    // todo: This shouldn't be specific to the active tag
+    BoundingBox bbox;
+    auto activeParticles = view<const Physics::Position, const Physics::ActiveTag>();
+    activeParticles.each([&](const auto &position) {
+        bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
+        bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
+    });
+    return bbox;
 }
