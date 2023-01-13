@@ -2,26 +2,26 @@
 // Created by Jackson Campolattaro on 1/12/23.
 //
 
-#ifndef N_BODY_PASSIVETREENODE_H
-#define N_BODY_PASSIVETREENODE_H
+#ifndef N_BODY_PASSIVENODE_H
+#define N_BODY_PASSIVENODE_H
 
 #include "Tree.h"
 
 namespace NBody {
 
-    template<typename TreeNode>
-    class PassiveTreeNode : public TreeNode {
+    template<typename NodeImplementation>
+    class PassiveNode : public NodeImplementation {
     private:
 
         Acceleration _acceleration{0.0f, 0.0f, 0.0f};
 
     public:
 
-        using TreeNode::TreeNode;
-        using TreeNode::isLeaf;
-        using TreeNode::contents;
-        using TreeNode::children;
-        using TreeNode::summarize;
+        using NodeImplementation::NodeImplementation;
+        using NodeImplementation::isLeaf;
+        using NodeImplementation::contents;
+        using NodeImplementation::children;
+        using NodeImplementation::summarize;
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
             // The field tree only needs to contain passive particles (which receive forces)
@@ -35,7 +35,7 @@ namespace NBody {
 
 //        template<typename ViewType>
 //        void summarize(const ViewType &activeParticles) {
-//            TreeNode::summarize(activeParticles);
+//            NodeImplementation::summarize(activeParticles);
 //        }
 
         void collapseAccelerations(const entt::basic_view<entt::entity, entt::exclude_t<>, Acceleration> &accelerations,
@@ -60,18 +60,18 @@ namespace NBody {
     };
 
     template<typename TreeNode>
-    class AdvancedPassiveTreeNode : public PassiveTreeNode<TreeNode> {
+    class AdvancedPassiveTreeNode : public PassiveNode<TreeNode> {
     private:
 
         Position _centerOfMass{0.0f, 0.0f, 0.0f};
 
     public:
 
-        using PassiveTreeNode<TreeNode>::PassiveTreeNode;
-        using PassiveTreeNode<TreeNode>::acceleration;
-        using PassiveTreeNode<TreeNode>::isLeaf;
-        using PassiveTreeNode<TreeNode>::contents;
-        using PassiveTreeNode<TreeNode>::children;
+        using PassiveNode<TreeNode>::PassiveTreeNode;
+        using PassiveNode<TreeNode>::acceleration;
+        using PassiveNode<TreeNode>::isLeaf;
+        using PassiveNode<TreeNode>::contents;
+        using PassiveNode<TreeNode>::children;
 
         [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
@@ -91,4 +91,4 @@ namespace NBody {
     };
 }
 
-#endif //N_BODY_PASSIVETREENODE_H
+#endif //N_BODY_PASSIVENODE_H

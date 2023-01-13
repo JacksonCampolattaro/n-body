@@ -93,9 +93,9 @@ namespace NBody {
 
     };
 
-    class LinearBVHNode : public ActiveTreeNode<LinearBVHNodeBase<LinearBVHNode>> {
+    class LinearBVHNode : public ActiveNode<LinearBVHNodeBase<LinearBVHNode>> {
     public:
-        using ActiveTreeNode::ActiveTreeNode;
+        using ActiveNode::ActiveNode;
     };
 
     class LinearBVH : public TreeBase<LinearBVHNode> {

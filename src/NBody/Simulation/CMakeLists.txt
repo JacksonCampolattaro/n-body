@@ -24,8 +24,8 @@ add_library(Simulation
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
         Solvers/Trees/Tree.h
-        Solvers/Trees/ActiveTreeNode.h
-        Solvers/Trees/PassiveTreeNode.h
+        Solvers/Trees/ActiveNode.h
+        Solvers/Trees/PassiveNode.h
         Solvers/Trees/ComprehensiveTreeNode.h
         Solvers/Trees/FieldTree.h
         Solvers/Trees/DescentCriterion.h
