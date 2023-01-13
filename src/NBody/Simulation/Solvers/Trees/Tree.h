@@ -111,22 +111,18 @@ namespace NBody {
 
         TreeBase(Simulation &simulation) :
                 _simulation(simulation),
-                _indices{_simulation.group<const Position, const Mass>(entt::get<ActiveTag>).begin(),
-                         _simulation.group<const Position, const Mass>(entt::get<ActiveTag>).end()},
+                _indices{NodeImplementation::relevantEntities(_simulation)},
                 _root{std::span<Entity>{_indices}} {
 
-            // todo: handle changes in the particle list
             // If the simulation has new particles, add them to the list
             _simulation.signal_particles_added.connect([&](auto newEntities) {
-                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
-                _indices = {actors.begin(), actors.end()};
+                _indices = NodeImplementation::relevantEntities(_simulation);
                 _root = NodeImplementation{_indices};
             });
 
             // If the simulation has particles removed, take them from the list
             _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                auto actors = _simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
-                _indices = {actors.begin(), actors.end()};
+                _indices = NodeImplementation::relevantEntities(_simulation);
                 _root = NodeImplementation{_indices};
             });
 
@@ -157,61 +153,6 @@ namespace NBody {
         [[nodiscard]] NodeImplementation &root() { return _root; }
 
     };
-
-    template<typename TreeNode>
-    static inline Acceleration computeAcceleration(const TreeNode &node,
-                                                   const entt::basic_view<
-                                                           entt::entity, entt::exclude_t<>,
-                                                           const Position, const Mass, const ActiveTag
-                                                   > &activeParticles,
-                                                   const Position &passivePosition,
-                                                   const Mass &passiveMass,
-                                                   const Rule &rule,
-                                                   float theta) {
-
-        // Empty nodes can be ignored
-        if (node.contents().empty()) return Physics::Acceleration{};
-
-        if ((node.boundingBox().diagonalLength() /
-             glm::distance((glm::vec3) passivePosition, (glm::vec3) node.centerOfMass())) < theta) {
-
-            // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
-            return rule(node.centerOfMass(), node.totalMass(),
-                        passivePosition, passiveMass);
-
-        } else {
-
-            // Otherwise, the node can't be summarized
-            if (node.isLeaf()) {
-
-                // If this is a leaf node, interact with all particles contained
-                return std::transform_reduce(
-                        node.contents().begin(), node.contents().end(),
-                        Physics::Acceleration{}, std::plus{},
-                        [&](auto entity) {
-                            return rule(activeParticles.get<const Position>(entity),
-                                        activeParticles.get<const Mass>(entity),
-                                        passivePosition, passiveMass);
-                        }
-                );
-
-            } else {
-
-                // If it's a non-leaf node, descend the tree (recursive case)
-                return std::transform_reduce(
-                        node.children().begin(), node.children().end(),
-                        Physics::Acceleration{}, std::plus{},
-                        [&](const auto &child) {
-                            return computeAcceleration(
-                                    child, activeParticles,
-                                    passivePosition, passiveMass,
-                                    rule, theta
-                            );
-                        }
-                );
-            }
-        }
-    }
 }
 
 #endif //T_SNE_TREE_H

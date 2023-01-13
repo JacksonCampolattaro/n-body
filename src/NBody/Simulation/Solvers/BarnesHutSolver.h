@@ -164,18 +164,6 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance> {
-    public:
-
-        LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance>(simulation, rule) {}
-
-        std::string id() override { return "linear-bvh"; };
-
-        std::string name() override { return "Linear-BVH"; };
-
-    };
-
 }
 
 

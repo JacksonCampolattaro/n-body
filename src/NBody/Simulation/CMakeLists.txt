@@ -19,20 +19,25 @@ add_library(Simulation
         Simulation.h Simulation.cpp
         BoundingBox.h
         Solver.h
-        Solvers/Trees/Tree.h
         Solvers/MultiSolver.h
         Solvers/MortonSort.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
+        Solvers/Trees/Tree.h
+        Solvers/Trees/ActiveTreeNode.h
+        Solvers/Trees/PassiveTreeNode.h
+        Solvers/Trees/ComprehensiveTreeNode.h
+        Solvers/Trees/FieldTree.h
         Solvers/Trees/DescentCriterion.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h
+        Solvers/Trees/FieldOctree.h
         Runner.h
         Runners/MultiRunner.h
         Runners/OneStepRunner.cpp Runners/OneStepRunner.h
         Runners/NStepsRunner.cpp Runners/NStepsRunner.h
         Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
-        )
+        Solvers/LinearBVHSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
