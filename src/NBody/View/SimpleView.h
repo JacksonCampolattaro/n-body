@@ -17,6 +17,7 @@
 #include <Magnum/GL/Renderer.h>
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/MultiSolver.h>
 
 #include "View.h"
 
@@ -29,6 +30,7 @@ namespace NBody {
     protected:
 
         const Simulation &_simulation;
+        const MultiSolver &_solver;
 
         Camera &_camera;
 
@@ -36,11 +38,11 @@ namespace NBody {
 
     public:
 
-        SimpleView(Camera &camera, const Simulation &simulation);
+        SimpleView(Camera &camera, const Simulation &simulation, const MultiSolver &solver);
 
         SimpleView(Gtk::GLArea::BaseObjectType *cobject,
                    const Glib::RefPtr<Gtk::Builder> &builder,
-                   Camera &camera, const Simulation &simulation);
+                   Camera &camera, const Simulation &simulation, const MultiSolver &solver);
 
         void onRender(GL::Framebuffer &defaultFramebuffer) override;
 

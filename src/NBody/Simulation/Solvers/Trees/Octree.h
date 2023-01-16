@@ -201,6 +201,7 @@ namespace NBody {
     class OctreeNode : public ActiveNode<OctreeNodeBase<OctreeNode>> {
     public:
         using ActiveNode::ActiveNode;
+        using OctreeNodeBase::boundingBox;
     };
 
     class Octree : public OctreeBase<OctreeNode> {

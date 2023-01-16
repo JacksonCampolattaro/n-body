@@ -63,6 +63,10 @@ namespace NBody {
             return *std::dynamic_pointer_cast<NBody::Solver>(_solverSelection->get_selected_item());
         }
 
+        const NBody::Solver &get() const {
+            return *std::dynamic_pointer_cast<NBody::Solver>(_solverSelection->get_selected_item());
+        }
+
         template<typename SolverImplementation>
         SolverImplementation &get(const std::string &id) {
             for (int i = 0; i < _solverList->get_n_items(); ++i) {
