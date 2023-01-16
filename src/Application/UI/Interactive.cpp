@@ -25,7 +25,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, fileManager)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
-        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _simulationRenderer, _recorder)),
+        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _simulationRenderer, _solverRenderer, _recorder)),
         _runPanel(getWidget<RunPanel>("run-panel", solver, runner)),
         _particlesListWindow(simulation),
         _particleEditorWindow() {

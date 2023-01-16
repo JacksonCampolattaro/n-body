@@ -7,6 +7,9 @@
 #include <Magnum/Primitives/Cube.h>
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) {
+
+    if (!_enabled) return;
+
     const auto &solver = _solver.get();
     if (typeid(solver) == typeid(NBody::BarnesHutSolver))
         draw(transformationMatrix, projectionMatrix, dynamic_cast<const NBody::BarnesHutSolver &>(solver));

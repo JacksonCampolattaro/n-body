@@ -32,6 +32,9 @@ namespace NBody {
     protected:
 
         const MultiSolver &_solver;
+        bool _enabled = false;
+
+        mutable sigc::signal<void()> _signal_changed;
 
     public:
 
@@ -40,7 +43,14 @@ namespace NBody {
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix) override;
 
-        sigc::signal<void()> &signal_changed() override { return _solver.signal_finished(); };
+        sigc::signal<void()> &signal_changed() override { return _signal_changed; };
+
+        void setEnabled(bool enabled) {
+            _enabled = enabled;
+            _signal_changed.emit();
+        }
+
+        const bool &enabled() const { return _enabled; }
 
     private:
 
