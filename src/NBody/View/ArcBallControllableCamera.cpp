@@ -43,7 +43,7 @@ void NBody::ArcBallControllableCamera::drawHUD(const Vector2i &windowDimensions)
 
 void NBody::ArcBallControllableCamera::scroll(double dx, double dy) {
     spdlog::trace("Scroll signal received: dx={}, dy={}", dx, dy);
-    _arcBall.zoom((float) -10.0f * dy);
+    _arcBall.zoom(-10.0 * dy);
     signal_changed().emit();
 }
 
