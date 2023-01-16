@@ -12,17 +12,20 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                              NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::ApplicationWindow>(cobject, builder),
         _simulation{simulation},
+        _simulationRenderer{simulation},
+        _solverRenderer{solver},
         _camera{
                 Vector3::zAxis(-20.0f),
                 Vector3::yAxis(),
                 45.0_degf,
         },
-        _view(getWidget<NBody::InteractiveView>("view", _camera, _simulation, solver)),
-        _recorder{_camera, _simulation, solver.signal_finished()},
+        _view(getWidget<NBody::InteractiveView>("view", _camera,
+                                                NBody::RendererList{_simulationRenderer, _solverRenderer})),
+        _recorder{_camera, NBody::RendererList{_simulationRenderer}, solver.signal_finished()},
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, fileManager)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),
         _solverPanel(getWidget<SolverPanel>("solver-panel", solver)),
-        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _recorder)),
+        _cameraPanel(getWidget<CameraPanel>("camera-panel", _camera, _simulationRenderer, _recorder)),
         _runPanel(getWidget<RunPanel>("run-panel", solver, runner)),
         _particlesListWindow(simulation),
         _particleEditorWindow() {

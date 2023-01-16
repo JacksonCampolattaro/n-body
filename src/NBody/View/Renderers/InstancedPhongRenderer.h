@@ -15,7 +15,7 @@ namespace NBody {
     using namespace Magnum;
     using namespace Math::Literals;
 
-    class InstancedPhongRenderer : public Renderer {
+    class InstancedPhongRenderer : public SimulationRenderer {
     private:
 
         std::optional<Shaders::PhongGL> _shader{NoCreate};
@@ -24,7 +24,9 @@ namespace NBody {
 
     public:
 
-        void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) override;
+        InstancedPhongRenderer(const Simulation &simulation) : SimulationRenderer(simulation) {}
+
+        void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) override;
 
     protected:
 

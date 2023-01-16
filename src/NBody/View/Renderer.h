@@ -18,10 +18,25 @@ namespace NBody {
     class Renderer {
     public:
 
-        virtual void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
-                          const NBody::Simulation &simulation) = 0;
+        virtual void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) = 0;
+
+        virtual sigc::signal<void()> &signal_changed() = 0;
 
     };
+
+    class SimulationRenderer : public Renderer {
+    protected:
+
+        const NBody::Simulation &_simulation;
+
+    public:
+
+        SimulationRenderer(const NBody::Simulation &simulation) : _simulation(simulation) {}
+
+        sigc::signal<void()> &signal_changed() override { return _simulation.signal_changed; };
+    };
+
+    using RendererList = std::vector<std::reference_wrapper<Renderer>>;
 }
 
 #endif //N_BODY_RENDERER_H

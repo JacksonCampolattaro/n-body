@@ -32,8 +32,8 @@ namespace NBody {
     class Recorder {
     private:
 
-        const Simulation &_simulation;
         Camera &_camera;
+        RendererList _renderers;
 
         sigc::signal<void()> &_trigger;
         sigc::connection _connection;
@@ -44,7 +44,7 @@ namespace NBody {
 
     public:
 
-        Recorder(Camera &camera, const Simulation &simulation, sigc::signal<void()> &trigger);
+        Recorder(Camera &camera, RendererList renderers, sigc::signal<void()> &trigger);
 
         Image2D snapshot(const Vector2i &resolution);
 

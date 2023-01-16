@@ -27,7 +27,7 @@ namespace NBody {
         Physics::Rule &_rule;
         std::size_t _maxThreadCount = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism);
 
-        sigc::signal<void()> _signal_finished;
+        mutable sigc::signal<void()> _signal_finished;
         sigc::slot<void()> _slot_step;
 
         TypedDispatcher<std::chrono::duration<double>> _computeTimeDispatcher;
@@ -92,7 +92,7 @@ namespace NBody {
 
     public:
 
-        sigc::signal<void()> &signal_finished() { return _signal_finished; };
+        sigc::signal<void()> &signal_finished() const { return _signal_finished; };
 
         sigc::signal<void(std::chrono::duration<double>)> &
         signal_computeTime() { return _computeTimeDispatcher.signal(); };

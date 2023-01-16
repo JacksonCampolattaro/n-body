@@ -21,20 +21,15 @@ namespace NBody {
     class Camera {
     protected:
 
-        MultiRenderer _renderer;
-
         Color4 _backgroundColor = {};
 
         sigc::signal<void()> _signal_changed;
 
     public:
 
-        virtual void draw(const NBody::Simulation &simulation, GL::Framebuffer &framebuffer) = 0;
+        virtual Matrix4 transformationMatrix() = 0;
 
-        virtual void draw(const NBody::Simulation &simulation, const NBody::Solver &solver,
-                          GL::Framebuffer &framebuffer) = 0;
-
-        MultiRenderer &renderer() { return _renderer; }
+        virtual Matrix4 projectionMatrix(const GL::Framebuffer &framebuffer) = 0;
 
         const Color4 &getBackgroundColor() const { return _backgroundColor; }
 
@@ -63,6 +58,8 @@ namespace NBody {
     public:
 
         virtual void drawHUD(const Vector2i &windowDimensions) = 0;
+
+        virtual void updateTransformation() = 0;
 
         virtual void scroll(double dx, double dy) = 0;
 

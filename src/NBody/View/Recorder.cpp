@@ -13,8 +13,8 @@ Glib::RefPtr<Gdk::Pixbuf> NBody::toPixbuf(const Image2D &image) {
     )->flip(false);
 }
 
-NBody::Recorder::Recorder(NBody::Camera &camera, const NBody::Simulation &simulation, sigc::signal<void()> &trigger) :
-        _camera(camera), _simulation(simulation), _trigger(trigger),
+NBody::Recorder::Recorder(NBody::Camera &camera, RendererList renderers, sigc::signal<void()> &trigger) :
+        _camera(camera), _renderers(renderers), _trigger(trigger),
         _context(Gdk::Display::get_default()->create_gl_context()) {
 }
 
@@ -40,7 +40,8 @@ Image2D NBody::Recorder::snapshot(const Vector2i &resolution) {
     framebuffer.attachRenderbuffer(GL::Framebuffer::BufferAttachment::DepthStencil, depthStencil);
 
     // Draw to the newly created framebuffer
-    _camera.draw(_simulation, framebuffer);
+    for (auto renderer: _renderers)
+        renderer.get().draw(_camera.transformationMatrix(), _camera.projectionMatrix(framebuffer));
 
     // Return the color buffer, as an image
     return color.image(0, {GL::PixelFormat::RGBA, GL::PixelType::UnsignedByte});
