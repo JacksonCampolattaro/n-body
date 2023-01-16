@@ -40,7 +40,9 @@ namespace UI {
 
         CameraPanel(Gtk::Box::BaseObjectType *cobject,
                     const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder);
+                    NBody::ArcBallControllableCamera &camera,
+                    NBody::MultiRenderer &renderer,
+                    NBody::Recorder &recorder);
 
     };
 

@@ -15,10 +15,12 @@ namespace NBody {
     using namespace Magnum;
     using namespace Math::Literals;
 
-    class InstancedFlatRenderer : public Renderer {
+    class InstancedFlatRenderer : public SimulationRenderer {
     public:
 
-        void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) override;
+        InstancedFlatRenderer(const Simulation &simulation) : SimulationRenderer(simulation) {}
+
+        void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) override;
 
     protected:
 

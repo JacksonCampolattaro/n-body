@@ -19,61 +19,75 @@
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 
+#include "../Renderer.h"
+
 #include <queue>
 
-namespace NBody::SolverRenderer {
+namespace NBody {
 
     using namespace Magnum;
     using namespace Math::Literals;
 
-    void draw(const Matrix4 &transformationMatrix,
-              const Matrix4 &projectionMatrix,
-              const Simulation &simulation,
-              const Solver &solver);
+    class SolverRenderer : public Renderer {
+    protected:
 
-    void draw(const Matrix4 &transformationMatrix,
-              const Matrix4 &projectionMatrix,
-              const Simulation &simulation,
-              const BarnesHutSolver &solver);
+        const MultiSolver &_solver;
 
-    void draw(const Matrix4 &transformationMatrix,
-              const Matrix4 &projectionMatrix,
-              const Simulation &simulation,
-              const LinearBVHSolver &solver);
+    public:
 
-    template<typename TreeNode>
-    void draw(const Matrix4 &transformationMatrix,
-              const Matrix4 &projectionMatrix,
-              const TreeNode &root) {
+        SolverRenderer(const MultiSolver &solver) : _solver(solver) {}
 
-        auto shader = Shaders::PhongGL{Shaders::PhongGL::Flag::NoSpecular};
-        auto mesh = MeshTools::compile(Primitives::cubeWireframe());
+        void draw(const Matrix4 &transformationMatrix,
+                  const Matrix4 &projectionMatrix) override;
 
-        std::queue<const TreeNode *> nodes;
-        nodes.emplace(&root);
-        while (!nodes.empty()) {
-            const TreeNode &node = *nodes.front();
-            nodes.pop();
-            if (!node.isLeaf()) {
-                for (const TreeNode &child: node.children())
-                    nodes.emplace(&child);
+        sigc::signal<void()> &signal_changed() override { return _solver.signal_finished(); };
+
+    private:
+
+        void draw(const Matrix4 &transformationMatrix,
+                  const Matrix4 &projectionMatrix,
+                  const BarnesHutSolver &solver);
+
+        void draw(const Matrix4 &transformationMatrix,
+                  const Matrix4 &projectionMatrix,
+                  const LinearBVHSolver &solver);
+
+        template<typename TreeNode>
+        void draw(const Matrix4 &transformationMatrix,
+                  const Matrix4 &projectionMatrix,
+                  const TreeNode &root) {
+
+            auto shader = Shaders::PhongGL{Shaders::PhongGL::Flag::NoSpecular};
+            auto mesh = MeshTools::compile(Primitives::cubeWireframe());
+
+            std::queue<const TreeNode *> nodes;
+            nodes.emplace(&root);
+            while (!nodes.empty()) {
+                const TreeNode &node = *nodes.front();
+                nodes.pop();
+                if (!node.isLeaf()) {
+                    for (const TreeNode &child: node.children())
+                        nodes.emplace(&child);
+                }
+
+                auto translation = node.boundingBox().center();
+                auto scaling = node.boundingBox().dimensions() / 2.0f;
+
+                auto individualTransformationMatrix =
+                        transformationMatrix *
+                        Matrix4::translation({translation.x, translation.y, translation.z}) *
+                        Matrix4::scaling({scaling.x, scaling.y, scaling.z});
+
+                shader
+                        .setProjectionMatrix(projectionMatrix)
+                        .setTransformationMatrix(individualTransformationMatrix)
+                        .draw(mesh);
             }
 
-            auto translation = node.boundingBox().center();
-            auto scaling = node.boundingBox().dimensions() / 2.0f;
-
-            auto individualTransformationMatrix =
-                    transformationMatrix *
-                    Matrix4::translation({translation.x, translation.y, translation.z}) *
-                    Matrix4::scaling({scaling.x, scaling.y, scaling.z});
-
-            shader
-                    .setProjectionMatrix(projectionMatrix)
-                    .setTransformationMatrix(individualTransformationMatrix)
-                    .draw(mesh);
         }
 
-    }
+    };
+
 }
 
 #endif //N_BODY_SOLVERRENDERER_H

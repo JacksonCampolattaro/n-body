@@ -4,7 +4,7 @@
 
 #include "InstancedPhongRenderer.h"
 
-void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) {
+void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) {
 
     // Allocate the shader & mesh, if this hasn't been done before
     if (!_shader || !_mesh) {
@@ -20,7 +20,8 @@ void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, co
     auto &shader = *_shader;
     auto &mesh = *_mesh;
 
-    auto spheresView = simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
+    std::scoped_lock l(_simulation.mutex);
+    auto spheresView = _simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
 
     Containers::Array<SphereInstanceData> instanceData{NoInit, spheresView.size_hint()};
 
@@ -42,9 +43,9 @@ void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, co
 
     auto instanceBuffer = GL::Buffer{};
     mesh.addVertexBufferInstanced(instanceBuffer, 1, 0,
-                                   Shaders::PhongGL::TransformationMatrix{},
-                                   Shaders::PhongGL::NormalMatrix{},
-                                   Shaders::PhongGL::Color3{});
+                                  Shaders::PhongGL::TransformationMatrix{},
+                                  Shaders::PhongGL::NormalMatrix{},
+                                  Shaders::PhongGL::Color3{});
     mesh.setInstanceCount((int) instanceData.size());
 
     instanceBuffer.setData(instanceData, GL::BufferUsage::DynamicDraw);

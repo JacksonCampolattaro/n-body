@@ -10,18 +10,20 @@
 
 namespace NBody {
 
-    class MultiRenderer : public Renderer {
+    class MultiRenderer : public SimulationRenderer {
     private:
 
         Renderer *_activeRenderer;
 
     public:
 
-        MultiRenderer() : _activeRenderer(&getRenderer<PhongRenderer>()) {}
+        MultiRenderer(const Simulation &simulation) :
+                SimulationRenderer(simulation),
+                _activeRenderer(&getRenderer<PhongRenderer>()) {}
 
         template<class RendererType>
         RendererType &getRenderer() {
-            static RendererType renderer{};
+            static RendererType renderer{_simulation};
             return renderer;
         }
 
@@ -35,9 +37,8 @@ namespace NBody {
         }
 
         void draw(const Matrix4 &transformationMatrix,
-                  const Matrix4 &projectionMatrix,
-                  const NBody::Simulation &simulation) override {
-            activeRenderer().draw(transformationMatrix, projectionMatrix, simulation);
+                  const Matrix4 &projectionMatrix) override {
+            activeRenderer().draw(transformationMatrix, projectionMatrix);
         };
     };
 

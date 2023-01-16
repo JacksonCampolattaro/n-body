@@ -31,11 +31,15 @@ namespace NBody {
 
         Magnum::Vector2 toNDC(float x, float y);
 
+        ControllableCamera &_controllableCamera;
+
     public:
 
         InteractiveView(Gtk::GLArea::BaseObjectType *cobject,
                         const Glib::RefPtr<Gtk::Builder> &builder,
-                        ControllableCamera &camera, Simulation &simulation, MultiSolver &solver);
+                        ControllableCamera &camera, RendererList renderers);
+
+        void onRender(GL::Framebuffer &defaultFramebuffer) override;
     };
 
 }
