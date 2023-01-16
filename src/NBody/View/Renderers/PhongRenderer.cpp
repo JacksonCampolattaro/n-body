@@ -4,11 +4,12 @@
 
 #include "PhongRenderer.h"
 
-void NBody::PhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix, const NBody::Simulation &simulation) {
+void NBody::PhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) {
     auto shader = Shaders::PhongGL{Shaders::PhongGL::Flag::NoSpecular};
     auto mesh = NBody::Graphics::Sphere::mesh();
 
-    auto spheresView = simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
+    std::scoped_lock l(_simulation.mutex);
+    auto spheresView = _simulation.view<const NBody::Physics::Position, const NBody::Graphics::Color, const NBody::Graphics::Sphere>();
 
     spheresView.each([&](
             const NBody::Physics::Position &position,

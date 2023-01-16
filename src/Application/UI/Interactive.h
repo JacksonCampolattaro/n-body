@@ -27,6 +27,10 @@ namespace UI {
         NBody::Simulation &_simulation;
 
         NBody::ArcBallControllableCamera _camera;
+
+        NBody::MultiRenderer _simulationRenderer;
+        NBody::SolverRenderer _solverRenderer;
+
         NBody::Recorder _recorder;
 
         NBody::InteractiveView &_view;

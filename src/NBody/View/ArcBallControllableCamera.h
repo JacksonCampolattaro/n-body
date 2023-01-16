@@ -32,7 +32,11 @@ namespace NBody {
                                   const Vector3 &viewCenter,
                                   Deg fov);
 
-        void draw(const NBody::Simulation &simulation, GL::Framebuffer &framebuffer) override;
+        void updateTransformation() override;
+
+        Matrix4 transformationMatrix() override;
+
+        Matrix4 projectionMatrix(const GL::Framebuffer &framebuffer) override;
 
         float getZoom() const override;
 

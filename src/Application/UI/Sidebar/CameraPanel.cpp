@@ -9,14 +9,23 @@
 
 UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
                              const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::ArcBallControllableCamera &camera, NBody::Recorder &recorder) :
+                             NBody::ArcBallControllableCamera &camera,
+                             NBody::MultiRenderer &renderer,
+                             NBody::SolverRenderer &solverRenderer,
+                             NBody::Recorder &recorder) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/camera_panel.xml"),
         _positionEntry(getWidget<CompactPositionEntry>("camera-position-entry")),
         _directionEntry(getWidget<CompactDirectionEntry>("camera-direction-entry")),
         _zoomEntry(getWidget<FloatEntry>("camera-zoom-entry")),
         _backgroundColorEntry(getWidget<Gtk::ColorButton>("background-color-entry")),
         _shaderDropdown(getWidget<Gtk::ListBoxRow>("shader-dropdown")),
+        _debugOverlaySwitch(getWidget<Gtk::Switch>("debug-overlay-switch")),
         _videoRecorder(getWidget<VideoRecorder>("video-recorder", recorder)) {
+
+    _debugOverlaySwitch.set_active(solverRenderer.enabled());
+    _debugOverlaySwitch.property_active().signal_changed().connect([&](){
+        solverRenderer.setEnabled(_debugOverlaySwitch.get_active());
+    });
 
     camera.signal_changed().connect([&]() {
         _zoomEntry.setValue(camera.getZoom());
@@ -50,21 +59,21 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
     auto color = _backgroundColorEntry.get_rgba();
     camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()});
 
-    camera.renderer().select<NBody::InstancedPhongRenderer>();
+    renderer.select<NBody::InstancedPhongRenderer>();
     _shaderDropdown.connect_property_changed("selected", [&]() {
-        auto renderer = _shaderDropdown.get_property<guint>("selected");
-        switch (renderer) {
+        auto id = _shaderDropdown.get_property<guint>("selected");
+        switch (id) {
             case 0:
-                camera.renderer().select<NBody::InstancedPhongRenderer>();
+                renderer.select<NBody::InstancedPhongRenderer>();
                 break;
             case 1:
-                camera.renderer().select<NBody::PhongRenderer>();
+                renderer.select<NBody::PhongRenderer>();
                 break;
             case 2:
-                camera.renderer().select<NBody::InstancedFlatRenderer>();
+                renderer.select<NBody::InstancedFlatRenderer>();
                 break;
             case 3:
-                camera.renderer().select<NBody::FlatRenderer>();
+                renderer.select<NBody::FlatRenderer>();
                 break;
             default:
                 spdlog::error("Unrecognized renderer selected");

@@ -8,7 +8,6 @@
 #include <adwaita.h>
 
 #include "Application.h"
-#include "UI/Simple.h"
 #include "UI/Interactive.h"
 
 Application::Application() :

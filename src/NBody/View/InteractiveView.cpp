@@ -4,10 +4,13 @@
 
 #include "InteractiveView.h"
 
+#include <utility>
+
 NBody::InteractiveView::InteractiveView(Gtk::GLArea::BaseObjectType *cobject,
                                         const Glib::RefPtr<Gtk::Builder> &builder,
-                                        NBody::ControllableCamera &camera, NBody::Simulation &simulation) :
-        SimpleView(cobject, builder, camera, simulation) {
+                                        NBody::ControllableCamera &camera,
+                                        RendererList renderers) :
+        SimpleView(cobject, builder, camera, std::move(renderers)), _controllableCamera(camera) {
 
     auto scrollController = Gtk::EventControllerScroll::create();
     scrollController->set_flags(Gtk::EventControllerScroll::Flags::BOTH_AXES);
@@ -61,4 +64,9 @@ NBody::InteractiveView::InteractiveView(Gtk::GLArea::BaseObjectType *cobject,
 Magnum::Vector2 NBody::InteractiveView::toNDC(float x, float y) {
     return {x * 2.0f / ((float) get_allocated_width()) - 1.0f,
             1.0f - 2.0f * y / ((float) get_allocated_height())};
+}
+
+void NBody::InteractiveView::onRender(GL::Framebuffer &defaultFramebuffer) {
+    _controllableCamera.updateTransformation();
+    SimpleView::onRender(defaultFramebuffer);
 }

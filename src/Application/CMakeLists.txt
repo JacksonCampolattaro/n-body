@@ -50,7 +50,6 @@ add_executable(NBody
         main.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/${GRESOURCE_C} # fixme this is terrible, there must be a better way
         Application.cpp Application.h
-        UI/Simple.cpp UI/Simple.h
         UI/Interactive.cpp UI/Interactive.h
         UI/Sidebar/ParticlesPanel.cpp UI/Sidebar/ParticlesPanel.h
         UI/Sidebar/PhysicsPanel.cpp UI/Sidebar/PhysicsPanel.h
