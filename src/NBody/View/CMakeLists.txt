@@ -47,7 +47,7 @@ add_library(View
         Camera.h
         ArcBallControllableCamera.cpp ArcBallControllableCamera.h
         Recorder.cpp Recorder.h
-        View.h VideoOutputStream.cpp VideoOutputStream.h)
+        View.h VideoOutputStream.cpp VideoOutputStream.h Renderers/SolverRenderer.cpp Renderers/SolverRenderer.h)
 
 target_include_directories(View PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

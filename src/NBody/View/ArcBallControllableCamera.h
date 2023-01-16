@@ -34,6 +34,9 @@ namespace NBody {
 
         void draw(const NBody::Simulation &simulation, GL::Framebuffer &framebuffer) override;
 
+        void draw(const NBody::Simulation &simulation, const NBody::Solver &solver,
+                  GL::Framebuffer &framebuffer) override;
+
         float getZoom() const override;
 
         void setZoom(float zoom) override;

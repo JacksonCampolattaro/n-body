@@ -8,6 +8,7 @@
 #include "Renderers/MultiRenderer.h"
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/MultiSolver.h>
 
 #include <Magnum/Math/Vector2.h>
 #include <Magnum/Gl/Framebuffer.h>
@@ -29,6 +30,9 @@ namespace NBody {
     public:
 
         virtual void draw(const NBody::Simulation &simulation, GL::Framebuffer &framebuffer) = 0;
+
+        virtual void draw(const NBody::Simulation &simulation, const NBody::Solver &solver,
+                          GL::Framebuffer &framebuffer) = 0;
 
         MultiRenderer &renderer() { return _renderer; }
 

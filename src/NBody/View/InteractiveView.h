@@ -35,7 +35,7 @@ namespace NBody {
 
         InteractiveView(Gtk::GLArea::BaseObjectType *cobject,
                         const Glib::RefPtr<Gtk::Builder> &builder,
-                        ControllableCamera &camera, Simulation &simulation);
+                        ControllableCamera &camera, Simulation &simulation, MultiSolver &solver);
     };
 
 }

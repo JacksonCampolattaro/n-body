@@ -17,7 +17,7 @@ UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, co
                 Vector3::yAxis(),
                 45.0_degf,
         },
-        _view(getWidget<NBody::InteractiveView>("view", _camera, _simulation)),
+        _view(getWidget<NBody::InteractiveView>("view", _camera, _simulation, solver)),
         _recorder{_camera, _simulation, solver.signal_finished()},
         _particlesPanel(getWidget<ParticlesPanel>("particles-panel", _simulation, fileManager)),
         _physicsPanel(getWidget<PhysicsPanel>("physics-panel", rule)),

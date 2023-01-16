@@ -21,20 +21,21 @@ void NBody::SimpleView::setup() {
     _simulation.signal_changed.connect(slot_renderNeeded());
 }
 
-NBody::SimpleView::SimpleView(NBody::Camera &camera, const NBody::Simulation &simulation) :
-        View(), _simulation(simulation), _camera(camera) {
+NBody::SimpleView::SimpleView(NBody::Camera &camera, const NBody::Simulation &simulation, const NBody::MultiSolver &solver) :
+        View(), _simulation(simulation), _solver(solver), _camera(camera) {
 
     setup();
 }
 
 NBody::SimpleView::SimpleView(Gtk::GLArea::BaseObjectType *cobject,
                               const Glib::RefPtr<Gtk::Builder> &builder,
-                              NBody::Camera &camera, const NBody::Simulation &simulation) :
-        View(cobject, builder), _simulation(simulation), _camera(camera) {
+                              NBody::Camera &camera, const NBody::Simulation &simulation, const NBody::MultiSolver &solver) :
+        View(cobject, builder), _simulation(simulation), _solver(solver), _camera(camera) {
 
     setup();
 }
 
 void NBody::SimpleView::onRender(GL::Framebuffer &defaultFramebuffer) {
     _camera.draw(_simulation, defaultFramebuffer);
+    _camera.draw(_simulation, _solver.get(), defaultFramebuffer);
 }
