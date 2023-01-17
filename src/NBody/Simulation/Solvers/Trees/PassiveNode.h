@@ -25,8 +25,8 @@ namespace NBody {
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
             // The field tree only needs to contain passive particles (which receive forces)
-            return {simulation.group<const Position>(entt::get<PassiveTag>).begin(),
-                    simulation.group<const Position>(entt::get<PassiveTag>).end()};
+            return {simulation.view<const Position, const PassiveTag>().begin(),
+                    simulation.view<const Position, const PassiveTag>().end()};
         }
 
         [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }

@@ -4,7 +4,6 @@
 
 #include "SolverPanel.h"
 
-#include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <adwaita.h>
 
 UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
@@ -45,7 +44,9 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     return new BarnesHutSolverSettings((NBody::BarnesHutSolver &) *solver);
                 if (solver->id() == "linear-bvh")
                     return new LinearBVHSolverSettings((NBody::LinearBVHSolver &) *solver);
-                else return new Gtk::Label{"Unrecognized Solver"};
+                if (solver->id() == "mvdr")
+                    return new MVDRSolverSettings((NBody::MVDRSolver &) *solver);
+                return new Gtk::Label{"Unrecognized Solver"};
             }
     ));
     _solverStack.set_model(_multiSolver.selectionModel());

@@ -6,6 +6,7 @@
 #define N_BODY_LINEARBVH_H
 
 #include "Tree.h"
+#include "ActiveNode.h"
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
