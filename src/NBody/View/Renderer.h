@@ -31,7 +31,7 @@ namespace NBody {
 
     public:
 
-        SimulationRenderer(const NBody::Simulation &simulation) : _simulation(simulation) {}
+        explicit SimulationRenderer(const NBody::Simulation &simulation) : _simulation(simulation) {}
 
         sigc::signal<void()> &signal_changed() override { return _simulation.signal_changed; };
     };

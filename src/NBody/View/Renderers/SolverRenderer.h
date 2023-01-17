@@ -18,6 +18,7 @@
 #include <NBody/Simulation/Solvers/MultiSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
+#include <NBody/Simulation/Solvers/DualTreeSolver.h>
 
 #include "../Renderer.h"
 
@@ -61,6 +62,10 @@ namespace NBody {
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
                   const LinearBVHSolver &solver);
+
+        void draw(const Matrix4 &transformationMatrix,
+                  const Matrix4 &projectionMatrix,
+                  const MVDRSolver &solver);
 
         template<typename TreeNode>
         void draw(const Matrix4 &transformationMatrix,
