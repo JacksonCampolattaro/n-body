@@ -18,7 +18,7 @@ namespace NBody {
 //        using PassiveNode::boundingBox;
 //        using PassiveNode::center;
 //        using PassiveNode::sideLength;
-//        using PassiveNode::acceleration;
+//        using PassiveNode::force;
 //        using PassiveNode::summarize;
 //        using PassiveNode::collapseAccelerations;
 
