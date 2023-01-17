@@ -23,6 +23,7 @@
 #include "NaiveSolverSettings.h"
 #include "BarnesHutSolverSettings.h"
 #include "LinearBVHSolverSettings.h"
+#include "MVDRSolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 

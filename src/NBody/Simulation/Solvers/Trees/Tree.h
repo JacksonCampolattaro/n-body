@@ -153,6 +153,34 @@ namespace NBody {
         [[nodiscard]] NodeImplementation &root() { return _root; }
 
     };
+
+    template<typename TreeType>
+    static std::vector<std::reference_wrapper<typename TreeType::Node>> loadBalancedSplit(TreeType &tree,
+                                                                                          std::size_t n) {
+
+        std::vector<std::reference_wrapper<typename TreeType::Node>> queue;
+        auto comparator = [&](std::reference_wrapper<typename TreeType::Node> a,
+                              std::reference_wrapper<typename TreeType::Node> b) {
+            return a.get().contents().size() < b.get().contents().size();
+        };
+
+        queue.push_back(tree.root());
+
+        while (queue.size() < n) {
+
+            std::pop_heap(queue.begin(), queue.end(), comparator);
+            typename TreeType::Node &toSplit = queue.back();
+            if (toSplit.isLeaf()) break;
+            queue.pop_back();
+
+            for (typename TreeType::Node &child: toSplit.children()) {
+                queue.push_back(child);
+                std::push_heap(queue.begin(), queue.end(), comparator);
+            }
+        }
+
+        return queue;
+    }
 }
 
 #endif //T_SNE_TREE_H

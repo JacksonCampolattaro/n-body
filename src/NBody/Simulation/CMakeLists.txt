@@ -37,7 +37,8 @@ add_library(Simulation
         Runners/OneStepRunner.cpp Runners/OneStepRunner.h
         Runners/NStepsRunner.cpp Runners/NStepsRunner.h
         Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
-        Solvers/LinearBVHSolver.h)
+        Solvers/LinearBVHSolver.h
+        Solvers/DualTreeSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

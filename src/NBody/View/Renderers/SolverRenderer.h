@@ -32,7 +32,7 @@ namespace NBody {
     protected:
 
         const MultiSolver &_solver;
-        bool _enabled = false;
+        bool _enabled = true;
 
         mutable sigc::signal<void()> _signal_changed;
 

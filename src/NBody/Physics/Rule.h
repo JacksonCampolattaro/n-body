@@ -40,6 +40,17 @@ namespace NBody::Physics {
             return forceVector / passiveMass.mass();
         }
 
+        Acceleration operator()(const Position &activePosition, const Mass &activeMass,
+                                const Position &passivePosition) const {
+
+            if (activePosition == passivePosition) return {};
+
+            float force = _g * activeMass.mass() /
+                          (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
+
+            return glm::normalize(activePosition - passivePosition) * force;
+        }
+
         float &g() { return _g; }
 
         float &epsilon() { return _epsilon; }
