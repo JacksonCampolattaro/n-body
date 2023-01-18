@@ -12,6 +12,7 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
+#include <NBody/Simulation/Solvers/DualTreeSolver.h>
 
 using namespace NBody;
 

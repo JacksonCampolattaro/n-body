@@ -33,7 +33,7 @@ namespace NBody {
                 _activeTree(simulation),
                 _passiveTree(simulation) {
             _passiveTree.maxDepth() = 32;
-            _passiveTree.maxLeafSize() = 1;
+            _passiveTree.maxLeafSize() = 16;
         }
 
         const ActiveTree &activeTree() const { return _activeTree; }
@@ -80,7 +80,7 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Collapsing forces"});
-                auto view = _simulation.view<Force>();
+                auto view = _simulation.view<const Mass, Force>();
                 _passiveTree.root().collapseForces(view);
             }
 
