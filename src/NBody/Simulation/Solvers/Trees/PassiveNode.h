@@ -57,7 +57,7 @@ namespace NBody {
 
         Mass &totalMass() { return _totalMass; }
 
-        void collapseForces(const entt::basic_view<entt::entity, entt::exclude_t<>, Force> &forces,
+        void collapseForces(const entt::basic_view<entt::entity, entt::exclude_t<>, const Mass, Force> &context,
                             Force netForce = {0.0f, 0.0f, 0.0f}) const {
 
             netForce += (glm::vec3) force();
@@ -65,14 +65,16 @@ namespace NBody {
             if (isLeaf()) {
 
                 // When we reach a leaf node, apply the local force to all contained points
+                // todo: the force should be applied proportionally by mass
                 for (auto i: contents())
-                    forces.get<Force>(i) += (glm::vec3) netForce;
+                    context.get<Force>(i) += (glm::vec3) netForce
+                                             * (context.get<const Mass>(i).mass() / totalMass().mass());
 
             } else {
 
-                // Descend the tree recursively, keeping track of the net gradient over the current region
+                // Descend the tree recursively, keeping track of the net force over the current region
                 for (const auto &child: children())
-                    child.collapseForces(forces, netForce);
+                    child.collapseForces(context, netForce * (child.totalMass().mass() / totalMass().mass()));
 
             }
         }
