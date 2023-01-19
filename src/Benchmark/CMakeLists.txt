@@ -4,7 +4,7 @@ find_package(spdlog REQUIRED)
 find_package(Matplot++ REQUIRED)
 
 add_executable(Benchmark
-        main.cpp)
+        main.cpp random.h)
 
 target_link_libraries(Benchmark PUBLIC
 
