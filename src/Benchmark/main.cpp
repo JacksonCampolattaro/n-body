@@ -87,12 +87,7 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 template<typename ReferenceSolver, typename CandidateSolver>
 void compare(std::size_t n, std::size_t i, float theta) {
 
-    auto simulation = randomSimulation(n);
-    std::ofstream referenceFile{"test.json"};
-    json scenario;
-    to_json(scenario, *simulation);
-    referenceFile << std::setw(4) << scenario;
-    referenceFile.close();
+    json scenario = randomSimulation(n);
 
     Simulation baseline;
     from_json(scenario, baseline);
@@ -134,9 +129,53 @@ void compare(std::size_t n, std::size_t i, float theta) {
     );
 }
 
+template<typename CandidateSolver>
+void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
+
+    json scenario = randomSimulation(n);
+
+    Rule rule{};
+
+    Simulation baseline;
+    from_json(scenario, baseline);
+    NaiveSolver baselineSolver(baseline, rule);
+    timedRun(baselineSolver, 100);
+
+    std::map<std::string, std::vector<float>> results{
+            {"theta", {}},
+            {"time", {}},
+            {"l2", {}}
+    };
+
+
+    for (float theta: thetaValues) {
+
+        Simulation simulation;
+        from_json(scenario, simulation);
+
+        CandidateSolver solver{simulation, rule};
+        solver.theta() = theta;
+
+        auto time = timedRun(solver, 100);
+        auto l2Norm = L2Norm(baseline, simulation);
+
+        results["theta"].emplace_back(theta);
+        results["time"].emplace_back(time.count());
+        results["l2"].emplace_back(l2Norm);
+    }
+
+    for (int i = 0; i < thetaValues.size(); ++i) {
+        spdlog::info("{} --> {}", results["theta"][i], results["l2"][i]);
+    }
+
+}
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
 
-    compare<BarnesHutSolver, LinearBVHSolver>(5000, 100, 0.5);
+    //compare<BarnesHutSolver, LinearBVHSolver>(5000, 100, 0.5);
+
+    std::vector<float> thetaValues = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
+    sweepTheta<BarnesHutSolver>(5000, thetaValues);
 }
