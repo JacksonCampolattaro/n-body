@@ -51,11 +51,8 @@ namespace NBody {
                 assert(_tree);
                 auto acceleration = computeAcceleration(
                         _tree->root(),
-                        _descentCriterion,
                         simulation().template view<const Position, const Mass, const ActiveTag>(),
-                        targetPosition,
-                        targetMass,
-                        _rule
+                        targetPosition
                 );
 
                 velocity += acceleration * _dt;
@@ -90,23 +87,19 @@ namespace NBody {
     protected:
 
         inline Acceleration computeAcceleration(const typename TreeType::Node &node,
-                                                DescentCriterionType &descentCriterion,
                                                 const entt::basic_view<
                                                         entt::entity, entt::exclude_t<>,
                                                         const Position, const Mass, const ActiveTag
                                                 > &activeParticles,
-                                                const Position &passivePosition,
-                                                const Mass &passiveMass,
-                                                const Rule &rule) {
+                                                const Position &passivePosition) {
 
             // Empty nodes can be ignored
             if (node.contents().empty()) return Physics::Acceleration{};
 
-            if (descentCriterion(node, passivePosition)) {
+            if (_descentCriterion(node, passivePosition)) {
 
                 // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
-                return rule(node.centerOfMass(), node.totalMass(),
-                            passivePosition, passiveMass);
+                return _rule(node.centerOfMass(), node.totalMass(), passivePosition);
 
             } else {
 
@@ -118,9 +111,9 @@ namespace NBody {
                             node.contents().begin(), node.contents().end(),
                             Physics::Acceleration{}, std::plus{},
                             [&](auto entity) {
-                                return rule(activeParticles.get<const Position>(entity),
-                                            activeParticles.get<const Mass>(entity),
-                                            passivePosition, passiveMass);
+                                return _rule(activeParticles.get<const Position>(entity),
+                                             activeParticles.get<const Mass>(entity),
+                                             passivePosition);
                             }
                     );
 
@@ -132,10 +125,9 @@ namespace NBody {
                             Physics::Acceleration{}, std::plus{},
                             [&](const auto &child) {
                                 return computeAcceleration(
-                                        child, descentCriterion,
+                                        child,
                                         activeParticles,
-                                        passivePosition, passiveMass,
-                                        rule
+                                        passivePosition
                                 );
                             }
                     );

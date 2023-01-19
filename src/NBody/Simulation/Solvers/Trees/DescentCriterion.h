@@ -51,6 +51,12 @@ namespace NBody::DescentCriterion {
                    < _theta;
         }
 
+        template<typename ActiveTreeNode, typename PassiveTreeNode>
+        inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
+            return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
+                    glm::distance((glm::vec3) activeNode.centerOfMass(), passiveNode.center())) < _theta;
+        }
+
         [[nodiscard]] const float &theta() const { return _theta; }
 
         float &theta() { return _theta; }

@@ -12,11 +12,11 @@
 
 namespace NBody {
 
-    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance> {
+    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH, DescentCriterion::DiagonalOverDistance> {
     public:
 
         LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<LinearBVH, DescentCriterion::ProjectedDiagonalOverDistance>(simulation, rule) {}
+                BarnesHutSolverBase<LinearBVH, DescentCriterion::DiagonalOverDistance>(simulation, rule) {}
 
         std::string id() override { return "linear-bvh"; };
 

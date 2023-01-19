@@ -10,12 +10,12 @@
 #include <glm/gtx/norm.hpp>
 
 #include "Position.h"
+#include "Acceleration.h"
+#include "Force.h"
 #include "Mass.h"
 #include "PassiveMass.h"
 
 namespace NBody::Physics {
-
-    typedef glm::vec3 Acceleration;
 
     class Rule {
     private:
@@ -27,7 +27,7 @@ namespace NBody::Physics {
 
         explicit Rule(const float &G = 1.0, const float &epsilon = 0.00001) : _g(G), _epsilon(epsilon) {};
 
-        Acceleration operator()(const Position &activePosition, const Mass &activeMass,
+        Force operator()(const Position &activePosition, const Mass &activeMass,
                                 const Position &passivePosition, const Mass &passiveMass) const {
 
             if (activePosition == passivePosition) return {};
@@ -35,9 +35,18 @@ namespace NBody::Physics {
             float force = _g * passiveMass.mass() * activeMass.mass() /
                           (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
 
-            glm::vec3 forceVector = glm::normalize(activePosition - passivePosition) * force;
+            return glm::normalize(activePosition - passivePosition) * force;
+        }
 
-            return forceVector / passiveMass.mass();
+        Acceleration operator()(const Position &activePosition, const Mass &activeMass,
+                                const Position &passivePosition) const {
+
+            if (activePosition == passivePosition) return {};
+
+            float force = _g * activeMass.mass() /
+                          (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
+
+            return glm::normalize(activePosition - passivePosition) * force;
         }
 
         float &g() { return _g; }
