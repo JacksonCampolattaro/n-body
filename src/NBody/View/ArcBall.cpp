@@ -122,7 +122,7 @@ namespace Magnum::Examples {
 
     void ArcBall::zoom(Float delta) {
         // Don't allow zooming closer than -1.0
-        _targetZooming = std::min(_targetZooming + delta, -1.0f);
+        _targetZooming = std::min(_targetZooming * (1.0f - delta / 500.0f), -1.0f);
     }
 
     void ArcBall::setZoom(Float zoom) {

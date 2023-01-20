@@ -4,6 +4,7 @@
 
 #include <random>
 #include <gtkmm.h>
+#include <matplot/matplot.h>
 
 #include <spdlog/spdlog.h>
 
@@ -87,7 +88,7 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 template<typename ReferenceSolver, typename CandidateSolver>
 void compare(std::size_t n, std::size_t i, float theta) {
 
-    json scenario = randomSimulation(n);
+    json scenario = randomVolumeSimulation(n);
 
     Simulation baseline;
     from_json(scenario, baseline);
@@ -132,7 +133,7 @@ void compare(std::size_t n, std::size_t i, float theta) {
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = randomSimulation(n);
+    json scenario = randomVolumeSimulation(n);
 
     Rule rule{};
 
@@ -156,26 +157,26 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
         CandidateSolver solver{simulation, rule};
         solver.theta() = theta;
 
-        auto time = timedRun(solver, 100);
-        auto l2Norm = L2Norm(baseline, simulation);
-
         results["theta"].emplace_back(theta);
-        results["time"].emplace_back(time.count());
-        results["l2"].emplace_back(l2Norm);
+        results["time"].emplace_back(timedRun(solver, 100).count());
+        results["l2"].emplace_back(L2Norm(baseline, simulation));
     }
 
-    for (int i = 0; i < thetaValues.size(); ++i) {
-        spdlog::info("{} --> {}", results["theta"][i], results["l2"][i]);
-    }
+    matplot::plot(results["theta"], results["l2"], "-o");
+    matplot::hold(true);
+    matplot::plot(results["theta"], results["time"], "-o")->use_y2(true);
+    matplot::show();
 
 }
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::debug);
     Glib::init();
 
-    //compare<BarnesHutSolver, LinearBVHSolver>(5000, 100, 0.5);
+    //randomGalaxySimulation(10'000);
+
+    //compare<BarnesHutSolver, LinearBVHSolver>(10000, 100, 0.5);
 
     std::vector<float> thetaValues = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
-    sweepTheta<BarnesHutSolver>(5000, thetaValues);
+    sweepTheta<BarnesHutSolver>(50000, thetaValues);
 }
