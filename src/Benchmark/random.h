@@ -5,6 +5,8 @@
 #ifndef N_BODY_RANDOM_H
 #define N_BODY_RANDOM_H
 
+#include <random>
+
 #include <spdlog/spdlog.h>
 
 #include <NBody/Simulation/Simulation.h>
