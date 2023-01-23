@@ -68,10 +68,11 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Computing forces"});
-                auto startingNodes =
-                        loadBalancedSplit(_passiveTree, 64);
+                auto startingNodes = loadBalancedSplit(_passiveTree, 64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
                     computeForces(
+                            _simulation.view<const Position, const Mass, Force, const PassiveTag>(),
+                            _simulation.view<const Position, const Mass, const ActiveTag>(),
                             _activeTree.root(),
                             node
                     );
@@ -118,6 +119,14 @@ namespace NBody {
     private:
 
         void computeForces(
+                const entt::basic_view<
+                        entt::entity, entt::exclude_t<>,
+                        const Position, const Mass, Force, const PassiveTag
+                > &passiveParticles,
+                const entt::basic_view<
+                        entt::entity, entt::exclude_t<>,
+                        const Position, const Mass, const ActiveTag
+                > &activeParticles,
                 const typename ActiveTree::Node &activeNode,
                 typename PassiveTree::Node &passiveNode) {
 
@@ -138,11 +147,11 @@ namespace NBody {
                 for (auto activeParticle: activeNode.contents()) {
                     for (auto passiveParticle: passiveNode.contents()) {
 
-                        _simulation.template get<Force>(passiveParticle) +=
-                                (glm::vec3) _rule(_simulation.get<const Position>(activeParticle),
-                                                  _simulation.get<const Mass>(activeParticle),
-                                                  _simulation.get<const Position>(passiveParticle),
-                                                  _simulation.get<const Mass>(passiveParticle));
+                        passiveParticles.get<Force>(passiveParticle) +=
+                                (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
+                                                  activeParticles.get<const Mass>(activeParticle),
+                                                  passiveParticles.get<const Position>(passiveParticle),
+                                                  passiveParticles.get<const Mass>(passiveParticle));
 
                     }
 
@@ -167,8 +176,8 @@ namespace NBody {
                 // Treat every combination of force & field node
                 for (auto &childPassiveNode: passiveNodesToDescend) {
                     for (const auto &childActiveNode: activeNodesToDescend) {
-                        computeForces(childActiveNode,
-                                      childPassiveNode);
+                        computeForces(passiveParticles, activeParticles,
+                                      childActiveNode, childPassiveNode);
                     }
                 }
             }
