@@ -184,5 +184,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::size_t> nValues{};
     for (int i = 100; i < 1000000; i *= 1.25) nValues.emplace_back(i);
-    sweepN<BarnesHutSolver>(nValues, 0.7, 5);
+    sweepN<MVDRSolver>(nValues, 1.0, 5);
+
+    //sweepN<MVDRSolver>({1'000'000}, 2.0, 5);
 }
