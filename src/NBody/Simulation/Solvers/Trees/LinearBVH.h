@@ -5,6 +5,7 @@
 #ifndef N_BODY_LINEARBVH_H
 #define N_BODY_LINEARBVH_H
 
+#include <tbb/parallel_for_each.h>
 #include "Tree.h"
 #include "ActiveNode.h"
 
@@ -114,15 +115,29 @@ namespace NBody {
 
             // Build the tree
             auto context = simulation().view<const Position, const Mass, const ActiveTag, const MortonCode>();
-            root().refine(
-                    std::numeric_limits<std::size_t>::max(),
-                    [&](const auto &n) {
-                        // Don't split if all entities in this node have the same morton code
-                        return context.get<const MortonCode>(n.contents().front()) !=
-                               context.get<const MortonCode>(n.contents().back());
-                    },
-                    context
-            );
+            int preBuildDepth = 2;
+            auto toBeRefined = depthSplit(*this, preBuildDepth, context);
+            tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
+                node.get().refine(std::numeric_limits<std::size_t>::max(),
+                                  [&](const auto &n) {
+                                      // Don't split if all entities in this node have the same morton code
+                                      return context.get<const MortonCode>(n.contents().front()) !=
+                                             context.get<const MortonCode>(n.contents().back());
+                                  },
+                                  context);
+            });
+            summarizeTreeTop(root(), toBeRefined, context);
+
+            // todo: maybe non-parallel construction should be available as an option?
+            //            root().refine(
+            //                    std::numeric_limits<std::size_t>::max(),
+            //                    [&](const auto &n) {
+            //                        // Don't split if all entities in this node have the same morton code
+            //                        return context.get<const MortonCode>(n.contents().front()) !=
+            //                               context.get<const MortonCode>(n.contents().back());
+            //                    },
+            //                    context
+            //            );
         }
 
     };
