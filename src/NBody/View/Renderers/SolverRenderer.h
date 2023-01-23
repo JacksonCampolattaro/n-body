@@ -5,6 +5,8 @@
 #ifndef N_BODY_SOLVERRENDERER_H
 #define N_BODY_SOLVERRENDERER_H
 
+#include <Corrade/Containers/GrowableArray.h>
+
 #include <Magnum/GL/Renderer.h>
 #include <Magnum/Trade/MeshData.h>
 #include <Magnum/MeshTools/Compile.h>
@@ -12,6 +14,7 @@
 #include <Magnum/Math/Color.h>
 #include <Magnum/Shaders/MeshVisualizerGL.h>
 #include <Magnum/Shaders/PhongGL.h>
+#include <Magnum/Shaders/FlatGL.h>
 #include <Magnum/GL/Mesh.h>
 
 #include <NBody/Simulation/Simulation.h>
@@ -28,6 +31,11 @@ namespace NBody {
 
     using namespace Magnum;
     using namespace Math::Literals;
+
+    struct BoxInstanceData {
+        Matrix4 transformationMatrix;
+        Color4 color;
+    };
 
     class SolverRenderer : public Renderer {
     protected:
@@ -70,10 +78,17 @@ namespace NBody {
         template<typename TreeNode>
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const TreeNode &root) {
+                  const TreeNode &root,
+                  const Color4 &color) {
 
-            auto shader = Shaders::PhongGL{Shaders::PhongGL::Flag::NoSpecular};
+            auto shader = Shaders::FlatGL3D{Shaders::FlatGL3D::Flag::VertexColor |
+                                            Shaders::FlatGL3D::Flag::InstancedTransformation};
             auto mesh = MeshTools::compile(Primitives::cubeWireframe());
+            GL::Buffer boxInstanceBuffer{};
+            Containers::Array<BoxInstanceData> boxInstanceData;
+            mesh.addVertexBufferInstanced(boxInstanceBuffer, 1, 0,
+                                          Shaders::FlatGL3D::TransformationMatrix{},
+                                          Shaders::FlatGL3D::Color4{});
 
             std::queue<const TreeNode *> nodes;
             nodes.emplace(&root);
@@ -87,17 +102,21 @@ namespace NBody {
 
                 auto translation = node.boundingBox().center();
                 auto scaling = node.boundingBox().dimensions() / 2.0f;
-
                 auto individualTransformationMatrix =
                         transformationMatrix *
                         Matrix4::translation({translation.x, translation.y, translation.z}) *
                         Matrix4::scaling({scaling.x, scaling.y, scaling.z});
 
-                shader
-                        .setProjectionMatrix(projectionMatrix)
-                        .setTransformationMatrix(individualTransformationMatrix)
-                        .draw(mesh);
+                Containers::arrayAppend(boxInstanceData, InPlaceInit,
+                                        individualTransformationMatrix, color);
             }
+
+            boxInstanceBuffer.setData(boxInstanceData, GL::BufferUsage::DynamicDraw);
+            mesh.setInstanceCount((int) boxInstanceData.size());
+
+            shader
+                    .setTransformationProjectionMatrix(projectionMatrix)
+                    .draw(mesh);
 
         }
 
