@@ -21,12 +21,12 @@ void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matr
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
                                  const NBody::BarnesHutSolver &solver) {
-    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0xFF000055_rgbaf);
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
 }
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
                                  const NBody::LinearBVHSolver &solver) {
-    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0000FF55_rgbaf);
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
 }
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
