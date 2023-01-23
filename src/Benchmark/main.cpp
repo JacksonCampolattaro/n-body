@@ -132,6 +132,45 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
 }
 
+template<typename CandidateSolver>
+void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i) {
+
+    Rule rule{};
+
+    std::map<std::string, std::vector<float>> results{
+            {"n",    {}},
+            {"time", {}},
+    };
+
+    for (std::size_t n: nValues) {
+
+        json scenario = randomVolumeSimulation(n);
+
+        Simulation simulation;
+        from_json(scenario, simulation);
+
+        CandidateSolver solver{simulation, rule};
+        solver.theta() = theta;
+
+        results["n"].emplace_back(n);
+        results["time"].emplace_back(timedRun(solver, i).count() / (float) i);
+    }
+
+    // todo: there should be a way to get a solver's name statically
+    Simulation simulation;
+    CandidateSolver s{simulation, rule};
+
+    matplot::title(fmt::format(
+            "Compute time of a {} solver for different simulation sizes (θ={})",
+            s.name(), theta
+    ));
+    matplot::xlabel("Number of random particles (n)");
+    matplot::plot(results["n"], results["time"], "-o");
+    matplot::ylabel("Performance (seconds-per-iteration)");
+    matplot::show();
+
+}
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
     Glib::init();
@@ -140,6 +179,10 @@ int main(int argc, char *argv[]) {
 
     //compare<BarnesHutSolver, LinearBVHSolver>(10000, 100, 0.5);
 
-    std::vector<float> thetaValues = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
-    sweepTheta<LinearBVHSolver>(50'000, thetaValues);
+    //std::vector<float> thetaValues = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
+    //sweepTheta<LinearBVHSolver>(50'000, thetaValues);
+
+    std::vector<std::size_t> nValues{};
+    for (int i = 100; i < 1000000; i *= 1.25) nValues.emplace_back(i);
+    sweepN<BarnesHutSolver>(nValues, 0.7, 5);
 }
