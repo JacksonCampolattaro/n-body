@@ -111,9 +111,10 @@ namespace NBody {
             particle.emplace<Physics::PassiveTag>();
         }
 
-        std::ofstream referenceFile{"test.json"};
         json scenario;
         to_json(scenario, simulation);
+
+        std::ofstream referenceFile{"test.json"};
         referenceFile << std::setw(4) << scenario;
         referenceFile.close();
 
