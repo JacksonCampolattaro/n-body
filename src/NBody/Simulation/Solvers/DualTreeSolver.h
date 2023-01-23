@@ -68,8 +68,7 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Computing forces"});
-                auto startingNodes =
-                        loadBalancedSplit(_passiveTree, 64);
+                auto startingNodes = loadBalancedSplit(_passiveTree, 64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
                     computeForces(
                             _simulation.view<const Position, const Mass, Force, const PassiveTag>(),

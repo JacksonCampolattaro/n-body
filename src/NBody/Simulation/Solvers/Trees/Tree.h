@@ -181,6 +181,48 @@ namespace NBody {
 
         return queue;
     }
+
+    template<typename TreeType, typename ...Context>
+    static std::vector<std::reference_wrapper<typename TreeType::Node>> depthSplit(TreeType &tree,
+                                                                                   std::size_t depth,
+                                                                                   Context... context) {
+
+        std::vector<std::reference_wrapper<typename TreeType::Node>> queue;
+        queue.push_back(tree.root());
+
+        std::vector<std::reference_wrapper<typename TreeType::Node>> children;
+
+        for (int i = 0; i < depth; ++i) {
+            for (auto &node: queue) {
+                node.get().split(context...);
+
+                for (auto &child: node.get().children()) {
+                    children.push_back(child);
+                }
+            }
+
+            queue = children;
+            children.clear();
+        }
+
+        return queue;
+    }
+
+    template<typename TreeNode, typename ...Context>
+    void summarizeTreeTop(TreeNode &toBeSummarized,
+                          const std::vector<std::reference_wrapper<TreeNode>> &alreadySummarized,
+                          Context... context) {
+
+        // If the node to be summarized is already in the summarized list, we don't need to summarize it again
+        for (auto summarizedNode : alreadySummarized)
+            if (&summarizedNode.get() == &toBeSummarized) return;
+
+        for (auto &child: toBeSummarized.children()) {
+            summarizeTreeTop(child, alreadySummarized, context...);
+        }
+
+        toBeSummarized.summarize(context...);
+    }
 }
 
 #endif //T_SNE_TREE_H
