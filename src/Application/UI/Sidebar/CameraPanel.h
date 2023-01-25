@@ -15,6 +15,7 @@
 #include <NBody/View/Renderers/InstancedPhongRenderer.h>
 #include <NBody/View/Renderers/FlatRenderer.h>
 #include <NBody/View/Renderers/InstancedFlatRenderer.h>
+#include <NBody/View/Renderers/SpriteRenderer.h>
 #include <NBody/View/Renderers/VelocityRenderer.h>
 
 #include <NBody/View/Renderers/SolverRenderer.h>
