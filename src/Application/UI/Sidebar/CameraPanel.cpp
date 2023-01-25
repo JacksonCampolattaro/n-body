@@ -76,6 +76,9 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
                 renderer.select<NBody::FlatRenderer>();
                 break;
             case 4:
+                renderer.select<NBody::SpriteRenderer>();
+                break;
+            case 5:
                 renderer.select<NBody::VelocityRenderer>();
                 break;
             default:
