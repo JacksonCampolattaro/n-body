@@ -29,6 +29,14 @@ using namespace NBody;
 //}
 
 template<typename SolverType>
+std::chrono::duration<float> timedStep(SolverType &solver) {
+    auto startTime = std::chrono::steady_clock::now();
+    solver.step();
+    auto finishTime = std::chrono::steady_clock::now();
+    return (finishTime - startTime);
+}
+
+template<typename SolverType>
 std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations) {
     spdlog::info("Running solver \"{}\" for {} iteration(s)", solver.name(), iterations);
     boost::progress_display display(iterations);
@@ -92,10 +100,11 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
     Rule rule{};
 
+    spdlog::info("Performing naive integration to determine baseline");
     Simulation baseline;
     from_json(scenario, baseline);
     NaiveSolver baselineSolver(baseline, rule);
-    timedRun(baselineSolver, 1);
+    timedStep(baselineSolver);
 
     std::map<std::string, std::vector<float>> results{
             {"theta", {}},
@@ -103,6 +112,8 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
             {"l2",    {}}
     };
 
+    spdlog::info("Performing tests for different values of theta");
+    boost::progress_display display(thetaValues.size());
     for (float theta: thetaValues) {
 
         Simulation simulation;
@@ -112,8 +123,10 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
         solver.theta() = theta;
 
         results["theta"].emplace_back(theta);
-        results["time"].emplace_back(timedRun(solver, 1).count());
+        results["time"].emplace_back(timedStep(solver).count());
         results["l2"].emplace_back(Comparison::average(&Comparison::L2Norm, baseline, simulation));
+
+        ++display;
     }
 
     // todo: there should be a way to get a solver's name statically
@@ -124,11 +137,11 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
             s.name(), n
     ));
     matplot::xlabel("θ");
-    matplot::plot(results["theta"], results["l2"], "-o");
-    matplot::ylabel("Accuracy (average L2 error vs. Naive forces)");
+    matplot::plot(results["theta"], results["l2"])->line_width(2.0f);
+    matplot::ylabel("Accuracy (L2 Norm vs. Naive forces)");
     matplot::hold(true);
-    matplot::plot(results["theta"], results["time"], "-o")->use_y2(true);
-    matplot::y2label("Performance (seconds-per-iteration)");
+    matplot::plot(results["theta"], results["time"])->line_width(2.0f).use_y2(true);
+    matplot::y2label("Iteration Time (S)");
     matplot::show();
 
 }
@@ -165,28 +178,77 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
             "Compute time of a {} solver for different simulation sizes (θ={})",
             s.name(), theta
     ));
-    matplot::xlabel("Number of random particles (n)");
-    matplot::plot(results["n"], results["time"], "-o");
-    matplot::ylabel("Performance (seconds-per-iteration)");
+    matplot::xlabel("# of random particles (n)");
+    matplot::plot(results["n"], results["time"])->line_width(2.0f);
+    matplot::ylabel("Iteration Time (S)");
     matplot::show();
+}
 
+
+void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i) {
+
+    Rule rule{};
+
+    std::map<std::string, std::vector<float>> results{
+            {"n",    {}},
+            {"time", {}},
+    };
+
+    for (std::size_t n: nValues) {
+
+        json scenario = randomVolumeSimulation(n);
+
+        Simulation barnesHutSimulation;
+        from_json(scenario, barnesHutSimulation);
+        Simulation linearBVHSimulation;
+        from_json(scenario, linearBVHSimulation);
+        Simulation mvdrSimulation;
+        from_json(scenario, mvdrSimulation);
+
+        BarnesHutSolver barnesHutSolver{barnesHutSimulation, rule};
+        barnesHutSolver.theta() = theta;
+        LinearBVHSolver linearBVHSolver{linearBVHSimulation, rule};
+        linearBVHSolver.theta() = theta;
+        MVDRSolver mvdrSolver{mvdrSimulation, rule};
+        mvdrSolver.theta() = theta;
+
+        results["n"].emplace_back(n);
+        results["barnes-hut-time"].emplace_back(timedRun(barnesHutSolver, i).count() / (float) i);
+        results["linear-bvh-time"].emplace_back(timedRun(linearBVHSolver, i).count() / (float) i);
+        results["mvdr-time"].emplace_back(timedRun(mvdrSolver, i).count() / (float) i);
+    }
+
+    matplot::title(fmt::format(
+            "Compute times of each solver for different simulation sizes (θ={})", theta
+    ));
+    matplot::xlabel("# of random particles (n)");
+    matplot::ylabel("Iteration Time (S)");
+    matplot::hold(true);
+    matplot::plot(results["n"], results["barnes-hut-time"])->line_width(2.0f);
+    matplot::plot(results["n"], results["linear-bvh-time"])->line_width(2.0f);
+    matplot::plot(results["n"], results["mvdr-time"])->line_width(2.0f);
+    matplot::legend({"Barnes-Hut", "Linear-BVH", "MVDR"});
+    matplot::show();
 }
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     Glib::init();
+
+    //randomVolumeSimulation(500'000);
 
     //randomGalaxySimulation(10'000);
 
     //compare<BarnesHutSolver, LinearBVHSolver>(10000, 100, 0.5);
 
-    //std::vector<float> thetaValues = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5};
-    //sweepTheta<LinearBVHSolver>(50'000, thetaValues);
+    std::vector<float> thetaValues{};
+    for (int i = 1; i < 300; i++) thetaValues.emplace_back((float) i / 100.0f);
+    sweepTheta<LinearBVHSolver>(50'000, thetaValues);
 
-    std::vector<std::size_t> nValues{};
-    for (int i = 100; i < 1'000'000; i *= 1.25) nValues.emplace_back(i);
-    sweepN<BarnesHutSolver>(nValues, 1.0, 5);
-    //sweepN<OctreeDualTraversalSolver>(nValues, 1.0, 5);
+    //std::vector<std::size_t> nValues{};
+    //for (int i = 100; i < 1'000'000; i *= 1.25) nValues.emplace_back(i);
+    //sweepN<MVDRSolver>(nValues, 0.8, 5);
+    //sweepN(nValues, 0.8, 5);
 
-    //sweepN<MVDRSolver>({1'000'000}, 2.0, 5);
+//    sweepN<MVDRSolver>({1'000'000}, 2.0, 5);
 }
