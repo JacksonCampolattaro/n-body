@@ -75,6 +75,9 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
             case 3:
                 renderer.select<NBody::FlatRenderer>();
                 break;
+            case 4:
+                renderer.select<NBody::VelocityRenderer>();
+                break;
             default:
                 spdlog::error("Unrecognized renderer selected");
                 break;
