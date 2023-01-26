@@ -5,9 +5,6 @@
 #ifndef N_BODY_SOLVERPANEL_H
 #define N_BODY_SOLVERPANEL_H
 
-#include "Application/UI/Widgets/ListView/StackView.h"
-#include "Application/UI/Widgets/ListView/DropDownView.h"
-
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
 
@@ -26,6 +23,8 @@
 #include "MVDRSolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
+#include "Application/UI/Widgets/ListView/StackView.h"
+#include "Application/UI/Widgets/ListView/DropDownView.h"
 
 namespace UI {
 

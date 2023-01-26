@@ -47,7 +47,9 @@ namespace NBody {
 
     public:
 
-        SolverRenderer(const MultiSolver &solver) : _solver(solver) {}
+        SolverRenderer(const MultiSolver &solver) :
+                Renderer(),
+                _solver(solver) {}
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix) override;

@@ -23,6 +23,10 @@ namespace NBody {
 
         VelocityRenderer(const Simulation &simulation) : SimulationRenderer(simulation) {}
 
+        std::string id() override { return "velocity"; };
+
+        std::string name() override { return "Velocity"; };
+
         void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) override;
 
     protected:
