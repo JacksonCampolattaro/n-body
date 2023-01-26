@@ -183,7 +183,8 @@ namespace NBody {
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-            auto context = simulation().template view<const Position, const Mass, const ActiveTag>();
+            const auto &context = OctreeNodeImplementation::constructionContext(simulation());
+                    // simulation().template view<const Position, const Mass, const ActiveTag>();
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(*this, preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {

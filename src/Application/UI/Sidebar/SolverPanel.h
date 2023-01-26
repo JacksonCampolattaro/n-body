@@ -24,6 +24,7 @@
 #include "BarnesHutSolverSettings.h"
 #include "LinearBVHSolverSettings.h"
 #include "MVDRSolverSettings.h"
+#include "OctreeDualTraversalSolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 
