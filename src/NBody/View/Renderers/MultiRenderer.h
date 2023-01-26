@@ -49,6 +49,9 @@ namespace NBody {
             _rendererSelection->signal_selection_changed().connect([&](guint, guint) {
                 _signal_changed.emit();
             });
+
+            // Default to instanced phong renderer
+            select("instanced-phong");
         }
 
         std::string id() override { return get().id(); };
