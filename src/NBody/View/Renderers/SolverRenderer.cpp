@@ -17,6 +17,8 @@ void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matr
         draw(transformationMatrix, projectionMatrix, dynamic_cast<const NBody::LinearBVHSolver &>(solver));
     else if (typeid(solver) == typeid(NBody::MVDRSolver))
         draw(transformationMatrix, projectionMatrix, dynamic_cast<const NBody::MVDRSolver &>(solver));
+    else if (typeid(solver) == typeid(NBody::OctreeDualTraversalSolver))
+        draw(transformationMatrix, projectionMatrix, dynamic_cast<const NBody::OctreeDualTraversalSolver &>(solver));
 }
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
@@ -33,4 +35,9 @@ void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matr
                                  const NBody::MVDRSolver &solver) {
     draw(transformationMatrix, projectionMatrix, solver.activeTree().root(), 0xFF000055_rgbaf);
     draw(transformationMatrix, projectionMatrix, solver.passiveTree().root(), 0x0000FF55_rgbaf);
+}
+
+void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
+                                 const NBody::OctreeDualTraversalSolver &solver) {
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
 }

@@ -18,12 +18,12 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
         _directionEntry(getWidget<CompactDirectionEntry>("camera-direction-entry")),
         _zoomEntry(getWidget<FloatEntry>("camera-zoom-entry")),
         _backgroundColorEntry(getWidget<Gtk::ColorButton>("background-color-entry")),
-        _shaderDropdown(getWidget<Gtk::ListBoxRow>("shader-dropdown")),
+        _rendererDropdown(getWidget<DropDownView>("renderer-dropdown")),
         _debugOverlaySwitch(getWidget<Gtk::Switch>("debug-overlay-switch")),
         _videoRecorder(getWidget<VideoRecorder>("video-recorder", recorder)) {
 
     _debugOverlaySwitch.set_active(solverRenderer.enabled());
-    _debugOverlaySwitch.property_active().signal_changed().connect([&](){
+    _debugOverlaySwitch.property_active().signal_changed().connect([&]() {
         solverRenderer.setEnabled(_debugOverlaySwitch.get_active());
     });
 
@@ -59,27 +59,10 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
     auto color = _backgroundColorEntry.get_rgba();
     camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()});
 
-    renderer.select<NBody::InstancedPhongRenderer>();
-    _shaderDropdown.connect_property_changed("selected", [&]() {
-        auto id = _shaderDropdown.get_property<guint>("selected");
-        switch (id) {
-            case 0:
-                renderer.select<NBody::InstancedPhongRenderer>();
-                break;
-            case 1:
-                renderer.select<NBody::PhongRenderer>();
-                break;
-            case 2:
-                renderer.select<NBody::InstancedFlatRenderer>();
-                break;
-            case 3:
-                renderer.select<NBody::FlatRenderer>();
-                break;
-            default:
-                spdlog::error("Unrecognized renderer selected");
-                break;
-        }
-        camera.signal_changed().emit();
-    });
-
+    _rendererDropdown.set_expression(Gtk::ClosureExpression<Glib::ustring>::create(
+            [&](const Glib::RefPtr<Glib::ObjectBase> &item) {
+                return std::dynamic_pointer_cast<NBody::SimulationRenderer>(item)->name();
+            }
+    ));
+    _rendererDropdown.set_model(renderer.selectionModel());
 }

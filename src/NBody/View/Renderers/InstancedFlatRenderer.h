@@ -20,6 +20,10 @@ namespace NBody {
 
         InstancedFlatRenderer(const Simulation &simulation) : SimulationRenderer(simulation) {}
 
+        std::string id() override { return "instanced-flat"; };
+
+        std::string name() override { return "Instanced Flat"; };
+
         void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) override;
 
     protected:

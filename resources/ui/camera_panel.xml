@@ -62,7 +62,12 @@
 
                 <child>
                     <object class="AdwPreferencesGroup">
-                        <property name="title">Style</property>
+                        <property name="title">Renderer</property>
+
+                        <child type="header-suffix">
+                            <object class="GtkDropDown" id="renderer-dropdown"/>
+                        </child>
+
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title">Background Color</property>
@@ -77,22 +82,6 @@
                             </object>
                         </child>
                         <child>
-                            <object class="AdwComboRow" id="shader-dropdown">
-                                <property name="title">Shader</property>
-                                <property name="subtitle">Approach used to render particles</property>
-                                <property name="model">
-                                    <object class="GtkStringList">
-                                        <items>
-                                            <item>Instanced Phong</item>
-                                            <item>Phong</item>
-                                            <item>Instanced Flat</item>
-                                            <item>Flat</item>
-                                        </items>
-                                    </object>
-                                </property>
-                            </object>
-                        </child>
-                        <child>
                             <object class="AdwActionRow">
                                 <property name="title">Debug Overlay</property>
                                 <child type="suffix">
@@ -104,6 +93,7 @@
                                 </child>
                             </object>
                         </child>
+
                     </object>
                 </child>
 

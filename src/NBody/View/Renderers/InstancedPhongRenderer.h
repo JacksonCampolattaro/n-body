@@ -26,6 +26,10 @@ namespace NBody {
 
         InstancedPhongRenderer(const Simulation &simulation) : SimulationRenderer(simulation) {}
 
+        std::string id() override { return "instanced-phong"; };
+
+        std::string name() override { return "Instanced Phong"; };
+
         void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) override;
 
     protected:
