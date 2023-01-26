@@ -108,7 +108,7 @@ namespace Magnum::Examples {
 
         Matrix4 perspectiveProjection(float aspectRatio) {
             return Matrix4::perspectiveProjection(
-                    fov(), aspectRatio, 0.1f, 10000.0f);
+                    fov(), aspectRatio, 0.1f, 1'000'000.0f);
         }
 
     protected:

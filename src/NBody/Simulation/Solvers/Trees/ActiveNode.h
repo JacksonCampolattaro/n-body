@@ -29,6 +29,15 @@ namespace NBody {
                     simulation.group<const Position, const Mass>(entt::get<ActiveTag>).end()};
         }
 
+        static entt::basic_group<
+                entt::entity, entt::exclude_t<>,
+                entt::get_t<NBody::Physics::ActiveTag>,
+                const NBody::Physics::Position,
+                const NBody::Physics::Mass
+        > constructionContext(Simulation &simulation) {
+            return simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+        }
+
         [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
 
         [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }

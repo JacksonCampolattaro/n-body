@@ -10,6 +10,7 @@
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 #include <NBody/Simulation/Solvers/DualTreeSolver.h>
+#include <NBody/Simulation/Solvers/DualTraversalSolver.h>
 
 #include <gtkmm/singleselection.h>
 #include <giomm/liststore.h>
@@ -34,6 +35,7 @@ namespace NBody {
             _solverList->append(Glib::make_refptr_for_instance(new NBody::BarnesHutSolver(_simulation, _rule)));
             _solverList->append(Glib::make_refptr_for_instance(new NBody::LinearBVHSolver(_simulation, _rule)));
             _solverList->append(Glib::make_refptr_for_instance(new NBody::MVDRSolver(_simulation, _rule)));
+            _solverList->append(Glib::make_refptr_for_instance(new NBody::OctreeDualTraversalSolver(_simulation, _rule)));
 
             // One solver must always be selected
             _solverSelection->set_can_unselect(false);

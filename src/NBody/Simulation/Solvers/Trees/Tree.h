@@ -185,7 +185,7 @@ namespace NBody {
     template<typename TreeType, typename ...Context>
     static std::vector<std::reference_wrapper<typename TreeType::Node>> depthSplit(TreeType &tree,
                                                                                    std::size_t depth,
-                                                                                   Context... context) {
+                                                                                   Context&&... context) {
 
         std::vector<std::reference_wrapper<typename TreeType::Node>> queue;
         queue.push_back(tree.root());
@@ -211,7 +211,7 @@ namespace NBody {
     template<typename TreeNode, typename ...Context>
     void summarizeTreeTop(TreeNode &toBeSummarized,
                           const std::vector<std::reference_wrapper<TreeNode>> &alreadySummarized,
-                          Context... context) {
+                          Context&&... context) {
 
         // If the node to be summarized is already in the summarized list, we don't need to summarize it again
         for (auto summarizedNode : alreadySummarized)
