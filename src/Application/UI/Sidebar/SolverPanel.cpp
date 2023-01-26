@@ -46,6 +46,8 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     return new LinearBVHSolverSettings((NBody::LinearBVHSolver &) *solver);
                 if (solver->id() == "mvdr")
                     return new MVDRSolverSettings((NBody::MVDRSolver &) *solver);
+                if (solver->id() == "octree-dual-traversal")
+                    return new OctreeDualTraversalSolverSettings((NBody::OctreeDualTraversalSolver &) *solver);
                 return new Gtk::Label{"Unrecognized Solver"};
             }
     ));

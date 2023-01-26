@@ -98,6 +98,16 @@ namespace NBody {
     class LinearBVHNode : public ActiveNode<LinearBVHNodeBase<LinearBVHNode>> {
     public:
         using ActiveNode::ActiveNode;
+
+        static entt::basic_group<
+                entt::entity, entt::exclude_t<>,
+                entt::get_t<NBody::Physics::ActiveTag>,
+                const NBody::Physics::Position,
+                const NBody::Physics::Mass,
+                const MortonCode
+        > constructionContext(Simulation &simulation) {
+            return simulation.group<const Position, const Mass, const MortonCode>(entt::get<ActiveTag>);
+        }
     };
 
     class LinearBVH : public TreeBase<LinearBVHNode> {
@@ -114,7 +124,8 @@ namespace NBody {
             mortonSort(simulation().view<const MortonCode>(), indices());
 
             // Build the tree
-            auto context = simulation().view<const Position, const Mass, const ActiveTag, const MortonCode>();
+            auto context = LinearBVHNode::constructionContext(simulation());
+            //simulation().view<const Position, const Mass, const ActiveTag, const MortonCode>();
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(*this, preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {

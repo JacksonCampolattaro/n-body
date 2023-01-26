@@ -49,6 +49,15 @@ namespace NBody {
                     simulation.view<const Position, const Mass, const PassiveTag>().end()};
         }
 
+        static entt::basic_view<
+                entt::entity, entt::exclude_t<>,
+                const NBody::Physics::Position,
+                const NBody::Physics::Mass,
+                const NBody::Physics::ActiveTag
+        > constructionContext(Simulation &simulation) {
+            return simulation.template view<const Position, const Mass, const ActiveTag>();
+        }
+
         [[nodiscard]] const Force &force() const { return _force; }
 
         Force &force() { return _force; }
