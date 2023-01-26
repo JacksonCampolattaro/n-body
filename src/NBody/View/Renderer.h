@@ -15,8 +15,12 @@
 
 namespace NBody {
 
-    class Renderer {
+    class Renderer : public Glib::Object {
     public:
+
+        Renderer() : Glib::ObjectBase(typeid(NBody::Renderer)),
+                     Glib::Object() {}
+
 
         virtual void draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) = 0;
 
@@ -31,7 +35,13 @@ namespace NBody {
 
     public:
 
-        explicit SimulationRenderer(const NBody::Simulation &simulation) : _simulation(simulation) {}
+        explicit SimulationRenderer(const NBody::Simulation &simulation) :
+                Renderer(),
+                _simulation(simulation) {}
+
+        virtual std::string id() = 0;
+
+        virtual std::string name() = 0;
 
         sigc::signal<void()> &signal_changed() override { return _simulation.signal_changed; };
     };

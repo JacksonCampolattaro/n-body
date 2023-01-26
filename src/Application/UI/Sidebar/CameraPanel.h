@@ -24,6 +24,7 @@
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
 #include "Application/UI/Widgets/Entry/IntEntry.h"
 #include "Application/UI/Widgets/VideoRecorder.h"
+#include "Application/UI/Widgets/ListView/DropDownView.h"
 
 namespace UI {
 
@@ -36,7 +37,7 @@ namespace UI {
         CompactDirectionEntry &_directionEntry;
         FloatEntry &_zoomEntry;
         Gtk::ColorButton &_backgroundColorEntry;
-        Gtk::ListBoxRow &_shaderDropdown;
+        DropDownView &_rendererDropdown;
         Gtk::Switch &_debugOverlaySwitch;
 
         VideoRecorder &_videoRecorder;
