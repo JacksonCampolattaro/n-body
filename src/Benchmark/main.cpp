@@ -3,7 +3,7 @@
 //
 
 #include "Comparison.h"
-#include "random.h"
+#include "Generator.h"
 
 #include <gtkmm.h>
 #include <matplot/matplot.h>
@@ -53,7 +53,7 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 template<typename ReferenceSolver, typename CandidateSolver>
 void compare(std::size_t n, float theta) {
 
-    json scenario = randomVolumeSimulation(n);
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 500);
 
     Simulation baseline;
     from_json(scenario, baseline);
@@ -96,7 +96,7 @@ void compare(std::size_t n, float theta) {
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = randomVolumeSimulation(n);
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 500);
 
     Rule rule{};
 
@@ -158,7 +158,7 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
 
     for (std::size_t n: nValues) {
 
-        json scenario = randomVolumeSimulation(n);
+        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 50);
 
         Simulation simulation;
         from_json(scenario, simulation);
@@ -196,7 +196,7 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
 
     for (std::size_t n: nValues) {
 
-        json scenario = randomVolumeSimulation(n);
+        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 50);
 
         Simulation barnesHutSimulation;
         from_json(scenario, barnesHutSimulation);
@@ -204,6 +204,8 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
         from_json(scenario, linearBVHSimulation);
         Simulation mvdrSimulation;
         from_json(scenario, mvdrSimulation);
+        Simulation dualTraversalSimulation;
+        from_json(scenario, dualTraversalSimulation);
 
         BarnesHutSolver barnesHutSolver{barnesHutSimulation, rule};
         barnesHutSolver.theta() = theta;
@@ -211,11 +213,14 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
         linearBVHSolver.theta() = theta;
         MVDRSolver mvdrSolver{mvdrSimulation, rule};
         mvdrSolver.theta() = theta;
+        OctreeDualTraversalSolver dualTraversalSolver{mvdrSimulation, rule};
+        dualTraversalSolver.theta() = theta;
 
         results["n"].emplace_back(n);
         results["barnes-hut-time"].emplace_back(timedRun(barnesHutSolver, i).count() / (float) i);
         results["linear-bvh-time"].emplace_back(timedRun(linearBVHSolver, i).count() / (float) i);
         results["mvdr-time"].emplace_back(timedRun(mvdrSolver, i).count() / (float) i);
+        results["dual-traversal-time"].emplace_back(timedRun(dualTraversalSolver, i).count() / (float) i);
     }
 
     matplot::title(fmt::format(
@@ -227,7 +232,8 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
     matplot::plot(results["n"], results["barnes-hut-time"])->line_width(2.0f);
     matplot::plot(results["n"], results["linear-bvh-time"])->line_width(2.0f);
     matplot::plot(results["n"], results["mvdr-time"])->line_width(2.0f);
-    matplot::legend({"Barnes-Hut", "Linear-BVH", "MVDR"});
+    matplot::plot(results["n"], results["dual-traversal-time"])->line_width(2.0f);
+    matplot::legend({"Barnes-Hut", "Linear-BVH", "MVDR", "Dual-Traversal"});
     matplot::show();
 }
 
@@ -241,14 +247,14 @@ int main(int argc, char *argv[]) {
 
     //compare<BarnesHutSolver, LinearBVHSolver>(10000, 100, 0.5);
 
-    std::vector<float> thetaValues{};
-    for (int i = 1; i < 300; i++) thetaValues.emplace_back((float) i / 100.0f);
-    sweepTheta<LinearBVHSolver>(50'000, thetaValues);
+    //std::vector<float> thetaValues{};
+    //for (int i = 1; i < 200; i++) thetaValues.emplace_back((float) i / 100.0f);
+    //sweepTheta<BarnesHutSolver>(50'000, thetaValues);
 
-    //std::vector<std::size_t> nValues{};
-    //for (int i = 100; i < 1'000'000; i *= 1.25) nValues.emplace_back(i);
+    std::vector<std::size_t> nValues{};
+    for (int i = 100; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
     //sweepN<MVDRSolver>(nValues, 0.8, 5);
-    //sweepN(nValues, 0.8, 5);
+    sweepN(nValues, 0.8, 5);
 
 //    sweepN<MVDRSolver>({1'000'000}, 2.0, 5);
 }
