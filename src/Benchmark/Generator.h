@@ -1,20 +1,20 @@
 //
-// Created by Jackson Campolattaro on 1/19/23.
+// Created by Jackson Campolattaro on 1/27/23.
 //
 
-#ifndef N_BODY_RANDOM_H
-#define N_BODY_RANDOM_H
+#ifndef N_BODY_GENERATOR_H
+#define N_BODY_GENERATOR_H
 
 #include <random>
 
 #include <spdlog/spdlog.h>
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 
-namespace NBody {
+namespace NBody::Generator {
 
-    static json randomVolumeSimulation(std::size_t n) {
-
+    static Simulation &uniformRandomVolume(Simulation &simulation, std::size_t n) {
         spdlog::info("Generating a random scenario with {} particles", n);
 
         std::uint32_t seed = 42;
@@ -25,7 +25,6 @@ namespace NBody {
         std::uniform_real_distribution<float> colorDistribution{0.3f, 0.9f};
 
         // Create a simulation with randomized starting conditions
-        Simulation simulation;
         for (int i = 0; i < n; ++i) {
 
             Simulation::Particle particle = simulation.newParticle();
@@ -44,17 +43,10 @@ namespace NBody {
             particle.emplace<Physics::PassiveTag>();
         }
 
-        std::ofstream referenceFile{"test.json"};
-        json scenario;
-        to_json(scenario, simulation);
-        referenceFile << std::setw(4) << scenario;
-        referenceFile.close();
-
-        return scenario;
+        return simulation;
     }
 
-    static json randomGalaxySimulation(std::size_t n) {
-
+    static Simulation &galaxy(Simulation &simulation, std::size_t n) {
         spdlog::info("Generating a random galaxy scenario with {} particles", n);
 
         std::uint32_t seed = 42;
@@ -69,8 +61,6 @@ namespace NBody {
         std::uniform_real_distribution<float> distanceDistribution{minimumDistance, minimumDistance + 50.0f};
         std::exponential_distribution<float> massDistribution{orbitingMassFraction};
         std::uniform_real_distribution<float> colorDistribution{0.1f, 0.9f};
-
-        Simulation simulation;
 
         // Add the "sun" particle
         Simulation::Particle sun = simulation.newParticle();
@@ -111,6 +101,23 @@ namespace NBody {
             particle.emplace<Physics::PassiveTag>();
         }
 
+        return simulation;
+    }
+
+    static Simulation &bake(Simulation &simulation, std::size_t iterations) {
+        spdlog::info("\"Baking\" the simulation for {} iterations", iterations);
+        Rule rule{};
+        BarnesHutSolver solver{simulation, rule};
+        for (int i = 0; i < iterations; ++i) solver.step();
+
+        return simulation;
+    }
+
+    static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
+                               std::size_t n, std::size_t iterations) {
+        Simulation simulation;
+        bake(generator(simulation, n), iterations);
+
         json scenario;
         to_json(scenario, simulation);
 
@@ -120,8 +127,6 @@ namespace NBody {
 
         return scenario;
     }
-
 }
 
-
-#endif //N_BODY_RANDOM_H
+#endif //N_BODY_GENERATOR_H
