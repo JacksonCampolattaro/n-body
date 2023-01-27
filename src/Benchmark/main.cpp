@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 200; i++) thetaValues.emplace_back((float) i / 100.0f);
-    sweepTheta<OctreeDualTraversalSolver>(50'000, thetaValues);
+    sweepTheta<BarnesHutSolver>(50'000, thetaValues);
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 100; i < 100'000; i *= 1.5) nValues.emplace_back(i);
