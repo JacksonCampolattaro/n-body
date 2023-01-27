@@ -204,6 +204,8 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
         from_json(scenario, linearBVHSimulation);
         Simulation mvdrSimulation;
         from_json(scenario, mvdrSimulation);
+        Simulation dualTraversalSimulation;
+        from_json(scenario, dualTraversalSimulation);
 
         BarnesHutSolver barnesHutSolver{barnesHutSimulation, rule};
         barnesHutSolver.theta() = theta;
@@ -211,11 +213,14 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
         linearBVHSolver.theta() = theta;
         MVDRSolver mvdrSolver{mvdrSimulation, rule};
         mvdrSolver.theta() = theta;
+        OctreeDualTraversalSolver dualTraversalSolver{mvdrSimulation, rule};
+        dualTraversalSolver.theta() = theta;
 
         results["n"].emplace_back(n);
         results["barnes-hut-time"].emplace_back(timedRun(barnesHutSolver, i).count() / (float) i);
         results["linear-bvh-time"].emplace_back(timedRun(linearBVHSolver, i).count() / (float) i);
         results["mvdr-time"].emplace_back(timedRun(mvdrSolver, i).count() / (float) i);
+        results["dual-traversal-time"].emplace_back(timedRun(dualTraversalSolver, i).count() / (float) i);
     }
 
     matplot::title(fmt::format(
@@ -227,7 +232,8 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
     matplot::plot(results["n"], results["barnes-hut-time"])->line_width(2.0f);
     matplot::plot(results["n"], results["linear-bvh-time"])->line_width(2.0f);
     matplot::plot(results["n"], results["mvdr-time"])->line_width(2.0f);
-    matplot::legend({"Barnes-Hut", "Linear-BVH", "MVDR"});
+    matplot::plot(results["n"], results["dual-traversal-time"])->line_width(2.0f);
+    matplot::legend({"Barnes-Hut", "Linear-BVH", "MVDR", "Dual-Traversal"});
     matplot::show();
 }
 
@@ -243,7 +249,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 300; i++) thetaValues.emplace_back((float) i / 100.0f);
-    sweepTheta<LinearBVHSolver>(50'000, thetaValues);
+    sweepTheta<OctreeDualTraversalSolver>(50'000, thetaValues);
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 100; i < 1'000'000; i *= 1.25) nValues.emplace_back(i);
