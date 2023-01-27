@@ -31,10 +31,7 @@ namespace NBody {
         DualTreeSolver(Simulation &simulation, Physics::Rule &rule) :
                 Solver(simulation, rule),
                 _activeTree(simulation),
-                _passiveTree(simulation) {
-            _passiveTree.maxDepth() = 32;
-            _passiveTree.maxLeafSize() = 16;
-        }
+                _passiveTree(simulation) {}
 
         const ActiveTree &activeTree() const { return _activeTree; }
 
@@ -60,18 +57,18 @@ namespace NBody {
             _passiveTree.refine();
 
             {
-                _statusDispatcher.emit({"Resetting forces"});
+                _statusDispatcher.emit({"Resetting accelerations"});
                 auto view = _simulation.view<const Position, const PassiveTag>();
                 for (const Entity e: view)
-                    _simulation.emplace_or_replace<Force>(e, 0.0f, 0.0f, 0.0f);
+                    _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
             }
 
             {
-                _statusDispatcher.emit({"Computing forces"});
+                _statusDispatcher.emit({"Computing accelerations"});
                 auto startingNodes = loadBalancedSplit(_passiveTree, 64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
-                    computeForces(
-                            _simulation.view<const Position, const Mass, Force, const PassiveTag>(),
+                    computeAccelerations(
+                            _simulation.view<const Position, Acceleration, const PassiveTag>(),
                             _simulation.view<const Position, const Mass, const ActiveTag>(),
                             _activeTree.root(),
                             node
@@ -80,21 +77,18 @@ namespace NBody {
             }
 
             {
-                _statusDispatcher.emit({"Collapsing forces"});
-                auto view = _simulation.view<const Mass, Force>();
-                _passiveTree.root().collapseForces(view);
+                _statusDispatcher.emit({"Collapsing accelerations"});
+                auto view = _simulation.view<Acceleration>();
+                _passiveTree.root().collapseAccelerations(view);
             }
 
-
-            // Update velocities, based on force
+            // Update velocities, based on acceleration
             {
                 _statusDispatcher.emit({"Updating velocities"});
-                auto view = _simulation.view<const Force, const Mass, Velocity>();
+                auto view = _simulation.view<const Acceleration, Velocity>();
                 tbb::parallel_for_each(view, [&](Entity e) {
-                    const auto &f = view.template get<const Force>(e);
+                    const auto &a = view.template get<const Acceleration>(e);
                     auto &v = view.template get<Velocity>(e);
-                    const auto &m = view.template get<const Mass>(e).mass();
-                    Acceleration a = f / m;
                     v = v + (a * _dt);
                 });
             }
@@ -118,10 +112,10 @@ namespace NBody {
 
     private:
 
-        void computeForces(
+        void computeAccelerations(
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
-                        const Position, const Mass, Force, const PassiveTag
+                        const Position, Acceleration, const PassiveTag
                 > &passiveParticles,
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
@@ -138,8 +132,8 @@ namespace NBody {
             if (_descentCriterion(activeNode, passiveNode)) {
 
                 // node-node interaction
-                passiveNode.force() += (glm::vec3) _rule(activeNode.centerOfMass(), activeNode.totalMass(),
-                                                         passiveNode.center(), passiveNode.totalMass());
+                passiveNode.acceleration() += (glm::vec3) _rule(activeNode.centerOfMass(), activeNode.totalMass(),
+                                                                passiveNode.center());
 
             } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 
@@ -147,18 +141,12 @@ namespace NBody {
                 for (auto activeParticle: activeNode.contents()) {
                     for (auto passiveParticle: passiveNode.contents()) {
 
-                        passiveParticles.get<Force>(passiveParticle) +=
+                        passiveParticles.get<Acceleration>(passiveParticle) +=
                                 (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
                                                   activeParticles.get<const Mass>(activeParticle),
-                                                  passiveParticles.get<const Position>(passiveParticle),
-                                                  passiveParticles.get<const Mass>(passiveParticle));
+                                                  passiveParticles.get<const Position>(passiveParticle));
 
                     }
-
-                    // todo: direct particle-particle interaction might not be necessary
-                    //                    passiveNode.force() += (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
-                    //                                                             activeParticles.get<const Mass>(activeParticle),
-                    //                                                             passiveNode.center(), passiveNode.totalMass());
                 }
 
             } else {
@@ -176,8 +164,8 @@ namespace NBody {
                 // Treat every combination of force & field node
                 for (auto &childPassiveNode: passiveNodesToDescend) {
                     for (const auto &childActiveNode: activeNodesToDescend) {
-                        computeForces(passiveParticles, activeParticles,
-                                      childActiveNode, childPassiveNode);
+                        computeAccelerations(passiveParticles, activeParticles,
+                                             childActiveNode, childPassiveNode);
                     }
                 }
             }
@@ -188,7 +176,11 @@ namespace NBody {
     class MVDRSolver : public DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance> {
     public:
 
-        using DualTreeSolver::DualTreeSolver;
+        MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
+                DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
+            passiveTree().maxDepth() = 32;
+            passiveTree().maxLeafSize() = 16;
+        }
 
         std::string id() override { return "mvdr"; };
 

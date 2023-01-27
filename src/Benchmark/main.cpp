@@ -53,7 +53,7 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 template<typename ReferenceSolver, typename CandidateSolver>
 void compare(std::size_t n, float theta) {
 
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 500);
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 50);
 
     Simulation baseline;
     from_json(scenario, baseline);
@@ -245,16 +245,16 @@ int main(int argc, char *argv[]) {
 
     //randomGalaxySimulation(10'000);
 
-    //compare<BarnesHutSolver, LinearBVHSolver>(10000, 100, 0.5);
+    //compare<BarnesHutSolver, OctreeDualTraversalSolver>(10'000, 0.8);
 
-    //std::vector<float> thetaValues{};
-    //for (int i = 1; i < 200; i++) thetaValues.emplace_back((float) i / 100.0f);
-    //sweepTheta<BarnesHutSolver>(50'000, thetaValues);
+    std::vector<float> thetaValues{};
+    for (int i = 1; i < 200; i++) thetaValues.emplace_back((float) i / 100.0f);
+    sweepTheta<BarnesHutSolver>(50'000, thetaValues);
 
-    std::vector<std::size_t> nValues{};
-    for (int i = 100; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
+    //std::vector<std::size_t> nValues{};
+    //for (int i = 100; i < 100'000; i *= 1.5) nValues.emplace_back(i);
     //sweepN<MVDRSolver>(nValues, 0.8, 5);
-    sweepN(nValues, 0.8, 5);
+    //sweepN(nValues, 1.0, 5);
 
-//    sweepN<MVDRSolver>({1'000'000}, 2.0, 5);
+    //sweepN<MVDRSolver>({300}, 0.8, 1);
 }

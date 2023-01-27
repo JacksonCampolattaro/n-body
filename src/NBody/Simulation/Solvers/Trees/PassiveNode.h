@@ -13,8 +13,7 @@ namespace NBody {
     class PassiveNode : public NodeImplementation {
     private:
 
-        Mass _totalMass;
-        Force _force{0.0f, 0.0f, 0.0f};
+        Acceleration _acceleration{0.0f, 0.0f, 0.0f};
 
     public:
 
@@ -24,66 +23,42 @@ namespace NBody {
         using NodeImplementation::children;
 
         template<typename ViewType>
-        void summarize(const ViewType &context) {
-
-            NodeImplementation::summarize(context);
-
-            _totalMass = 0.0f;
-
-            if (isLeaf()) {
-                for (const auto &entity: contents()) {
-                    auto entityMass = context.template get<const Mass>(entity).mass();
-                    _totalMass.mass() += entityMass;
-                }
-            } else {
-                for (const auto &child: children()) {
-                    _totalMass.mass() += child.totalMass().mass();
-                }
-            }
-        }
-
+        void summarize(const ViewType &context) { NodeImplementation::summarize(context); }
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
-            // The field tree only needs to contain passive particles (which receive forces)
-            return {simulation.view<const Position, const Mass, const PassiveTag>().begin(),
-                    simulation.view<const Position, const Mass, const PassiveTag>().end()};
+            // The field tree only needs to contain passive particles (which receive gravitational acceleration)
+            return {simulation.view<const Position, const PassiveTag>().begin(),
+                    simulation.view<const Position, const PassiveTag>().end()};
         }
 
         static entt::basic_view<
                 entt::entity, entt::exclude_t<>,
                 const NBody::Physics::Position,
-                const NBody::Physics::Mass,
                 const NBody::Physics::ActiveTag
         > constructionContext(Simulation &simulation) {
-            return simulation.template view<const Position, const Mass, const ActiveTag>();
+            return simulation.template view<const Position, const ActiveTag>();
         }
 
-        [[nodiscard]] const Force &force() const { return _force; }
+        [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }
 
-        Force &force() { return _force; }
+        Acceleration &acceleration() { return _acceleration; }
 
-        const Mass &totalMass() const { return _totalMass; }
+        void collapseAccelerations(const entt::basic_view<entt::entity, entt::exclude_t<>, Acceleration> &context,
+                                   Acceleration netAcceleration = {0.0f, 0.0f, 0.0f}) const {
 
-        Mass &totalMass() { return _totalMass; }
-
-        void collapseForces(const entt::basic_view<entt::entity, entt::exclude_t<>, const Mass, Force> &context,
-                            Force netForce = {0.0f, 0.0f, 0.0f}) const {
-
-            netForce += (glm::vec3) force();
+            netAcceleration += (glm::vec3) acceleration();
 
             if (isLeaf()) {
 
                 // When we reach a leaf node, apply the local force to all contained points
-                // todo: the force should be applied proportionally by mass
                 for (auto i: contents())
-                    context.get<Force>(i) += (glm::vec3) netForce
-                                             * (context.get<const Mass>(i).mass() / totalMass().mass());
+                    context.get<Acceleration>(i) += (glm::vec3) netAcceleration;
 
             } else {
 
-                // Descend the tree recursively, keeping track of the net force over the current region
+                // Descend the tree recursively, keeping track of the net acceleration over the current region
                 for (const auto &child: children())
-                    child.collapseForces(context, netForce * (child.totalMass().mass() / totalMass().mass()));
+                    child.collapseAccelerations(context, netAcceleration);
 
             }
         }
