@@ -17,7 +17,7 @@ namespace Comparison {
     using Metric = std::function<float(const Simulation &, Entity, const Simulation &, Entity)>;
 
     float L2Norm(const Simulation &A, Entity a, const Simulation &B, Entity b) {
-        assert(simulation.get<Mass>(a).mass() == simulation.get<Mass>(b).mass());
+        assert(A.get<Mass>(a).mass() == B.get<Mass>(b).mass());
         return glm::distance2(
                 (glm::vec3) A.get<Velocity>(a),
                 (glm::vec3) B.get<Velocity>(b)

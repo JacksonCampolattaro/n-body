@@ -28,7 +28,7 @@ namespace NBody::Physics {
         explicit Rule(const float &G = 1.0, const float &epsilon = 0.00001) : _g(G), _epsilon(epsilon) {};
 
         Force operator()(const Position &activePosition, const Mass &activeMass,
-                                const Position &passivePosition, const Mass &passiveMass) const {
+                         const Position &passivePosition, const Mass &passiveMass) const {
 
             if (activePosition == passivePosition) return {};
 
