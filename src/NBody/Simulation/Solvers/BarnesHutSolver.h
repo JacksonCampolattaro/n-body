@@ -34,42 +34,58 @@ namespace NBody {
 
         void step() override {
 
-            auto targets = _simulation.view<const Position, const Mass, Velocity, const PassiveTag>();
-            auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
+            {
+                // Construct an octree from the actor particles
+                _statusDispatcher.emit({"Building Tree"});
+                _tree->refine();
+            }
 
-            // Construct an octree from the actor particles
-            _statusDispatcher.emit({"Building Tree"});
-            _tree->refine();
+            {
+                _statusDispatcher.emit({"Resetting accelerations"});
+                auto view = _simulation.view<const Position, const PassiveTag>();
+                for (const Entity e: view)
+                    _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
+            }
 
-            // Use the octree to estimate forces on each passive particle, and update their velocity
-            _statusDispatcher.emit({"Computing Velocities"});
-            tbb::parallel_for_each(targets, [&](Entity e) {
-                const auto &targetPosition = targets.template get<const Position>(e);
-                const auto &targetMass = targets.template get<const Mass>(e);
-                auto &velocity = targets.template get<Velocity>(e);
-
+            {
+                // Use the octree to estimate forces on each passive particle
+                _statusDispatcher.emit({"Computing Accelerations"});
                 assert(_tree);
-                auto acceleration = computeAcceleration(
-                        _tree->root(),
-                        simulation().template view<const Position, const Mass, const ActiveTag>(),
-                        targetPosition
-                );
+                auto view = _simulation.template view<const Position, Acceleration>();
+                tbb::parallel_for_each(view, [&](Entity e) {
+                    const auto &targetPosition = view.template get<const Position>(e);
+                    auto &acceleration = view.template get<Acceleration>(e);
 
-                velocity += acceleration * _dt;
-            });
+                    acceleration = computeAcceleration(
+                            _tree->root(),
+                            simulation().template view<const Position, const Mass, const ActiveTag>(),
+                            targetPosition
+                    );
+                });
+            }
+
+            // Update velocities, based on acceleration
+            {
+                _statusDispatcher.emit({"Updating velocities"});
+                auto view = _simulation.view<const Acceleration, Velocity>();
+                tbb::parallel_for_each(view, [&](Entity e) {
+                    const auto &a = view.template get<const Acceleration>(e);
+                    auto &v = view.template get<Velocity>(e);
+                    v = v + (a * _dt);
+                });
+            }
 
             // Update positions, based on velocity
             {
                 // While the solver is modifying simulation values, the simulation should be locked for other threads
                 std::scoped_lock l(_simulation.mutex);
 
-                spdlog::trace("Updating positions");
                 _statusDispatcher.emit({"Updating positions"});
                 auto view = _simulation.view<const Velocity, Position>();
 
-                tbb::parallel_for_each(movableTargets, [&](Entity e) {
-                    const auto &v = movableTargets.template get<const Velocity>(e);
-                    auto &p = movableTargets.template get<Position>(e);
+                tbb::parallel_for_each(view, [&](Entity e) {
+                    const auto &v = view.template get<const Velocity>(e);
+                    auto &p = view.template get<Position>(e);
                     p = p + (v * _dt);
                 });
             }
