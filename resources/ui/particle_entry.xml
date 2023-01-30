@@ -56,18 +56,22 @@
                         <property name="title">Physics</property>
                         <property name="description">Properties concerning interactions with other particles</property>
 
-                        <child type="header-suffix">
-                            <object class="GtkCheckButton" id="physics-checkbutton">
-                                <property name="margin-start">8</property>
-                                <style>
-                                    <class name="selection-mode"/>
-                                </style>
-                            </object>
-                        </child>
+                        <!--                        <child type="header-suffix">-->
+                        <!--                            <object class="GtkCheckButton" id="physics-checkbutton">-->
+                        <!--                                <property name="margin-start">8</property>-->
+                        <!--                                <style>-->
+                        <!--                                    <class name="selection-mode"/>-->
+                        <!--                                </style>-->
+                        <!--                            </object>-->
+                        <!--                        </child>-->
 
                         <child>
                             <object class="AdwActionRow">
+                                <child type="prefix">
+                                    <object class="GtkCheckButton" id="mass-checkbutton"/>
+                                </child>
                                 <property name="title">Mass</property>
+                                <property name="subtitle">Particles with mass emit forces</property>
                                 <child type="suffix">
                                     <object class="GtkSpinButton" id="mass-entry"/>
                                 </child>
@@ -75,22 +79,35 @@
                         </child>
                         <child>
                             <object class="AdwActionRow">
-                                <property name="title">Active</property>
-                                <property name="subtitle">Determines whether this particle affects others</property>
+                                <child type="prefix">
+                                    <object class="GtkCheckButton" id="acceleration-checkbutton"/>
+                                </child>
+                                <property name="title">Acceleration</property>
+                                <property name="subtitle">Particles with acceleration receive forces</property>
                                 <child type="suffix">
-                                    <object class="GtkCheckButton" id="active-entry"/>
+                                    <object class="GtkButton" id="acceleration-entry"/>
                                 </child>
                             </object>
                         </child>
-                        <child>
-                            <object class="AdwActionRow">
-                                <property name="title">Passive</property>
-                                <property name="subtitle">Determines whether this particle is affected by others</property>
-                                <child type="suffix">
-                                    <object class="GtkCheckButton" id="passive-entry"/>
-                                </child>
-                            </object>
-                        </child>
+
+                        <!--                        <child>-->
+                        <!--                            <object class="AdwActionRow">-->
+                        <!--                                <property name="title">Active</property>-->
+                        <!--                                <property name="subtitle">Determines whether this particle affects others</property>-->
+                        <!--                                <child type="suffix">-->
+                        <!--                                    <object class="GtkCheckButton" id="active-entry"/>-->
+                        <!--                                </child>-->
+                        <!--                            </object>-->
+                        <!--                        </child>-->
+                        <!--                        <child>-->
+                        <!--                            <object class="AdwActionRow">-->
+                        <!--                                <property name="title">Passive</property>-->
+                        <!--                                <property name="subtitle">Determines whether this particle is affected by others</property>-->
+                        <!--                                <child type="suffix">-->
+                        <!--                                    <object class="GtkCheckButton" id="passive-entry"/>-->
+                        <!--                                </child>-->
+                        <!--                            </object>-->
+                        <!--                        </child>-->
                     </object>
                 </child>
 
@@ -99,14 +116,14 @@
                         <property name="title">Appearance</property>
                         <property name="description">Properties concerning how this particle is rendered</property>
 
-                        <child type="header-suffix">
-                            <object class="GtkCheckButton" id="appearance-checkbutton">
-                                <property name="margin-start">8</property>
-                                <style>
-                                    <class name="selection-mode"/>
-                                </style>
-                            </object>
-                        </child>
+                        <!--                        <child type="header-suffix">-->
+                        <!--                            <object class="GtkCheckButton" id="appearance-checkbutton">-->
+                        <!--                                <property name="margin-start">8</property>-->
+                        <!--                                <style>-->
+                        <!--                                    <class name="selection-mode"/>-->
+                        <!--                                </style>-->
+                        <!--                            </object>-->
+                        <!--                        </child>-->
 
                         <child>
                             <object class="AdwActionRow">

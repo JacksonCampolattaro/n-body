@@ -7,6 +7,8 @@
 
 #include "NBody/Simulation/Simulation.h"
 
+#include <spdlog/spdlog.h>
+
 namespace UI {
 
     template<typename ...Types>
@@ -26,7 +28,6 @@ namespace UI {
         template<typename T>
         void changed() {
             assert(_particle);
-            spdlog::debug("removed");
             _particle->template remove<T>();
             _particle->get<sigc::signal<void()>>().emit();
         }

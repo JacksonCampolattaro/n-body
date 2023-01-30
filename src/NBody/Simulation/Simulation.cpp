@@ -91,8 +91,10 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (!p.contains("active") || p["active"].get<bool>())
             particle.emplace<NBody::Physics::ActiveTag>();
 
-        if (!p.contains("passive") || p["passive"].get<bool>())
+        if (!p.contains("passive") || p["passive"].get<bool>()) {
             particle.emplace<NBody::Physics::PassiveTag>();
+            particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
+        }
 
         if (p.contains("color"))
             particle.setColor(p["color"].get<NBody::Graphics::Color>());

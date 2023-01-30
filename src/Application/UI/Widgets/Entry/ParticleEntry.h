@@ -15,16 +15,18 @@
 #include <gtkmm/colorbutton.h>
 #include <gtkmm/checkbutton.h>
 
-#include "Application/UI/Widgets/BuilderWidget.h"
-#include "Application/UI/Widgets/View/VectorView.h"
-#include "VectorEntry.h"
-
 #include "ParticlePositionEntry.h"
 #include "ParticleVelocityEntry.h"
+#include "ParticleMassCheckButton.h"
 #include "ParticleMassEntry.h"
+#include "ParticleAccelerationCheckButton.h"
+#include "ParticleAccelerationEntry.h"
 #include "ParticleColorEntry.h"
 #include "ParticleRadiusEntry.h"
-#include "ParticleTagEntry.h"
+
+//#include "ParticleTagEntry.h"
+
+#include "../BuilderWidget.h"
 
 namespace UI {
 
@@ -35,12 +37,12 @@ namespace UI {
         ParticlePositionEntry &_positionEntry;
         ParticleVelocityEntry &_velocityEntry;
 
-        Gtk::CheckButton &_physicsCheckButton;
+        ParticleMassCheckButton &_massCheckButton;
         ParticleMassEntry &_massEntry;
-        ParticleActiveTagEntry &_activeEntry;
-        ParticlePassiveTagEntry &_passiveEntry;
 
-        Gtk::CheckButton &_appearanceCheckButton;
+        ParticleAccelerationCheckButton &_accelerationCheckButton;
+        ParticleAccelerationEntry &_accelerationEntry;
+
         ParticleColorEntry &_colorEntry;
         ParticleRadiusEntry &_radiusEntry;
 
