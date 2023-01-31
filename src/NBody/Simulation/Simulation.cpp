@@ -32,6 +32,11 @@ NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const float &m
     return *this;
 }
 
+NBody::Simulation::Particle &NBody::Simulation::Particle::setAcceleration(const Physics::Acceleration &acceleration) {
+    emplace_or_replace<NBody::Physics::Acceleration>(acceleration);
+    return *this;
+}
+
 NBody::Simulation::Particle &NBody::Simulation::Particle::setColor(const NBody::Graphics::Color &color) {
     emplace_or_replace<NBody::Graphics::Color>(color);
     return *this;
@@ -57,9 +62,8 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Physics::Mass>(entity))
             e["mass"] = s.get<NBody::Physics::Mass>(entity);
 
-        e["active"] = s.all_of<NBody::Physics::ActiveTag>(entity);
-
-        e["passive"] = s.all_of<NBody::Physics::PassiveTag>(entity);
+        if (s.all_of<NBody::Physics::Acceleration>(entity))
+            e["acceleration"] = s.get<NBody::Physics::Acceleration>(entity);
 
         if (s.all_of<NBody::Graphics::Color>(entity))
             e["color"] = s.get<NBody::Graphics::Color>(entity);
@@ -76,8 +80,13 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 void NBody::from_json(const json &j, NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
-    for (const auto &p: j["particles"]) {
-        auto particle = s.newParticle();
+    auto entities = std::vector<Simulation::entity_type>{j["particles"].size()};
+    s.create(entities.begin(), entities.end());
+
+    for (int i = 0; i < entities.size(); ++i) {
+
+        auto p = j["particles"][i];
+        Simulation::Particle particle = {s, entities[i]};
 
         if (p.contains("position"))
             particle.setPosition(p["position"].get<NBody::Physics::Position>());
@@ -85,14 +94,13 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("velocity"))
             particle.setVelocity(p["velocity"].get<NBody::Physics::Velocity>());
 
-        if (p.contains("mass"))
+        if (p.contains("mass")) {
+            particle.emplace<NBody::Physics::ActiveTag>(); // todo: remove
             particle.setMass(p["mass"].get<float>());
-
-        if (!p.contains("active") || p["active"].get<bool>())
-            particle.emplace<NBody::Physics::ActiveTag>();
+        }
 
         if (!p.contains("passive") || p["passive"].get<bool>()) {
-            particle.emplace<NBody::Physics::PassiveTag>();
+            particle.emplace<NBody::Physics::PassiveTag>(); // todo: remove
             particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
         }
 
@@ -107,6 +115,7 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
             particle.get<sigc::signal<void()>>().emit();
     }
 
+    s.signal_particles_added.emit(entities);
     s.signal_changed.emit();
 
     spdlog::debug("Read {} particles", j["particles"].size());

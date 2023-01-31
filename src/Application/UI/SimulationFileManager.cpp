@@ -35,44 +35,8 @@ void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> 
     json j;
     inputFile >> j;
 
-    auto entities = std::vector<Simulation::entity_type>{j["particles"].size()};
-    _simulation.create(entities.begin(), entities.end());
+    from_json(j, _simulation);
 
-    for (int i = 0; i < entities.size(); ++i) {
-
-        auto p = j["particles"][i];
-        Simulation::Particle particle = {_simulation, entities[i]};
-
-        if (p.contains("position"))
-            particle.setPosition(p["position"].get<NBody::Physics::Position>());
-
-        if (p.contains("velocity"))
-            particle.setVelocity(p["velocity"].get<NBody::Physics::Velocity>());
-
-        if (p.contains("mass"))
-            particle.setMass(p["mass"].get<float>());
-
-        if (!p.contains("active") || p["active"].get<bool>())
-            particle.emplace<NBody::Physics::ActiveTag>();
-
-        if (!p.contains("passive") || p["passive"].get<bool>()) {
-            particle.emplace<NBody::Physics::PassiveTag>();
-            particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
-        }
-
-        if (p.contains("color"))
-            particle.setColor(p["color"].get<NBody::Graphics::Color>());
-
-        if (p.contains("sphere"))
-            particle.setSphere(p["sphere"].get<NBody::Graphics::Sphere>());
-
-        // Notify any watchers that this particle has new data
-        if (particle.all_of<sigc::signal<void()>>())
-            particle.get<sigc::signal<void()>>().emit();
-    }
-
-    _simulation.signal_particles_added.emit(entities);
-    _simulation.signal_changed.emit();
 }
 
 void NBody::SimulationFileManager::open() {
