@@ -22,7 +22,6 @@
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
 using NBody::Physics::Mass;
-using NBody::Physics::ActiveTag;
 
 namespace {
 

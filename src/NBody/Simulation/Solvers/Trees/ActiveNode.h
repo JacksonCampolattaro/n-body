@@ -25,17 +25,17 @@ namespace NBody {
         using NodeImplementation::boundingBox;
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
-            return {simulation.group<const Position, const Mass>(entt::get<ActiveTag>).begin(),
-                    simulation.group<const Position, const Mass>(entt::get<ActiveTag>).end()};
+            return {simulation.group<const Position, const Mass>().begin(),
+                    simulation.group<const Position, const Mass>().end()};
         }
 
         static entt::basic_group<
                 entt::entity, entt::exclude_t<>,
-                entt::get_t<NBody::Physics::ActiveTag>,
+                entt::get_t<>,
                 const NBody::Physics::Position,
                 const NBody::Physics::Mass
         > constructionContext(Simulation &simulation) {
-            return simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+            return simulation.group<const Position, const Mass>();
         }
 
         [[nodiscard]] const Mass &totalMass() const { return _totalMass; }

@@ -30,8 +30,8 @@ void NBody::SimulationFileManager::import() {
 
 void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> &file) {
 
-    spdlog::debug("Opening JSON file at path \"{}\"", _file->get_path());
-    std::ifstream inputFile(_file->get_path());
+    spdlog::debug("Opening JSON file at path \"{}\"", file->get_path());
+    std::ifstream inputFile(file->get_path());
     json j;
     inputFile >> j;
 
@@ -51,16 +51,22 @@ void NBody::SimulationFileManager::openPath(const Glib::RefPtr<Gio::File> &file)
 }
 
 void NBody::SimulationFileManager::close() {
+
+    // Notify the UI that _all_ entities have been removed
+    _simulation.signal_particles_removed(_simulation.validEntities());
+
+    // Then remove all valid entities
     _simulation.clear<
             Physics::Position,
             Physics::Velocity,
-            float,
-            NBody::Physics::ActiveTag,
-            NBody::Physics::PassiveTag,
+            Physics::Mass,
+            Physics::Acceleration,
             NBody::Graphics::Color,
             NBody::Graphics::Sphere,
             sigc::signal<void()>
     >();
+
+    _file.reset();
     _simulation.signal_changed.emit();
 }
 

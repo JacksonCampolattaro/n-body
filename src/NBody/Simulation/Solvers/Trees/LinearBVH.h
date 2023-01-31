@@ -101,12 +101,12 @@ namespace NBody {
 
         static entt::basic_group<
                 entt::entity, entt::exclude_t<>,
-                entt::get_t<NBody::Physics::ActiveTag>,
+                entt::get_t<>,
                 const NBody::Physics::Position,
                 const NBody::Physics::Mass,
                 const MortonCode
         > constructionContext(Simulation &simulation) {
-            return simulation.group<const Position, const Mass, const MortonCode>(entt::get<ActiveTag>);
+            return simulation.group<const Position, const Mass, const MortonCode>();
         }
     };
 

@@ -14,6 +14,8 @@ namespace UI {
     class ParticleAccelerationView : public AccelerationView, public Bindable<NBody::Physics::Acceleration> {
     public:
 
+        ParticleAccelerationView() : AccelerationView() {}
+
         ParticleAccelerationView(Gtk::Box::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
                 : AccelerationView(cobject, builder) {}
 

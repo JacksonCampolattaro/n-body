@@ -94,15 +94,12 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("velocity"))
             particle.setVelocity(p["velocity"].get<NBody::Physics::Velocity>());
 
-        if (p.contains("mass")) {
-            particle.emplace<NBody::Physics::ActiveTag>(); // todo: remove
+        if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
-        }
 
-        if (!p.contains("passive") || p["passive"].get<bool>()) {
-            particle.emplace<NBody::Physics::PassiveTag>(); // todo: remove
+        if (!p.contains("passive") || p["passive"].get<bool>() // todo: remove
+            || p.contains("acceleration"))
             particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
-        }
 
         if (p.contains("color"))
             particle.setColor(p["color"].get<NBody::Graphics::Color>());
@@ -189,14 +186,14 @@ NBody::Physics::Position NBody::Simulation::centerOfMass() const {
 }
 
 std::size_t NBody::Simulation::interactionCount() const {
-    return view<const Physics::PassiveTag>().size() * view<const Physics::ActiveTag>().size();
+    return view<const Physics::Acceleration>().size() * view<const Physics::Mass>().size();
 }
 
 NBody::BoundingBox NBody::Simulation::boundingBox() const {
     // todo: This shouldn't be specific to the active tag
     BoundingBox bbox;
-    auto activeParticles = view<const Physics::Position, const Physics::ActiveTag>();
-    activeParticles.each([&](const auto &position) {
+    auto activeParticles = view<const Physics::Position, const Physics::Mass>();
+    activeParticles.each([&](const auto &position, const auto &mass) {
         bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
         bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
     });

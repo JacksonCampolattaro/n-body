@@ -11,8 +11,8 @@ find_package(nlohmann_json REQUIRED)
 add_library(Physics
         Position.h
         Velocity.h
-        ActiveMass.cpp Mass.h
-        Rule.h PassiveMass.cpp PassiveMass.h Force.h Acceleration.h)
+        Mass.cpp Mass.h
+        Rule.h Force.h Acceleration.h)
 
 target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

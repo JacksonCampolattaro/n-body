@@ -13,7 +13,6 @@
 #include "Acceleration.h"
 #include "Force.h"
 #include "Mass.h"
-#include "PassiveMass.h"
 
 namespace NBody::Physics {
 

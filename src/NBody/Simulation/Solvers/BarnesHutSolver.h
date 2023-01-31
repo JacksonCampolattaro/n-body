@@ -42,9 +42,8 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<const Position, const PassiveTag>();
-                for (const Entity e: view)
-                    _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
+                auto view = _simulation.view<Acceleration>();
+                view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
@@ -58,7 +57,7 @@ namespace NBody {
 
                     acceleration = computeAcceleration(
                             _tree->root(),
-                            simulation().template view<const Position, const Mass, const ActiveTag>(),
+                            simulation().template view<const Position, const Mass>(),
                             targetPosition
                     );
                 });
@@ -105,7 +104,7 @@ namespace NBody {
         inline Acceleration computeAcceleration(const typename TreeType::Node &node,
                                                 const entt::basic_view<
                                                         entt::entity, entt::exclude_t<>,
-                                                        const Position, const Mass, const ActiveTag
+                                                        const Position, const Mass
                                                 > &activeParticles,
                                                 const Position &passivePosition) {
 

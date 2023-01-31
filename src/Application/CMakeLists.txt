@@ -83,7 +83,6 @@ add_executable(NBody
         UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h
         UI/Widgets/View/TimeView.h
         UI/Widgets/Entry/ParticleTagEntry.h
-        UI/Widgets/View/ParticleTagView.h
         UI/Widgets/View/ParticleIDView.h
         UI/Widgets/Entry/IntEntry.h
         UI/Windows/ParticleGridCreatorWindow.cpp UI/Windows/ParticleGridCreatorWindow.h
