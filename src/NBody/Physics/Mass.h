@@ -31,12 +31,6 @@ namespace NBody::Physics {
 
     void from_json(const json &j, Mass &m);
 
-    class ActiveTag {
-    };
-
-    struct PassiveTag {
-    };
-
 }
 
 #endif //N_BODY_MASS_H

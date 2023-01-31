@@ -28,10 +28,9 @@ namespace UI {
         SimplePositiveSizeEntry &_gridZSizeEntry;
         FloatEntry &_spacingEntry;
 
-        FloatEntry &_massEntry;
         CompactVelocityEntry &_velocityEntry;
-        Gtk::CheckButton &_activeEntry;
-        Gtk::CheckButton &_passiveEntry;
+        FloatEntry &_massEntry;
+        Gtk::CheckButton &_accelerationEntry;
 
         Gtk::ColorButton &_colorEntry;
         FloatEntry &_radiusEntry;

@@ -2,20 +2,20 @@
 // Created by Jackson Campolattaro on 1/10/23.
 //
 
-#ifndef N_BODY_FIELDOCTREE_H
-#define N_BODY_FIELDOCTREE_H
+#ifndef N_BODY_PASSIVEOCTREE_H
+#define N_BODY_PASSIVEOCTREE_H
 
 #include "Octree.h"
 #include "PassiveNode.h"
 
 namespace NBody {
 
-    class FieldOctreeNode : public PassiveNode<OctreeNodeBase<FieldOctreeNode>> {
+    class PassiveOctreeNode : public PassiveNode<OctreeNodeBase<PassiveOctreeNode>> {
     public:
 
         using PassiveNode::PassiveNode;
 //        using PassiveNode::children;
-//        using PassiveNode::boundingBox;
+//        using PassiveNode::activeBoundingBox;
 //        using PassiveNode::center;
 //        using PassiveNode::sideLength;
 //        using PassiveNode::force;
@@ -24,7 +24,7 @@ namespace NBody {
 
     };
 
-    class FieldOctree : public OctreeBase<FieldOctreeNode> {
+    class PassiveOctree : public OctreeBase<PassiveOctreeNode> {
     public:
 
         using OctreeBase::OctreeBase;
@@ -35,4 +35,4 @@ namespace NBody {
     };
 }
 
-#endif //N_BODY_FIELDOCTREE_H
+#endif //N_BODY_PASSIVEOCTREE_H

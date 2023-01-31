@@ -16,10 +16,9 @@ UI::ParticleGridCreator::ParticleGridCreator(Gtk::Box::BaseObjectType *cobject,
         _gridYSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-y-size-entry")),
         _gridZSizeEntry(getWidget<SimplePositiveSizeEntry>("grid-z-size-entry")),
         _spacingEntry(getWidget<FloatEntry>("spacing-entry")),
-        _massEntry(getWidget<FloatEntry>("mass-entry")),
         _velocityEntry(getWidget<CompactVelocityEntry>("velocity-entry")),
-        _activeEntry(getWidget<Gtk::CheckButton>("active-entry")),
-        _passiveEntry(getWidget<Gtk::CheckButton>("passive-entry")),
+        _massEntry(getWidget<FloatEntry>("mass-entry")),
+        _accelerationEntry(getWidget<Gtk::CheckButton>("acceleration-entry")),
         _colorEntry(getWidget<Gtk::ColorButton>("color-entry")),
         _radiusEntry(getWidget<FloatEntry>("radius-entry")) {
 
@@ -34,8 +33,7 @@ UI::ParticleGridCreator::ParticleGridCreator(Gtk::Box::BaseObjectType *cobject,
     _gridZSizeEntry.setValue(10);
     _spacingEntry.setValue(10.0f);
     _massEntry.setValue(1.0f);
-    _activeEntry.set_active();
-    _passiveEntry.set_active();
+    _accelerationEntry.set_active();
     _colorEntry.set_rgba(Gdk::RGBA("lightblue"));
     _radiusEntry.setValue(1.0f);
 }
@@ -50,8 +48,7 @@ void UI::ParticleGridCreator::createGrid() {
 
     auto mass = _massEntry.get_value();
     auto velocity = _velocityEntry.getValue();
-    auto active = _activeEntry.get_active();
-    auto passive = _passiveEntry.get_active();
+    auto acceleration = _accelerationEntry.get_active();
 
     auto color = _colorEntry.get_rgba();
     auto radius = _radiusEntry.get_value();
@@ -70,10 +67,9 @@ void UI::ParticleGridCreator::createGrid() {
 
                 auto offset = glm::vec3{spacing * x, spacing * y, spacing * z};
                 particle.setPosition(cornerPosition + offset);
-                particle.setMass((float) mass);
+                if (mass > 0.0f) particle.setMass((float) mass);
                 particle.setVelocity(velocity);
-                if (active) particle.emplace<NBody::Physics::ActiveTag>();
-                if (passive) particle.emplace<NBody::Physics::PassiveTag>();
+                if (acceleration) particle.setAcceleration({0.0f, 0.0f, 0.0f});
                 particle.setColor({color.get_red(), color.get_green(), color.get_blue()});
                 particle.setSphere({(float) radius});
             }

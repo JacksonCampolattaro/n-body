@@ -50,6 +50,7 @@ UI::ParticlesPanel::ParticlesPanel(Gtk::Box::BaseObjectType *cobject,
     particleCreatorActionGroup->add_action("new-single", [&]() {
         auto particle = std::make_shared<NBody::Simulation::Particle>(_simulation.newParticle());
         particle->setMass(1.0f);
+        particle->setAcceleration({0.0f, 0.0f, 0.0f});
         particle->setSphere({1.0f});
         particle->setColor(Magnum::Color3::green(0.8));
         simulation.signal_changed.emit();

@@ -80,6 +80,7 @@ namespace UI {
 
     typedef VectorView<"(", ")"> PositionView;
     typedef VectorView<"⟨", "⟩"> VelocityView;
+    typedef VectorView<"[", "]"> AccelerationView;
 }
 
 #endif //N_BODY_VECTORVIEW_H

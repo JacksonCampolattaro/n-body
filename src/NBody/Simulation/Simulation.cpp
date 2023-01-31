@@ -32,6 +32,11 @@ NBody::Simulation::Particle &NBody::Simulation::Particle::setMass(const float &m
     return *this;
 }
 
+NBody::Simulation::Particle &NBody::Simulation::Particle::setAcceleration(const Physics::Acceleration &acceleration) {
+    emplace_or_replace<NBody::Physics::Acceleration>(acceleration);
+    return *this;
+}
+
 NBody::Simulation::Particle &NBody::Simulation::Particle::setColor(const NBody::Graphics::Color &color) {
     emplace_or_replace<NBody::Graphics::Color>(color);
     return *this;
@@ -57,9 +62,8 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Physics::Mass>(entity))
             e["mass"] = s.get<NBody::Physics::Mass>(entity);
 
-        e["active"] = s.all_of<NBody::Physics::ActiveTag>(entity);
-
-        e["passive"] = s.all_of<NBody::Physics::PassiveTag>(entity);
+        if (s.all_of<NBody::Physics::Acceleration>(entity))
+            e["acceleration"] = s.get<NBody::Physics::Acceleration>(entity);
 
         if (s.all_of<NBody::Graphics::Color>(entity))
             e["color"] = s.get<NBody::Graphics::Color>(entity);
@@ -76,8 +80,13 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 void NBody::from_json(const json &j, NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
-    for (const auto &p: j["particles"]) {
-        auto particle = s.newParticle();
+    auto entities = std::vector<Simulation::entity_type>{j["particles"].size()};
+    s.create(entities.begin(), entities.end());
+
+    for (int i = 0; i < entities.size(); ++i) {
+
+        auto p = j["particles"][i];
+        Simulation::Particle particle = {s, entities[i]};
 
         if (p.contains("position"))
             particle.setPosition(p["position"].get<NBody::Physics::Position>());
@@ -88,11 +97,9 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
 
-        if (!p.contains("active") || p["active"].get<bool>())
-            particle.emplace<NBody::Physics::ActiveTag>();
-
-        if (!p.contains("passive") || p["passive"].get<bool>())
-            particle.emplace<NBody::Physics::PassiveTag>();
+        if (!p.contains("passive") || p["passive"].get<bool>() // todo: remove
+            || p.contains("acceleration"))
+            particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
 
         if (p.contains("color"))
             particle.setColor(p["color"].get<NBody::Graphics::Color>());
@@ -105,6 +112,7 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
             particle.get<sigc::signal<void()>>().emit();
     }
 
+    s.signal_particles_added.emit(entities);
     s.signal_changed.emit();
 
     spdlog::debug("Read {} particles", j["particles"].size());
@@ -178,14 +186,33 @@ NBody::Physics::Position NBody::Simulation::centerOfMass() const {
 }
 
 std::size_t NBody::Simulation::interactionCount() const {
-    return view<const Physics::PassiveTag>().size() * view<const Physics::ActiveTag>().size();
+    return view<const Physics::Acceleration>().size() * view<const Physics::Mass>().size();
 }
 
 NBody::BoundingBox NBody::Simulation::boundingBox() const {
-    // todo: This shouldn't be specific to the active tag
     BoundingBox bbox;
-    auto activeParticles = view<const Physics::Position, const Physics::ActiveTag>();
-    activeParticles.each([&](const auto &position) {
+    auto passiveParticles = view<const Physics::Position>();
+    passiveParticles.each([&](const auto &position) {
+        bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
+        bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
+    });
+    return bbox;
+}
+
+NBody::BoundingBox NBody::Simulation::activeBoundingBox() const {
+    BoundingBox bbox;
+    auto activeParticles = view<const Physics::Position, const Physics::Mass>();
+    activeParticles.each([&](const auto &position, const auto &mass) {
+        bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
+        bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
+    });
+    return bbox;
+}
+
+NBody::BoundingBox NBody::Simulation::passiveBoundingBox() const {
+    BoundingBox bbox;
+    auto passiveParticles = view<const Physics::Position, const Physics::Acceleration>();
+    passiveParticles.each([&](const auto &position, const auto &acceleration) {
         bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
         bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
     });

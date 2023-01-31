@@ -14,18 +14,14 @@
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
 using NBody::Physics::Mass;
-using NBody::Physics::ActiveTag;
-using NBody::Physics::PassiveTag;
-using NBody::Physics::PassiveMass;
 using NBody::Physics::Acceleration;
 
 void NBody::NaiveSolver::step() {
 
     {
         _statusDispatcher.emit({"Resetting accelerations"});
-        auto view = _simulation.view<const Position, const PassiveTag>();
-        for (const Entity e: view)
-            _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
+        auto view = _simulation.view<Acceleration>();
+        view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
     }
 
     // Compute accelerations

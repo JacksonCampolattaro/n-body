@@ -83,7 +83,6 @@ add_executable(NBody
         UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h
         UI/Widgets/View/TimeView.h
         UI/Widgets/Entry/ParticleTagEntry.h
-        UI/Widgets/View/ParticleTagView.h
         UI/Widgets/View/ParticleIDView.h
         UI/Widgets/Entry/IntEntry.h
         UI/Windows/ParticleGridCreatorWindow.cpp UI/Windows/ParticleGridCreatorWindow.h
@@ -94,7 +93,7 @@ add_executable(NBody
         UI/SimulationFileManager.cpp UI/SimulationFileManager.h
         UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h
         UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h
-        UI/Widgets/ListView/StackView.cpp UI/Widgets/ListView/StackView.h UI/Widgets/ListView/DropDownView.cpp UI/Widgets/ListView/DropDownView.h UI/Sidebar/ContinuousRunnerController.cpp UI/Sidebar/ContinuousRunnerController.h UI/Sidebar/OneStepRunnerController.cpp UI/Sidebar/OneStepRunnerController.h UI/Sidebar/NStepsRunnerController.cpp UI/Sidebar/NStepsRunnerController.h UI/Sidebar/LinearBVHSolverSettings.cpp UI/Sidebar/LinearBVHSolverSettings.h UI/Sidebar/MVDRSolverSettings.cpp UI/Sidebar/MVDRSolverSettings.h UI/Sidebar/OctreeDualTraversalSolverSettings.cpp UI/Sidebar/OctreeDualTraversalSolverSettings.h)
+        UI/Widgets/ListView/StackView.cpp UI/Widgets/ListView/StackView.h UI/Widgets/ListView/DropDownView.cpp UI/Widgets/ListView/DropDownView.h UI/Sidebar/ContinuousRunnerController.cpp UI/Sidebar/ContinuousRunnerController.h UI/Sidebar/OneStepRunnerController.cpp UI/Sidebar/OneStepRunnerController.h UI/Sidebar/NStepsRunnerController.cpp UI/Sidebar/NStepsRunnerController.h UI/Sidebar/LinearBVHSolverSettings.cpp UI/Sidebar/LinearBVHSolverSettings.h UI/Sidebar/MVDRSolverSettings.cpp UI/Sidebar/MVDRSolverSettings.h UI/Sidebar/OctreeDualTraversalSolverSettings.cpp UI/Sidebar/OctreeDualTraversalSolverSettings.h UI/Widgets/View/ParticleAccelerationView.h UI/Widgets/Entry/ParticleMassCheckButton.h UI/Widgets/Entry/ParticleAccelerationCheckButton.h UI/Widgets/Entry/ParticleAccelerationEntry.h)
 
 target_link_libraries(NBody PUBLIC
 

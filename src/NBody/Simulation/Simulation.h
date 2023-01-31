@@ -58,6 +58,8 @@ namespace NBody {
 
             Particle &setMass(const float &mass);
 
+            Particle &setAcceleration(const Physics::Acceleration &acceleration);
+
             Particle &setColor(const Graphics::Color &color);
 
             Particle &setSphere(const Graphics::Sphere &sphere);
@@ -90,6 +92,10 @@ namespace NBody {
         std::size_t interactionCount() const;
 
         BoundingBox boundingBox() const;
+
+        BoundingBox activeBoundingBox() const;
+
+        BoundingBox passiveBoundingBox() const;
 
     public:
 

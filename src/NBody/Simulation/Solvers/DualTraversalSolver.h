@@ -40,9 +40,6 @@ namespace NBody {
 
         void step() override {
 
-            auto targets = _simulation.view<const Position, const Mass, Velocity, const PassiveTag>();
-            auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
-
             {
                 _statusDispatcher.emit({"Building dual tree"});
                 _tree.refine();
@@ -50,9 +47,8 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<const Position, const PassiveTag>();
-                for (const Entity e: view)
-                    _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
+                auto view = _simulation.view<Acceleration>();
+                view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
@@ -60,8 +56,8 @@ namespace NBody {
                 auto startingNodes = loadBalancedSplit(_tree, 64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> node) {
                     computeAccelerations(
-                            _simulation.view<const Position, Acceleration, const PassiveTag>(),
-                            _simulation.view<const Position, const Mass, const ActiveTag>(),
+                            _simulation.view<const Position, Acceleration>(),
+                            _simulation.view<const Position, const Mass>(),
                             _tree.root(),
                             node
                     );
@@ -107,11 +103,11 @@ namespace NBody {
         void computeAccelerations(
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
-                        const Position, Acceleration, const PassiveTag
+                        const Position, Acceleration
                 > &passiveParticles,
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
-                        const Position, const Mass, const ActiveTag
+                        const Position, const Mass
                 > &activeParticles,
                 const typename DualTree::Node &activeNode,
                 typename DualTree::Node &passiveNode) {
@@ -158,71 +154,6 @@ namespace NBody {
                     for (const auto &childActiveNode: activeNodesToDescend) {
                         computeAccelerations(passiveParticles, activeParticles,
                                              childActiveNode, childPassiveNode);
-                    }
-                }
-            }
-        }
-
-        void computeForces(
-                const entt::basic_view<
-                        entt::entity, entt::exclude_t<>,
-                        const Position, const Mass, Force, const PassiveTag
-                > &passiveParticles,
-                const entt::basic_view<
-                        entt::entity, entt::exclude_t<>,
-                        const Position, const Mass, const ActiveTag
-                > &activeParticles,
-                const typename DualTree::Node &activeNode,
-                typename DualTree::Node &passiveNode) {
-
-            // If either node is empty, we have no need to calculate forces between them
-            if (activeNode.contents().empty() || passiveNode.contents().empty())
-                return;
-
-            // If the nodes are far enough apart or both leaves, we can use their summaries
-            if (_descentCriterion(activeNode, passiveNode)) {
-
-                // node-node interaction
-                passiveNode.force() += (glm::vec3) _rule(activeNode.centerOfMass(), activeNode.totalActiveMass(),
-                                                         passiveNode.center(), passiveNode.totalPassiveMass());
-
-            } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
-
-                // If both nodes are leaves & weren't far enough to summarize, then compute individual interactions
-                for (auto activeParticle: activeNode.contents()) {
-                    for (auto passiveParticle: passiveNode.contents()) {
-
-                        passiveParticles.get<Force>(passiveParticle) +=
-                                (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
-                                                  activeParticles.get<const Mass>(activeParticle),
-                                                  passiveParticles.get<const Position>(passiveParticle),
-                                                  passiveParticles.get<const Mass>(passiveParticle));
-
-                    }
-
-                    // todo: direct particle-particle interaction might not be necessary
-                    //                    passiveNode.force() += (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
-                    //                                                             activeParticles.get<const Mass>(activeParticle),
-                    //                                                             passiveNode.center(), passiveNode.totalMass());
-                }
-
-            } else {
-
-                // If the passive node isn't a leaf, we'll descend all its children
-                std::span<typename DualTree::Node> passiveNodesToDescend =
-                        passiveNode.isLeaf() ? std::span<typename DualTree::Node>{&passiveNode, 1}
-                                             : passiveNode.children();
-
-                // If the active node isn't a leaf, we'll descend all its children
-                std::span<const typename DualTree::Node> activeNodesToDescend =
-                        activeNode.isLeaf() ? std::span<const typename DualTree::Node>{&activeNode, 1}
-                                            : activeNode.children();
-
-                // Treat every combination of force & field node
-                for (auto &childPassiveNode: passiveNodesToDescend) {
-                    for (const auto &childActiveNode: activeNodesToDescend) {
-                        computeForces(passiveParticles, activeParticles,
-                                      childActiveNode, childPassiveNode);
                     }
                 }
             }

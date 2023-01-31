@@ -38,13 +38,12 @@ namespace NBody {
     }
 
 
-    static void setMortonCodes(Simulation &simulation) {
+    static void setMortonCodes(Simulation &simulation, BoundingBox boundingBox) {
 
-        BoundingBox boundingBox = simulation.boundingBox();
         glm::vec3 dimensions = boundingBox.dimensions();
         float scale = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-        auto activeParticles = simulation.group<const Position, const Mass>(entt::get<ActiveTag>);
+        auto activeParticles = simulation.group<const Position, const Mass>();
         activeParticles.each([&](const auto e, const auto &position, const Mass) {
             // Each position should be normalized to [0, 1] before conversion
             simulation.emplace_or_replace<MortonCode>(e, toMortonCode((position - boundingBox.min()) / scale));

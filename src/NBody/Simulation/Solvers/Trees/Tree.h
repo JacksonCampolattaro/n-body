@@ -69,7 +69,7 @@ namespace NBody {
 
         [[nodiscard]] const auto &children() const { return implementation().children(); };
 
-        [[nodiscard]] auto &boundingBox() const { return implementation().boundingBox(); }
+        [[nodiscard]] auto &boundingBox() const { return implementation().activeBoundingBox(); }
 
     protected:
 

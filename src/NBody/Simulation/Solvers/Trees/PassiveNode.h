@@ -27,16 +27,18 @@ namespace NBody {
 
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
             // The field tree only needs to contain passive particles (which receive gravitational acceleration)
-            return {simulation.view<const Position, const PassiveTag>().begin(),
-                    simulation.view<const Position, const PassiveTag>().end()};
+            return {simulation.view<const Position, const Acceleration>().begin(),
+                    simulation.view<const Position, const Acceleration>().end()};
         }
+
+        static BoundingBox outerBoundingBox(Simulation &simulation) { return simulation.passiveBoundingBox(); }
 
         static entt::basic_view<
                 entt::entity, entt::exclude_t<>,
                 const NBody::Physics::Position,
-                const NBody::Physics::ActiveTag
+                const NBody::Physics::Acceleration
         > constructionContext(Simulation &simulation) {
-            return simulation.template view<const Position, const ActiveTag>();
+            return simulation.template view<const Position, const Acceleration>();
         }
 
         [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }

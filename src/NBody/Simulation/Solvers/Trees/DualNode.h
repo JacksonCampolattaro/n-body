@@ -31,6 +31,8 @@ namespace NBody {
                     simulation.view<const Position>().end()};
         }
 
+        static BoundingBox outerBoundingBox(Simulation &simulation) { return simulation.boundingBox(); }
+
         static Simulation &constructionContext(Simulation &simulation) {
             return simulation;
         }
@@ -54,7 +56,7 @@ namespace NBody {
             if (isLeaf()) {
 
                 for (const auto &entity: contents()) {
-                    if (allParticles.template all_of<Position, Mass, ActiveTag>(entity)) {
+                    if (allParticles.template all_of<Position, Mass>(entity)) {
                         auto entityPosition = allParticles.template get<const Position>(entity);
                         auto entityMass = allParticles.template get<const Mass>(entity).mass();
                         _totalMass.mass() += entityMass;

@@ -8,7 +8,7 @@
 #include "../Solver.h"
 
 #include "Trees/LinearBVH.h"
-#include "Trees/FieldOctree.h"
+#include "Trees/PassiveOctree.h"
 #include "Trees/DescentCriterion.h"
 #include <tbb/parallel_for_each.h>
 
@@ -47,8 +47,8 @@ namespace NBody {
 
         void step() override {
 
-            auto targets = _simulation.view<const Position, const Mass, Velocity, const PassiveTag>();
-            auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
+            //auto targets = _simulation.view<const Position, const Mass, Velocity>();
+            //auto movableTargets = _simulation.view<Position, const Mass, const Velocity>();
 
             _statusDispatcher.emit({"Building active tree"});
             _activeTree.refine();
@@ -58,9 +58,8 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<const Position, const PassiveTag>();
-                for (const Entity e: view)
-                    _simulation.emplace_or_replace<Acceleration>(e, 0.0f, 0.0f, 0.0f);
+                auto view = _simulation.view<Acceleration>();
+                view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
@@ -68,8 +67,8 @@ namespace NBody {
                 auto startingNodes = loadBalancedSplit(_passiveTree, 64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
                     computeAccelerations(
-                            _simulation.view<const Position, Acceleration, const PassiveTag>(),
-                            _simulation.view<const Position, const Mass, const ActiveTag>(),
+                            _simulation.view<const Position, Acceleration>(),
+                            _simulation.view<const Position, const Mass>(),
                             _activeTree.root(),
                             node
                     );
@@ -115,11 +114,11 @@ namespace NBody {
         void computeAccelerations(
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
-                        const Position, Acceleration, const PassiveTag
+                        const Position, Acceleration
                 > &passiveParticles,
                 const entt::basic_view<
                         entt::entity, entt::exclude_t<>,
-                        const Position, const Mass, const ActiveTag
+                        const Position, const Mass
                 > &activeParticles,
                 const typename ActiveTree::Node &activeNode,
                 typename PassiveTree::Node &passiveNode) {
@@ -173,11 +172,11 @@ namespace NBody {
 
     };
 
-    class MVDRSolver : public DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance> {
+    class MVDRSolver : public DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
     public:
 
         MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
+                DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
             passiveTree().maxDepth() = 32;
             passiveTree().maxLeafSize() = 16;
         }

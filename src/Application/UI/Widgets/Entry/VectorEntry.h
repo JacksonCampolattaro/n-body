@@ -133,6 +133,7 @@ namespace UI {
 
     typedef CompactVectorEntry<"(", ")"> CompactPositionEntry;
     typedef CompactVectorEntry<"⟨", "⟩"> CompactVelocityEntry;
+    typedef CompactVectorEntry<"[", "]"> CompactAccelerationEntry;
     typedef CompactVectorEntry<"|", "|"> CompactDirectionEntry;
 }
 

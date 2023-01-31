@@ -108,6 +108,7 @@
                                 <child>
                                     <object class="AdwActionRow">
                                         <property name="title">Mass</property>
+                                        <property name="subtitle">Particles with non-zero mass emit forces</property>
                                         <child type="suffix">
                                             <object class="GtkSpinButton" id="mass-entry"/>
                                         </child>
@@ -123,20 +124,10 @@
                                 </child>
                                 <child>
                                     <object class="AdwActionRow">
-                                        <property name="title">Active</property>
-                                        <property name="subtitle">Determines whether the particles affect others
-                                        </property>
+                                        <property name="title">Acceleration</property>
+                                        <property name="subtitle">Particles with acceleration receive forces</property>
                                         <child type="suffix">
-                                            <object class="GtkCheckButton" id="active-entry"/>
-                                        </child>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="AdwActionRow">
-                                        <property name="title">Passive</property>
-                                        <property name="subtitle">Determines if the particles are affected by others</property>
-                                        <child type="suffix">
-                                            <object class="GtkCheckButton" id="passive-entry"/>
+                                            <object class="GtkCheckButton" id="acceleration-entry"/>
                                         </child>
                                     </object>
                                 </child>

@@ -10,6 +10,8 @@
 
 #include "NBody/Physics/Mass.h"
 
+#include <gtkmm/checkbutton.h>
+
 namespace UI {
 
     using NBody::Physics::Mass;
@@ -34,6 +36,7 @@ namespace UI {
             set_sensitive(false);
         };
     };
+
 }
 
 #endif //N_BODY_PARTICLEMASSENTRY_H
