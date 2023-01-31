@@ -172,12 +172,13 @@ namespace NBody {
 
         OctreeBase(Simulation &simulation) : TreeBase<OctreeNodeImplementation>(simulation) {}
 
+        using typename TreeBase<OctreeNodeImplementation>::Node;
         using TreeBase<OctreeNodeImplementation>::simulation;
         using TreeBase<OctreeNodeImplementation>::root;
 
         void build() override {
 
-            BoundingBox boundingBox = simulation().boundingBox();
+            BoundingBox boundingBox = Node::outerBoundingBox(simulation());
             glm::vec3 dimensions = boundingBox.dimensions();
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);

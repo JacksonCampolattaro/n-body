@@ -31,6 +31,8 @@ namespace NBody {
                     simulation.view<const Position, const Acceleration>().end()};
         }
 
+        static BoundingBox outerBoundingBox(Simulation &simulation) { return simulation.passiveBoundingBox(); }
+
         static entt::basic_view<
                 entt::entity, entt::exclude_t<>,
                 const NBody::Physics::Position,

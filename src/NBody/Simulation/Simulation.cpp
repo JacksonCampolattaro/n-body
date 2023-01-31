@@ -190,10 +190,29 @@ std::size_t NBody::Simulation::interactionCount() const {
 }
 
 NBody::BoundingBox NBody::Simulation::boundingBox() const {
-    // todo: This shouldn't be specific to the active tag
+    BoundingBox bbox;
+    auto passiveParticles = view<const Physics::Position>();
+    passiveParticles.each([&](const auto &position) {
+        bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
+        bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
+    });
+    return bbox;
+}
+
+NBody::BoundingBox NBody::Simulation::activeBoundingBox() const {
     BoundingBox bbox;
     auto activeParticles = view<const Physics::Position, const Physics::Mass>();
     activeParticles.each([&](const auto &position, const auto &mass) {
+        bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
+        bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
+    });
+    return bbox;
+}
+
+NBody::BoundingBox NBody::Simulation::passiveBoundingBox() const {
+    BoundingBox bbox;
+    auto passiveParticles = view<const Physics::Position, const Physics::Acceleration>();
+    passiveParticles.each([&](const auto &position, const auto &acceleration) {
         bbox.min() = glm::min((glm::vec3) bbox.min(), (glm::vec3) position);
         bbox.max() = glm::max((glm::vec3) bbox.max(), (glm::vec3) position);
     });

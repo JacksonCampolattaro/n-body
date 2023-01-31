@@ -118,7 +118,7 @@ namespace NBody {
         void build() override {
 
             // Assign morton codes to all active particles
-            setMortonCodes(simulation());
+            setMortonCodes(simulation(), Node::outerBoundingBox(simulation()));
 
             // Sort the indices by the associated morton codes
             mortonSort(simulation().view<const MortonCode>(), indices());

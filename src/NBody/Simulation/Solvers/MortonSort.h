@@ -38,9 +38,8 @@ namespace NBody {
     }
 
 
-    static void setMortonCodes(Simulation &simulation) {
+    static void setMortonCodes(Simulation &simulation, BoundingBox boundingBox) {
 
-        BoundingBox boundingBox = simulation.boundingBox();
         glm::vec3 dimensions = boundingBox.dimensions();
         float scale = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 

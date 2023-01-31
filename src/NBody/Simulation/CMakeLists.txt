@@ -26,12 +26,11 @@ add_library(Simulation
         Solvers/Trees/Tree.h
         Solvers/Trees/ActiveNode.h
         Solvers/Trees/PassiveNode.h
-        Solvers/Trees/ComprehensiveTreeNode.h
         Solvers/Trees/FieldTree.h
         Solvers/Trees/DescentCriterion.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h
-        Solvers/Trees/FieldOctree.h
+        Solvers/Trees/PassiveOctree.h
         Runner.h
         Runners/MultiRunner.h
         Runners/OneStepRunner.cpp Runners/OneStepRunner.h

@@ -8,7 +8,7 @@
 #include "../Solver.h"
 
 #include "Trees/LinearBVH.h"
-#include "Trees/FieldOctree.h"
+#include "Trees/PassiveOctree.h"
 #include "Trees/DescentCriterion.h"
 #include <tbb/parallel_for_each.h>
 
@@ -172,11 +172,11 @@ namespace NBody {
 
     };
 
-    class MVDRSolver : public DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance> {
+    class MVDRSolver : public DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
     public:
 
         MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<LinearBVH, FieldOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
+                DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
             passiveTree().maxDepth() = 32;
             passiveTree().maxLeafSize() = 16;
         }

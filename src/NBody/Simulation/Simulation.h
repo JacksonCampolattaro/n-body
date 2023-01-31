@@ -93,6 +93,10 @@ namespace NBody {
 
         BoundingBox boundingBox() const;
 
+        BoundingBox activeBoundingBox() const;
+
+        BoundingBox passiveBoundingBox() const;
+
     public:
 
         mutable sigc::signal<void()> signal_changed;

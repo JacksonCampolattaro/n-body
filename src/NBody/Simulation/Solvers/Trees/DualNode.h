@@ -31,6 +31,8 @@ namespace NBody {
                     simulation.view<const Position>().end()};
         }
 
+        static BoundingBox outerBoundingBox(Simulation &simulation) { return simulation.boundingBox(); }
+
         static Simulation &constructionContext(Simulation &simulation) {
             return simulation;
         }
