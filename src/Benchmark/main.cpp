@@ -89,6 +89,39 @@ void compare(std::size_t n, float theta) {
     );
 }
 
+template<typename CandidateSolver>
+float appropriateTheta(json scenario, json referenceScenario, float allowableError,
+                       const Comparison::Comparator &comparator, const Comparison::Metric &metric,
+                       std::pair<float, float> range = {0.1, 3.0}) {
+
+    // Binary search is partitioned around this value
+    float middleValue = (range.first + range.second) / 2.0f;
+
+    // After we've narrowed the range down enough, we can take the middle value
+    if (range.second - range.first < 0.1f)
+        return middleValue;
+
+    Rule rule{};
+    Simulation reference, candidate;
+    from_json(referenceScenario, reference);
+    from_json(scenario, candidate);
+
+    CandidateSolver candidateSolver{candidate, rule};
+    candidateSolver.theta() = middleValue;
+    candidateSolver.step();
+
+    auto error = comparator(metric, reference, candidate);
+
+    if (error <= allowableError)
+        return appropriateTheta<CandidateSolver>(scenario, referenceScenario, allowableError,
+                                                 comparator, metric,
+                                                 {range.first, middleValue});
+    else
+        return appropriateTheta<CandidateSolver>(scenario, referenceScenario, allowableError,
+                                                 comparator, metric,
+                                                 {middleValue, range.second});
+}
+
 template<typename ReferenceSolver, typename CandidateSolver>
 float appropriateTheta(json scenario, float referenceTheta, std::pair<float, float> range = {0.1, 3.0}) {
 
@@ -285,9 +318,9 @@ int main(int argc, char *argv[]) {
     sweepTheta<MVDRSolver>(1'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(10, {0.5});
 
-    std::vector<std::size_t> nValues{};
-    for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
-    sweepN(nValues, 0.8, 5);
+    //std::vector<std::size_t> nValues{};
+    //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
+    //sweepN(nValues, 0.8, 5);
     //sweepN<MVDRSolver>(nValues, 0.8, 5);
     //sweepN(nValues, 1.0, 5);
 }
