@@ -3,6 +3,7 @@
 //
 
 #include "Comparison.h"
+#include "ConstitutionalGrader.h"
 #include "Generator.h"
 
 #include <gtkmm.h>
@@ -96,15 +97,15 @@ void compare(std::size_t n, float theta) {
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 500);
-
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
     spdlog::info("Performing naive integration to determine baseline");
-    Simulation baseline;
-    from_json(scenario, baseline);
-    NaiveSolver baselineSolver(baseline, rule);
-    timedStep(baselineSolver);
+    ConstitutionalGrader grader{scenario, rule};
+    //Simulation baseline;
+    //from_json(scenario, baseline);
+    //NaiveSolver baselineSolver(baseline, rule);
+    //timedStep(baselineSolver);
 
     std::map<std::string, std::vector<float>> results{
             {"theta", {}},
@@ -130,15 +131,16 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
     }
 
     // todo: there should be a way to get a solver's name statically
-    CandidateSolver s{baseline, rule};
+    Simulation simulation;
+    CandidateSolver s{simulation, rule};
 
     matplot::title(fmt::format(
             "Error and Compute time of a {} solver for different values of θ ({} random particles)",
             s.name(), n
     ));
     matplot::xlabel("θ");
-    matplot::plot(results["theta"], results["l2"])->line_width(2.0f);
-    matplot::ylabel("Accuracy (L2 Norm vs. Naive forces)");
+    matplot::plot(results["theta"], results["error"])->line_width(2.0f);
+    matplot::ylabel("Error (Constitutional error vs. Naive forces)");
     matplot::hold(true);
     matplot::plot(results["theta"], results["time"])->line_width(2.0f).use_y2(true);
     matplot::y2label("Iteration Time (S)");
@@ -241,20 +243,12 @@ int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
 
-    //randomVolumeSimulation(500'000);
-
-    //randomGalaxySimulation(10'000);
-
-    //compare<BarnesHutSolver, OctreeDualTraversalSolver>(10'000, 0.8);
-
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<BarnesHutSolver>(50'000, thetaValues);
+    sweepTheta<MVDRSolver>(100'000, thetaValues);
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 100; i < 100'000; i *= 1.5) nValues.emplace_back(i);
     //sweepN<MVDRSolver>(nValues, 0.8, 5);
     //sweepN(nValues, 1.0, 5);
-
-    //sweepN<MVDRSolver>({300}, 0.8, 1);
 }
