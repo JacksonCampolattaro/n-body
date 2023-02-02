@@ -132,6 +132,8 @@ namespace NBody {
 
     void from_json(const json &j, Simulation &s);
 
+    void from_tipsy(std::ifstream &in, Simulation &s);
+
 }
 
 #endif //N_BODY_SIMULATION_H
