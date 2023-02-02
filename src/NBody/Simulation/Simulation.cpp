@@ -326,13 +326,23 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
         eps = correctEndian(eps, wrongEndian);
         phi = correctEndian(phi, wrongEndian);
 
+        // Choose a color based on Velocity
+        float magnitude = glm::length(glm::vec3{vx, vy, vz});
+        auto red = std::abs(vx) / magnitude;
+        auto blue = std::abs(vy) / magnitude;
+        auto green = std::abs(vz) / magnitude;
+        //auto multiplier = (1.0f - (magnitude / (1.0f - std::pow(magnitude, 2.0f))));
+        //        auto red = 1.0f - (vx / (1.0f + std::pow(vx, 2.0f)));
+        //        auto green = 1.0f - (vy / (1.0f + std::pow(vy, 2.0f)));
+        //        auto blue = 1.0f - (vz / (1.0f + std::pow(vz, 2.0f)));
+
         Simulation::Particle particle = {s, entities[i]};
         particle.setMass(mass)
                 .setPosition({x, y, z})
                 .setVelocity({vx, vy, vz})
                 .setAcceleration({0.0f, 0.0f, 0.0f})
                 .setSphere({std::cbrt(mass)})
-                .setColor({0.9f, 0.9f, 0.8f});
+                .setColor({red, green, blue});
 
         // Notify any watchers that this particle has new data
         if (particle.all_of<sigc::signal<void()>>())
