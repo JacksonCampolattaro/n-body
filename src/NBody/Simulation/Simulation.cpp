@@ -252,7 +252,6 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
     in.seekg(0, std::ios::end);
     std::size_t fs = in.tellg();
     in.seekg(0, std::ios::beg);
-    spdlog::debug("File length: {} bytes", fs);
 
     // Read the header
     double t;
@@ -273,38 +272,34 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
     nd = correctEndian(nd, wrongEndian);
     ns = correctEndian(ns, wrongEndian);
 
-    spdlog::debug("Read time: {}", t);
-    spdlog::debug("n: {}", n);
-    spdlog::debug("dimensions: {}", ndim);
-    spdlog::debug("Gaseous Matter: {}", ng);
-    spdlog::debug("Dark Matter: {}", nd);
-    spdlog::debug("Stars: {}", ns);
+    spdlog::debug("Tipsy dataset properties:\n"
+                  "\tn: {}\n"
+                  "\tdimensions: {}\n"
+                  "\tGaseous Matter particles: {}\n"
+                  "\tDark Matter particles: {}\n"
+                  "\tStars: {}",
+                  n, ndim, ng, nd, ns);
 
     // If the file size indicates that padding is present, skip it
     if (fs == 32 + 48 * ng + 36 * nd + 44 * ns)
         in.seekg(4, std::ios::cur);
     else if (fs != 28 + 48 * ng + 36 * nd + 44 * ns) {
-        spdlog::error("Incorrect file size!");
+        spdlog::error("File size does not match header!");
         return;
     }
 
     // Read gaseous matter
-    for (int i = 0; i < ng; ++i) {
-        // Skip this for now
-        in.seekg(48, std::ios::cur);
-    }
+    // Skip this for now
+    in.seekg(48 * ng, std::ios::cur);
 
     // Read dark matter
-    for (int i = 0; i < nd; ++i) {
-        // Skip this for now
-        in.seekg(36, std::ios::cur);
-    }
+    // Skip this for now
+    in.seekg(36 * nd, std::ios::cur);
 
     // Read stars
     auto entities = std::vector<Simulation::entity_type>{ns};
     s.create(entities.begin(), entities.end());
     for (int i = 0; i < entities.size(); ++i) {
-
         if (!in.good()) spdlog::error("Encountered an issue while reading the file");
 
         float mass, x, y, z, vx, vy, vz, metals, tform, eps, phi;
