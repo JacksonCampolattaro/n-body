@@ -4,6 +4,8 @@
 
 #include "SimulationFileManager.h"
 
+#include <filesystem>
+
 #include <spdlog/spdlog.h>
 
 NBody::SimulationFileManager::SimulationFileManager(NBody::Simulation &simulation) :
@@ -30,13 +32,26 @@ void NBody::SimulationFileManager::import() {
 
 void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> &file) {
 
-    spdlog::debug("Opening JSON file at path \"{}\"", file->get_path());
-    std::ifstream inputFile(file->get_path());
-    json j;
-    inputFile >> j;
+    auto path = std::filesystem::path(file->get_path());
 
-    from_json(j, _simulation);
+    if (path.extension().string() == ".json") {
+        spdlog::debug("Opening JSON file at path \"{}\"", file->get_path());
+        std::ifstream inputFile(file->get_path());
+        json j;
+        inputFile >> j;
 
+        from_json(j, _simulation);
+        return;
+    }
+
+    if (path.extension().string() == ".bin") {
+        spdlog::debug("Opening Tipsy file at path \"{}\"", file->get_path());
+        std::ifstream inputFile(file->get_path(), std::ios::binary);
+        from_tipsy(inputFile, _simulation);
+        return;
+    }
+
+    spdlog::error("Unrecognized file type");
 }
 
 void NBody::SimulationFileManager::open() {
