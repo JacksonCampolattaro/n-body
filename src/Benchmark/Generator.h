@@ -38,9 +38,8 @@ namespace NBody::Generator {
                                colorDistribution(generator),
                                colorDistribution(generator)});
             particle.setMass(massDistribution(generator) / (float) n);
+            particle.setAcceleration({0.0f, 0.0f, 0.0f});
             particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
-            particle.emplace<Physics::ActiveTag>();
-            particle.emplace<Physics::PassiveTag>();
         }
 
         return simulation;
@@ -68,9 +67,8 @@ namespace NBody::Generator {
         sun.setVelocity({0.0f, 0.0f, 0.0f});
         sun.setColor({0.9f, 0.9f, 0.8f});
         sun.setMass(sunMassFraction);
+        sun.setAcceleration({0.0f, 0.0f, 0.0f});
         sun.setSphere({std::cbrt(sun.get<Physics::Mass>().mass())});
-        sun.emplace<Physics::ActiveTag>();
-        sun.emplace<Physics::PassiveTag>();
 
         // Add all orbiting particles
         for (int i = 0; i < n - 1; ++i) {
@@ -96,11 +94,17 @@ namespace NBody::Generator {
                                colorDistribution(generator),
                                colorDistribution(generator)});
             particle.setMass(std::max(massDistribution(generator) / (float) n, (0.0001f / (float) n)));
+            sun.setAcceleration({0.0f, 0.0f, 0.0f});
             particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
-            particle.emplace<Physics::ActiveTag>();
-            particle.emplace<Physics::PassiveTag>();
         }
 
+        return simulation;
+    }
+
+    static Simulation &realisticGalaxy(Simulation &simulation, std::size_t n) {
+        spdlog::info("Generating a loading galaxy scenario from a file");
+        std::ifstream inputFile("/Users/jackcamp/Documents/n-body-scenarios/benchmark/LOW.bin", std::ios::binary);
+        from_tipsy(inputFile, simulation);
         return simulation;
     }
 

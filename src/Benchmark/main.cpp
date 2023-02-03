@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
     //compare<BarnesHutSolver, OctreeDualTraversalSolver>(10'000, 0.8);
 
     std::vector<float> thetaValues{};
-    for (int i = 1; i < 200; i++) thetaValues.emplace_back((float) i / 100.0f);
+    for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
     sweepTheta<BarnesHutSolver>(50'000, thetaValues);
 
     //std::vector<std::size_t> nValues{};
