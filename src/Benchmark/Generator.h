@@ -103,7 +103,7 @@ namespace NBody::Generator {
     }
 
     static Simulation &realisticGalaxy(Simulation &simulation, std::size_t n) {
-        spdlog::info("Generating a loading galaxy scenario from a file");
+        spdlog::info("Reading a realistic galaxy scenario from a file");
         std::ifstream inputFile("/Users/jackcamp/Documents/n-body-scenarios/benchmark/LOW.bin", std::ios::binary);
         from_tipsy(inputFile, simulation);
         return simulation;

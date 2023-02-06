@@ -97,7 +97,8 @@ void compare(std::size_t n, float theta) {
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
+    json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
+    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
     spdlog::info("Performing naive integration to determine baseline");
@@ -110,7 +111,7 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
     std::map<std::string, std::vector<float>> results{
             {"theta", {}},
             {"time",  {}},
-            {"l2",    {}}
+            {"error",    {}}
     };
 
     spdlog::info("Performing tests for different values of theta");
@@ -125,7 +126,7 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
         results["theta"].emplace_back(theta);
         results["time"].emplace_back(timedStep(solver).count());
-        results["l2"].emplace_back(Comparison::average(&Comparison::L2Norm, baseline, simulation));
+        results["error"].emplace_back(grader.averageError(simulation));
 
         ++display;
     }
@@ -135,12 +136,12 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
     CandidateSolver s{simulation, rule};
 
     matplot::title(fmt::format(
-            "Error and Compute time of a {} solver for different values of θ ({} random particles)",
-            s.name(), n
+            "Error and Compute time of a {} solver for different values of θ ({} particles)",
+            s.name(), scenario["particles"].size()
     ));
     matplot::xlabel("θ");
     matplot::plot(results["theta"], results["error"])->line_width(2.0f);
-    matplot::ylabel("Error (Constitutional error vs. Naive forces)");
+    matplot::ylabel("Error (Constitutional)");
     matplot::hold(true);
     matplot::plot(results["theta"], results["time"])->line_width(2.0f).use_y2(true);
     matplot::y2label("Iteration Time (S)");
@@ -245,7 +246,8 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<MVDRSolver>(100'000, thetaValues);
+    sweepTheta<MVDRSolver>(1'000, thetaValues);
+    //sweepTheta<BarnesHutSolver>(10, {0.5});
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 100; i < 100'000; i *= 1.5) nValues.emplace_back(i);
