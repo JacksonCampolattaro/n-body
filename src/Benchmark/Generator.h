@@ -19,8 +19,9 @@ namespace NBody::Generator {
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};
-        std::uniform_real_distribution<float> positionDistribution{-10.0f, 10.0f};
-        std::uniform_real_distribution<float> velocityDistribution{-0.01f, 0.01f};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n)};
+        std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
+                                                                   std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};
         std::uniform_real_distribution<float> colorDistribution{0.3f, 0.9f};
 
@@ -37,7 +38,7 @@ namespace NBody::Generator {
             particle.setColor({colorDistribution(generator),
                                colorDistribution(generator),
                                colorDistribution(generator)});
-            particle.setMass(massDistribution(generator) / (float) n);
+            particle.setMass(massDistribution(generator));
             particle.setAcceleration({0.0f, 0.0f, 0.0f});
             particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
         }
@@ -93,8 +94,8 @@ namespace NBody::Generator {
             particle.setColor({colorDistribution(generator),
                                colorDistribution(generator),
                                colorDistribution(generator)});
-            particle.setMass(std::max(massDistribution(generator) / (float) n, (0.0001f / (float) n)));
-            sun.setAcceleration({0.0f, 0.0f, 0.0f});
+            particle.setMass(massDistribution(generator));
+            particle.setAcceleration({0.0f, 0.0f, 0.0f});
             particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
         }
 
@@ -102,7 +103,7 @@ namespace NBody::Generator {
     }
 
     static Simulation &realisticGalaxy(Simulation &simulation, std::size_t n) {
-        spdlog::info("Generating a loading galaxy scenario from a file");
+        spdlog::info("Reading a realistic galaxy scenario from a file");
         std::ifstream inputFile("/Users/jackcamp/Documents/n-body-scenarios/benchmark/LOW.bin", std::ios::binary);
         from_tipsy(inputFile, simulation);
         return simulation;
