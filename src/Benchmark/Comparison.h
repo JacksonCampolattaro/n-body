@@ -32,6 +32,10 @@ namespace Comparison {
         ) * A.get<Mass>(a).mass();
     }
 
+    float percentage(const Simulation &A, Entity a, const Simulation &B, Entity b) {
+        return 100.0f * L1Norm(A, a, B, b) / glm::length(A.get<Acceleration>(a) * A.get<Mass>(a).mass());
+    }
+
     using Comparator = std::function<float(const Metric &, const Simulation &, const Simulation &)>;
 
     float average(const Metric &metric, const Simulation &A, const Simulation &B) {

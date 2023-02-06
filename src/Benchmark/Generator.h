@@ -35,12 +35,12 @@ namespace NBody::Generator {
             particle.setVelocity({velocityDistribution(generator),
                                   velocityDistribution(generator),
                                   velocityDistribution(generator)});
+            particle.setMass(massDistribution(generator) / (float) n);
+            particle.setAcceleration({0.0f, 0.0f, 0.0f});
+            particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
             particle.setColor({colorDistribution(generator),
                                colorDistribution(generator),
                                colorDistribution(generator)});
-            particle.setMass(massDistribution(generator));
-            particle.setAcceleration({0.0f, 0.0f, 0.0f});
-            particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
         }
 
         return simulation;
@@ -66,10 +66,10 @@ namespace NBody::Generator {
         Simulation::Particle sun = simulation.newParticle();
         sun.setPosition({0.0f, 0.0f, 0.0f});
         sun.setVelocity({0.0f, 0.0f, 0.0f});
-        sun.setColor({0.9f, 0.9f, 0.8f});
         sun.setMass(sunMassFraction);
         sun.setAcceleration({0.0f, 0.0f, 0.0f});
         sun.setSphere({std::cbrt(sun.get<Physics::Mass>().mass())});
+        sun.setColor({0.9f, 0.9f, 0.8f});
 
         // Add all orbiting particles
         for (int i = 0; i < n - 1; ++i) {
@@ -91,21 +91,14 @@ namespace NBody::Generator {
             Simulation::Particle particle = simulation.newParticle();
             particle.setPosition({orientation * distance});
             particle.setVelocity({velocity});
+            particle.setMass(std::max(massDistribution(generator) / (float) n, (0.0001f / (float) n)));
+            particle.setAcceleration({0.0f, 0.0f, 0.0f});
+            particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
             particle.setColor({colorDistribution(generator),
                                colorDistribution(generator),
                                colorDistribution(generator)});
-            particle.setMass(massDistribution(generator));
-            particle.setAcceleration({0.0f, 0.0f, 0.0f});
-            particle.setSphere({std::cbrt(particle.get<Physics::Mass>().mass())});
         }
 
-        return simulation;
-    }
-
-    static Simulation &realisticGalaxy(Simulation &simulation, std::size_t n) {
-        spdlog::info("Reading a realistic galaxy scenario from a file");
-        std::ifstream inputFile("/Users/jackcamp/Documents/n-body-scenarios/benchmark/LOW.bin", std::ios::binary);
-        from_tipsy(inputFile, simulation);
         return simulation;
     }
 
