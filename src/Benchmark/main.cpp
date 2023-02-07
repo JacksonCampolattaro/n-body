@@ -162,8 +162,8 @@ float appropriateTheta(json scenario, float referenceTheta, std::pair<float, flo
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
-    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
+    //json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
     spdlog::info("Performing naive integration to determine baseline");
@@ -309,9 +309,16 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
     matplot::show();
 }
 
+#include <NBody/Simulation/Solvers/Trees/Summary.h>
+#include "NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h"
+#include "NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h"
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
+
+    static_assert(Summary<CenterOfMassSummary>);
+    static_assert(Summary<AccelerationSummary>);
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);

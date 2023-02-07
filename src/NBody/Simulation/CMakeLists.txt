@@ -23,6 +23,9 @@ add_library(Simulation
         Solvers/MortonSort.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
+        Solvers/Trees/Summary.h
+        Solvers/Trees/Summaries/CenterOfMassSummary.h
+        Solvers/Trees/Summaries/AccelerationSummary.h
         Solvers/Trees/Tree.h
         Solvers/Trees/ActiveNode.h
         Solvers/Trees/PassiveNode.h
@@ -38,7 +41,7 @@ add_library(Simulation
         Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
-        Solvers/Trees/DualNode.h Solvers/Trees/DualOctree.h Solvers/DualTraversalSolver.h)
+        Solvers/Trees/DualNode.h Solvers/Trees/DualOctree.h Solvers/DualTraversalSolver.h Solvers/Trees/Summaries/DualSummary.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
