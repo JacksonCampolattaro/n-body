@@ -113,8 +113,7 @@ namespace NBody {
 
             if (_descentCriterion(node, passivePosition)) {
 
-                // Node is treated as a single particle if S/D < theta (where S = sideLength and D = distance)
-                return _rule(node.centerOfMass(), node.totalMass(), passivePosition);
+                return _rule(node.summary().centerOfMass(), node.summary().totalMass(), passivePosition);
 
             } else {
 

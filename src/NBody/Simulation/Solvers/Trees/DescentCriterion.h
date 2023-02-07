@@ -26,14 +26,14 @@ namespace NBody::DescentCriterion {
 
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
-            return (2.0f * node.sideLength() / glm::distance((glm::vec3) node.centerOfMass(), point))
+            return (2.0f * node.sideLength() / glm::distance((glm::vec3) node.summary().centerOfMass(), point))
                    < _theta;
         }
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
             return (std::max(activeNode.sideLength(), passiveNode.sideLength()) /
-                    glm::distance((glm::vec3) activeNode.centerOfMass(), passiveNode.center())) < _theta;
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }
@@ -53,14 +53,15 @@ namespace NBody::DescentCriterion {
 
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
-            return (node.boundingBox().diagonalLength() / glm::distance((glm::vec3) node.centerOfMass(), point))
+            return (node.boundingBox().diagonalLength() /
+                    glm::distance((glm::vec3) node.summary().centerOfMass(), point))
                    < _theta;
         }
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
             return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
-                    glm::distance((glm::vec3) activeNode.centerOfMass(), passiveNode.center())) < _theta;
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }
@@ -81,7 +82,7 @@ namespace NBody::DescentCriterion {
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
 
-            glm::vec3 directionVector = point - node.centerOfMass();
+            glm::vec3 directionVector = point - node.summary().centerOfMass();
 
             // The diagonal of the bounding box always extends from min to max, bottom left to top right
             glm::vec3 diagonal = node.activeBoundingBox().diagonal();
@@ -100,7 +101,7 @@ namespace NBody::DescentCriterion {
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
 
-            glm::vec3 directionVector = activeNode.centerOfMass() - passiveNode.center();
+            glm::vec3 directionVector = activeNode.summary().centerOfMass() - passiveNode.center();
 
             // The diagonal of the bounding box always extends from min to max, bottom left to top right
             glm::vec3 diagonalA = activeNode.boundingBox().diagonal();

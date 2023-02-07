@@ -120,8 +120,9 @@ namespace NBody {
             if (_descentCriterion(activeNode, passiveNode)) {
 
                 // node-node interaction
-                passiveNode.acceleration() += (glm::vec3) _rule(activeNode.centerOfMass(), activeNode.totalMass(),
-                                                                passiveNode.center());
+                passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
+                                                                          activeNode.summary().totalMass(),
+                                                                          passiveNode.center());
 
             } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 

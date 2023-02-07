@@ -41,10 +41,6 @@ namespace NBody {
             return simulation.group<const Position, const Mass>();
         }
 
-        [[nodiscard]] const Mass &totalMass() const { return _summary.totalMass(); }
-
-        [[nodiscard]] const Position &centerOfMass() const { return _summary.centerOfMass(); }
-
         template<typename ViewType>
         void summarize(const ViewType &context) {
             NodeImplementation::summarize(context);

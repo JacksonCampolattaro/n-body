@@ -47,15 +47,11 @@ namespace NBody {
             return AccelerationSummary::context(simulation);
         }
 
-        [[nodiscard]] const Acceleration &acceleration() const { return _summary.acceleration(); }
-
-        Acceleration &acceleration() { return _summary.acceleration(); }
-
         // todo: this should be moved elsewhere
         void collapseAccelerations(const entt::basic_view<entt::entity, entt::exclude_t<>, Acceleration> &context,
                                    Acceleration netAcceleration = {0.0f, 0.0f, 0.0f}) const {
 
-            netAcceleration += (glm::vec3) acceleration();
+            netAcceleration += (glm::vec3) summary().acceleration();
 
             if (isLeaf()) {
 
