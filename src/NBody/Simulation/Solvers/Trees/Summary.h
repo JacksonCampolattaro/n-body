@@ -9,35 +9,41 @@
 #include <span>
 
 #include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 namespace NBody {
 
     template<typename T>
-    concept ConstructibleFromEntitiesAndContext = requires(const std::span<Entity> &entities,
-                                                           const typename T::Context &context) {
-        T{entities, context};
+    concept IsEntityListSummarizer = requires(T &t,
+                                              const std::span<Entity> &entities,
+                                              const typename T::Context &context) {
+        { t.summarize(entities, context) } -> std::convertible_to<void>;
     };
 
-    template<typename T>
-    concept ConstructibleFromChildNodes = requires(const std::vector<OctreeNode> &childNodes) {
-        T{childNodes};
-    };
+    // fixme: OctreeNode not usable here?
+    //    template<typename T>
+    //    concept IsChildNodesSummarizer = requires(T &t,
+    //                                              const std::vector<OctreeNode> &childNodes) {
+    //        { t.summarize(childNodes) } -> std::convertible_to<void>;
+    //    };
 
     template<typename T>
     concept IsContextProvider = requires(Simulation &simulation) {
         { T::context(simulation) } -> std::convertible_to<typename T::Context>;
+    } || requires(Simulation &simulation) {
+        { T::context(simulation) } -> std::convertible_to<typename T::Context &>;
     };
 
     template<typename T>
-    concept Summary = ConstructibleFromEntitiesAndContext<T> &&
-                      ConstructibleFromChildNodes<T> &&
+    concept Summary = IsEntityListSummarizer<T> &&
+                      //IsChildNodesSummarizer<T> &&
                       std::is_default_constructible_v<T> &&
                       IsContextProvider<T>;
 
     template<Summary S>
     decltype(auto) positionsView(Simulation &simulation) {
         if constexpr(std::is_same_v<typename S::Context, Simulation>)
-            return simulation.template group<const Position>();
+            return simulation.template view<const Position>();
         else
             return S::context(simulation);
     }
@@ -49,12 +55,12 @@ namespace NBody {
     }
 
     template<Summary S>
-    static BoundingBox boundingBox(Simulation &simulation) {
+    static BoundingBox outerBoundingBox(Simulation &simulation) {
         BoundingBox bbox;
-        positionsView<S>(simulation).each([&](Entity e) {
+        for (Entity e: positionsView<S>(simulation)) {
             bbox.min() = glm::min((glm::vec3) bbox.min(), simulation.get<const Position>(e));
             bbox.max() = glm::max((glm::vec3) bbox.max(), simulation.get<const Position>(e));
-        });
+        };
         return bbox;
     }
 }

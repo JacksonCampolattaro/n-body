@@ -7,14 +7,15 @@
 
 #include "Tree.h"
 
+#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+
 namespace NBody {
 
     template<typename NodeImplementation>
     class ActiveNode : public NodeImplementation {
     private:
 
-        Mass _totalMass{0.0f};
-        Position _centerOfMass{0.0f, 0.0f, 0.0f};
+        CenterOfMassSummary _summary;
 
     public:
 
@@ -24,57 +25,31 @@ namespace NBody {
         using NodeImplementation::children;
         using NodeImplementation::boundingBox;
 
+        CenterOfMassSummary &summary() { return _summary; }
+
+        [[nodiscard]] const CenterOfMassSummary &summary() const { return _summary; }
+
         static std::vector<Entity> relevantEntities(Simulation &simulation) {
-            return {simulation.group<const Position, const Mass>().begin(),
-                    simulation.group<const Position, const Mass>().end()};
+            return relevantEntities < CenterOfMassSummary > (simulation);
         }
 
-        static BoundingBox outerBoundingBox(Simulation &simulation) { return simulation.activeBoundingBox(); }
+        static BoundingBox outerBoundingBox(Simulation &simulation) {
+            return outerBoundingBox < CenterOfMassSummary > (simulation);
+        }
 
-        static entt::basic_group<
-                entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
-                const NBody::Physics::Position,
-                const NBody::Physics::Mass
-        > constructionContext(Simulation &simulation) {
+        static CenterOfMassSummary::Context constructionContext(Simulation &simulation) {
             return simulation.group<const Position, const Mass>();
         }
 
-        [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
+        [[nodiscard]] const Mass &totalMass() const { return _summary.totalMass(); }
 
-        [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
+        [[nodiscard]] const Position &centerOfMass() const { return _summary.centerOfMass(); }
 
         template<typename ViewType>
-        void summarize(const ViewType &activeParticles) {
-
-            NodeImplementation::summarize(activeParticles);
-
-            _totalMass = 0.0f;
-            _centerOfMass = {0.0f, 0.0f, 0.0f};
-
-            if (isLeaf()) {
-
-                for (const auto &entity: contents()) {
-                    auto entityMass = activeParticles.template get<const Mass>(entity).mass();
-                    _totalMass.mass() += entityMass;
-                    _centerOfMass = _centerOfMass + (entityMass * activeParticles.template get<const Position>(entity));
-                }
-                _centerOfMass = _centerOfMass / _totalMass.mass();
-
-            } else {
-
-                for (const auto &child: children()) {
-                    _totalMass.mass() += child.totalMass().mass();
-                    _centerOfMass = _centerOfMass + (child.centerOfMass() * child.totalMass().mass());
-                }
-                _centerOfMass = _centerOfMass / _totalMass.mass();
-
-            }
-
-            // Ensure the center of mass is inside the bounding box
-            // (this might not be true because of rounding errors)
-            // todo: I'd like to find a way to make this unnecessary
-            _centerOfMass = glm::min(glm::max((glm::vec3) boundingBox().min(), _centerOfMass), boundingBox().max());
+        void summarize(const ViewType &context) {
+            NodeImplementation::summarize(context);
+            if (isLeaf())_summary.summarize(contents(), context);
+            else _summary.summarize(children());
         }
 
     };

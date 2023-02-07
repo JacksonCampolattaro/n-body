@@ -18,25 +18,26 @@ namespace NBody {
 
     public:
 
-        using Context = entt::basic_group<
+        using Context = entt::basic_view<
                 entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
-                const Position,
-                const Acceleration
+                const NBody::Physics::Position,
+                const NBody::Physics::Acceleration
         >;
 
         static Context context(Simulation &simulation) {
-            return simulation.group<const Position, const Acceleration>();
+            return simulation.view<const Position, const Acceleration>();
         }
 
     public:
 
+        AccelerationSummary(const AccelerationSummary &other) = default;
+
         AccelerationSummary() = default;
 
-        AccelerationSummary(const std::span<Entity> &entities, const Context &context) {}
+        void summarize(const std::span<Entity> &entities, const Context &context) {}
 
         template<typename NodeList>
-        explicit AccelerationSummary(const NodeList &childNodes) {}
+        void summarize(const NodeList &childNodes) {}
 
         [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }
 

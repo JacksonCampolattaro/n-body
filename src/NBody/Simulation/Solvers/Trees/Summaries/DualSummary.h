@@ -29,7 +29,7 @@ namespace NBody {
 
         DualSummary() {}
 
-        DualSummary(const std::span<Entity> &entities, const Context &context) {
+        void summarize(const std::span<Entity> &entities, const Context &context) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};
@@ -46,7 +46,7 @@ namespace NBody {
         }
 
         template<typename NodeList>
-        explicit DualSummary(const NodeList &childNodes) {
+        void summarize(const NodeList &childNodes) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};

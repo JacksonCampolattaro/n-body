@@ -309,20 +309,13 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
     matplot::show();
 }
 
-#include <NBody/Simulation/Solvers/Trees/Summary.h>
-#include "NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h"
-#include "NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h"
-
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
 
-    static_assert(Summary<CenterOfMassSummary>);
-    static_assert(Summary<AccelerationSummary>);
-
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<MVDRSolver>(1'000, thetaValues);
+    sweepTheta<OctreeDualTraversalSolver>(10'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(10, {0.5});
 
     //std::vector<std::size_t> nValues{};

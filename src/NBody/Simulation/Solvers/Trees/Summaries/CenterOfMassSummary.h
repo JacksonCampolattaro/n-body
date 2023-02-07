@@ -34,7 +34,8 @@ namespace NBody {
 
         CenterOfMassSummary() {}
 
-        CenterOfMassSummary(const std::span<Entity> &entities, const Context &context) {
+        template<typename C>
+        void summarize(const std::span<Entity> &entities, const C &context) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};
@@ -48,7 +49,7 @@ namespace NBody {
         }
 
         template<typename NodeList>
-        explicit CenterOfMassSummary(const NodeList &childNodes) {
+        void summarize(const NodeList &childNodes) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};
