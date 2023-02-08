@@ -9,7 +9,6 @@
 #include <span>
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 namespace NBody {
 
@@ -22,7 +21,7 @@ namespace NBody {
 
     // fixme: OctreeNode not usable here?
     //    template<typename T>
-    //    concept IsChildNodesSummarizer = requires(T &t,
+    //    concept IsNodeListSummarizer = requires(T &t,
     //                                              const std::vector<OctreeNode> &childNodes) {
     //        { t.summarize(childNodes) } -> std::convertible_to<void>;
     //    };
@@ -36,7 +35,7 @@ namespace NBody {
 
     template<typename T>
     concept Summary = IsEntityListSummarizer<T> &&
-                      //IsChildNodesSummarizer<T> &&
+                      //IsNodeListSummarizer<T> &&
                       std::is_default_constructible_v<T> &&
                       IsContextProvider<T>;
 

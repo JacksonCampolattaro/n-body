@@ -6,14 +6,15 @@
 #define N_BODY_PASSIVEOCTREE_H
 
 #include "Octree.h"
-#include "PassiveNode.h"
+
+#include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
 
 namespace NBody {
 
-    class PassiveOctreeNode : public PassiveNode<OctreeNodeBase<PassiveOctreeNode>> {
+    class PassiveOctreeNode : public OctreeNodeBase<PassiveOctreeNode, AccelerationSummary> {
     public:
 
-        using PassiveNode::PassiveNode;
+        using OctreeNodeBase::OctreeNodeBase;
 //        using PassiveNode::children;
 //        using PassiveNode::activeBoundingBox;
 //        using PassiveNode::center;
@@ -27,11 +28,9 @@ namespace NBody {
     class PassiveOctree : public OctreeBase<PassiveOctreeNode> {
     public:
 
+        using OctreeBase::Node;
+
         using OctreeBase::OctreeBase;
-//        using OctreeBase::simulation;
-//        using OctreeBase::root;
-//        using OctreeBase::maxDepth;
-//        using OctreeBase::maxLeafSize;
     };
 }
 

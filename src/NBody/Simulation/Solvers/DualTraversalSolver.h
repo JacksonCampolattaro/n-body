@@ -67,7 +67,7 @@ namespace NBody {
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.view<Acceleration>();
-                _tree.root().collapseAccelerations(view);
+                collapseAccelerations(_tree.root(), view);
             }
 
             // Update velocities, based on force
@@ -160,6 +160,26 @@ namespace NBody {
             }
         }
 
+        void collapseAccelerations(typename DualTree::Node &node,
+                                   const entt::basic_view<entt::entity, entt::exclude_t<>, Acceleration> &context,
+                                   Acceleration netAcceleration = {0.0f, 0.0f, 0.0f}) const {
+
+            netAcceleration += (glm::vec3) node.summary().acceleration();
+
+            if (node.isLeaf()) {
+
+                // When we reach a leaf node, apply the local force to all contained points
+                for (auto i: node.contents())
+                    context.get<Acceleration>(i) += (glm::vec3) netAcceleration;
+
+            } else {
+
+                // Descend the tree recursively, keeping track of the net acceleration over the current region
+                for (auto &child: node.children())
+                    collapseAccelerations(child, context, netAcceleration);
+
+            }
+        }
     };
 
     class OctreeDualTraversalSolver : public DualTraversalSolver<DualOctree, DescentCriterion::SideLengthOverDistance> {

@@ -6,17 +6,18 @@
 #define N_BODY_LINEARBVH_H
 
 #include <tbb/parallel_for_each.h>
-#include "Tree.h"
-#include "ActiveNode.h"
+#include "TreeBase.h"
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
 #include "NBody/Simulation/BoundingBox.h"
 
+#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+
 namespace NBody {
 
-    template<typename LinearBVHNodeImplementation>
-    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation> {
+    template<typename LinearBVHNodeImplementation, Summary SummaryType>
+    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation, SummaryType> {
     private:
 
         std::vector<LinearBVHNodeImplementation> _children;
@@ -25,9 +26,9 @@ namespace NBody {
 
     public:
 
-        using NodeBase<LinearBVHNodeImplementation>::NodeBase;
-        using NodeBase<LinearBVHNodeImplementation>::contents;
-        using NodeBase<LinearBVHNodeImplementation>::isLeaf;
+        using NodeBase<LinearBVHNodeImplementation, SummaryType>::NodeBase;
+        using NodeBase<LinearBVHNodeImplementation, SummaryType>::contents;
+        using NodeBase<LinearBVHNodeImplementation, SummaryType>::isLeaf;
 
         [[nodiscard]] std::vector<LinearBVHNodeImplementation> &children() { return _children; }
 
@@ -62,8 +63,9 @@ namespace NBody {
             }
         }
 
-        template<typename ViewType>
-        void summarize(const ViewType &context) {
+        template<typename Context>
+        void summarize(const Context &context) {
+            NodeBase<LinearBVHNodeImplementation, SummaryType>::summarize(context);
 
             _boundingBox = BoundingBox{};
 
@@ -95,9 +97,9 @@ namespace NBody {
 
     };
 
-    class LinearBVHNode : public ActiveNode<LinearBVHNodeBase<LinearBVHNode>> {
+    class LinearBVHNode : public LinearBVHNodeBase<LinearBVHNode, CenterOfMassSummary> {
     public:
-        using ActiveNode::ActiveNode;
+        using LinearBVHNodeBase::LinearBVHNodeBase;
 
         static entt::basic_group<
                 entt::entity, entt::exclude_t<>,
@@ -113,21 +115,21 @@ namespace NBody {
     class LinearBVH : public TreeBase<LinearBVHNode> {
     public:
 
-        LinearBVH(Simulation &simulation) : TreeBase<LinearBVHNode>(simulation) {}
+        explicit LinearBVH(Simulation &simulation) : TreeBase<LinearBVHNode>(simulation) {}
 
         void build() override {
 
             // Assign morton codes to all active particles
-            setMortonCodes(simulation(), Node::outerBoundingBox(simulation()));
+            setMortonCodes(simulation(), outerBoundingBox<LinearBVHNode::SummaryType>(simulation()));
 
             // Sort the indices by the associated morton codes
             mortonSort(simulation().view<const MortonCode>(), indices());
 
             // Build the tree
-            auto context = LinearBVHNode::constructionContext(simulation());
-            //simulation().view<const Position, const Mass, const ActiveTag, const MortonCode>();
+            // todo: the context should somehow be defined by the summary type
+            auto context = simulation().view<const Position, const Mass, const MortonCode>();
             int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(*this, preBuildDepth, context);
+            auto toBeRefined = depthSplit(root(), preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   [&](const auto &n) {

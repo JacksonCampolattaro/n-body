@@ -6,13 +6,13 @@
 #define N_BODY_DUALOCTREE_H
 
 #include "Octree.h"
-#include "DualNode.h"
+#include "Summaries/DualSummary.h"
 
 namespace NBody {
 
-    class DualOctreeNode : public DualNode<OctreeNodeBase<DualOctreeNode>> {
+    class DualOctreeNode : public OctreeNodeBase<DualOctreeNode, DualSummary> {
     public:
-        using DualNode::DualNode;
+        using OctreeNodeBase::OctreeNodeBase;
     };
 
     class DualOctree : public OctreeBase<DualOctreeNode> {

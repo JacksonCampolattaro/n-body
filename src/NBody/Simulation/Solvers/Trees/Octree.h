@@ -12,12 +12,12 @@
 #include <spdlog/spdlog.h>
 #include <tbb/parallel_for_each.h>
 
-#include "Tree.h"
-#include "ActiveNode.h"
-
-#include "NBody/Simulation/Simulation.h"
+#include <NBody/Simulation/Simulation.h>
 
 #include "NBody/Physics/Rule.h"
+
+#include <NBody/Simulation/Solvers/Trees/TreeBase.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
@@ -59,8 +59,8 @@ namespace {
 
 namespace NBody {
 
-    template<typename OctreeNodeImplementation>
-    class OctreeNodeBase : public NodeBase<OctreeNodeImplementation> {
+    template<typename OctreeNodeImplementation, Summary SummaryType>
+    class OctreeNodeBase : public NodeBase<OctreeNodeImplementation, SummaryType> {
     private:
 
         std::vector<OctreeNodeImplementation> _children;
@@ -70,15 +70,17 @@ namespace NBody {
 
     public:
 
-        using NodeBase<OctreeNodeImplementation>::NodeBase;
-        using NodeBase<OctreeNodeImplementation>::contents;
-        using NodeBase<OctreeNodeImplementation>::isLeaf;
+        using NodeBase<OctreeNodeImplementation, SummaryType>::NodeBase;
+        using NodeBase<OctreeNodeImplementation, SummaryType>::contents;
+        using NodeBase<OctreeNodeImplementation, SummaryType>::isLeaf;
 
-        template<typename ViewType>
-        void summarize(const ViewType &_) {}
+        template<typename Context>
+        void summarize(const Context &context) {
+            NodeBase<OctreeNodeImplementation, SummaryType>::summarize(context);
+        }
 
         OctreeNodeBase(std::span<Entity> contents, const Position &center, float sideLength) :
-                NodeBase<OctreeNodeImplementation>(contents),
+                NodeBase<OctreeNodeImplementation, SummaryType>(contents),
                 _center(center), _sideLength(sideLength) {}
 
         [[nodiscard]] std::vector<OctreeNodeImplementation> &children() { return _children; }
@@ -178,14 +180,14 @@ namespace NBody {
 
         void build() override {
 
-            BoundingBox boundingBox = Node::outerBoundingBox(simulation());
+            BoundingBox boundingBox = outerBoundingBox<typename Node::SummaryType>(simulation());
             glm::vec3 dimensions = boundingBox.dimensions();
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-            const auto &context = OctreeNodeImplementation::constructionContext(simulation());
+            const auto &context = OctreeNodeImplementation::SummaryType::context(simulation());
             int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(*this, preBuildDepth, context);
+            auto toBeRefined = depthSplit(root(), preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
                 node.get().refine(
                         _maxDepth,
@@ -214,9 +216,9 @@ namespace NBody {
         const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    class OctreeNode : public ActiveNode<OctreeNodeBase<OctreeNode>> {
+    class OctreeNode : public OctreeNodeBase<OctreeNode, CenterOfMassSummary> {
     public:
-        using ActiveNode::ActiveNode;
+        using OctreeNodeBase::OctreeNodeBase;
         using OctreeNodeBase::boundingBox;
     };
 

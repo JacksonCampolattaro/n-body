@@ -78,7 +78,7 @@ namespace NBody {
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.view<Acceleration>();
-                _passiveTree.root().collapseAccelerations(view);
+                collapseAccelerations(_passiveTree.root(), view);
             }
 
             // Update velocities, based on acceleration
@@ -171,29 +171,29 @@ namespace NBody {
             }
         }
 
-    };
+        void collapseAccelerations(typename PassiveTree::Node &node,
+                                   const entt::basic_view<entt::entity, entt::exclude_t<>, Acceleration> &context,
+                                   Acceleration netAcceleration = {0.0f, 0.0f, 0.0f}) const {
 
-    class MVDRSolver : public DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
-    public:
+            netAcceleration += (glm::vec3) node.summary().acceleration();
 
-        MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
-            passiveTree().maxDepth() = 32;
-            passiveTree().maxLeafSize() = 16;
+            if (node.isLeaf()) {
+
+                // When we reach a leaf node, apply the local force to all contained points
+                for (auto i: node.contents())
+                    context.get<Acceleration>(i) += (glm::vec3) netAcceleration;
+
+            } else {
+
+                // Descend the tree recursively, keeping track of the net acceleration over the current region
+                for (auto &child: node.children())
+                    collapseAccelerations(child, context, netAcceleration);
+
+            }
         }
 
-        std::string id() override { return "mvdr"; };
-
-        std::string name() override { return "Mark van de Ruit"; };
-
-        int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
-
-        const int &passiveTreeMaxDepth() const { return passiveTree().maxDepth(); }
-
-        int &passiveTreeMaxLeafSize() { return passiveTree().maxLeafSize(); }
-
-        const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
     };
+
 }
 
 #endif //N_BODY_DUALTREESOLVER_H

@@ -5,7 +5,8 @@
 #ifndef N_BODY_MVDRSOLVERSETTINGS_H
 #define N_BODY_MVDRSOLVERSETTINGS_H
 
-#include <NBody/Simulation/Solvers/DualTreeSolver.h>
+#include <NBody/Simulation/Solvers/Trees/Summary.h>
+#include <NBody/Simulation/Solvers/MVDRSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/FloatEntry.h"
@@ -28,10 +29,6 @@ namespace UI {
     };
 
 }
-
-class MVDRSolverSettings {
-
-};
 
 
 #endif //N_BODY_MVDRSOLVERSETTINGS_H

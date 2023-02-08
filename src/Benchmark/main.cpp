@@ -19,7 +19,7 @@
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
-#include <NBody/Simulation/Solvers/DualTreeSolver.h>
+#include <NBody/Simulation/Solvers/MVDRSolver.h>
 #include <NBody/Simulation/Solvers/DualTraversalSolver.h>
 
 using namespace NBody;

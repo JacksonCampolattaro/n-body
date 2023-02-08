@@ -23,21 +23,21 @@ namespace NBody {
     class BarnesHutSolverBase : public Solver {
     private:
 
-        std::unique_ptr<TreeType> _tree;
+        TreeType _tree;
         DescentCriterionType _descentCriterion{0.4f};
 
     public:
 
         BarnesHutSolverBase(Simulation &simulation, Physics::Rule &rule) :
                 Solver(simulation, rule),
-                _tree(std::make_unique<TreeType>(simulation)) {}
+                _tree(simulation) {}
 
         void step() override {
 
             {
                 // Construct an octree from the actor particles
                 _statusDispatcher.emit({"Building Tree"});
-                _tree->refine();
+                _tree.refine();
             }
 
             {
@@ -49,14 +49,13 @@ namespace NBody {
             {
                 // Use the octree to estimate forces on each passive particle
                 _statusDispatcher.emit({"Computing Accelerations"});
-                assert(_tree);
                 auto view = _simulation.template view<const Position, Acceleration>();
                 tbb::parallel_for_each(view, [&](Entity e) {
                     const auto &targetPosition = view.template get<const Position>(e);
                     auto &acceleration = view.template get<Acceleration>(e);
 
                     acceleration = computeAcceleration(
-                            _tree->root(),
+                            _tree.root(),
                             simulation().template view<const Position, const Mass>(),
                             targetPosition
                     );
@@ -91,9 +90,9 @@ namespace NBody {
 
         };
 
-        TreeType &tree() { return *_tree; }
+        TreeType &tree() { return _tree; }
 
-        const TreeType &tree() const { return *_tree; }
+        const TreeType &tree() const { return _tree; }
 
         float &theta() { return _descentCriterion.theta(); }
 

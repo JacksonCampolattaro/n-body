@@ -14,80 +14,11 @@
 
 #include "NBody/Simulation/Simulation.h"
 
+#include <NBody/Simulation/Solvers/Trees/NodeBase.h>
+
 namespace NBody {
 
     using namespace Physics;
-
-    template<typename NodeImplementation>
-    class NodeBase {
-    private:
-
-        std::span<Entity> _contents;
-
-    public:
-
-        NodeBase() : _contents() {}
-
-        NodeBase(std::span<Entity> contents) : _contents(std::move(contents)) {}
-
-        template<typename... Context>
-        void refine(std::size_t maxDepth,
-                    std::function<bool(const NodeImplementation &)> splitCriterion,
-                    Context &&...context) {
-
-            if (_contents.empty()) return;
-
-            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this)) {
-
-                split(std::forward<Context>(context)...);
-
-                for (auto &child: children())
-                    child.refine(maxDepth - 1, splitCriterion, std::forward<Context>(context)...);
-
-            } else {
-                merge();
-            }
-
-            summarize(context...);
-        }
-
-        [[nodiscard]] const std::span<Entity> &contents() const { return _contents; };
-
-        [[nodiscard]] std::span<Entity> &contents() { return _contents; };
-
-        [[nodiscard]] std::size_t depth() const {
-            if (isLeaf()) return 0;
-            std::size_t maxDepth = 0;
-            for (const NodeImplementation &child: children())
-                maxDepth = std::max(maxDepth, child.depth());
-            return maxDepth + 1;
-        }
-
-        [[nodiscard]] bool isLeaf() const { return children().empty(); }
-
-        [[nodiscard]] auto &children() { return implementation().children(); };
-
-        [[nodiscard]] const auto &children() const { return implementation().children(); };
-
-        [[nodiscard]] auto &boundingBox() const { return implementation().activeBoundingBox(); }
-
-    protected:
-
-        template<typename... Context>
-        void split(Context &&...context) { implementation().split(std::forward<Context>(context)...); }
-
-        template<typename... Context>
-        void summarize(Context &&...context) { implementation().summarize(std::forward<Context>(context)...); }
-
-        void merge() { implementation().merge(); }
-
-    private:
-
-        const NodeImplementation &implementation() const { return static_cast<const NodeImplementation &>(*this); }
-
-        NodeImplementation &implementation() { return static_cast<NodeImplementation &>(*this); }
-
-    };
 
     template<typename NodeImplementation>
     class TreeBase {
@@ -111,18 +42,18 @@ namespace NBody {
 
         TreeBase(Simulation &simulation) :
                 _simulation(simulation),
-                _indices{NodeImplementation::relevantEntities(_simulation)},
+                _indices{relevantEntities<typename NodeImplementation::SummaryType>(_simulation)},
                 _root{std::span<Entity>{_indices}} {
 
             // If the simulation has new particles, add them to the list
             _simulation.signal_particles_added.connect([&](auto newEntities) {
-                _indices = NodeImplementation::relevantEntities(_simulation);
+                _indices = relevantEntities<typename NodeImplementation::SummaryType>(_simulation);
                 _root = NodeImplementation{_indices};
             });
 
             // If the simulation has particles removed, take them from the list
             _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                _indices = NodeImplementation::relevantEntities(_simulation);
+                _indices = relevantEntities<typename NodeImplementation::SummaryType>(_simulation);
                 _root = NodeImplementation{_indices};
             });
 
@@ -182,19 +113,19 @@ namespace NBody {
         return queue;
     }
 
-    template<typename TreeType, typename ...Context>
-    static std::vector<std::reference_wrapper<typename TreeType::Node>> depthSplit(TreeType &tree,
-                                                                                   std::size_t depth,
-                                                                                   Context&&... context) {
+    template<typename NodeType, typename Context>
+    static std::vector<std::reference_wrapper<NodeType>> depthSplit(NodeType &root,
+                                                                    std::size_t depth,
+                                                                    Context &&context) {
 
-        std::vector<std::reference_wrapper<typename TreeType::Node>> queue;
-        queue.push_back(tree.root());
+        std::vector<std::reference_wrapper<NodeType>> queue;
+        queue.push_back(root);
 
-        std::vector<std::reference_wrapper<typename TreeType::Node>> children;
+        std::vector<std::reference_wrapper<NodeType>> children;
 
         for (int i = 0; i < depth; ++i) {
             for (auto &node: queue) {
-                node.get().split(context...);
+                node.get().split(context);
 
                 for (auto &child: node.get().children()) {
                     children.push_back(child);
@@ -208,20 +139,20 @@ namespace NBody {
         return queue;
     }
 
-    template<typename TreeNode, typename ...Context>
-    void summarizeTreeTop(TreeNode &toBeSummarized,
-                          const std::vector<std::reference_wrapper<TreeNode>> &alreadySummarized,
-                          Context&&... context) {
+    template<typename NodeType, typename Context>
+    void summarizeTreeTop(NodeType &toBeSummarized,
+                          const std::vector<std::reference_wrapper<NodeType>> &alreadySummarized,
+                          Context &&context) {
 
         // If the node to be summarized is already in the summarized list, we don't need to summarize it again
-        for (auto summarizedNode : alreadySummarized)
+        for (auto summarizedNode: alreadySummarized)
             if (&summarizedNode.get() == &toBeSummarized) return;
 
         for (auto &child: toBeSummarized.children()) {
-            summarizeTreeTop(child, alreadySummarized, context...);
+            summarizeTreeTop(child, alreadySummarized, context);
         }
 
-        toBeSummarized.summarize(context...);
+        toBeSummarized.summarize(context);
     }
 }
 
