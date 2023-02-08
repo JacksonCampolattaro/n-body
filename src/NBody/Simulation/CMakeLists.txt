@@ -32,7 +32,6 @@ add_library(Simulation
         Solvers/Trees/DescentCriterion.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h
-        Solvers/Trees/PassiveOctree.h
         Runner.h
         Runners/MultiRunner.h
         Runners/OneStepRunner.cpp Runners/OneStepRunner.h
@@ -40,7 +39,7 @@ add_library(Simulation
         Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
-        Solvers/Trees/DualOctree.h Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h Solvers/Trees/Summaries/BoundingBoxSummary.h)
+        Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h Solvers/Trees/Summaries/BoundingBoxSummary.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

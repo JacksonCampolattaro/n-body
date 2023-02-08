@@ -150,11 +150,11 @@ namespace NBody {
 
     };
 
-    class BarnesHutSolver : public BarnesHutSolverBase<Octree, DescentCriterion::SideLengthOverDistance> {
+    class BarnesHutSolver : public BarnesHutSolverBase<ActiveOctree, DescentCriterion::SideLengthOverDistance> {
     public:
 
         BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<Octree, DescentCriterion::SideLengthOverDistance>(simulation, rule) {}
+                BarnesHutSolverBase<ActiveOctree, DescentCriterion::SideLengthOverDistance>(simulation, rule) {}
 
         std::string id() override { return "barnes-hut"; };
 

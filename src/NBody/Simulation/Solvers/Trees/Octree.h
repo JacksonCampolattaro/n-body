@@ -18,6 +18,8 @@
 
 #include <NBody/Simulation/Solvers/Trees/TreeBase.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/DualSummary.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
@@ -59,33 +61,33 @@ namespace {
 
 namespace NBody {
 
-    template<typename OctreeNodeImplementation, Summary SummaryType>
-    class OctreeNodeBase : public NodeBase<OctreeNodeImplementation, SummaryType> {
+    template<Summary SummaryType>
+    class OctreeNode : public NodeBase<OctreeNode<SummaryType>, SummaryType> {
     private:
 
-        std::vector<OctreeNodeImplementation> _children;
+        std::vector<OctreeNode> _children;
 
         Position _center{0.0f, 0.0f, 0.0f};
         float _sideLength{1.0f};
 
     public:
 
-        using NodeBase<OctreeNodeImplementation, SummaryType>::NodeBase;
-        using NodeBase<OctreeNodeImplementation, SummaryType>::contents;
-        using NodeBase<OctreeNodeImplementation, SummaryType>::isLeaf;
+        using NodeBase<OctreeNode, SummaryType>::NodeBase;
+        using NodeBase<OctreeNode, SummaryType>::contents;
+        using NodeBase<OctreeNode, SummaryType>::isLeaf;
 
         template<typename Context>
         void summarize(const Context &context) {
-            NodeBase<OctreeNodeImplementation, SummaryType>::summarize(context);
+            NodeBase<OctreeNode, SummaryType>::summarize(context);
         }
 
-        OctreeNodeBase(std::span<Entity> contents, const Position &center, float sideLength) :
-                NodeBase<OctreeNodeImplementation, SummaryType>(contents),
+        OctreeNode(std::span<Entity> contents, const Position &center, float sideLength) :
+                NodeBase<OctreeNode, SummaryType>(contents),
                 _center(center), _sideLength(sideLength) {}
 
-        [[nodiscard]] std::vector<OctreeNodeImplementation> &children() { return _children; }
+        [[nodiscard]] std::vector<OctreeNode> &children() { return _children; }
 
-        [[nodiscard]] const std::vector<OctreeNodeImplementation> &children() const { return _children; }
+        [[nodiscard]] const std::vector<OctreeNode> &children() const { return _children; }
 
         [[nodiscard]] BoundingBox boundingBox() const {
             glm::vec3 dimensions{_sideLength, _sideLength, _sideLength};
@@ -103,8 +105,8 @@ namespace NBody {
 
         [[nodiscard]] float &sideLength() { return _sideLength; }
 
-        template<typename PositionViewType>
-        void split(const PositionViewType &positions) {
+        template<typename Context>
+        void split(const Context &context) {
 
             std::span<NBody::Entity>
                     xyz000,
@@ -125,7 +127,7 @@ namespace NBody {
                     xyz101,
                     xyz011,
                     xyz111
-            ) = partition<2>(contents(), positions, _center);
+            ) = partition<2>(contents(), context, _center);
 
             // Initialize 8 child nodes
             float childSideLength = sideLength() / 2.0f;
@@ -163,8 +165,8 @@ namespace NBody {
 
     };
 
-    template<typename OctreeNodeImplementation>
-    class OctreeBase : public TreeBase<OctreeNodeImplementation> {
+    template<Summary S>
+    class Octree : public TreeBase<OctreeNode<S>> {
     private:
 
         int _maxDepth = 16;
@@ -172,11 +174,11 @@ namespace NBody {
 
     public:
 
-        OctreeBase(Simulation &simulation) : TreeBase<OctreeNodeImplementation>(simulation) {}
+        using typename TreeBase<OctreeNode<S>>::Node;
 
-        using typename TreeBase<OctreeNodeImplementation>::Node;
-        using TreeBase<OctreeNodeImplementation>::simulation;
-        using TreeBase<OctreeNodeImplementation>::root;
+        using TreeBase<Node>::TreeBase;
+        using TreeBase<Node>::simulation;
+        using TreeBase<Node>::root;
 
         void build() override {
 
@@ -185,7 +187,7 @@ namespace NBody {
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-            const auto &context = OctreeNodeImplementation::SummaryType::context(simulation());
+            const auto &context = Node::SummaryType::context(simulation());
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(root(), preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
@@ -216,15 +218,19 @@ namespace NBody {
         const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    class OctreeNode : public OctreeNodeBase<OctreeNode, CenterOfMassSummary> {
+    class ActiveOctree : public Octree<CenterOfMassSummary> {
     public:
-        using OctreeNodeBase::OctreeNodeBase;
-        using OctreeNodeBase::boundingBox;
+        using Octree<CenterOfMassSummary>::Octree;
     };
 
-    class Octree : public OctreeBase<OctreeNode> {
+    class PassiveOctree : public Octree<AccelerationSummary> {
     public:
-        using OctreeBase::OctreeBase;
+        using Octree<AccelerationSummary>::Octree;
+    };
+
+    class DualOctree : public Octree<DualSummary> {
+    public:
+        using Octree<DualSummary>::Octree;
     };
 
 }

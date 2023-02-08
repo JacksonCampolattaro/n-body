@@ -8,7 +8,7 @@
 #include "../Solver.h"
 
 #include "Trees/LinearBVH.h"
-#include "Trees/PassiveOctree.h"
+#include "Trees/Octree.h"
 #include "Trees/DescentCriterion.h"
 #include <tbb/parallel_for_each.h>
 
