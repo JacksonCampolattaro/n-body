@@ -28,7 +28,7 @@ add_library(Simulation
         Solvers/Trees/Summaries/AccelerationSummary.h
         Solvers/Trees/Summaries/DualSummary.h
         Solvers/Trees/NodeBase.h
-        Solvers/Trees/TreeBase.h
+        Solvers/Trees/Tree.h
         Solvers/Trees/DescentCriterion.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h

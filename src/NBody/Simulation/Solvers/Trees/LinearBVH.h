@@ -6,7 +6,7 @@
 #define N_BODY_LINEARBVH_H
 
 #include <tbb/parallel_for_each.h>
-#include "TreeBase.h"
+#include "Tree.h"
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
@@ -17,24 +17,24 @@
 
 namespace NBody {
 
-    template<typename LinearBVHNodeImplementation, Summary S>
-    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation, BoundingBoxSummary<S>> {
+    template<Summary S>
+    class LinearBVHNode : public NodeBase<LinearBVHNode<S>, BoundingBoxSummary<S>> {
     private:
 
-        std::vector<LinearBVHNodeImplementation> _children;
+        std::vector<LinearBVHNode<S>> _children;
 
     public:
 
         using SummaryType = BoundingBoxSummary<S>;
 
-        using NodeBase<LinearBVHNodeImplementation, SummaryType>::NodeBase;
-        using NodeBase<LinearBVHNodeImplementation, SummaryType>::contents;
-        using NodeBase<LinearBVHNodeImplementation, SummaryType>::isLeaf;
-        using NodeBase<LinearBVHNodeImplementation, SummaryType>::summary;
+        using NodeBase<LinearBVHNode, SummaryType>::NodeBase;
+        using NodeBase<LinearBVHNode, SummaryType>::contents;
+        using NodeBase<LinearBVHNode, SummaryType>::isLeaf;
+        using NodeBase<LinearBVHNode, SummaryType>::summary;
 
-        [[nodiscard]] std::vector<LinearBVHNodeImplementation> &children() { return _children; }
+        [[nodiscard]] std::vector<LinearBVHNode> &children() { return _children; }
 
-        [[nodiscard]] const std::vector<LinearBVHNodeImplementation> &children() const { return _children; }
+        [[nodiscard]] const std::vector<LinearBVHNode> &children() const { return _children; }
 
         [[nodiscard]] const BoundingBox &boundingBox() const { return summary().boundingBox(); }
 
@@ -71,45 +71,41 @@ namespace NBody {
 
     };
 
-    class LinearBVHNode : public LinearBVHNodeBase<LinearBVHNode, CenterOfMassSummary> {
-    public:
-        using LinearBVHNodeBase::LinearBVHNodeBase;
+//    class LinearBVHNode : public LinearBVHNodeBase<LinearBVHNode, CenterOfMassSummary> {
+//    public:
+//        using LinearBVHNodeBase::LinearBVHNodeBase;
+//    };
 
-        static entt::basic_group<
-                entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
-                const NBody::Physics::Position,
-                const NBody::Physics::Mass,
-                const MortonCode
-        > constructionContext(Simulation &simulation) {
-            return simulation.group<const Position, const Mass, const MortonCode>();
-        }
-    };
-
-    class LinearBVH : public TreeBase<LinearBVHNode> {
+    template<Summary S>
+    class LinearBVH : public Tree<LinearBVHNode<S>> {
     public:
 
-        explicit LinearBVH(Simulation &simulation) : TreeBase<LinearBVHNode>(simulation) {}
+        using typename Tree<LinearBVHNode<S>>::Node;
+
+        using Tree<Node>::Tree;
+        using Tree<Node>::simulation;
+        using Tree<Node>::root;
+        using Tree<Node>::indices;
 
         void build() override {
 
             // Assign morton codes to all active particles
-            setMortonCodes(simulation(), outerBoundingBox<LinearBVHNode::SummaryType>(simulation()));
+            setMortonCodes(simulation(), outerBoundingBox<typename Node::SummaryType>(simulation()));
 
             // Sort the indices by the associated morton codes
-            mortonSort(simulation().view<const MortonCode>(), indices());
+            mortonSort(simulation().template view<const MortonCode>(), indices());
 
             // Build the tree
-            // todo: the context should somehow be defined by the summary type
-            auto context = simulation().view<const Position, const Mass, const MortonCode>();
+            // todo: the context used for splitting should be defined by the node type
+            auto context = simulation().template view<const Position, const Mass, const MortonCode>();
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(root(), preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   [&](const auto &n) {
                                       // Don't split if all entities in this node have the same morton code
-                                      return context.get<const MortonCode>(n.contents().front()) !=
-                                             context.get<const MortonCode>(n.contents().back());
+                                      return context.template get<const MortonCode>(n.contents().front()) !=
+                                             context.template get<const MortonCode>(n.contents().back());
                                   },
                                   context);
             });
@@ -127,6 +123,11 @@ namespace NBody {
             //            );
         }
 
+    };
+
+    class ActiveLinearBVH : public LinearBVH<CenterOfMassSummary> {
+    public:
+        using LinearBVH<CenterOfMassSummary>::LinearBVH;
     };
 
 }

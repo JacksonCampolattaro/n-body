@@ -16,7 +16,7 @@
 
 #include "NBody/Physics/Rule.h"
 
-#include <NBody/Simulation/Solvers/Trees/TreeBase.h>
+#include <NBody/Simulation/Solvers/Trees/Tree.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/DualSummary.h>
@@ -166,7 +166,7 @@ namespace NBody {
     };
 
     template<Summary S>
-    class Octree : public TreeBase<OctreeNode<S>> {
+    class Octree : public Tree<OctreeNode<S>> {
     private:
 
         int _maxDepth = 16;
@@ -174,11 +174,11 @@ namespace NBody {
 
     public:
 
-        using typename TreeBase<OctreeNode<S>>::Node;
+        using typename Tree<OctreeNode<S>>::Node;
 
-        using TreeBase<Node>::TreeBase;
-        using TreeBase<Node>::simulation;
-        using TreeBase<Node>::root;
+        using Tree<Node>::Tree;
+        using Tree<Node>::simulation;
+        using Tree<Node>::root;
 
         void build() override {
 

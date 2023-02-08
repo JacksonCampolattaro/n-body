@@ -13,11 +13,15 @@
 
 namespace NBody {
 
-    class MVDRSolver : public DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
+    class MVDRSolver : public DualTreeSolver<ActiveLinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
     public:
 
         MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<LinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance>(simulation, rule) {
+                DualTreeSolver<
+                        ActiveLinearBVH,
+                        PassiveOctree,
+                        DescentCriterion::DiagonalOverDistance
+                >(simulation, rule) {
             passiveTree().maxDepth() = 32;
             passiveTree().maxLeafSize() = 16;
         }

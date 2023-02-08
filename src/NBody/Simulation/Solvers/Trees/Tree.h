@@ -21,7 +21,7 @@ namespace NBody {
     using namespace Physics;
 
     template<typename NodeImplementation>
-    class TreeBase {
+    class Tree {
     public:
 
         using Node = NodeImplementation;
@@ -40,7 +40,7 @@ namespace NBody {
         mutable sigc::signal<void()> signal_changed;
         mutable std::mutex mutex;
 
-        TreeBase(Simulation &simulation) :
+        Tree(Simulation &simulation) :
                 _simulation(simulation),
                 _indices{relevantEntities<typename NodeImplementation::SummaryType>(_simulation)},
                 _root{std::span<Entity>{_indices}} {
