@@ -61,6 +61,8 @@ namespace NBody {
             _centerOfMass = _centerOfMass / _totalMass.mass();
         }
 
+        [[nodiscard]] Position &centerOfMass() { return _centerOfMass; }
+
         [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
         [[nodiscard]] const Mass &totalMass() const { return _totalMass; }

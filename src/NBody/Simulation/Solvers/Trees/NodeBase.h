@@ -30,7 +30,7 @@ namespace NBody {
 
         NodeBase() : _contents() {}
 
-        NodeBase(std::span<Entity> contents) : _contents(std::move(contents)) {}
+        NodeBase(std::span<Entity> contents) : _contents(contents) {}
 
         inline SummaryType &summary() { return _summary; }
 
@@ -38,7 +38,6 @@ namespace NBody {
 
         template<typename Context>
         void summarize(const Context &context) {
-            //NodeBase<NodeImplementation, S>::summarize(context);
             if (isLeaf()) _summary.summarize(contents(), context);
             else _summary.summarize(children());
         }
@@ -88,9 +87,6 @@ namespace NBody {
 
         template<typename... Context>
         void split(Context &&...context) { implementation().split(std::forward<Context>(context)...); }
-
-        template<typename... Context>
-        void summarize(Context &&...context) { implementation().summarize(std::forward<Context>(context)...); }
 
         void merge() { implementation().merge(); }
 

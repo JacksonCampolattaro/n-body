@@ -13,28 +13,30 @@
 #include "NBody/Simulation/BoundingBox.h"
 
 #include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/BoundingBoxSummary.h>
 
 namespace NBody {
 
-    template<typename LinearBVHNodeImplementation, Summary SummaryType>
-    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation, SummaryType> {
+    template<typename LinearBVHNodeImplementation, Summary S>
+    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation, BoundingBoxSummary<S>> {
     private:
 
         std::vector<LinearBVHNodeImplementation> _children;
 
-        BoundingBox _boundingBox{};
-
     public:
+
+        using SummaryType = BoundingBoxSummary<S>;
 
         using NodeBase<LinearBVHNodeImplementation, SummaryType>::NodeBase;
         using NodeBase<LinearBVHNodeImplementation, SummaryType>::contents;
         using NodeBase<LinearBVHNodeImplementation, SummaryType>::isLeaf;
+        using NodeBase<LinearBVHNodeImplementation, SummaryType>::summary;
 
         [[nodiscard]] std::vector<LinearBVHNodeImplementation> &children() { return _children; }
 
         [[nodiscard]] const std::vector<LinearBVHNodeImplementation> &children() const { return _children; }
 
-        [[nodiscard]] const BoundingBox &boundingBox() const { return _boundingBox; }
+        [[nodiscard]] const BoundingBox &boundingBox() const { return summary().boundingBox(); }
 
         template<typename ViewType>
         void split(const ViewType &context) {
@@ -61,34 +63,6 @@ namespace NBody {
                 children()[0].contents() = low;
                 children()[1].contents() = high;
             }
-        }
-
-        template<typename Context>
-        void summarize(const Context &context) {
-            NodeBase<LinearBVHNodeImplementation, SummaryType>::summarize(context);
-
-            _boundingBox = BoundingBox{};
-
-            if (isLeaf()) {
-
-                for (const auto &entity: contents()) {
-                    auto entityPosition = context.template get<const Position>(entity);
-                    auto entityMass = context.template get<const Mass>(entity).mass();
-                    _boundingBox.min() = glm::min((glm::vec3) entityPosition, (glm::vec3) _boundingBox.min());
-                    _boundingBox.max() = glm::max((glm::vec3) entityPosition, (glm::vec3) _boundingBox.max());
-                }
-
-            } else {
-
-                for (const auto &child: children()) {
-                    _boundingBox.min() = glm::min((glm::vec3) child.boundingBox().min(),
-                                                  (glm::vec3) _boundingBox.min());
-                    _boundingBox.max() = glm::max((glm::vec3) child.boundingBox().max(),
-                                                  (glm::vec3) _boundingBox.max());
-                }
-
-            }
-
         }
 
         void merge() {

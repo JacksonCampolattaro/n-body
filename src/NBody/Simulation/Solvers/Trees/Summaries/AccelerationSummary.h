@@ -30,8 +30,6 @@ namespace NBody {
 
     public:
 
-        AccelerationSummary(const AccelerationSummary &other) = default;
-
         AccelerationSummary() = default;
 
         void summarize(const std::span<Entity> &entities, const Context &context) {}
