@@ -175,6 +175,13 @@ namespace NBody {
         using Tree<Node>::simulation;
         using Tree<Node>::root;
 
+    protected:
+
+        using Tree<Node>::depthSplit;
+        using Tree<Node>::summarizeTreeTop;
+
+    public:
+
         void build() override {
 
             BoundingBox boundingBox = outerBoundingBox<typename Node::SummaryType>(simulation());
@@ -184,7 +191,7 @@ namespace NBody {
 
             const auto &context = Node::SummaryType::context(simulation());
             int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(root(), preBuildDepth, context);
+            auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
                 node.get().refine(
                         _maxDepth,
@@ -194,7 +201,7 @@ namespace NBody {
                         context
                 );
             });
-            summarizeTreeTop(root(), toBeRefined, context);
+            summarizeTreeTop(toBeRefined, context);
 
             // todo: maybe non-parallel construction should be available as an option?
             //            root().refine(
@@ -206,27 +213,16 @@ namespace NBody {
 
         int &maxDepth() { return _maxDepth; }
 
-        const int &maxDepth() const { return _maxDepth; }
+        [[nodiscard]] const int &maxDepth() const { return _maxDepth; }
 
         int &maxLeafSize() { return _maxLeafSize; }
 
-        const int &maxLeafSize() const { return _maxLeafSize; }
+        [[nodiscard]] const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    class ActiveOctree : public Octree<CenterOfMassSummary> {
-    public:
-        using Octree<CenterOfMassSummary>::Octree;
-    };
-
-    class PassiveOctree : public Octree<AccelerationSummary> {
-    public:
-        using Octree<AccelerationSummary>::Octree;
-    };
-
-    class DualOctree : public Octree<DualSummary> {
-    public:
-        using Octree<DualSummary>::Octree;
-    };
+    using ActiveOctree = Octree<CenterOfMassSummary>;
+    using PassiveOctree = Octree<AccelerationSummary>;
+    using DualOctree = Octree<DualSummary>;
 
 }
 

@@ -71,11 +71,6 @@ namespace NBody {
 
     };
 
-//    class LinearBVHNode : public LinearBVHNodeBase<LinearBVHNode, CenterOfMassSummary> {
-//    public:
-//        using LinearBVHNodeBase::LinearBVHNodeBase;
-//    };
-
     template<SummaryType S>
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     public:
@@ -86,6 +81,13 @@ namespace NBody {
         using Tree<Node>::simulation;
         using Tree<Node>::root;
         using Tree<Node>::indices;
+
+    protected:
+
+        using Tree<Node>::depthSplit;
+        using Tree<Node>::summarizeTreeTop;
+
+    public:
 
         void build() override {
 
@@ -99,7 +101,7 @@ namespace NBody {
             // todo: the context used for splitting should be defined by the node type
             auto context = simulation().template view<const Position, const Mass, const MortonCode>();
             int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(root(), preBuildDepth, context);
+            auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   [&](const auto &n) {
@@ -109,7 +111,7 @@ namespace NBody {
                                   },
                                   context);
             });
-            summarizeTreeTop(root(), toBeRefined, context);
+            summarizeTreeTop(toBeRefined, context);
 
             // todo: maybe non-parallel construction should be available as an option?
             //            root().refine(
@@ -125,10 +127,7 @@ namespace NBody {
 
     };
 
-    class ActiveLinearBVH : public LinearBVH<CenterOfMassSummary> {
-    public:
-        using LinearBVH<CenterOfMassSummary>::LinearBVH;
-    };
+    using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
 
 }
 

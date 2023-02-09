@@ -64,7 +64,7 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Computing accelerations"});
-                auto startingNodes = loadBalancedSplit(_passiveTree, 64);
+                auto startingNodes = _passiveTree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
                     computeAccelerations(
                             _simulation.view<const Position, Acceleration>(),

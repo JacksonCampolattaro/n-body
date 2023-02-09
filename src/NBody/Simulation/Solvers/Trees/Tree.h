@@ -77,81 +77,85 @@ namespace NBody {
 
         [[nodiscard]] const std::vector<Entity> &indices() const { return _indices; }
 
-        [[nodiscard]] const Node&root() const { return _root; }
+        [[nodiscard]] const Node &root() const { return _root; }
 
-        [[nodiscard]] Node&root() { return _root; }
+        [[nodiscard]] Node &root() { return _root; }
 
-    };
+        [[nodiscard]] std::vector<std::reference_wrapper<Node>> loadBalancedBreak(std::size_t n) {
 
-    template<typename TreeType>
-    static std::vector<std::reference_wrapper<typename TreeType::Node>> loadBalancedSplit(TreeType &tree,
-                                                                                          std::size_t n) {
+            std::vector<std::reference_wrapper<Node>> queue;
+            auto comparator = [&](std::reference_wrapper<Node> a, std::reference_wrapper<Node> b) {
+                return a.get().contents().size() < b.get().contents().size();
+            };
 
-        std::vector<std::reference_wrapper<typename TreeType::Node>> queue;
-        auto comparator = [&](std::reference_wrapper<typename TreeType::Node> a,
-                              std::reference_wrapper<typename TreeType::Node> b) {
-            return a.get().contents().size() < b.get().contents().size();
-        };
+            queue.push_back(root());
 
-        queue.push_back(tree.root());
+            while (queue.size() < n) {
 
-        while (queue.size() < n) {
+                std::pop_heap(queue.begin(), queue.end(), comparator);
+                Node &toBreak = queue.back();
+                if (toBreak.isLeaf()) break;
+                queue.pop_back();
 
-            std::pop_heap(queue.begin(), queue.end(), comparator);
-            typename TreeType::Node &toSplit = queue.back();
-            if (toSplit.isLeaf()) break;
-            queue.pop_back();
-
-            for (typename TreeType::Node &child: toSplit.children()) {
-                queue.push_back(child);
-                std::push_heap(queue.begin(), queue.end(), comparator);
-            }
-        }
-
-        return queue;
-    }
-
-    template<typename NodeType, typename Context>
-    static std::vector<std::reference_wrapper<NodeType>> depthSplit(NodeType &root,
-                                                                    std::size_t depth,
-                                                                    Context &&context) {
-
-        std::vector<std::reference_wrapper<NodeType>> queue;
-        queue.push_back(root);
-
-        std::vector<std::reference_wrapper<NodeType>> children;
-
-        for (int i = 0; i < depth; ++i) {
-            for (auto &node: queue) {
-                node.get().split(context);
-
-                for (auto &child: node.get().children()) {
-                    children.push_back(child);
+                for (Node &child: toBreak.children()) {
+                    queue.push_back(child);
+                    std::push_heap(queue.begin(), queue.end(), comparator);
                 }
             }
 
-            queue = children;
-            children.clear();
+            return queue;
         }
 
-        return queue;
-    }
+    protected:
 
-    template<typename NodeType, typename Context>
-    void summarizeTreeTop(NodeType &toBeSummarized,
-                          const std::vector<std::reference_wrapper<NodeType>> &alreadySummarized,
-                          Context &&context) {
+        template<typename Context>
+        [[nodiscard]] std::vector<std::reference_wrapper<Node>> depthSplit(std::size_t depth, Context &&context) {
 
-        // If the node to be summarized is already in the summarized list, we don't need to summarize it again
-        for (auto summarizedNode: alreadySummarized)
-            if (&summarizedNode.get() == &toBeSummarized) return;
+            std::vector<std::reference_wrapper<Node>> queue;
+            queue.push_back(root());
 
-        for (auto &child: toBeSummarized.children()) {
-            summarizeTreeTop(child, alreadySummarized, context);
+            std::vector<std::reference_wrapper<Node>> children;
+
+            for (int i = 0; i < depth; ++i) {
+                for (auto &node: queue) {
+                    node.get().split(context);
+
+                    for (auto &child: node.get().children()) {
+                        children.push_back(child);
+                    }
+                }
+
+                queue = children;
+                children.clear();
+            }
+
+            return queue;
         }
 
-        toBeSummarized.summarize(context);
-    }
+        template<typename Context>
+        void summarizeTreeTop(const std::vector<std::reference_wrapper<Node>> &alreadySummarized,
+                              Context &&context) {
+            summarizeTreeTop(root(), alreadySummarized, context);
+        }
+
+        template<typename Context>
+        void summarizeTreeTop(Node &toBeSummarized,
+                              const std::vector<std::reference_wrapper<Node>> &alreadySummarized,
+                              Context &&context) {
+
+            // If the node to be summarized is already in the summarized list, we don't need to summarize it again
+            for (auto summarizedNode: alreadySummarized)
+                if (&summarizedNode.get() == &toBeSummarized) return;
+
+            for (auto &child: toBeSummarized.children()) {
+                summarizeTreeTop(child, alreadySummarized, context);
+            }
+
+            toBeSummarized.summarize(context);
+        }
+
+    };
+
 }
 
 #endif //T_SNE_TREE_H
