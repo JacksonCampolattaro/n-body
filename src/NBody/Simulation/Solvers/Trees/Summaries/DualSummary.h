@@ -5,7 +5,7 @@
 #ifndef N_BODY_DUALSUMMARY_H
 #define N_BODY_DUALSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/Summary.h>
+#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
 
 namespace NBody {
 

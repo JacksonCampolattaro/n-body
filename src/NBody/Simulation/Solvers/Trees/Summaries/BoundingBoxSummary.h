@@ -5,13 +5,13 @@
 #ifndef N_BODY_BOUNDINGBOXSUMMARY_H
 #define N_BODY_BOUNDINGBOXSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/Summary.h>
+#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
 
 namespace NBody {
 
     using namespace Physics;
 
-    template<Summary SummaryBase>
+    template<SummaryType SummaryBase>
     class BoundingBoxSummary : public SummaryBase {
     private:
 

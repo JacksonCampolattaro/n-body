@@ -23,7 +23,8 @@ add_library(Simulation
         Solvers/MortonSort.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
-        Solvers/Trees/Summary.h
+        Solvers/Trees/NodeType.h
+        Solvers/Trees/SummaryType.h
         Solvers/Trees/Summaries/CenterOfMassSummary.h
         Solvers/Trees/Summaries/AccelerationSummary.h
         Solvers/Trees/Summaries/DualSummary.h

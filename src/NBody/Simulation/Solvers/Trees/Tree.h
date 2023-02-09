@@ -10,21 +10,19 @@
 #include <span>
 #include <numeric>
 
-#include "NBody/Physics/Rule.h"
-
-#include "NBody/Simulation/Simulation.h"
-
-#include <NBody/Simulation/Solvers/Trees/NodeBase.h>
+#include <NBody/Physics/Rule.h>
+#include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Solvers/Trees/NodeType.h>
 
 namespace NBody {
 
     using namespace Physics;
 
-    template<typename NodeImplementation>
+    template<NodeType N>
     class Tree {
     public:
 
-        using Node = NodeImplementation;
+        using Node = N;
 
     private:
 
@@ -42,19 +40,19 @@ namespace NBody {
 
         Tree(Simulation &simulation) :
                 _simulation(simulation),
-                _indices{relevantEntities<typename NodeImplementation::SummaryType>(_simulation)},
+                _indices{relevantEntities<typename Node::SummaryType>(_simulation)},
                 _root{std::span<Entity>{_indices}} {
 
             // If the simulation has new particles, add them to the list
             _simulation.signal_particles_added.connect([&](auto newEntities) {
-                _indices = relevantEntities<typename NodeImplementation::SummaryType>(_simulation);
-                _root = NodeImplementation{_indices};
+                _indices = relevantEntities<typename Node::SummaryType>(_simulation);
+                _root = Node{_indices};
             });
 
             // If the simulation has particles removed, take them from the list
             _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                _indices = relevantEntities<typename NodeImplementation::SummaryType>(_simulation);
-                _root = NodeImplementation{_indices};
+                _indices = relevantEntities<typename Node::SummaryType>(_simulation);
+                _root = Node{_indices};
             });
 
             _dispatcher.connect(signal_changed.make_slot());
@@ -79,9 +77,9 @@ namespace NBody {
 
         [[nodiscard]] const std::vector<Entity> &indices() const { return _indices; }
 
-        [[nodiscard]] const NodeImplementation &root() const { return _root; }
+        [[nodiscard]] const Node&root() const { return _root; }
 
-        [[nodiscard]] NodeImplementation &root() { return _root; }
+        [[nodiscard]] Node&root() { return _root; }
 
     };
 

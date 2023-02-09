@@ -17,7 +17,7 @@
 
 namespace NBody {
 
-    template<Summary S>
+    template<SummaryType S>
     class LinearBVHNode : public NodeBase<LinearBVHNode<S>, BoundingBoxSummary<S>> {
     private:
 
@@ -76,7 +76,7 @@ namespace NBody {
 //        using LinearBVHNodeBase::LinearBVHNodeBase;
 //    };
 
-    template<Summary S>
+    template<SummaryType S>
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     public:
 

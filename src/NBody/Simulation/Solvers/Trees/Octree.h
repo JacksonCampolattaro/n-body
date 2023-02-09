@@ -61,7 +61,7 @@ namespace {
 
 namespace NBody {
 
-    template<Summary SummaryType>
+    template<SummaryType SummaryType>
     class OctreeNode : public NodeBase<OctreeNode<SummaryType>, SummaryType> {
     private:
 
@@ -75,11 +75,6 @@ namespace NBody {
         using NodeBase<OctreeNode, SummaryType>::NodeBase;
         using NodeBase<OctreeNode, SummaryType>::contents;
         using NodeBase<OctreeNode, SummaryType>::isLeaf;
-
-        template<typename Context>
-        void summarize(const Context &context) {
-            NodeBase<OctreeNode, SummaryType>::summarize(context);
-        }
 
         OctreeNode(std::span<Entity> contents, const Position &center, float sideLength) :
                 NodeBase<OctreeNode, SummaryType>(contents),
@@ -96,14 +91,6 @@ namespace NBody {
                     {_center + dimensions}
             };
         }
-
-        [[nodiscard]] Position &center() { return _center; }
-
-        [[nodiscard]] const Position &center() const { return _center; }
-
-        [[nodiscard]] const float &sideLength() const { return _sideLength; }
-
-        [[nodiscard]] float &sideLength() { return _sideLength; }
 
         template<typename Context>
         void split(const Context &context) {
@@ -163,9 +150,17 @@ namespace NBody {
             _children.clear();
         }
 
+        [[nodiscard]] Position &center() { return _center; }
+
+        [[nodiscard]] const Position &center() const { return _center; }
+
+        [[nodiscard]] const float &sideLength() const { return _sideLength; }
+
+        [[nodiscard]] float &sideLength() { return _sideLength; }
+
     };
 
-    template<Summary S>
+    template<SummaryType S>
     class Octree : public Tree<OctreeNode<S>> {
     private:
 

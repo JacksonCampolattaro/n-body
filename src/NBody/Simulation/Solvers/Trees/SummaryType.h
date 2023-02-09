@@ -2,8 +2,8 @@
 // Created by Jackson Campolattaro on 2/7/23.
 //
 
-#ifndef N_BODY_SUMMARY_H
-#define N_BODY_SUMMARY_H
+#ifndef N_BODY_SUMMARYTYPE_H
+#define N_BODY_SUMMARYTYPE_H
 
 #include <concepts>
 #include <span>
@@ -19,27 +19,17 @@ namespace NBody {
         { t.summarize(entities, context) } -> std::convertible_to<void>;
     };
 
-    // fixme: OctreeNode not usable here?
-    //    template<typename T>
-    //    concept IsNodeListSummarizer = requires(T &t,
-    //                                              const std::vector<OctreeNode> &childNodes) {
-    //        { t.summarize(childNodes) } -> std::convertible_to<void>;
-    //    };
-
     template<typename T>
     concept IsContextProvider = requires(Simulation &simulation) {
-        { T::context(simulation) } -> std::convertible_to<typename T::Context>;
-    } || requires(Simulation &simulation) {
-        { T::context(simulation) } -> std::convertible_to<typename T::Context &>;
+        T::context(simulation);
     };
 
     template<typename T>
-    concept Summary = IsEntityListSummarizer<T> &&
-                      //IsNodeListSummarizer<T> &&
-                      std::is_default_constructible_v<T> &&
-                      IsContextProvider<T>;
+    concept SummaryType = IsEntityListSummarizer<T> &&
+                          IsContextProvider<T> &&
+                          std::is_default_constructible_v<T>;
 
-    template<Summary S>
+    template<SummaryType S>
     decltype(auto) positionsView(Simulation &simulation) {
         if constexpr(std::is_same_v<typename S::Context, Simulation>)
             return simulation.template view<const Position>();
@@ -47,13 +37,13 @@ namespace NBody {
             return S::context(simulation);
     }
 
-    template<Summary S>
+    template<SummaryType S>
     static std::vector<Entity> relevantEntities(Simulation &simulation) {
         const auto &&context = positionsView<S>(simulation);
         return {context.begin(), context.end()};
     }
 
-    template<Summary S>
+    template<SummaryType S>
     static BoundingBox outerBoundingBox(Simulation &simulation) {
         BoundingBox bbox;
         for (Entity e: positionsView<S>(simulation)) {
@@ -64,4 +54,4 @@ namespace NBody {
     }
 }
 
-#endif //N_BODY_SUMMARY_H
+#endif //N_BODY_SUMMARYTYPE_H

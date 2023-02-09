@@ -8,13 +8,13 @@
 #include <span>
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Simulation/Solvers/Trees/Summary.h>
+#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
 
 namespace NBody {
 
     using namespace Physics;
 
-    template<typename NodeImplementation, Summary S>
+    template<class NodeImplementation, SummaryType S>
     class NodeBase {
     public:
 
@@ -38,8 +38,8 @@ namespace NBody {
 
         template<typename Context>
         void summarize(const Context &context) {
-            if (isLeaf()) _summary.summarize(contents(), context);
-            else _summary.summarize(children());
+            if (isLeaf()) _summary.summarize(implementation().contents(), context);
+            else _summary.summarize(implementation().children());
         }
 
         template<typename... Context>
@@ -50,14 +50,13 @@ namespace NBody {
             if (_contents.empty()) return;
 
             if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this)) {
+                implementation().split(std::forward<Context>(context)...);
 
-                split(std::forward<Context>(context)...);
-
-                for (auto &child: children())
+                for (auto &child: implementation().children())
                     child.refine(maxDepth - 1, splitCriterion, std::forward<Context>(context)...);
 
             } else {
-                merge();
+                implementation().merge();
             }
 
             summarize(context...);
@@ -70,25 +69,12 @@ namespace NBody {
         [[nodiscard]] std::size_t depth() const {
             if (isLeaf()) return 0;
             std::size_t maxDepth = 0;
-            for (const NodeImplementation &child: children())
+            for (const NodeImplementation &child: implementation().children())
                 maxDepth = std::max(maxDepth, child.depth());
             return maxDepth + 1;
         }
 
-        [[nodiscard]] bool isLeaf() const { return children().empty(); }
-
-        [[nodiscard]] auto &children() { return implementation().children(); };
-
-        [[nodiscard]] const auto &children() const { return implementation().children(); };
-
-        [[nodiscard]] auto &boundingBox() const { return implementation().activeBoundingBox(); }
-
-    protected:
-
-        template<typename... Context>
-        void split(Context &&...context) { implementation().split(std::forward<Context>(context)...); }
-
-        void merge() { implementation().merge(); }
+        [[nodiscard]] bool isLeaf() const { return implementation().children().empty(); }
 
     private:
 
