@@ -86,10 +86,6 @@ namespace NBody {
 
         static float &timeStep() { return Solver::_dt; }
 
-        void runStep() {
-
-        }
-
     public:
 
         sigc::signal<void()> &signal_finished() const { return _signal_finished; };
