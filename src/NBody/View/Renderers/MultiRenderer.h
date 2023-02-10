@@ -51,7 +51,7 @@ namespace NBody {
             });
 
             // Default to instanced phong renderer
-            select("instanced-phong");
+            select("circle");
         }
 
         std::string id() override { return get().id(); };
