@@ -35,7 +35,8 @@ namespace NBody {
             _solverList->append(Glib::make_refptr_for_instance(new NBody::BarnesHutSolver(_simulation, _rule)));
             _solverList->append(Glib::make_refptr_for_instance(new NBody::LinearBVHSolver(_simulation, _rule)));
             _solverList->append(Glib::make_refptr_for_instance(new NBody::MVDRSolver(_simulation, _rule)));
-            _solverList->append(Glib::make_refptr_for_instance(new NBody::OctreeDualTraversalSolver(_simulation, _rule)));
+            _solverList->append(
+                    Glib::make_refptr_for_instance(new NBody::OctreeDualTraversalSolver(_simulation, _rule)));
 
             // One solver must always be selected
             _solverSelection->set_can_unselect(false);
@@ -45,7 +46,7 @@ namespace NBody {
 
         std::string name() override { return get().name(); };
 
-        void step() override { get().step(); };
+        void updateAccelerations() override { get().updateAccelerations(); };
 
         void select(guint index) {
             _solverSelection->select_item(index, true);

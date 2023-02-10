@@ -17,7 +17,7 @@ namespace NBody {
         std::string id() override { return "naive"; };
         std::string name() override { return "Naive"; };
 
-        void step() override;
+        void updateAccelerations() override;
     };
 
 }

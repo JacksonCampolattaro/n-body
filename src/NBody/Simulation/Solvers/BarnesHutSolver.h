@@ -32,7 +32,7 @@ namespace NBody {
                 Solver(simulation, rule),
                 _tree(simulation) {}
 
-        void step() override {
+        void updateAccelerations() override {
 
             {
                 // Construct an octree from the actor particles
@@ -61,34 +61,7 @@ namespace NBody {
                     );
                 });
             }
-
-            // Update velocities, based on acceleration
-            {
-                _statusDispatcher.emit({"Updating velocities"});
-                auto view = _simulation.view<const Acceleration, Velocity>();
-                tbb::parallel_for_each(view, [&](Entity e) {
-                    const auto &a = view.template get<const Acceleration>(e);
-                    auto &v = view.template get<Velocity>(e);
-                    v = v + (a * _dt);
-                });
-            }
-
-            // Update positions, based on velocity
-            {
-                // While the solver is modifying simulation values, the simulation should be locked for other threads
-                std::scoped_lock l(_simulation.mutex);
-
-                _statusDispatcher.emit({"Updating positions"});
-                auto view = _simulation.view<const Velocity, Position>();
-
-                tbb::parallel_for_each(view, [&](Entity e) {
-                    const auto &v = view.template get<const Velocity>(e);
-                    auto &p = view.template get<Position>(e);
-                    p = p + (v * _dt);
-                });
-            }
-
-        };
+        }
 
         TreeType &tree() { return _tree; }
 
