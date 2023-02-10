@@ -5,11 +5,10 @@
 #ifndef N_BODY_MVDRSOLVER_H
 #define N_BODY_MVDRSOLVER_H
 
+#include <NBody/Simulation/Solvers/DualTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
 #include <NBody/Simulation/Solvers/Trees/DescentCriterion.h>
-
-#include <NBody/Simulation/Solvers/DualTreeSolver.h>
 
 namespace NBody {
 

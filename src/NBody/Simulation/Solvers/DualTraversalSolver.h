@@ -5,14 +5,6 @@
 #ifndef N_BODY_DUALTRAVERSALSOLVER_H
 #define N_BODY_DUALTRAVERSALSOLVER_H
 
-
-#include "Trees/Octree.h"
-#include "Trees/DescentCriterion.h"
-#include <tbb/parallel_for_each.h>
-
-#include <span>
-#include <memory>
-
 #include <NBody/Simulation/Solvers/DualTraversalSolverBase.h>
 
 namespace NBody {
@@ -73,24 +65,6 @@ namespace NBody {
             }
         }
 
-    };
-
-    class OctreeDualTraversalSolver : public DualTraversalSolver<DualOctree, DescentCriterion::SideLengthOverDistance> {
-    public:
-
-        using DualTraversalSolver::DualTraversalSolver;
-
-        std::string id() override { return "octree-dual-traversal"; };
-
-        std::string name() override { return "Octree Dual Traversal"; };
-
-        int &maxDepth() { return tree().maxDepth(); }
-
-        const int &maxDepth() const { return tree().maxDepth(); }
-
-        int &maxLeafSize() { return tree().maxLeafSize(); }
-
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 }
 

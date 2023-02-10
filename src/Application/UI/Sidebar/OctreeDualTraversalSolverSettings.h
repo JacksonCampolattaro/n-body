@@ -5,7 +5,7 @@
 #ifndef N_BODY_OCTREEDUALTRAVERSALSOLVERSETTINGS_H
 #define N_BODY_OCTREEDUALTRAVERSALSOLVERSETTINGS_H
 
-#include <NBody/Simulation/Solvers/DualTraversalSolver.h>
+#include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/FloatEntry.h"

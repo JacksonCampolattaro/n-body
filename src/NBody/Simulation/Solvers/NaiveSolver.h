@@ -5,7 +5,7 @@
 #ifndef N_BODY_NAIVESOLVER_H
 #define N_BODY_NAIVESOLVER_H
 
-#include "../Solver.h"
+#include <NBody/Simulation/Solver.h>
 
 namespace NBody {
 

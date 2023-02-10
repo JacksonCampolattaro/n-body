@@ -5,15 +5,9 @@
 #ifndef N_BODY_DUALTRAVERSALSOLVERBASE_H
 #define N_BODY_DUALTRAVERSALSOLVERBASE_H
 
-#include <span>
-#include <memory>
-
-#include <tbb/parallel_for_each.h>
-
-#include <NBody/Physics/Mass.h>
-#include <NBody/Physics/Acceleration.h>
 #include <NBody/Simulation/Solver.h>
-#include "NBody/Physics/Mass.h"
+#include <NBody/Simulation/Solvers/Trees/Tree.h>
+#include <NBody/Simulation/Solvers/Trees/DescentCriterion.h>
 
 namespace NBody {
 

@@ -5,15 +5,7 @@
 #ifndef N_BODY_DUALTREESOLVER_H
 #define N_BODY_DUALTREESOLVER_H
 
-#include "Trees/LinearBVH.h"
-#include "Trees/Octree.h"
-#include "Trees/DescentCriterion.h"
-
-#include <span>
-#include <memory>
-
 #include <NBody/Simulation/Solvers/DualTraversalSolverBase.h>
-
 
 namespace NBody {
 

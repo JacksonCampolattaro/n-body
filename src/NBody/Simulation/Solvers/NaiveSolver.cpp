@@ -4,12 +4,8 @@
 
 #include "NaiveSolver.h"
 
-#include <execution>
-
 #include <glm/glm.hpp>
-
 #include <tbb/tbb.h>
-#include <tbb/blocked_range.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;

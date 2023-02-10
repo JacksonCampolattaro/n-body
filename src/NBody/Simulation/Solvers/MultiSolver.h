@@ -5,12 +5,11 @@
 #ifndef N_BODY_MULTISOLVER_H
 #define N_BODY_MULTISOLVER_H
 
-#include <NBody/Simulation/Solver.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
-#include <NBody/Simulation/Solvers/DualTraversalSolver.h>
+#include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 
 #include <gtkmm/singleselection.h>
 #include <giomm/liststore.h>
