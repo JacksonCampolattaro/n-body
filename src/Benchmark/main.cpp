@@ -19,7 +19,7 @@
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
-#include <NBody/Simulation/Solvers/DualTreeSolver.h>
+#include <NBody/Simulation/Solvers/MVDRSolver.h>
 #include <NBody/Simulation/Solvers/DualTraversalSolver.h>
 
 using namespace NBody;
@@ -162,8 +162,8 @@ float appropriateTheta(json scenario, float referenceTheta, std::pair<float, flo
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
-    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
+    //json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
     spdlog::info("Performing naive integration to determine baseline");
@@ -315,7 +315,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<MVDRSolver>(1'000, thetaValues);
+    sweepTheta<MVDRSolver>(10'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(10, {0.5});
 
     //std::vector<std::size_t> nValues{};

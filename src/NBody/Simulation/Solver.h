@@ -5,16 +5,20 @@
 #ifndef N_BODY_SOLVER_H
 #define N_BODY_SOLVER_H
 
-#include "Simulation.h"
-#include "TypedDispatcher.h"
-
-#include <NBody/Physics/Rule.h>
-
 #include <sigc++/sigc++.h>
+
 #include <spdlog/spdlog.h>
+
 #include <tbb/global_control.h>
+#include <tbb/parallel_for_each.h>
+
+#include <NBody/Simulation/Simulation.h>
+#include <NBody/Physics/Rule.h>
+#include <NBody/Simulation/TypedDispatcher.h>
 
 namespace NBody {
+
+    using namespace Physics;
 
     typedef std::array<char, 64> Status;
 
@@ -64,7 +68,7 @@ namespace NBody {
             });
         };
 
-        virtual ~Solver() {
+        ~Solver() override {
             if (_thread)
                 _thread->join();
             _thread.reset();
@@ -73,8 +77,6 @@ namespace NBody {
         virtual std::string id() = 0;
 
         virtual std::string name() = 0;
-
-        virtual void step() = 0;
 
         Simulation &simulation() { return _simulation; }
 
@@ -86,8 +88,42 @@ namespace NBody {
 
         static float &timeStep() { return Solver::_dt; }
 
-        void runStep() {
+        void step() {
 
+            // Update accelerations, based on positions
+            updateAccelerations();
+
+            // Update velocities, based on acceleration
+            updateVelocities();
+
+            // Update positions, based on velocity
+            updatePositions();
+        }
+
+        virtual void updateAccelerations() = 0;
+
+        void updateVelocities() {
+            _statusDispatcher.emit({"Updating velocities"});
+            auto view = _simulation.template view<const Acceleration, Velocity>();
+            tbb::parallel_for_each(view, [&](Entity e) {
+                const auto &a = view.template get<const Acceleration>(e);
+                auto &v = view.template get<Velocity>(e);
+                v = v + (a * _dt);
+            });
+        }
+
+        void updatePositions() {
+            // While the solver is modifying simulation values, the simulation should be locked for other threads
+            std::scoped_lock l(_simulation.mutex);
+
+            _statusDispatcher.emit({"Updating positions"});
+            auto view = _simulation.template view<const Velocity, Position>();
+
+            tbb::parallel_for_each(view, [&](Entity e) {
+                const auto &v = view.template get<const Velocity>(e);
+                auto &p = view.template get<Position>(e);
+                p = p + (v * _dt);
+            });
         }
 
     public:

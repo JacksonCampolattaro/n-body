@@ -5,18 +5,16 @@
 #ifndef N_BODY_LINEARBVHSOLVER_H
 #define N_BODY_LINEARBVHSOLVER_H
 
-#include "BarnesHutSolver.h"
-
-#include "Trees/LinearBVH.h"
-#include "Trees/DescentCriterion.h"
+#include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
+#include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 
 namespace NBody {
 
-    class LinearBVHSolver : public BarnesHutSolverBase<LinearBVH, DescentCriterion::DiagonalOverDistance> {
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance> {
     public:
 
         LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
-                BarnesHutSolverBase<LinearBVH, DescentCriterion::DiagonalOverDistance>(simulation, rule) {}
+                ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance>(simulation, rule) {}
 
         std::string id() override { return "linear-bvh"; };
 

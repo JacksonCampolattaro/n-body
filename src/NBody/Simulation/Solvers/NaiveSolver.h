@@ -5,7 +5,7 @@
 #ifndef N_BODY_NAIVESOLVER_H
 #define N_BODY_NAIVESOLVER_H
 
-#include "../Solver.h"
+#include <NBody/Simulation/Solver.h>
 
 namespace NBody {
 
@@ -17,7 +17,7 @@ namespace NBody {
         std::string id() override { return "naive"; };
         std::string name() override { return "Naive"; };
 
-        void step() override;
+        void updateAccelerations() override;
     };
 
 }

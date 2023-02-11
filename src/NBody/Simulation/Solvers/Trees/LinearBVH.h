@@ -7,33 +7,36 @@
 
 #include <tbb/parallel_for_each.h>
 #include "Tree.h"
-#include "ActiveNode.h"
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
 #include "NBody/Simulation/BoundingBox.h"
 
+#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/BoundingBoxSummary.h>
+
 namespace NBody {
 
-    template<typename LinearBVHNodeImplementation>
-    class LinearBVHNodeBase : public NodeBase<LinearBVHNodeImplementation> {
+    template<SummaryType S>
+    class LinearBVHNode : public NodeBase<LinearBVHNode<S>, BoundingBoxSummary<S>> {
     private:
 
-        std::vector<LinearBVHNodeImplementation> _children;
-
-        BoundingBox _boundingBox{};
+        std::vector<LinearBVHNode<S>> _children;
 
     public:
 
-        using NodeBase<LinearBVHNodeImplementation>::NodeBase;
-        using NodeBase<LinearBVHNodeImplementation>::contents;
-        using NodeBase<LinearBVHNodeImplementation>::isLeaf;
+        using SummaryType = BoundingBoxSummary<S>;
 
-        [[nodiscard]] std::vector<LinearBVHNodeImplementation> &children() { return _children; }
+        using NodeBase<LinearBVHNode, SummaryType>::NodeBase;
+        using NodeBase<LinearBVHNode, SummaryType>::contents;
+        using NodeBase<LinearBVHNode, SummaryType>::isLeaf;
+        using NodeBase<LinearBVHNode, SummaryType>::summary;
 
-        [[nodiscard]] const std::vector<LinearBVHNodeImplementation> &children() const { return _children; }
+        [[nodiscard]] std::vector<LinearBVHNode> &children() { return _children; }
 
-        [[nodiscard]] const BoundingBox &boundingBox() const { return _boundingBox; }
+        [[nodiscard]] const std::vector<LinearBVHNode> &children() const { return _children; }
+
+        [[nodiscard]] const BoundingBox &boundingBox() const { return summary().boundingBox(); }
 
         template<typename ViewType>
         void split(const ViewType &context) {
@@ -62,82 +65,53 @@ namespace NBody {
             }
         }
 
-        template<typename ViewType>
-        void summarize(const ViewType &context) {
-
-            _boundingBox = BoundingBox{};
-
-            if (isLeaf()) {
-
-                for (const auto &entity: contents()) {
-                    auto entityPosition = context.template get<const Position>(entity);
-                    auto entityMass = context.template get<const Mass>(entity).mass();
-                    _boundingBox.min() = glm::min((glm::vec3) entityPosition, (glm::vec3) _boundingBox.min());
-                    _boundingBox.max() = glm::max((glm::vec3) entityPosition, (glm::vec3) _boundingBox.max());
-                }
-
-            } else {
-
-                for (const auto &child: children()) {
-                    _boundingBox.min() = glm::min((glm::vec3) child.boundingBox().min(),
-                                                  (glm::vec3) _boundingBox.min());
-                    _boundingBox.max() = glm::max((glm::vec3) child.boundingBox().max(),
-                                                  (glm::vec3) _boundingBox.max());
-                }
-
-            }
-
-        }
-
         void merge() {
             _children.clear();
         }
 
     };
 
-    class LinearBVHNode : public ActiveNode<LinearBVHNodeBase<LinearBVHNode>> {
-    public:
-        using ActiveNode::ActiveNode;
-
-        static entt::basic_group<
-                entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
-                const NBody::Physics::Position,
-                const NBody::Physics::Mass,
-                const MortonCode
-        > constructionContext(Simulation &simulation) {
-            return simulation.group<const Position, const Mass, const MortonCode>();
-        }
-    };
-
-    class LinearBVH : public TreeBase<LinearBVHNode> {
+    template<SummaryType S>
+    class LinearBVH : public Tree<LinearBVHNode<S>> {
     public:
 
-        LinearBVH(Simulation &simulation) : TreeBase<LinearBVHNode>(simulation) {}
+        using typename Tree<LinearBVHNode<S>>::Node;
+
+        using Tree<Node>::Tree;
+        using Tree<Node>::simulation;
+        using Tree<Node>::root;
+        using Tree<Node>::indices;
+
+    protected:
+
+        using Tree<Node>::depthSplit;
+        using Tree<Node>::summarizeTreeTop;
+
+    public:
 
         void build() override {
 
             // Assign morton codes to all active particles
-            setMortonCodes(simulation(), Node::outerBoundingBox(simulation()));
+            setMortonCodes(simulation(), outerBoundingBox<typename Node::SummaryType>(simulation()));
 
             // Sort the indices by the associated morton codes
-            mortonSort(simulation().view<const MortonCode>(), indices());
+            mortonSort(simulation().template view<const MortonCode>(), indices());
 
             // Build the tree
-            auto context = LinearBVHNode::constructionContext(simulation());
-            //simulation().view<const Position, const Mass, const ActiveTag, const MortonCode>();
+            // todo: the context used for splitting should be defined by the node type
+            auto context = simulation().template view<const Position, const Mass, const MortonCode>();
             int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(*this, preBuildDepth, context);
+            auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   [&](const auto &n) {
                                       // Don't split if all entities in this node have the same morton code
-                                      return context.get<const MortonCode>(n.contents().front()) !=
-                                             context.get<const MortonCode>(n.contents().back());
+                                      return context.template get<const MortonCode>(n.contents().front()) !=
+                                             context.template get<const MortonCode>(n.contents().back());
                                   },
                                   context);
             });
-            summarizeTreeTop(root(), toBeRefined, context);
+            summarizeTreeTop(toBeRefined, context);
 
             // todo: maybe non-parallel construction should be available as an option?
             //            root().refine(
@@ -152,6 +126,8 @@ namespace NBody {
         }
 
     };
+
+    using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
 
 }
 
