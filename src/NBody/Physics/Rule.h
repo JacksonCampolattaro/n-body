@@ -14,6 +14,7 @@
 #include "Force.h"
 #include "Mass.h"
 #include "Quadrupole.h"
+#include "SummaryType.h"
 
 namespace NBody::Physics {
 
@@ -36,6 +37,45 @@ namespace NBody::Physics {
                           (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
 
             return glm::normalize(activePosition - passivePosition) * force;
+        }
+
+        template<typename ActiveNode, typename PassiveNode>
+        Acceleration operator()(const ActiveNode &activeNode,
+                                const PassiveNode &passiveNode) const {
+
+            // If the passive node has a center of mass, prefer that over the overall center
+            Position passivePosition;
+            if constexpr(requires(const PassiveNode &n) { n.summary().centerOfMass(); })
+                passivePosition = passiveNode.summary().centerOfMass();
+            else
+                passivePosition = passiveNode.center();
+
+            return operator()(activeNode, passivePosition);
+        }
+
+        template<typename ActiveNode>
+        Acceleration operator()(const ActiveNode &activeNode,
+                                const Position &passivePosition) const {
+
+            // If the active node has a center of mass, prefer that over the overall center
+            Position activePosition;
+            if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                activePosition = activeNode.summary().centerOfMass();
+            else
+                activePosition = activeNode.center();
+
+            return operator()(activePosition, activeNode.summary(), passivePosition);
+        }
+
+        template<SummaryType ActiveSummary>
+        Acceleration operator()(const Position &activePosition, const ActiveSummary &activeSummary,
+                                const Position &passivePosition) const {
+
+            // If the active summary provides a multipole moment, use that
+            if constexpr(requires(const ActiveSummary &s){ s.moment(); })
+                return operator()(activePosition, activeSummary.totalMass(), activeSummary.moment(), passivePosition);
+            else
+                return operator()(activePosition, activeSummary.totalMass(), passivePosition);
         }
 
         Acceleration operator()(const Position &activePosition, const Mass &activeMass,

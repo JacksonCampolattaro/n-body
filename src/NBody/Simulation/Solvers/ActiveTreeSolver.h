@@ -75,15 +75,7 @@ namespace NBody {
             if (node.contents().empty()) return Physics::Acceleration{};
 
             if (_descentCriterion(node, passivePosition)) {
-
-                // todo: this is not a very nice way of doing this
-                if constexpr(requires(const typename TreeType::Node &n){ n.summary().moment(); })
-                    return _rule(node.summary().centerOfMass(), node.summary().totalMass(), node.summary().moment(),
-                                 passivePosition);
-                else
-                    return _rule(node.summary().centerOfMass(), node.summary().totalMass(),
-                                 passivePosition);
-
+                return _rule(node, passivePosition);
             } else {
 
                 // Otherwise, the node can't be summarized

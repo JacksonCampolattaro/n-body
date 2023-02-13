@@ -49,20 +49,12 @@ namespace NBody {
             if (_descentCriterion(activeNode, passiveNode)) {
 
                 // node-node interaction
-                // todo: this is not a very nice way of doing this
-                if constexpr(requires(const typename ActiveTree::Node &n){ n.summary().moment(); })
-                    passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
-                                                                              activeNode.summary().totalMass(),
-                                                                              activeNode.summary().moment(),
-                                                                              passiveNode.center());
-                else
-                    passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
-                                                                              activeNode.summary().totalMass(),
-                                                                              passiveNode.center());
+                passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode, passiveNode);
 
             } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 
                 // If both nodes are leaves & weren't far enough to summarize, then compute individual interactions
+                // todo: maybe we can do node-particle interactions in some cases
                 for (auto activeParticle: activeNode.contents()) {
                     for (auto passiveParticle: passiveNode.contents()) {
 

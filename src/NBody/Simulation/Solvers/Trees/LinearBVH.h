@@ -112,22 +112,11 @@ namespace NBody {
                                   context);
             });
             summarizeTreeTop(toBeRefined, context);
-
-            // todo: maybe non-parallel construction should be available as an option?
-            //            root().refine(
-            //                    std::numeric_limits<std::size_t>::max(),
-            //                    [&](const auto &n) {
-            //                        // Don't split if all entities in this node have the same morton code
-            //                        return context.get<const MortonCode>(n.contents().front()) !=
-            //                               context.get<const MortonCode>(n.contents().back());
-            //                    },
-            //                    context
-            //            );
         }
 
     };
 
-    using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
+    using ActiveLinearBVH = LinearBVH<QuadrupoleMassSummary>;
 
 }
 
