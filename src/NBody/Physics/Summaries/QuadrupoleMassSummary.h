@@ -5,8 +5,8 @@
 #ifndef N_BODY_QUADRUPOLEMASSSUMMARY_H
 #define N_BODY_QUADRUPOLEMASSSUMMARY_H
 
-#include <NBody/Physics/Quadrupole.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include "NBody/Physics/Quadrupole.h"
+#include "CenterOfMassSummary.h"
 
 namespace NBody {
 

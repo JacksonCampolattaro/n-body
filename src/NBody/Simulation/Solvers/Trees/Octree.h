@@ -17,10 +17,10 @@
 #include "NBody/Physics/Rule.h"
 
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/QuadrupoleMassSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/DualSummary.h>
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
+#include <NBody/Physics/Summaries/AccelerationSummary.h>
+#include <NBody/Physics/Summaries/DualSummary.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;

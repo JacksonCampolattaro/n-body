@@ -5,7 +5,7 @@
 #ifndef N_BODY_BOUNDINGBOX_H
 #define N_BODY_BOUNDINGBOX_H
 
-#include <NBody/Physics/Position.h>
+#include "Position.h"
 
 #include <glm/glm.hpp>
 

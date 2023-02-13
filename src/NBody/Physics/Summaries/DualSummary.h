@@ -5,8 +5,8 @@
 #ifndef N_BODY_DUALSUMMARY_H
 #define N_BODY_DUALSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include "AccelerationSummary.h"
+#include "CenterOfMassSummary.h"
 
 namespace NBody {
 

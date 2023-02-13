@@ -10,10 +10,10 @@
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
-#include "NBody/Simulation/BoundingBox.h"
+#include "NBody/Physics/BoundingBox.h"
 
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/BoundingBoxSummary.h>
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
+#include <NBody/Physics/Summaries/BoundingBoxSummary.h>
 
 namespace NBody {
 

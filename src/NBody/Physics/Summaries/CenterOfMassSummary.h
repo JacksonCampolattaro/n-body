@@ -5,7 +5,7 @@
 #ifndef N_BODY_CENTEROFMASSSUMMARY_H
 #define N_BODY_CENTEROFMASSSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
+#include "NBody/Physics/SummaryType.h"
 
 namespace NBody {
 

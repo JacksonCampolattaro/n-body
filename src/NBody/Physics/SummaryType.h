@@ -8,7 +8,7 @@
 #include <concepts>
 #include <span>
 
-#include <NBody/Simulation/Simulation.h>
+#include "NBody/Simulation/Simulation.h"
 
 namespace NBody {
 

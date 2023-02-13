@@ -5,7 +5,7 @@
 #ifndef N_BODY_MVDRSOLVERSETTINGS_H
 #define N_BODY_MVDRSOLVERSETTINGS_H
 
-#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
+#include "NBody/Physics/SummaryType.h"
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
