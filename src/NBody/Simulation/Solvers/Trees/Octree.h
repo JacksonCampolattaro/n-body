@@ -18,6 +18,7 @@
 
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
+#include <NBody/Simulation/Solvers/Trees/Summaries/QuadrupoleMassSummary.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
 #include <NBody/Simulation/Solvers/Trees/Summaries/DualSummary.h>
 
@@ -220,7 +221,7 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    using ActiveOctree = Octree<CenterOfMassSummary>;
+    using ActiveOctree = Octree<QuadrupoleMassSummary>;
     using PassiveOctree = Octree<AccelerationSummary>;
     using DualOctree = Octree<DualSummary>;
 

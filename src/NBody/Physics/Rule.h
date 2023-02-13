@@ -13,6 +13,7 @@
 #include "Acceleration.h"
 #include "Force.h"
 #include "Mass.h"
+#include "Quadrupole.h"
 
 namespace NBody::Physics {
 
@@ -42,10 +43,37 @@ namespace NBody::Physics {
 
             if (activePosition == passivePosition) return {};
 
-            float force = _g * activeMass.mass() /
-                          (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
+            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            glm::vec3 differenceInPositions = activePosition - passivePosition;
+            float r2 = glm::length2(differenceInPositions);
+            float r = std::sqrt(r2 + _epsilon);
+            float scaling = -_g * activeMass.mass() / (r * r * r);
+            return scaling * differenceInPositions;
+        }
 
-            return glm::normalize(activePosition - passivePosition) * force;
+        Acceleration operator()(const Position &activePosition, const Mass &activeMass, const Quadrupole &moment,
+                                const Position &passivePosition) const {
+
+            if (activePosition == passivePosition) return {};
+
+            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            glm::vec3 d = activePosition - passivePosition;
+            float r2 = glm::length2(d);
+            float r = std::sqrt(r2 + _epsilon);
+            float scaling = -_g * activeMass.mass() / (r * r * r);
+
+            float qScaling = _g / (r * r * r * r * r);
+
+            float mrr = d.x * d.x * moment.xx() + d.y * d.y * moment.yy() + d.z * d.z * moment.zz() +
+                        2.0f * (d.x * d.y * moment.xy() + d.x * d.z * moment.xz() + d.y * d.z * moment.yz());
+            float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
+
+            return glm::vec3{
+                    qScaling * (d.x * moment.xx() + d.y * moment.xy() + d.z * moment.xz()),
+                    qScaling * (d.x * moment.xy() + d.y * moment.yy() + d.z * moment.yz()),
+                    qScaling * (d.x * moment.xz() + d.y * moment.yz() + d.z * moment.zz())
+            } + (d * combinedScaling);
+
         }
 
         float &g() { return _g; }

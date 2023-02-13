@@ -11,7 +11,7 @@
 namespace NBody {
 
     template<typename TreeType, typename DescentCriterionType>
-    class ActiveTreeSolver: public Solver {
+    class ActiveTreeSolver : public Solver {
     private:
 
         TreeType _tree;
@@ -76,7 +76,13 @@ namespace NBody {
 
             if (_descentCriterion(node, passivePosition)) {
 
-                return _rule(node.summary().centerOfMass(), node.summary().totalMass(), passivePosition);
+                // todo: this is not a very nice way of doing this
+                if constexpr(requires(const typename TreeType::Node &n){ n.summary().moment(); })
+                    return _rule(node.summary().centerOfMass(), node.summary().totalMass(), node.summary().moment(),
+                                 passivePosition);
+                else
+                    return _rule(node.summary().centerOfMass(), node.summary().totalMass(),
+                                 passivePosition);
 
             } else {
 

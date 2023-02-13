@@ -12,7 +12,7 @@ add_library(Physics
         Position.h
         Velocity.h
         Mass.cpp Mass.h
-        Rule.h Force.h Acceleration.h)
+        Rule.h Force.h Acceleration.h Quadrupole.h)
 
 target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

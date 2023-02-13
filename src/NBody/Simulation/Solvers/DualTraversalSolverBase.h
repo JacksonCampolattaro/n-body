@@ -50,9 +50,16 @@ namespace NBody {
             if (_descentCriterion(activeNode, passiveNode)) {
 
                 // node-node interaction
-                passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
-                                                                          activeNode.summary().totalMass(),
-                                                                          passiveNode.center());
+                // todo: this is not a very nice way of doing this
+                if constexpr(requires(const typename ActiveTree::Node &n){ n.summary().moment(); })
+                    passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
+                                                                              activeNode.summary().totalMass(),
+                                                                              activeNode.summary().moment(),
+                                                                              passiveNode.center());
+                else
+                    passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode.summary().centerOfMass(),
+                                                                              activeNode.summary().totalMass(),
+                                                                              passiveNode.center());
 
             } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 

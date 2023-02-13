@@ -20,7 +20,7 @@
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
-#include <NBody/Simulation/Solvers/DualTraversalSolver.h>
+#include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 
 using namespace NBody;
 
@@ -315,7 +315,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<MVDRSolver>(10'000, thetaValues);
+    sweepTheta<MVDRSolver>(60'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(10, {0.5});
 
     //std::vector<std::size_t> nValues{};
