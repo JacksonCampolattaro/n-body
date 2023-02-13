@@ -12,7 +12,7 @@ namespace NBody {
     class NaiveSolver : public Solver {
     public:
 
-        NaiveSolver(Simulation &simulation, Physics::Rule &rule) : Solver(simulation, rule) {}
+        using Solver::Solver;
 
         std::string id() override { return "naive"; };
         std::string name() override { return "Naive"; };

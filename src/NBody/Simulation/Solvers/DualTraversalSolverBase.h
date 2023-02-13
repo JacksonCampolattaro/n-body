@@ -21,8 +21,7 @@ namespace NBody {
 
     public:
 
-        DualTraversalSolverBase(Simulation &simulation, Physics::Rule &rule) :
-                Solver(simulation, rule) {}
+        using Solver::Solver;
 
         float &theta() { return _descentCriterion.theta(); }
 

@@ -44,7 +44,7 @@ namespace NBody::Physics {
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-            glm::vec3 differenceInPositions = activePosition - passivePosition;
+            glm::vec3 differenceInPositions = passivePosition - activePosition;
             float r2 = glm::length2(differenceInPositions);
             float r = std::sqrt(r2 + _epsilon);
             float scaling = -_g * activeMass.mass() / (r * r * r);
@@ -57,7 +57,7 @@ namespace NBody::Physics {
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-            glm::vec3 d = activePosition - passivePosition;
+            glm::vec3 d = passivePosition - activePosition;
             float r2 = glm::length2(d);
             float r = std::sqrt(r2 + _epsilon);
             float scaling = -_g * activeMass.mass() / (r * r * r);

@@ -13,8 +13,7 @@ namespace NBody {
     class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, DescentCriterion::SideLengthOverDistance> {
     public:
 
-        BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) :
-                ActiveTreeSolver<ActiveOctree, DescentCriterion::SideLengthOverDistance>(simulation, rule) {}
+        using ActiveTreeSolver::ActiveTreeSolver;
 
         std::string id() override { return "barnes-hut"; };
 
