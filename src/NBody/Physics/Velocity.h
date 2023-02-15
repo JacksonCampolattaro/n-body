@@ -16,9 +16,7 @@ namespace NBody::Physics {
     class Velocity : public glm::vec3 {
     public:
 
-        Velocity() : glm::vec3() {};
-
-        Velocity(float x, float y, float z) : glm::vec3(x, y, z) {};
+        using glm::vec3::vec;
 
         Velocity(glm::vec3 vector) : glm::vec3(vector) {};
 

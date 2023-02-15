@@ -48,6 +48,8 @@ namespace NBody {
             // If the nodes are far enough apart or both leaves, we can use their summaries
             if (_descentCriterion(activeNode, passiveNode)) {
 
+                assert(!doIntersect(activeNode.boundingBox(), passiveNode.boundingBox()));
+
                 // node-node interaction
                 passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode, passiveNode);
 

@@ -5,6 +5,8 @@
 #ifndef N_BODY_QUADRUPOLE_H
 #define N_BODY_QUADRUPOLE_H
 
+#include <glm/glm.hpp>
+
 namespace NBody {
 
     // todo: there must be some way to generate this automatically, right?
@@ -21,6 +23,15 @@ namespace NBody {
     public:
 
         Quadrupole() = default;
+
+        Quadrupole(const glm::mat3 &outerProduct) {
+            xx() = outerProduct[0].x;
+            xy() = outerProduct[0].y;
+            xz() = outerProduct[0].z;
+            yy() = outerProduct[1].y;
+            yz() = outerProduct[1].z;
+            zz() = outerProduct[2].z;
+        }
 
         float &xx() { return _xx; }
 

@@ -21,8 +21,8 @@ namespace NBody {
                         PassiveOctree,
                         DescentCriterion::DiagonalOverDistance
                 >(simulation, rule) {
-            passiveTree().maxDepth() = 32;
-            passiveTree().maxLeafSize() = 8;
+            passiveTree().maxDepth() = 16;
+            passiveTree().maxLeafSize() = 64;
         }
 
         std::string id() override { return "mvdr"; };

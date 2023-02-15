@@ -32,8 +32,12 @@ namespace NBody::DescentCriterion {
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
-            return (std::max(activeNode.sideLength(), passiveNode.sideLength()) /
-                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            if constexpr(requires(const ActiveTreeNode &n) { n.sideLength(); })
+                return (std::max(activeNode.sideLength(), passiveNode.sideLength()) /
+                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            else
+                return (std::max(activeNode.boundingBox().maxSideLength(), passiveNode.sideLength()) /
+                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }
@@ -62,6 +66,12 @@ namespace NBody::DescentCriterion {
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
             return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
                     glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            //            if constexpr(requires(const PassiveTreeNode &n) { n.sideLength(); })
+            //                return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.sideLength()) /
+            //                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            //            else
+            //                return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
+            //                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }

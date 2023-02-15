@@ -51,7 +51,7 @@ namespace NBody {
         [[nodiscard]] float diagonalLength() const { return glm::distance((glm::vec3) _min, (glm::vec3) _max); }
 
         [[nodiscard]] float maxSideLength() const {
-            return std::max(std::max(dimensions().x, dimensions().y), dimensions().z);
+            return std::max({dimensions().x, dimensions().y, dimensions().z});
         }
 
         [[nodiscard]] bool contains(const Position &position) const {
@@ -59,6 +59,13 @@ namespace NBody {
                    glm::all(glm::greaterThanEqual(position, max()));
         }
     };
+
+    [[nodiscard]] static bool doIntersect(const BoundingBox &b1, const BoundingBox &b2) {
+        return glm::all(glm::greaterThanEqual(
+                glm::min((glm::vec3) b1.max(), b2.max()),
+                glm::max((glm::vec3) b1.min(), b2.min())
+        ));
+    }
 }
 
 #endif //N_BODY_BOUNDINGBOX_H

@@ -19,6 +19,7 @@
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleDualSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/DualSummary.h>
 
