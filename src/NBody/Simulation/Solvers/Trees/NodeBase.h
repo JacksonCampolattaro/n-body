@@ -18,13 +18,13 @@ namespace NBody {
     class NodeBase {
     public:
 
-        using SummaryType = S;
+        using Summary = S;
 
     private:
 
         std::span<Entity> _contents;
 
-        SummaryType _summary;
+        Summary _summary;
 
     public:
 
@@ -32,9 +32,9 @@ namespace NBody {
 
         NodeBase(std::span<Entity> contents) : _contents(contents) {}
 
-        inline SummaryType &summary() { return _summary; }
+        inline Summary &summary() { return _summary; }
 
-        inline const SummaryType &summary() const { return _summary; }
+        inline const Summary &summary() const { return _summary; }
 
         template<typename Context>
         void summarize(const Context &context) {

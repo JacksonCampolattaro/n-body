@@ -10,9 +10,11 @@
 
 namespace NBody {
 
-    using namespace Physics;
-
     class QuadrupoleAccelerationSummary {
+    public:
+
+        using Acceleration = Physics::QuadrupoleAcceleration;
+
     private:
 
         QuadrupoleAcceleration _acceleration{};
@@ -21,12 +23,12 @@ namespace NBody {
 
         using Context = entt::basic_view<
                 entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Physics::Acceleration
+                const Physics::Position,
+                const Physics::Acceleration
         >;
 
         static Context context(Simulation &simulation) {
-            return simulation.view<const Position, const Acceleration>();
+            return simulation.view<const Physics::Position, const Physics::Acceleration>();
         }
 
     public:

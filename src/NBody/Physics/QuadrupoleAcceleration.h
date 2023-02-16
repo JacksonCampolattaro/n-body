@@ -10,10 +10,28 @@
 
 namespace NBody::Physics {
 
-    class QuadrupoleAcceleration : public Acceleration, public Quadrupole {
+    class QuadrupoleAcceleration {
+    private:
+
+        Acceleration _acceleration{};
+        Quadrupole _quadrupole{};
+
     public:
 
         QuadrupoleAcceleration() = default;
+
+        [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }
+
+        Acceleration &acceleration() { return _acceleration; }
+
+        [[nodiscard]] const Quadrupole &quadrupole() const { return _quadrupole; }
+
+        Quadrupole &quadrupole() { return _quadrupole; }
+
+        void translate(const glm::vec3 &offset) {
+            _acceleration += offset;
+            // todo
+        }
 
     };
 }

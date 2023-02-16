@@ -12,7 +12,7 @@ namespace NBody {
 
     using namespace Physics;
 
-    class DualSummary : protected CenterOfMassSummary, protected AccelerationSummary {
+    class DualSummary : public CenterOfMassSummary, public AccelerationSummary {
     public:
 
         using CenterOfMassSummary::Context;
@@ -20,10 +20,6 @@ namespace NBody {
 
         using CenterOfMassSummary::CenterOfMassSummary;
         using CenterOfMassSummary::summarize;
-        using CenterOfMassSummary::totalMass;
-        using CenterOfMassSummary::centerOfMass;
-
-        using AccelerationSummary::acceleration;
 
     };
 }

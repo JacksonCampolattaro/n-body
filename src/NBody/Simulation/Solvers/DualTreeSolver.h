@@ -67,8 +67,9 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
-                auto view = _simulation.template view<Acceleration>();
-                collapseAccelerations(_passiveTree.root(), view);
+                auto view = _simulation.template view<const Position, Acceleration>();
+                // todo: there are better ways of avoiding ambiguity here
+                collapseAccelerations(_passiveTree.root(), view, typename PassiveTree::Node::Summary::Acceleration{});
             }
         }
 

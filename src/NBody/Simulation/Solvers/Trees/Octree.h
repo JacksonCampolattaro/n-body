@@ -186,12 +186,12 @@ namespace NBody {
 
         void build() override {
 
-            BoundingBox boundingBox = outerBoundingBox<typename Node::SummaryType>(simulation());
+            BoundingBox boundingBox = outerBoundingBox<typename Node::Summary>(simulation());
             glm::vec3 dimensions = boundingBox.dimensions();
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-            const auto &context = Node::SummaryType::context(simulation());
+            const auto &context = Node::Summary::context(simulation());
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
