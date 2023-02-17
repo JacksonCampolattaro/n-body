@@ -33,6 +33,16 @@ namespace NBody {
             zz() = outerProduct[2].z;
         }
 
+        Quadrupole &operator+=(const Quadrupole &right) {
+            xx() += right.xx();
+            xy() += right.xy();
+            xz() += right.xz();
+            yy() += right.yy();
+            yz() += right.yz();
+            zz() += right.zz();
+            return *this;
+        }
+
         float &xx() { return _xx; }
 
         float &xy() { return _xy; }
@@ -70,6 +80,14 @@ namespace NBody {
         [[nodiscard]] const float &zz() const { return _zz; }
     };
 
+    inline glm::vec3 operator*(const Quadrupole &q, const glm::vec3 &v) {
+        // Equivalent to vector-matrix multiplication
+        return {
+                q.xx() * v.x + q.xy() * v.y + q.xz() * v.z,
+                q.yx() * v.x + q.yy() * v.y + q.yz() * v.z,
+                q.zx() * v.x + q.zy() * v.y + q.zz() * v.z
+        };
+    }
 
 }
 

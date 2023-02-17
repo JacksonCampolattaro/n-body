@@ -46,9 +46,10 @@ namespace NBody {
                 return;
 
             // If the nodes are far enough apart or both leaves, we can use their summaries
-            if (_descentCriterion(activeNode, passiveNode)) {
+            if (_descentCriterion(activeNode, passiveNode) &&
+                !doIntersect(activeNode.boundingBox(), passiveNode.boundingBox())) {
 
-                assert(!doIntersect(activeNode.boundingBox(), passiveNode.boundingBox()));
+                //assert(!doIntersect(activeNode.boundingBox(), passiveNode.boundingBox()));
 
                 // node-node interaction
                 passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode, passiveNode);
@@ -124,7 +125,6 @@ namespace NBody {
                                    QuadrupoleAcceleration netAcceleration = {}) const {
 
             // Add the local multipole acceleration of this node to the accumulated acceleration in this location
-            // todo
             netAcceleration += node.summary().acceleration();
 
             if (node.isLeaf()) {
@@ -137,7 +137,7 @@ namespace NBody {
                     netAcceleration.translate(context.get<const Position>(i) - node.center());
 
                     // Apply the xyz component of the multipole acceleration to the particle
-                    context.get<Acceleration>(i) += netAcceleration;
+                    context.get<Acceleration>(i) += netAcceleration.acceleration();
                 }
 
             } else {

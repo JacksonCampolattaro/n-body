@@ -222,7 +222,7 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
-    using ActiveOctree = Octree<QuadrupoleMassSummary>;
+    using ActiveOctree = Octree<CenterOfMassSummary>;
     using PassiveOctree = Octree<AccelerationSummary>;
     using DualOctree = Octree<DualSummary>;
 

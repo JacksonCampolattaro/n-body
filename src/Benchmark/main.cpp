@@ -315,12 +315,20 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<OctreeDualTraversalSolver>(10'000, thetaValues);
-    //sweepTheta<BarnesHutSolver>(10, {0.5});
+    //sweepTheta<BarnesHutSolver>(10'000, thetaValues);
+    //sweepTheta<BarnesHutSolver>(100'000, {0.5});
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
     //sweepN(nValues, 0.8, 5);
     //sweepN<MVDRSolver>(nValues, 0.8, 5);
     //sweepN(nValues, 1.0, 5);
+
+
+    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, 100'000, 10);
+//    Simulation simulation;
+//    Rule rule;
+//    from_json(scenario, simulation);
+//    BarnesHutSolver solver{simulation, rule};
+//    solver.step();
 }

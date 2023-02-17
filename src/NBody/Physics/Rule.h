@@ -11,6 +11,7 @@
 
 #include "Position.h"
 #include "Acceleration.h"
+#include "QuadrupoleAcceleration.h"
 #include "Force.h"
 #include "Mass.h"
 #include "Quadrupole.h"
@@ -42,6 +43,9 @@ namespace NBody::Physics {
         template<typename ActiveNode, typename PassiveNode>
         Acceleration operator()(const ActiveNode &activeNode,
                                 const PassiveNode &passiveNode) const {
+
+            // Self-interaction should never happen!
+            assert((void *) &activeNode != (void *) &passiveNode);
 
             // If the passive node has a center of mass, prefer that over the overall center
             Position passivePosition;
@@ -108,53 +112,52 @@ namespace NBody::Physics {
                         2.0f * (d.x * d.y * moment.xy() + d.x * d.z * moment.xz() + d.y * d.z * moment.yz());
             float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
 
-            return glm::vec3{
-                    qScaling * (d.x * moment.xx() + d.y * moment.xy() + d.z * moment.xz()),
-                    qScaling * (d.x * moment.xy() + d.y * moment.yy() + d.z * moment.yz()),
-                    qScaling * (d.x * moment.xz() + d.y * moment.yz() + d.z * moment.zz())
-            } + (d * combinedScaling);
+            return (moment * d * qScaling) + (d * combinedScaling);
 
         }
 
-        Acceleration operator()(const Position &activePosition, const Mass &activeMass, const Quadrupole &activeMoment,
-                                const Position &passivePosition, const Quadrupole &passiveMoment) const {
-
-            if (activePosition == passivePosition) return {};
-
-            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
-            // "fmm_node_node_interaction"
-
-            glm::vec3 d = passivePosition - activePosition;
-            float r2 = glm::length2(d);
-            float r = std::sqrt(r2 + _epsilon);
-
-            float rinv = 1.0f / r;
-            float rinv2 = rinv * rinv;
-            float rinv3 = rinv2 * rinv;
-
-            float fac1 = 0.0f;
-            float fac2 = 0.0f;
-
-            fac1 -= rinv2;
-            fac2 += 3.0f * rinv3;
-
-            float g1 = fac1 * rinv;
-            glm::vec3 D1 = g1 * d;
-
-
-            float g2 = fac2 * rinv2;
-            glm::mat3 aux2 = glm::outerProduct(d, d);
-            Quadrupole D2{aux2 * g2};
-            D2.xx() += g1;
-            D2.yy() += g1;
-            D2.zz() += g1;
-
-            // todo: Both acceleration vector & quadrupole acceleration must be saved to the node
-            //TaylorCoeff[no_sink].coeff.dphi += mass_m * D1;
-            //TaylorCoeff[no_sink].coeff.d2phi += (-mass_m) * D2;
-
-            return D1;
-        }
+        //        QuadrupoleAcceleration
+        //        operator()(const Position &activePosition, const Mass &activeMass, const Quadrupole &activeMoment,
+        //                   const Position &passivePosition) const {
+        //
+        //            if (activePosition == passivePosition) return {};
+        //
+        //            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
+        //            // "fmm_node_node_interaction"
+        //
+        //            glm::vec3 d = passivePosition - activePosition;
+        //            float r2 = glm::length2(d);
+        //            float r = std::sqrt(r2 + _epsilon);
+        //
+        //            float rinv = 1.0f / r;
+        //            float rinv2 = rinv * rinv;
+        //            float rinv3 = rinv2 * rinv;
+        //
+        //            float fac1 = 0.0f;
+        //            float fac2 = 0.0f;
+        //
+        //            fac1 -= rinv2;
+        //            fac2 += 3.0f * rinv3;
+        //
+        //            float g1 = fac1 * rinv;
+        //            glm::vec3 D1 = g1 * d;
+        //
+        //
+        //            float g2 = fac2 * rinv2;
+        //            glm::mat3 aux2 = glm::outerProduct(d, d);
+        //            Quadrupole D2{aux2 * g2};
+        //            D2.xx() += g1;
+        //            D2.yy() += g1;
+        //            D2.zz() += g1;
+        //
+        //            // todo: Both acceleration vector & quadrupole acceleration must be saved to the node
+        //            return {
+        //                //activeMass * D1,
+        //                //-activeMass * D2
+        //            };
+        //            //TaylorCoeff[no_sink].coeff.dphi += mass_m * D1;
+        //            //TaylorCoeff[no_sink].coeff.d2phi += (-mass_m) * D2;
+        //        }
 
         float &g() { return _g; }
 
@@ -206,5 +209,68 @@ namespace NBody::Physics {
 //    interactioncountNN += 1;
 //}
 
+
+///* function to account for interaction of two nodes in the tree */
+//void fmm::fmm_force_interact(int no_sink, int no_source, char type_sink, char type_source, unsigned char shmrank_sink,
+//                             unsigned char shmrank_source, int mintopleafnode, int committed) {
+//
+//    /* cell - cell interaction */
+//    gravnode *noptr_sink = get_nodep(no_sink, shmrank_sink);
+//    gravnode *noptr_source = get_nodep(no_source, shmrank_source);
+//
+//    /* both cells need to be non-empty */
+//    if (noptr_sink->not_empty != 0 && noptr_source->not_empty != 0) {
+//        {
+//            MyReal r2;
+//            vector <MyReal> dxyz;
+//
+//            int openflag = fmm_evaluate_node_node_opening_criterion(noptr_sink, noptr_source, dxyz, r2);
+//
+//            if (openflag == NODE_USE) {
+//                /* evaluate the interaction */
+//                fmm_node_node_interaction(no_sink, no_source, type_sink, type_source, shmrank_sink,
+//                                          shmrank_source, noptr_sink,
+//                                          noptr_source, dxyz, r2);
+//            } else if (openflag == NODE_OPEN) {
+//                /* open both */
+//
+//                if (no_source < MaxPart + MaxNodes)                  // we have a top-levelnode
+//                    if (noptr_source->nextnode >=
+//                        MaxPart + MaxNodes)  // if the next node is not a top-level, we have a leaf node
+//                        mintopleafnode = std::min<int>(mintopleafnode, no_source);
+//
+//                if (no_sink < MaxPart + MaxNodes)                  // we have a top-levelnode
+//                    if (noptr_sink->nextnode >=
+//                        MaxPart + MaxNodes)  // if the next node is not a top-level, we have a leaf node
+//                        mintopleafnode = std::min<int>(mintopleafnode, no_sink);
+//
+//                if (noptr_source->cannot_be_opened_locally || noptr_sink->cannot_be_opened_locally) {
+//                    if (noptr_source->cannot_be_opened_locally && noptr_sink->cannot_be_opened_locally)
+//                        Terminate("this should not happen, because then both nodes would be foreign");
+//
+//                    if (noptr_source->cannot_be_opened_locally)
+//                        tree_add_to_fetch_stack(noptr_source, no_source, shmrank_source);
+//
+//                    if (noptr_sink->cannot_be_opened_locally)
+//                        tree_add_to_fetch_stack(noptr_sink, no_sink, shmrank_sink);
+//
+//                    fmm_add_to_work_stack(no_source, no_sink, shmrank_source, shmrank_sink, mintopleafnode);
+//                } else {
+//                    int min_buffer_space =
+//                            std::min<int>(MaxOnWorkStack - (NumOnWorkStack + NewOnWorkStack),
+//                                          MaxOnFetchStack - NumOnFetchStack);
+//
+//                    if (min_buffer_space >=
+//                        committed + 8 * 8 * TREE_NUM_BEFORE_NODESPLIT * TREE_NUM_BEFORE_NODESPLIT)
+//                        fmm_open_both(noptr_sink, noptr_source, mintopleafnode,
+//                                      committed +
+//                                      8 * 8 * TREE_NUM_BEFORE_NODESPLIT * TREE_NUM_BEFORE_NODESPLIT);
+//                    else
+//                        fmm_add_to_work_stack(no_source, no_sink, shmrank_source, shmrank_sink, mintopleafnode);
+//                }
+//            }
+//        }
+//    }
+//}
 
 #endif //N_BODY_RULE_H

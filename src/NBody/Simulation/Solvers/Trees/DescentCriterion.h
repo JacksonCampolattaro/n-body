@@ -32,12 +32,8 @@ namespace NBody::DescentCriterion {
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
-            if constexpr(requires(const ActiveTreeNode &n) { n.sideLength(); })
-                return (std::max(activeNode.sideLength(), passiveNode.sideLength()) /
-                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
-            else
-                return (std::max(activeNode.boundingBox().maxSideLength(), passiveNode.sideLength()) /
-                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            return (2.0f * std::max(activeNode.sideLength(), passiveNode.sideLength()) /
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }
