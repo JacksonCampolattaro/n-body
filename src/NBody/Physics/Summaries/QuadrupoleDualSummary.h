@@ -12,18 +12,18 @@ namespace NBody {
 
     using namespace Physics;
 
-    class QuadrupoleDualSummary : protected QuadrupoleMassSummary, protected QuadrupoleAccelerationSummary {
+    class QuadrupoleDualSummary : public CenterOfMassSummary, public QuadrupoleAccelerationSummary {
     public:
 
-        using QuadrupoleMassSummary::Context;
-        using QuadrupoleMassSummary::context;
+        using CenterOfMassSummary::Context;
+        using CenterOfMassSummary::context;
 
-        using QuadrupoleMassSummary::QuadrupoleMassSummary;
-        using QuadrupoleMassSummary::summarize;
-        using QuadrupoleMassSummary::totalMass;
-        using QuadrupoleMassSummary::centerOfMass;
-        using QuadrupoleMassSummary::moment;
+        using CenterOfMassSummary::CenterOfMassSummary;
+        using CenterOfMassSummary::summarize;
+        using CenterOfMassSummary::totalMass;
+        using CenterOfMassSummary::centerOfMass;
 
+        using QuadrupoleAccelerationSummary::Acceleration;
         using QuadrupoleAccelerationSummary::acceleration;
 
     };

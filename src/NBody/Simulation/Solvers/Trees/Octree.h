@@ -223,8 +223,11 @@ namespace NBody {
     };
 
     using ActiveOctree = Octree<CenterOfMassSummary>;
+    using QuadrupoleActiveOctree = Octree<QuadrupoleMassSummary>;
     using PassiveOctree = Octree<AccelerationSummary>;
+    using QuadrupolePassiveOctree = Octree<QuadrupoleAccelerationSummary>;
     using DualOctree = Octree<DualSummary>;
+    using QuadrupoleDualOctree = Octree<QuadrupoleDualSummary>;
 
 }
 

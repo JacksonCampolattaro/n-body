@@ -19,6 +19,16 @@ namespace NBody::Physics {
 
         Acceleration(glm::vec3 vector) : glm::vec3(vector) {};
 
+        // todo: I shouldn't need to implement these things by hand
+        inline Acceleration &operator+=(const Acceleration &right) {
+            glm::vec3::operator+=((glm::vec3) right);
+            return *this;
+        }
+        inline Acceleration &operator-=(const Acceleration &right) {
+            glm::vec3::operator-=((glm::vec3) right);
+            return *this;
+        }
+
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Acceleration, x, y, z)
     };
 

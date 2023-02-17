@@ -49,10 +49,8 @@ namespace NBody {
             if (_descentCriterion(activeNode, passiveNode) &&
                 !doIntersect(activeNode.boundingBox(), passiveNode.boundingBox())) {
 
-                //assert(!doIntersect(activeNode.boundingBox(), passiveNode.boundingBox()));
-
                 // node-node interaction
-                passiveNode.summary().acceleration() += (glm::vec3) _rule(activeNode, passiveNode);
+                passiveNode.summary().acceleration() += _rule(activeNode, passiveNode);
 
             } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 
@@ -62,9 +60,9 @@ namespace NBody {
                     for (auto passiveParticle: passiveNode.contents()) {
 
                         passiveParticles.get<Acceleration>(passiveParticle) +=
-                                (glm::vec3) _rule(activeParticles.get<const Position>(activeParticle),
-                                                  activeParticles.get<const Mass>(activeParticle),
-                                                  passiveParticles.get<const Position>(passiveParticle));
+                                _rule(activeParticles.get<const Position>(activeParticle),
+                                      activeParticles.get<const Mass>(activeParticle),
+                                      passiveParticles.get<const Position>(passiveParticle));
 
                     }
                 }
@@ -99,13 +97,13 @@ namespace NBody {
                                    > &context,
                                    Acceleration netAcceleration = {}) const {
 
-            netAcceleration += (glm::vec3) node.summary().acceleration();
+            netAcceleration += node.summary().acceleration();
 
             if (node.isLeaf()) {
 
                 // When we reach a leaf node, apply the local force to all contained points
                 for (auto i: node.contents())
-                    context.get<Acceleration>(i) += (glm::vec3) netAcceleration;
+                    context.get<Acceleration>(i) += netAcceleration;
 
             } else {
 
@@ -134,10 +132,11 @@ namespace NBody {
 
                     // Find the vector from the center of this node to the particle's position
                     // and re-center the multipole expansion on the particle
-                    netAcceleration.translate(context.get<const Position>(i) - node.center());
+                    //auto localAcceleration = netAcceleration.at(context.get<const Position>(i) - node.center());
+                    auto localAcceleration = netAcceleration.at(node.center() - context.get<const Position>(i));
 
                     // Apply the xyz component of the multipole acceleration to the particle
-                    context.get<Acceleration>(i) += netAcceleration.acceleration();
+                    context.get<Acceleration>(i) += localAcceleration;
                 }
 
             } else {
@@ -147,10 +146,11 @@ namespace NBody {
 
                     // Find the vector from the center of this node to the center of the child
                     // and re-center the multipole expansion on the child node's center
-                    netAcceleration.translate(child.center() - node.center());
+                    //auto localAcceleration = netAcceleration.translated(child.center() - node.center());
+                    auto localAcceleration = netAcceleration.translated(node.center() - child.center());
 
                     // Apply the shifted expansion to the child node (recursive)
-                    collapseAccelerations(child, context, netAcceleration);
+                    collapseAccelerations(child, context, localAcceleration);
                 }
 
             }

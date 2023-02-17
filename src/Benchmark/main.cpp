@@ -207,6 +207,7 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
     matplot::xlabel("θ");
     matplot::plot(results["theta"], results["error"])->line_width(2.0f);
     matplot::ylabel("Error (Constitutional)");
+    matplot::yticks({0.5});
     matplot::hold(true);
     matplot::plot(results["theta"], results["time"])->line_width(2.0f).use_y2(true);
     matplot::y2label("Iteration Time (S)");
@@ -314,8 +315,9 @@ int main(int argc, char *argv[]) {
     Glib::init();
 
     std::vector<float> thetaValues{};
-    for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    //sweepTheta<BarnesHutSolver>(10'000, thetaValues);
+    for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
+    sweepTheta<QuadrupoleMVDRSolver>(60'000, thetaValues);
+    //sweepTheta<QuadrupoleBarnesHutSolver>(100'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(100'000, {0.5});
 
     //std::vector<std::size_t> nValues{};
@@ -325,10 +327,5 @@ int main(int argc, char *argv[]) {
     //sweepN(nValues, 1.0, 5);
 
 
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, 100'000, 10);
-//    Simulation simulation;
-//    Rule rule;
-//    from_json(scenario, simulation);
-//    BarnesHutSolver solver{simulation, rule};
-//    solver.step();
+    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, 100'000, 10);
 }

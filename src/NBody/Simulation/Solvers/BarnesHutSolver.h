@@ -28,6 +28,27 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
+    class QuadrupoleBarnesHutSolver : public ActiveTreeSolver<
+            QuadrupoleActiveOctree,
+            DescentCriterion::SideLengthOverDistance
+    > {
+    public:
+
+        using ActiveTreeSolver::ActiveTreeSolver;
+
+        std::string id() override { return "barnes-hut-4p"; };
+
+        std::string name() override { return "Quadrupole Barnes-Hut"; };
+
+        int &maxDepth() { return tree().maxDepth(); }
+
+        const int &maxDepth() const { return tree().maxDepth(); }
+
+        int &maxLeafSize() { return tree().maxLeafSize(); }
+
+        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+    };
+
 }
 
 
