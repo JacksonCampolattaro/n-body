@@ -29,6 +29,28 @@ namespace NBody {
                           IsContextProvider<T> &&
                           std::is_default_constructible_v<T>;
 
+    template<typename T>
+    concept ActiveSummaryType = SummaryType<T> && requires(T &t) {
+        t.totalMass();
+        t.centerOfMass();
+    };
+
+    template<typename T>
+    concept QuadrupoleActiveSummaryType = ActiveSummaryType<T> && requires(T &t) {
+        t.moment();
+    };
+
+    template<typename T>
+    concept PassiveSummaryType = SummaryType<T> && requires(T &t) {
+        t.acceleration();
+        t.centerOfMass();
+    };
+
+    template<typename T>
+    concept QuadrupolePassiveSummaryType = PassiveSummaryType<T> && requires(T &t) {
+        { t.acceleration() } -> std::convertible_to<Physics::QuadrupoleAcceleration>;
+    };
+
     template<SummaryType S>
     decltype(auto) positionsView(Simulation &simulation) {
         if constexpr(std::is_same_v<typename S::Context, Simulation>)

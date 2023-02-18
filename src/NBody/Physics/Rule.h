@@ -67,8 +67,9 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
+        template<ActiveSummaryType ActiveSummary>
         Acceleration operator()(const Position &activePosition,
-                                const CenterOfMassSummary &activeSummary,
+                                const ActiveSummary &activeSummary,
                                 const Position &passivePosition) const {
 
             // If the active node isn't multipolar, we can just treat it like a single particle
@@ -76,8 +77,9 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
+        template<QuadrupoleActiveSummaryType ActiveSummary>
         Acceleration operator()(const Position &activePosition,
-                                const QuadrupoleMassSummary &activeSummary,
+                                const ActiveSummary &activeSummary,
                                 const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
@@ -112,14 +114,6 @@ namespace NBody::Physics {
             //                          A.x, A.y, A.z);
         }
 
-        template<SummaryType ActiveSummary>
-        Acceleration operator()(const Position &activePosition,
-                                const ActiveSummary &activeSummary,
-                                const Position &passivePosition) const {
-            spdlog::error("Interaction is not implemented for this active node type!");
-            return {};
-        }
-
     public: // Node-node interaction
 
         template<typename ActiveNode, typename PassiveNode>
@@ -131,14 +125,7 @@ namespace NBody::Physics {
             // Self-interaction should never happen!
             assert((void *) &activeNode != (void *) &passiveNode);
 
-            // If the passive node has a center of mass, prefer that over the overall center
-            Position passivePosition;
-            if constexpr(requires(const PassiveNode &n) { n.summary().centerOfMass(); })
-                passivePosition = passiveNode.summary().centerOfMass();
-            else
-                passivePosition = passiveNode.center();
-
-            // The same applies to the active node
+            // If the active node has a center of mass, prefer that over the overall center
             Position activePosition;
             if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
                 activePosition = activeNode.summary().centerOfMass();
@@ -146,10 +133,10 @@ namespace NBody::Physics {
                 activePosition = activeNode.center();
 
             return operator()(activePosition, activeNode.summary(),
-                              passivePosition, passiveNode.summary());
+                              passiveNode.center(), passiveNode.summary());
         }
 
-        template<SummaryType ActiveSummary>
+        template<ActiveSummaryType ActiveSummary>
         Acceleration operator()(
                 const Position &activePosition,
                 const ActiveSummary &activeSummary,
@@ -160,7 +147,7 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
-        template<SummaryType ActiveSummary>
+        template<ActiveSummaryType ActiveSummary>
         QuadrupoleAcceleration operator()(
                 const Position &activePosition,
                 const ActiveSummary &activeSummary,
@@ -189,7 +176,6 @@ namespace NBody::Physics {
 
             float g1 = fac1 * rinv;
             glm::vec3 D1 = d * g1 * _g;
-
 
             float g2 = fac2 * rinv2;
             glm::mat3 d2 = glm::outerProduct(d, d);

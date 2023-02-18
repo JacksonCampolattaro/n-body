@@ -117,7 +117,8 @@ namespace NBody {
 
     };
 
-    using ActiveLinearBVH = LinearBVH<QuadrupoleMassSummary>;
+    using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
+    using QuadrupoleActiveLinearBVH = LinearBVH<QuadrupoleMassSummary>;
 
 }
 
