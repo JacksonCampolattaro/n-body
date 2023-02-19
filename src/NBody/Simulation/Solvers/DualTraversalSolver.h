@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solver.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/lockstepDualTree.h>
+#include <NBody/Simulation/Solvers/Descent/collapseAccelerations.h>
 
 namespace NBody {
 
@@ -55,12 +56,6 @@ namespace NBody {
                                               _simulation.template view<const Position, const Mass>(),
                                               _simulation.template view<const Position, Acceleration>()
                     );
-                    //                    computeAccelerations(
-                    //                            _simulation.template view<const Position, Acceleration>(),
-                    //                            _simulation.template view<const Position, const Mass>(),
-                    //                            _tree.root(),
-                    //                            node
-                    //                    );
                 });
 
                 // This seems like it should perform better, but it actually does worse

@@ -8,14 +8,14 @@
 #include <NBody/Simulation/Solvers/DualTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
-#include "NBody/Simulation/Solvers/Descent/DescentCriterionType.h"
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
 
 namespace NBody {
 
     class MVDRSolver : public DualTreeSolver<
             ActiveLinearBVH,
             PassiveOctree,
-            DiagonalOverDistance
+            Descent::DiagonalOverDistance
     > {
     public:
 
@@ -23,7 +23,7 @@ namespace NBody {
                 DualTreeSolver<
                         ActiveLinearBVH,
                         PassiveOctree,
-                        DiagonalOverDistance
+                        Descent::DiagonalOverDistance
                 >(simulation, rule) {
             passiveTree().maxDepth() = 16;
             passiveTree().maxLeafSize() = 64;
@@ -45,7 +45,7 @@ namespace NBody {
     class QuadrupoleMVDRSolver : public DualTreeSolver<
             ActiveLinearBVH,
             QuadrupolePassiveOctree,
-            DiagonalOverDistance
+            Descent::DiagonalOverDistance
     > {
     public:
 
@@ -53,7 +53,7 @@ namespace NBody {
                 DualTreeSolver<
                         ActiveLinearBVH,
                         QuadrupolePassiveOctree,
-                        DiagonalOverDistance
+                        Descent::DiagonalOverDistance
                 >(simulation, rule) {
             passiveTree().maxDepth() = 16;
             passiveTree().maxLeafSize() = 64;

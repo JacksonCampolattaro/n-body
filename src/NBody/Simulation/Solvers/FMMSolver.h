@@ -7,12 +7,13 @@
 
 #include <NBody/Simulation/Solvers/DualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/SideLengthOverDistance.h>
 
 namespace NBody {
 
     class FMMSolver : public DualTraversalSolver<
             QuadrupoleDualOctree,
-            SideLengthOverDistance
+            Descent::SideLengthOverDistance
     > {
     public:
 

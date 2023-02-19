@@ -6,11 +6,12 @@
 #define N_BODY_BARNESHUTSOLVER_H
 
 #include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/SideLengthOverDistance.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 namespace NBody {
 
-    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, SideLengthOverDistance> {
+    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance> {
     public:
 
         using ActiveTreeSolver::ActiveTreeSolver;
@@ -30,7 +31,7 @@ namespace NBody {
 
     class QuadrupoleBarnesHutSolver : public ActiveTreeSolver<
             QuadrupoleActiveOctree,
-            SideLengthOverDistance
+            Descent::SideLengthOverDistance
     > {
     public:
 
