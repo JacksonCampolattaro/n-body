@@ -12,7 +12,7 @@ namespace NBody {
 
     class FMMSolver : public DualTraversalSolver<
             QuadrupoleDualOctree,
-            DescentCriterion::SideLengthOverDistance
+            SideLengthOverDistance
     > {
     public:
 

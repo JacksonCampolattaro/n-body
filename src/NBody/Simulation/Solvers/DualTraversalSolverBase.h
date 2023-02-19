@@ -7,17 +7,17 @@
 
 #include <NBody/Simulation/Solver.h>
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
-#include <NBody/Simulation/Solvers/Trees/DescentCriterion.h>
+#include "NBody/Simulation/Solvers/Descent/DescentCriterionType.h"
 
 namespace NBody {
 
     using namespace Physics;
 
-    template<typename ActiveTree, typename PassiveTree, typename DescentCriterionType>
+    template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion>
     class DualTraversalSolverBase : public Solver {
     protected:
 
-        DescentCriterionType _descentCriterion{0.4f};
+        DescentCriterion _descentCriterion{0.4f};
 
     public:
 

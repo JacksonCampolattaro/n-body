@@ -10,7 +10,7 @@
 
 namespace NBody {
 
-    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance> {
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, DiagonalOverDistance> {
     public:
 
         using ActiveTreeSolver::ActiveTreeSolver;
@@ -23,7 +23,7 @@ namespace NBody {
 
     class QuadrupoleLinearBVHSolver : public ActiveTreeSolver<
             QuadrupoleActiveLinearBVH,
-            DescentCriterion::DiagonalOverDistance
+            DiagonalOverDistance
     > {
     public:
 

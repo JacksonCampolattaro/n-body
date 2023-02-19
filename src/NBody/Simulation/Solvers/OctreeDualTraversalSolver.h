@@ -12,7 +12,7 @@ namespace NBody {
 
     class OctreeDualTraversalSolver : public DualTraversalSolver<
             DualOctree,
-            DescentCriterion::SideLengthOverDistance
+            SideLengthOverDistance
     > {
     public:
 

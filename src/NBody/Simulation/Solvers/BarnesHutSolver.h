@@ -10,7 +10,7 @@
 
 namespace NBody {
 
-    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, DescentCriterion::SideLengthOverDistance> {
+    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, SideLengthOverDistance> {
     public:
 
         using ActiveTreeSolver::ActiveTreeSolver;
@@ -30,7 +30,7 @@ namespace NBody {
 
     class QuadrupoleBarnesHutSolver : public ActiveTreeSolver<
             QuadrupoleActiveOctree,
-            DescentCriterion::SideLengthOverDistance
+            SideLengthOverDistance
     > {
     public:
 

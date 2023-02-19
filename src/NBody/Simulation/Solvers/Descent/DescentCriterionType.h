@@ -2,18 +2,26 @@
 // Created by Jackson Campolattaro on 1/10/23.
 //
 
-#ifndef N_BODY_DESCENTCRITERION_H
-#define N_BODY_DESCENTCRITERION_H
+#ifndef N_BODY_DESCENTCRITERIONTYPE_H
+#define N_BODY_DESCENTCRITERIONTYPE_H
 
 #include <NBody/Physics/Position.h>
+#include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 #include <glm/glm.hpp>
 
-namespace NBody::DescentCriterion {
+namespace NBody {
 
     // todo: a c++20 "DescentCriterion" concept would be appropriate here
 
     using Physics::Position;
+
+    template<typename T>
+    concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {
+        { t(n, p) } -> std::convertible_to<bool>;
+    } && requires(T &t, const typename ActiveOctree::Node &an, const typename PassiveOctree::Node &pn) {
+        { t(an, pn) } -> std::convertible_to<bool>;
+    };
 
     class SideLengthOverDistance {
     private:
@@ -133,4 +141,4 @@ namespace NBody::DescentCriterion {
 
 }
 
-#endif //N_BODY_DESCENTCRITERION_H
+#endif //N_BODY_DESCENTCRITERIONTYPE_H

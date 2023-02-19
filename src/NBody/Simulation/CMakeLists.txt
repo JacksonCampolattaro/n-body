@@ -25,7 +25,7 @@ add_library(Simulation
         Solvers/Trees/NodeType.h
         Solvers/Trees/NodeBase.h
         Solvers/Trees/Tree.h
-        Solvers/Trees/DescentCriterion.h
+        Solvers/Descent/DescentCriterionType.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h
         Runner.h
@@ -37,7 +37,7 @@ add_library(Simulation
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
         Solvers/DualTraversalSolverBase.h Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
-        Solvers/FMMSolver.h)
+        Solvers/FMMSolver.h Solvers/Descent/activeTree.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
