@@ -31,7 +31,7 @@ namespace NBody::Descent {
             return;
 
         // If the nodes are far enough apart, we can use their summaries
-        if (descentCriterion(activeNode, passiveNode) &&
+        if (descentCriterion(activeNode, passiveNode) == Recommendation::Approximate &&
             !doIntersect(activeNode.boundingBox(), passiveNode.boundingBox())) {
 
             // node-node interaction

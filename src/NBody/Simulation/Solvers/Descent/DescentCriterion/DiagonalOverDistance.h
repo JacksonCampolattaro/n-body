@@ -30,9 +30,19 @@ namespace NBody::Descent {
         }
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
-        inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
-            return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
-                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+        inline Recommendation operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
+
+            float activeDiagonal = activeNode.boundingBox().diagonalLength();
+            float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
+
+            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+
+            if (std::max(activeDiagonal, passiveDiagonal) / distance < _theta)
+                return Recommendation::Approximate;
+
+            return activeDiagonal < passiveDiagonal ?
+                   Recommendation::DescendPassiveNode : Recommendation::DescendActiveNode;
+
         }
 
     };

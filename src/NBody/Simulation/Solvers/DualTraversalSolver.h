@@ -12,6 +12,8 @@
 
 namespace NBody {
 
+    using Descent::DescentCriterionType;
+
     template<typename DualTree, DescentCriterionType DescentCriterion>
     class DualTraversalSolver : public Solver {
     private:

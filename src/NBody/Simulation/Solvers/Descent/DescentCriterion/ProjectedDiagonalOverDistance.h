@@ -34,7 +34,7 @@ namespace NBody::Descent {
         }
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
-        inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
+        inline Recommendation operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
 
             glm::vec3 directionVector = activeNode.summary().centerOfMass() - passiveNode.center();
 
@@ -50,9 +50,16 @@ namespace NBody::Descent {
             glm::vec3 projectedDiagonalA = diagonalA - reflectedUnitVector * glm::dot(diagonalA, reflectedUnitVector);
             glm::vec3 projectedDiagonalP = diagonalP - reflectedUnitVector * glm::dot(diagonalP, reflectedUnitVector);
 
+            float projectedDiagonalLength2A = glm::length2(projectedDiagonalA);
+            float projectedDiagonalLength2P = glm::length2(projectedDiagonalP);
+
             // Use the length of this projected diagonal
-            return (std::max(glm::length2(projectedDiagonalA), glm::length2(projectedDiagonalP))
-                    / glm::length2(directionVector)) < (_theta * _theta);
+            if ((std::max(projectedDiagonalLength2A, projectedDiagonalLength2P) / glm::length2(directionVector))
+                < (_theta * _theta))
+                return Recommendation::Approximate;
+
+            return projectedDiagonalLength2A < projectedDiagonalLength2P ?
+                   Recommendation::DescendPassiveNode : Recommendation::DescendActiveNode;
         }
 
     };

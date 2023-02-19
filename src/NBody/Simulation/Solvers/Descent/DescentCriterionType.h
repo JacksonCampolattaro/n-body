@@ -11,17 +11,24 @@
 
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
 
-namespace NBody {
+namespace NBody::Descent {
 
     // todo: a c++20 "DescentCriterion" concept would be appropriate here
 
     using Physics::Position;
 
+    enum class Recommendation {
+        Approximate = 1 << 0,
+        DescendActiveNode = 1 << 1,
+        DescendPassiveNode = 1 << 2,
+        DescendBothNodes = (DescendActiveNode & DescendPassiveNode)
+    };
+
     template<typename T>
     concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {
         { t(n, p) } -> std::convertible_to<bool>;
     } && requires(T &t, const typename ActiveOctree::Node &an, const typename PassiveOctree::Node &pn) {
-        { t(an, pn) } -> std::convertible_to<bool>;
+        { t(an, pn) } -> std::convertible_to<Recommendation>;
     };
 
     class ThetaDescentCriterion {
