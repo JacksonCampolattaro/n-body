@@ -104,14 +104,6 @@ namespace NBody::Physics {
             float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
 
             return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);
-
-            //            auto a = operator()(
-            //                    activePosition, activeSummary,
-            //                    passivePosition, QuadrupoleAccelerationSummary{}
-            //            ).acceleration();
-            //            spdlog::error("{}, {}, {}  vs  {}, {}, {}",
-            //                          a.x, a.y, a.z,
-            //                          A.x, A.y, A.z);
         }
 
     public: // Node-node interaction
@@ -175,7 +167,7 @@ namespace NBody::Physics {
             fac2 += 3.0f * rinv3;
 
             float g1 = fac1 * rinv;
-            glm::vec3 D1 = d * g1 * _g;
+            glm::vec3 D1 = d * g1;
 
             float g2 = fac2 * rinv2;
             glm::mat3 d2 = glm::outerProduct(d, d);
@@ -185,8 +177,8 @@ namespace NBody::Physics {
             D2.zz() += g1;
 
             return {
-                    D1 * activeSummary.totalMass().mass(),
-                    D2 * -activeSummary.totalMass().mass()
+                    D1 * activeSummary.totalMass().mass() * _g,
+                    D2 * -activeSummary.totalMass().mass() * _g
             };
         }
 
