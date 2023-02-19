@@ -56,6 +56,19 @@ namespace NBody {
                             node
                     );
                 });
+
+                // This seems like it should perform better, but it actually does worse
+//                auto startingNodes = _tree.depthBreak(4);
+//                tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> node) {
+//                    for (auto &otherNode : startingNodes) {
+//                        computeAccelerations(
+//                                _simulation.template view<const Position, Acceleration>(),
+//                                _simulation.template view<const Position, const Mass>(),
+//                                otherNode,
+//                                node
+//                        );
+//                    }
+//                });
             }
 
             {

@@ -67,7 +67,21 @@ namespace NBody {
                     }
                 }
 
+            } else if (passiveNode.isLeaf()) {
+
+                for (auto passiveParticle: passiveNode.contents()) {
+
+                    passiveParticles.get<Acceleration>(passiveParticle) +=
+                            computeAcceleration(
+                                    activeParticles,
+                                    activeNode,
+                                    passiveParticles.get<const Position>(passiveParticle)
+                            );
+
+                }
+
             } else {
+
 
                 // If the passive node isn't a leaf, we'll descend all its children
                 std::span<typename PassiveTree::Node> passiveNodesToDescend =
@@ -85,6 +99,55 @@ namespace NBody {
                         computeAccelerations(passiveParticles, activeParticles,
                                              childActiveNode, childPassiveNode);
                     }
+                }
+            }
+        }
+
+        // todo: This is duplicated from ActiveTreeSolver, and that shouldn't be necessary
+        inline Acceleration computeAcceleration(
+                const entt::basic_view<
+                        entt::entity, entt::exclude_t<>,
+                        const Position, const Mass
+                > &activeParticles,
+                const typename ActiveTree::Node &node,
+                const Position &passivePosition
+        ) {
+
+            // Empty nodes can be ignored
+            if (node.contents().empty()) return Physics::Acceleration{};
+
+            if (_descentCriterion(node, passivePosition)) {
+                return _rule(node, passivePosition);
+            } else {
+
+                // Otherwise, the node can't be summarized
+                if (node.isLeaf()) {
+
+                    // If this is a leaf node, interact with all particles contained
+                    return std::transform_reduce(
+                            node.contents().begin(), node.contents().end(),
+                            Physics::Acceleration{}, std::plus{},
+                            [&](auto entity) {
+                                return _rule(activeParticles.get<const Position>(entity),
+                                             activeParticles.get<const Mass>(entity),
+                                             passivePosition);
+                            }
+                    );
+
+                } else {
+
+                    // If it's a non-leaf node, descend the tree (recursive case)
+                    return std::transform_reduce(
+                            node.children().begin(), node.children().end(),
+                            Physics::Acceleration{}, std::plus{},
+                            [&](const auto &child) {
+                                return computeAcceleration(
+                                        activeParticles,
+                                        child,
+                                        passivePosition
+                                );
+                            }
+                    );
                 }
             }
         }

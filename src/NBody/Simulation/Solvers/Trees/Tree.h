@@ -106,6 +106,30 @@ namespace NBody {
             return queue;
         }
 
+        [[nodiscard]] std::vector<std::reference_wrapper<Node>> depthBreak(std::size_t depth) {
+
+            std::vector<std::reference_wrapper<Node>> queue, children;
+            queue.push_back(root());
+
+            for (int i = 0; i < depth; ++i) {
+                for (auto &node: queue) {
+
+                    // if we bump into a leaf node, we should stop descending early
+                    if (node.get().isLeaf()) return queue;
+
+                    for (auto &child: node.get().children()) {
+                        children.push_back(child);
+                    }
+                }
+
+                queue = children;
+                children.clear();
+            }
+
+            return queue;
+        }
+
+
     protected:
 
         template<typename Context>
