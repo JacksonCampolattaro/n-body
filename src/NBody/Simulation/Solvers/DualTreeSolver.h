@@ -5,30 +5,32 @@
 #ifndef N_BODY_DUALTREESOLVER_H
 #define N_BODY_DUALTREESOLVER_H
 
-#include <NBody/Simulation/Solvers/DualTraversalSolverBase.h>
+#include <NBody/Simulation/Solver.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
+#include <NBody/Simulation/Solvers/Descent/lockstepDualTree.h>
+#include <NBody/Simulation/Solvers/Descent/collapseAccelerations.h>
 
 namespace NBody {
 
-    template<typename ActiveTree, typename PassiveTree, typename DescentCriterionType>
-    class DualTreeSolver : public DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType> {
+    template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion>
+    class DualTreeSolver : public Solver {
     private:
 
         ActiveTree _activeTree;
         PassiveTree _passiveTree;
 
-        // todo: eliminate this, if possible
-        using DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>::computeAccelerations;
-        using DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>::collapseAccelerations;
-        using DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>::_simulation;
-        using DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>::_dt;
-        using DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>::_statusDispatcher;
+        DescentCriterion _descentCriterion{0.4f};
 
     public:
 
         DualTreeSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTraversalSolverBase<ActiveTree, PassiveTree, DescentCriterionType>(simulation, rule),
+                Solver(simulation, rule),
                 _activeTree(simulation),
                 _passiveTree(simulation) {}
+
+        float &theta() { return _descentCriterion.theta(); }
+
+        const float &theta() const { return _descentCriterion.theta(); }
 
         const ActiveTree &activeTree() const { return _activeTree; }
 
@@ -56,11 +58,11 @@ namespace NBody {
                 _statusDispatcher.emit({"Computing accelerations"});
                 auto startingNodes = _passiveTree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
-                    computeAccelerations(
-                            _simulation.template view<const Position, Acceleration>(),
+                    Descent::lockstepDualTree(
+                            _activeTree.root(), node.get(),
+                            _descentCriterion, _rule,
                             _simulation.template view<const Position, const Mass>(),
-                            _activeTree.root(),
-                            node
+                            _simulation.template view<const Position, Acceleration>()
                     );
                 });
             }
@@ -69,7 +71,10 @@ namespace NBody {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.template view<const Position, Acceleration>();
                 // todo: there are better ways of avoiding ambiguity here
-                collapseAccelerations(_passiveTree.root(), view, typename PassiveTree::Node::Summary::Acceleration{});
+                Descent::collapseAccelerations(
+                        _passiveTree.root(), view,
+                        typename PassiveTree::Node::Summary::Acceleration{}
+                );
             }
         }
 

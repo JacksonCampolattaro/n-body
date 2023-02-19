@@ -317,9 +317,9 @@ int main(int argc, char *argv[]) {
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
-    sweepTheta<QuadrupoleBarnesHutSolver>(10'000, thetaValues);
+    //sweepTheta<FMMSolver>(10'000, thetaValues);
+    sweepTheta<QuadrupoleMVDRSolver>(10'000, thetaValues);
     //sweepTheta<QuadrupoleBarnesHutSolver>(100'000, thetaValues);
-    //sweepTheta<BarnesHutSolver>(100'000, {0.5});
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
