@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solvers/Trees/NodeType.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/activeTree.h>
+#include <NBody/Simulation/Solvers/Descent/passiveTree.h>
 
 namespace NBody::Descent {
 
@@ -62,6 +63,23 @@ namespace NBody::Descent {
                                 descentCriterion, rule,
                                 activeContext
                         );
+
+            }
+
+        } else if (activeNode.isLeaf()) {
+
+            // fixme: this never seems to happen, but I'm not sure why
+
+            // If only the active node was a leaf, continue single-tree descent
+            for (auto activeParticle: activeNode.contents()) {
+                spdlog::error("x");
+
+                Descent::passiveTree(
+                        activeNode.summary().centerOfMass(), activeNode.summary().totalMass(),
+                        passiveNode,
+                        descentCriterion, rule,
+                        passiveContext
+                );
 
             }
 

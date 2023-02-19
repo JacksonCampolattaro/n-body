@@ -106,6 +106,18 @@ namespace NBody::Physics {
             return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);
         }
 
+    public: // Particle-node interaction
+
+        template<typename PassiveNode>
+        typename PassiveNode::Summary::Acceleration operator()(
+                const Position &activePosition,
+                const Mass &activeMass,
+                const PassiveNode &passiveNode
+        ) const {
+            return operator()(activePosition, activeMass,
+                              passiveNode.center(), passiveNode.summary());
+        }
+
     public: // Node-node interaction
 
         template<typename ActiveNode, typename PassiveNode>
@@ -124,25 +136,22 @@ namespace NBody::Physics {
             else
                 activePosition = activeNode.center();
 
-            return operator()(activePosition, activeNode.summary(),
+            return operator()(activePosition, activeNode.summary().totalMass(),
                               passiveNode.center(), passiveNode.summary());
         }
 
-        template<ActiveSummaryType ActiveSummary>
         Acceleration operator()(
                 const Position &activePosition,
-                const ActiveSummary &activeSummary,
+                const Mass &activeMass,
                 const Position &passivePosition,
                 const AccelerationSummary &passiveSummary
         ) const {
-            return operator()(activePosition, activeSummary.totalMass(),
-                              passivePosition);
+            return operator()(activePosition, activeMass, passivePosition);
         }
 
-        template<ActiveSummaryType ActiveSummary>
         QuadrupoleAcceleration operator()(
                 const Position &activePosition,
-                const ActiveSummary &activeSummary,
+                const Mass &activeMass,
                 const Position &passivePosition,
                 const QuadrupoleAccelerationSummary &passiveSummary
         ) const {
@@ -177,8 +186,8 @@ namespace NBody::Physics {
             D2.zz() += g1;
 
             return {
-                    D1 * activeSummary.totalMass().mass() * _g,
-                    D2 * -activeSummary.totalMass().mass() * _g
+                    D1 * activeMass.mass() * _g,
+                    D2 * -activeMass.mass() * _g
             };
         }
 

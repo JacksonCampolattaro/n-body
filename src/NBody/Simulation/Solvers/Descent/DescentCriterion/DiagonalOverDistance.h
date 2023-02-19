@@ -16,8 +16,16 @@ namespace NBody::Descent {
 
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
+
+            // todo: I'd really like to avoid this kind of thing, maybe I should have a helper function?
+            Position nodePosition;
+            if constexpr(requires(const TreeNode &n) { n.summary().centerOfMass(); })
+                nodePosition = node.summary().centerOfMass();
+            else
+                nodePosition = node.center();
+
             return (node.boundingBox().diagonalLength() /
-                    glm::distance((glm::vec3) node.summary().centerOfMass(), point))
+                    glm::distance((glm::vec3) nodePosition, point))
                    < _theta;
         }
 
