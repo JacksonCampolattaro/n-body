@@ -5,7 +5,7 @@
 #ifndef N_BODY_MVDRSOLVERSETTINGS_H
 #define N_BODY_MVDRSOLVERSETTINGS_H
 
-#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
+#include "NBody/Physics/SummaryType.h"
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
@@ -25,6 +25,21 @@ namespace UI {
     public:
 
         explicit MVDRSolverSettings(NBody::MVDRSolver &solver);
+
+    };
+
+    class QuadrupoleMVDRSolverSettings : public BuilderWidget<Gtk::Box> {
+    private:
+
+        NBody::QuadrupoleMVDRSolver &_solver;
+
+        FloatEntry &_thetaEntry;
+        Gtk::SpinButton &_maxPassiveTreeDepthEntry;
+        Gtk::SpinButton &_maxPassiveTreeLeafSizeEntry;
+
+    public:
+
+        explicit QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver &solver);
 
     };
 

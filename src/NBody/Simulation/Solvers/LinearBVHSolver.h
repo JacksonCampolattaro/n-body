@@ -13,12 +13,25 @@ namespace NBody {
     class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance> {
     public:
 
-        LinearBVHSolver(Simulation &simulation, Physics::Rule &rule) :
-                ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance>(simulation, rule) {}
+        using ActiveTreeSolver::ActiveTreeSolver;
 
         std::string id() override { return "linear-bvh"; };
 
         std::string name() override { return "Linear-BVH"; };
+
+    };
+
+    class QuadrupoleLinearBVHSolver : public ActiveTreeSolver<
+            QuadrupoleActiveLinearBVH,
+            DescentCriterion::DiagonalOverDistance
+    > {
+    public:
+
+        using ActiveTreeSolver::ActiveTreeSolver;
+
+        std::string id() override { return "linear-bvh-4p"; };
+
+        std::string name() override { return "Linear-BVH (Quadrupole)"; };
 
     };
 }

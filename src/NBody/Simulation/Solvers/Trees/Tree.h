@@ -40,18 +40,18 @@ namespace NBody {
 
         Tree(Simulation &simulation) :
                 _simulation(simulation),
-                _indices{relevantEntities<typename Node::SummaryType>(_simulation)},
+                _indices{relevantEntities<typename Node::Summary>(_simulation)},
                 _root{std::span<Entity>{_indices}} {
 
             // If the simulation has new particles, add them to the list
             _simulation.signal_particles_added.connect([&](auto newEntities) {
-                _indices = relevantEntities<typename Node::SummaryType>(_simulation);
+                _indices = relevantEntities<typename Node::Summary>(_simulation);
                 _root = Node{_indices};
             });
 
             // If the simulation has particles removed, take them from the list
             _simulation.signal_particles_removed.connect([&](auto removedEntities) {
-                _indices = relevantEntities<typename Node::SummaryType>(_simulation);
+                _indices = relevantEntities<typename Node::Summary>(_simulation);
                 _root = Node{_indices};
             });
 

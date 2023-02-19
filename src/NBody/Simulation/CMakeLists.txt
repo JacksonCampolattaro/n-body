@@ -17,17 +17,12 @@ pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.6
 
 add_library(Simulation
         Simulation.h Simulation.cpp
-        BoundingBox.h
         Solver.h
         Solvers/MultiSolver.h
         Solvers/MortonSort.h
         Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
         Solvers/BarnesHutSolver.h
         Solvers/Trees/NodeType.h
-        Solvers/Trees/SummaryType.h
-        Solvers/Trees/Summaries/CenterOfMassSummary.h
-        Solvers/Trees/Summaries/AccelerationSummary.h
-        Solvers/Trees/Summaries/DualSummary.h
         Solvers/Trees/NodeBase.h
         Solvers/Trees/Tree.h
         Solvers/Trees/DescentCriterion.h
@@ -40,7 +35,9 @@ add_library(Simulation
         Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
-        Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h Solvers/Trees/Summaries/BoundingBoxSummary.h Solvers/DualTraversalSolverBase.h Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h)
+        Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
+        Solvers/DualTraversalSolverBase.h Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
+        Solvers/FMMSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

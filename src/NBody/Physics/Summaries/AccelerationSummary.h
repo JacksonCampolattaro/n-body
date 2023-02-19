@@ -5,13 +5,15 @@
 #ifndef N_BODY_ACCELERATIONSUMMARY_H
 #define N_BODY_ACCELERATIONSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
+#include "NBody/Physics/SummaryType.h"
 
 namespace NBody {
 
-    using namespace Physics;
-
     class AccelerationSummary {
+    public:
+
+        using Acceleration = Physics::Acceleration;
+
     private:
 
         Acceleration _acceleration{0.0f, 0.0f, 0.0f};
@@ -20,12 +22,12 @@ namespace NBody {
 
         using Context = entt::basic_view<
                 entt::entity, entt::exclude_t<>,
-                const NBody::Physics::Position,
-                const NBody::Physics::Acceleration
+                const Physics::Position,
+                const Physics::Acceleration
         >;
 
         static Context context(Simulation &simulation) {
-            return simulation.view<const Position, const Acceleration>();
+            return simulation.view<const Physics::Position, const Physics::Acceleration>();
         }
 
     public:

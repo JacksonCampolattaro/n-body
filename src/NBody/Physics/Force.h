@@ -15,9 +15,7 @@ namespace NBody::Physics {
     class Force : public glm::vec3 {
     public:
 
-        Force() : glm::vec3() {};
-
-        Force(float x, float y, float z) : glm::vec3(x, y, z) {};
+        using glm::vec3::vec;
 
         Force(glm::vec3 vector) : glm::vec3(vector) {};
 

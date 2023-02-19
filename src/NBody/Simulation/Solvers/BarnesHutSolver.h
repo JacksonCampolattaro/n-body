@@ -13,12 +13,32 @@ namespace NBody {
     class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, DescentCriterion::SideLengthOverDistance> {
     public:
 
-        BarnesHutSolver(Simulation &simulation, Physics::Rule &rule) :
-                ActiveTreeSolver<ActiveOctree, DescentCriterion::SideLengthOverDistance>(simulation, rule) {}
+        using ActiveTreeSolver::ActiveTreeSolver;
 
         std::string id() override { return "barnes-hut"; };
 
         std::string name() override { return "Barnes-Hut"; };
+
+        int &maxDepth() { return tree().maxDepth(); }
+
+        const int &maxDepth() const { return tree().maxDepth(); }
+
+        int &maxLeafSize() { return tree().maxLeafSize(); }
+
+        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+    };
+
+    class QuadrupoleBarnesHutSolver : public ActiveTreeSolver<
+            QuadrupoleActiveOctree,
+            DescentCriterion::SideLengthOverDistance
+    > {
+    public:
+
+        using ActiveTreeSolver::ActiveTreeSolver;
+
+        std::string id() override { return "barnes-hut-4p"; };
+
+        std::string name() override { return "Barnes-Hut (Quadrupole)"; };
 
         int &maxDepth() { return tree().maxDepth(); }
 

@@ -2,45 +2,48 @@
 // Created by Jackson Campolattaro on 2/7/23.
 //
 
-#ifndef N_BODY_DUALSUMMARY_H
-#define N_BODY_DUALSUMMARY_H
+#ifndef N_BODY_CENTEROFMASSSUMMARY_H
+#define N_BODY_CENTEROFMASSSUMMARY_H
 
-#include <NBody/Simulation/Solvers/Trees/SummaryType.h>
+#include "NBody/Physics/SummaryType.h"
 
 namespace NBody {
 
     using namespace Physics;
 
-    class DualSummary {
+    class CenterOfMassSummary {
     private:
 
         Position _centerOfMass{0.0f, 0.0f, 0.0f};
         Mass _totalMass{0.0f};
 
-        Acceleration _acceleration{0.0f, 0.0f, 0.0f};
+    public:
+
+        using Context = entt::basic_group<
+                entt::entity, entt::exclude_t<>,
+                entt::get_t<>,
+                const Position,
+                const Mass
+        >;
+
+        static Context context(Simulation &simulation) {
+            return simulation.group<const Position, const Mass>();
+        }
 
     public:
 
-        using Context = Simulation;
+        CenterOfMassSummary() {}
 
-        static Context &context(Simulation &simulation) { return simulation; }
-
-    public:
-
-        DualSummary() {}
-
-        void summarize(const std::span<Entity> &entities, const Context &context) {
+        template<typename C>
+        void summarize(const std::span<Entity> &entities, const C &context) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};
 
             for (const auto &entity: entities) {
-                if (context.template all_of<Position, Mass>(entity)) {
-                    auto entityPosition = context.template get<const Position>(entity);
-                    auto entityMass = context.template get<const Mass>(entity).mass();
-                    _totalMass.mass() += entityMass;
-                    _centerOfMass = _centerOfMass + (entityMass * entityPosition);
-                }
+                auto entityMass = context.template get<const Mass>(entity).mass();
+                _totalMass.mass() += entityMass;
+                _centerOfMass = _centerOfMass + (entityMass * context.template get<const Position>(entity));
             }
             _centerOfMass = _centerOfMass / _totalMass.mass();
         }
@@ -58,15 +61,13 @@ namespace NBody {
             _centerOfMass = _centerOfMass / _totalMass.mass();
         }
 
+        [[nodiscard]] Position &centerOfMass() { return _centerOfMass; }
+
         [[nodiscard]] const Position &centerOfMass() const { return _centerOfMass; }
 
         [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
 
-        [[nodiscard]] const Acceleration &acceleration() const { return _acceleration; }
-
-        Acceleration &acceleration() { return _acceleration; }
-
     };
 }
 
-#endif //N_BODY_DUALSUMMARY_H
+#endif //N_BODY_CENTEROFMASSSUMMARY_H

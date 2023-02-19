@@ -15,3 +15,14 @@ UI::LinearBVHSolverSettings::LinearBVHSolverSettings(NBody::LinearBVHSolver &sol
     });
 
 }
+
+UI::QuadrupoleLinearBVHSolverSettings::QuadrupoleLinearBVHSolverSettings(NBody::QuadrupoleLinearBVHSolver &solver) :
+        BuilderWidget<Gtk::Box>("/ui/linear_bvh_solver_settings.xml"),
+        _solver(solver),
+        _thetaEntry(getWidget<FloatEntry>("theta-float-entry")) {
+
+    _thetaEntry.setValue(_solver.theta());
+    _thetaEntry.signal_changed.connect([&](float v) {
+        _solver.theta() = v;
+    });
+}

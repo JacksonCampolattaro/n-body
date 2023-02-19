@@ -10,6 +10,7 @@
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
 #include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
+#include <NBody/Simulation/Solvers/FMMSolver.h>
 
 #include <gtkmm/singleselection.h>
 #include <giomm/liststore.h>
@@ -30,12 +31,33 @@ namespace NBody {
                 NBody::Solver(simulation, rule) {
 
             // Add available solvers
-            _solverList->append(Glib::make_refptr_for_instance(new NBody::NaiveSolver(_simulation, _rule)));
-            _solverList->append(Glib::make_refptr_for_instance(new NBody::BarnesHutSolver(_simulation, _rule)));
-            _solverList->append(Glib::make_refptr_for_instance(new NBody::LinearBVHSolver(_simulation, _rule)));
-            _solverList->append(Glib::make_refptr_for_instance(new NBody::MVDRSolver(_simulation, _rule)));
-            _solverList->append(
-                    Glib::make_refptr_for_instance(new NBody::OctreeDualTraversalSolver(_simulation, _rule)));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::NaiveSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::BarnesHutSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::QuadrupoleBarnesHutSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::LinearBVHSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::QuadrupoleLinearBVHSolver(_simulation, _rule))
+            );
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::MVDRSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::QuadrupoleMVDRSolver(_simulation, _rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::OctreeDualTraversalSolver(_simulation, _rule))
+            );
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::FMMSolver(_simulation, _rule)
+            ));
 
             // One solver must always be selected
             _solverSelection->set_can_unselect(false);

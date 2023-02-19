@@ -10,10 +10,11 @@
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
 
-#include "NBody/Simulation/BoundingBox.h"
+#include "NBody/Physics/BoundingBox.h"
 
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/BoundingBoxSummary.h>
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
+#include <NBody/Physics/Summaries/BoundingBoxSummary.h>
 
 namespace NBody {
 
@@ -112,22 +113,12 @@ namespace NBody {
                                   context);
             });
             summarizeTreeTop(toBeRefined, context);
-
-            // todo: maybe non-parallel construction should be available as an option?
-            //            root().refine(
-            //                    std::numeric_limits<std::size_t>::max(),
-            //                    [&](const auto &n) {
-            //                        // Don't split if all entities in this node have the same morton code
-            //                        return context.get<const MortonCode>(n.contents().front()) !=
-            //                               context.get<const MortonCode>(n.contents().back());
-            //                    },
-            //                    context
-            //            );
         }
 
     };
 
     using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
+    using QuadrupoleActiveLinearBVH = LinearBVH<QuadrupoleMassSummary>;
 
 }
 

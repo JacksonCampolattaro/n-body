@@ -17,9 +17,11 @@
 #include "NBody/Physics/Rule.h"
 
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/CenterOfMassSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/AccelerationSummary.h>
-#include <NBody/Simulation/Solvers/Trees/Summaries/DualSummary.h>
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleDualSummary.h>
+#include <NBody/Physics/Summaries/AccelerationSummary.h>
+#include <NBody/Physics/Summaries/DualSummary.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
@@ -184,12 +186,12 @@ namespace NBody {
 
         void build() override {
 
-            BoundingBox boundingBox = outerBoundingBox<typename Node::SummaryType>(simulation());
+            BoundingBox boundingBox = outerBoundingBox<typename Node::Summary>(simulation());
             glm::vec3 dimensions = boundingBox.dimensions();
             root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
             root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
 
-            const auto &context = Node::SummaryType::context(simulation());
+            const auto &context = Node::Summary::context(simulation());
             int preBuildDepth = 2;
             auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
@@ -221,8 +223,11 @@ namespace NBody {
     };
 
     using ActiveOctree = Octree<CenterOfMassSummary>;
+    using QuadrupoleActiveOctree = Octree<QuadrupoleMassSummary>;
     using PassiveOctree = Octree<AccelerationSummary>;
+    using QuadrupolePassiveOctree = Octree<QuadrupoleAccelerationSummary>;
     using DualOctree = Octree<DualSummary>;
+    using QuadrupoleDualOctree = Octree<QuadrupoleDualSummary>;
 
 }
 

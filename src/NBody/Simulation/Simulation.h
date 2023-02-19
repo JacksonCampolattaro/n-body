@@ -30,7 +30,7 @@
 #include <glibmm/dispatcher.h>
 #include <giomm/file.h>
 
-#include "BoundingBox.h"
+#include "NBody/Physics/BoundingBox.h"
 
 using nlohmann::json;
 using std::istream;

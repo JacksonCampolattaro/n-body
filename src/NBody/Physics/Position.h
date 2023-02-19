@@ -16,9 +16,7 @@ namespace NBody::Physics {
     class Position : public glm::vec3 {
     public:
 
-        Position() : glm::vec3() {};
-
-        Position(float x, float y, float z) : glm::vec3(x, y, z) {};
+        using glm::vec3::vec;
 
         Position(glm::vec3 vector) : glm::vec3(vector) {};
 

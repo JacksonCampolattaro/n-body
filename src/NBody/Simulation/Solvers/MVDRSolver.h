@@ -12,7 +12,11 @@
 
 namespace NBody {
 
-    class MVDRSolver : public DualTreeSolver<ActiveLinearBVH, PassiveOctree, DescentCriterion::DiagonalOverDistance> {
+    class MVDRSolver : public DualTreeSolver<
+            ActiveLinearBVH,
+            PassiveOctree,
+            DescentCriterion::DiagonalOverDistance
+    > {
     public:
 
         MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
@@ -21,13 +25,43 @@ namespace NBody {
                         PassiveOctree,
                         DescentCriterion::DiagonalOverDistance
                 >(simulation, rule) {
-            passiveTree().maxDepth() = 32;
-            passiveTree().maxLeafSize() = 16;
+            passiveTree().maxDepth() = 16;
+            passiveTree().maxLeafSize() = 64;
         }
 
         std::string id() override { return "mvdr"; };
 
         std::string name() override { return "Mark van de Ruit"; };
+
+        int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
+
+        const int &passiveTreeMaxDepth() const { return passiveTree().maxDepth(); }
+
+        int &passiveTreeMaxLeafSize() { return passiveTree().maxLeafSize(); }
+
+        const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
+    };
+
+    class QuadrupoleMVDRSolver : public DualTreeSolver<
+            ActiveLinearBVH,
+            QuadrupolePassiveOctree,
+            DescentCriterion::DiagonalOverDistance
+    > {
+    public:
+
+        QuadrupoleMVDRSolver(Simulation &simulation, Physics::Rule &rule) :
+                DualTreeSolver<
+                        ActiveLinearBVH,
+                        QuadrupolePassiveOctree,
+                        DescentCriterion::DiagonalOverDistance
+                >(simulation, rule) {
+            passiveTree().maxDepth() = 16;
+            passiveTree().maxLeafSize() = 64;
+        }
+
+        std::string id() override { return "mvdr-4p"; };
+
+        std::string name() override { return "Mark van de Ruit (Quadrupole)"; };
 
         int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
 

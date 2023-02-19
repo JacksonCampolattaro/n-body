@@ -12,7 +12,14 @@ add_library(Physics
         Position.h
         Velocity.h
         Mass.cpp Mass.h
-        Rule.h Force.h Acceleration.h)
+        BoundingBox.h
+        SummaryType.h
+        Summaries/CenterOfMassSummary.h
+        Summaries/QuadrupoleMassSummary.h
+        Summaries/AccelerationSummary.h
+        Summaries/DualSummary.h
+        Summaries/BoundingBoxSummary.h
+        Rule.h Force.h Acceleration.h Quadrupole.h Summaries/QuadrupoleDualSummary.h QuadrupoleAcceleration.h Summaries/QuadrupoleAccelerationSummary.h)
 
 target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

@@ -25,12 +25,20 @@ namespace UI {
 
     };
 
+    class QuadrupoleLinearBVHSolverSettings : public BuilderWidget<Gtk::Box> {
+    private:
+
+        NBody::QuadrupoleLinearBVHSolver &_solver;
+
+        FloatEntry &_thetaEntry;
+
+    public:
+
+        QuadrupoleLinearBVHSolverSettings(NBody::QuadrupoleLinearBVHSolver &solver);
+
+    };
+
 }
-
-
-class LinearBVHSolverSettings {
-
-};
 
 
 #endif //N_BODY_LINEARBVHSOLVERSETTINGS_H

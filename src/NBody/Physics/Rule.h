@@ -11,8 +11,16 @@
 
 #include "Position.h"
 #include "Acceleration.h"
+#include "QuadrupoleAcceleration.h"
 #include "Force.h"
 #include "Mass.h"
+#include "Quadrupole.h"
+#include "SummaryType.h"
+
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
+#include <NBody/Physics/Summaries/AccelerationSummary.h>
+#include <NBody/Physics/Summaries/QuadrupoleAccelerationSummary.h>
 
 namespace NBody::Physics {
 
@@ -26,27 +34,155 @@ namespace NBody::Physics {
 
         explicit Rule(const float &G = 1.0, const float &epsilon = 0.0001) : _g(G), _epsilon(epsilon) {};
 
-        Force operator()(const Position &activePosition, const Mass &activeMass,
-                         const Position &passivePosition, const Mass &passiveMass) const {
+    public: // Particle-particle interaction
 
-            if (activePosition == passivePosition) return {};
-
-            float force = _g * passiveMass.mass() * activeMass.mass() /
-                          (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
-
-            return glm::normalize(activePosition - passivePosition) * force;
-        }
-
-        Acceleration operator()(const Position &activePosition, const Mass &activeMass,
+        Acceleration operator()(const Position &activePosition,
+                                const Mass &activeMass,
                                 const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
 
-            float force = _g * activeMass.mass() /
-                          (glm::distance2((glm::vec3) activePosition, (glm::vec3) passivePosition) + _epsilon);
-
-            return glm::normalize(activePosition - passivePosition) * force;
+            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            glm::vec3 differenceInPositions = passivePosition - activePosition;
+            float r2 = glm::length2(differenceInPositions);
+            float r = std::sqrt(r2 + _epsilon);
+            float scaling = -_g * activeMass.mass() / (r * r * r);
+            return scaling * differenceInPositions;
         }
+
+    public: // Node-particle interaction
+
+        template<typename ActiveNode>
+        Acceleration operator()(const ActiveNode &activeNode,
+                                const Position &passivePosition) const {
+
+            // If the active node has a center of mass, prefer that over the overall center
+            Position activePosition;
+            if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                activePosition = activeNode.summary().centerOfMass();
+            else
+                activePosition = activeNode.center();
+
+            return operator()(activePosition, activeNode.summary(),
+                              passivePosition);
+        }
+
+        template<ActiveSummaryType ActiveSummary>
+        Acceleration operator()(const Position &activePosition,
+                                const ActiveSummary &activeSummary,
+                                const Position &passivePosition) const {
+
+            // If the active node isn't multipolar, we can just treat it like a single particle
+            return operator()(activePosition, activeSummary.totalMass(),
+                              passivePosition);
+        }
+
+        template<QuadrupoleActiveSummaryType ActiveSummary>
+        Acceleration operator()(const Position &activePosition,
+                                const ActiveSummary &activeSummary,
+                                const Position &passivePosition) const {
+
+            if (activePosition == passivePosition) return {};
+
+            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            glm::vec3 d = passivePosition - activePosition;
+            float r2 = glm::length2(d);
+            float r = std::sqrt(r2 + _epsilon);
+            float scaling = -_g * activeSummary.totalMass().mass() / (r * r * r);
+
+            float qScaling = _g / (r * r * r * r * r);
+
+            // todo: maybe this could be better expressed as a matrix-vector multiplication?
+            float mrr = d.x * d.x * activeSummary.moment().xx() +
+                        d.y * d.y * activeSummary.moment().yy() +
+                        d.z * d.z * activeSummary.moment().zz() +
+                        2.0f * (
+                                d.x * d.y * activeSummary.moment().xy() +
+                                d.x * d.z * activeSummary.moment().xz() +
+                                d.y * d.z * activeSummary.moment().yz()
+                        );
+            float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
+
+            return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);
+        }
+
+    public: // Node-node interaction
+
+        template<typename ActiveNode, typename PassiveNode>
+        typename PassiveNode::Summary::Acceleration operator()(
+                const ActiveNode &activeNode,
+                const PassiveNode &passiveNode
+        ) const {
+
+            // Self-interaction should never happen!
+            assert((void *) &activeNode != (void *) &passiveNode);
+
+            // If the active node has a center of mass, prefer that over the overall center
+            Position activePosition;
+            if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                activePosition = activeNode.summary().centerOfMass();
+            else
+                activePosition = activeNode.center();
+
+            return operator()(activePosition, activeNode.summary(),
+                              passiveNode.center(), passiveNode.summary());
+        }
+
+        template<ActiveSummaryType ActiveSummary>
+        Acceleration operator()(
+                const Position &activePosition,
+                const ActiveSummary &activeSummary,
+                const Position &passivePosition,
+                const AccelerationSummary &passiveSummary
+        ) const {
+            return operator()(activePosition, activeSummary.totalMass(),
+                              passivePosition);
+        }
+
+        template<ActiveSummaryType ActiveSummary>
+        QuadrupoleAcceleration operator()(
+                const Position &activePosition,
+                const ActiveSummary &activeSummary,
+                const Position &passivePosition,
+                const QuadrupoleAccelerationSummary &passiveSummary
+        ) const {
+
+            if (activePosition == passivePosition) return {};
+
+            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
+            // "fmm_node_node_interaction"
+
+            glm::vec3 d = passivePosition - activePosition;
+            float r2 = glm::length2(d);
+            float r = std::sqrt(r2 + _epsilon);
+
+            float rinv = 1.0f / r;
+            float rinv2 = rinv * rinv;
+            float rinv3 = rinv2 * rinv;
+
+            float fac1 = 0.0f;
+            float fac2 = 0.0f;
+
+            fac1 -= rinv2;
+            fac2 += 3.0f * rinv3;
+
+            float g1 = fac1 * rinv;
+            glm::vec3 D1 = d * g1;
+
+            float g2 = fac2 * rinv2;
+            glm::mat3 d2 = glm::outerProduct(d, d);
+            Quadrupole D2{d2 * g2};
+            D2.xx() += g1;
+            D2.yy() += g1;
+            D2.zz() += g1;
+
+            return {
+                    D1 * activeSummary.totalMass().mass() * _g,
+                    D2 * -activeSummary.totalMass().mass() * _g
+            };
+        }
+
+    public:
 
         float &g() { return _g; }
 

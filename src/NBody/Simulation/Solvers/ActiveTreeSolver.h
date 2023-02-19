@@ -11,7 +11,7 @@
 namespace NBody {
 
     template<typename TreeType, typename DescentCriterionType>
-    class ActiveTreeSolver: public Solver {
+    class ActiveTreeSolver : public Solver {
     private:
 
         TreeType _tree;
@@ -75,9 +75,7 @@ namespace NBody {
             if (node.contents().empty()) return Physics::Acceleration{};
 
             if (_descentCriterion(node, passivePosition)) {
-
-                return _rule(node.summary().centerOfMass(), node.summary().totalMass(), passivePosition);
-
+                return _rule(node, passivePosition);
             } else {
 
                 // Otherwise, the node can't be summarized

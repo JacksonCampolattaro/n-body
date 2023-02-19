@@ -22,6 +22,7 @@
 #include "LinearBVHSolverSettings.h"
 #include "MVDRSolverSettings.h"
 #include "OctreeDualTraversalSolverSettings.h"
+#include "FMMSolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/ListView/StackView.h"

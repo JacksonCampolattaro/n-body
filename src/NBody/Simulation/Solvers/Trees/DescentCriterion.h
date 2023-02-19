@@ -32,7 +32,7 @@ namespace NBody::DescentCriterion {
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
-            return (std::max(activeNode.sideLength(), passiveNode.sideLength()) /
+            return (2.0f * std::max(activeNode.sideLength(), passiveNode.sideLength()) /
                     glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
@@ -62,6 +62,12 @@ namespace NBody::DescentCriterion {
         inline bool operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
             return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
                     glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            //            if constexpr(requires(const PassiveTreeNode &n) { n.sideLength(); })
+            //                return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.sideLength()) /
+            //                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
+            //            else
+            //                return (std::max(activeNode.boundingBox().diagonalLength(), passiveNode.boundingBox().diagonalLength()) /
+            //                        glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())) < _theta;
         }
 
         [[nodiscard]] const float &theta() const { return _theta; }
@@ -85,7 +91,7 @@ namespace NBody::DescentCriterion {
             glm::vec3 directionVector = point - node.summary().centerOfMass();
 
             // The diagonal of the bounding box always extends from min to max, bottom left to top right
-            glm::vec3 diagonal = node.activeBoundingBox().diagonal();
+            glm::vec3 diagonal = node.boundingBox().diagonal();
 
             // We want to make the direction vector roughly orthogonal, so it extends from top left to bottom right
             // This is done by explicitly setting its signs before normalizing
