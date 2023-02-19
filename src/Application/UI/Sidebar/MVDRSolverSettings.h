@@ -28,6 +28,21 @@ namespace UI {
 
     };
 
+    class QuadrupoleMVDRSolverSettings : public BuilderWidget<Gtk::Box> {
+    private:
+
+        NBody::QuadrupoleMVDRSolver &_solver;
+
+        FloatEntry &_thetaEntry;
+        Gtk::SpinButton &_maxPassiveTreeDepthEntry;
+        Gtk::SpinButton &_maxPassiveTreeLeafSizeEntry;
+
+    public:
+
+        explicit QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver &solver);
+
+    };
+
 }
 
 

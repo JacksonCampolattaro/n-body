@@ -61,7 +61,7 @@ namespace NBody {
 
         std::string id() override { return "mvdr-4p"; };
 
-        std::string name() override { return "Quadrupole Mark van de Ruit"; };
+        std::string name() override { return "Mark van de Ruit (Quadrupole)"; };
 
         int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
 

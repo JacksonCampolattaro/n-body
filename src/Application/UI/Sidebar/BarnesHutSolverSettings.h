@@ -27,6 +27,21 @@ namespace UI {
 
     };
 
+    class QuadrupoleBarnesHutSolverSettings : public BuilderWidget<Gtk::Box> {
+    private:
+
+        NBody::QuadrupoleBarnesHutSolver &_solver;
+
+        FloatEntry &_thetaEntry;
+        Gtk::SpinButton &_maxDepthEntry;
+        Gtk::SpinButton &_maxLeafSizeEntry;
+
+    public:
+
+        QuadrupoleBarnesHutSolverSettings(NBody::QuadrupoleBarnesHutSolver &solver);
+
+    };
+
 }
 
 #endif //N_BODY_BARNESHUTSOLVERSETTINGS_H

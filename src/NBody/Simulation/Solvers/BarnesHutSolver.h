@@ -38,7 +38,7 @@ namespace NBody {
 
         std::string id() override { return "barnes-hut-4p"; };
 
-        std::string name() override { return "Quadrupole Barnes-Hut"; };
+        std::string name() override { return "Barnes-Hut (Quadrupole)"; };
 
         int &maxDepth() { return tree().maxDepth(); }
 

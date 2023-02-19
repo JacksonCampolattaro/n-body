@@ -37,7 +37,7 @@ add_library(Simulation
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
         Solvers/DualTraversalSolverBase.h Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
-        )
+        Solvers/FMMSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

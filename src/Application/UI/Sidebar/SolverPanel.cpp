@@ -42,12 +42,20 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     return new NaiveSolverSettings((NBody::NaiveSolver &) *solver);
                 if (solver->id() == "barnes-hut")
                     return new BarnesHutSolverSettings((NBody::BarnesHutSolver &) *solver);
+                if (solver->id() == "barnes-hut-4p")
+                    return new QuadrupoleBarnesHutSolverSettings((NBody::QuadrupoleBarnesHutSolver &) *solver);
                 if (solver->id() == "linear-bvh")
                     return new LinearBVHSolverSettings((NBody::LinearBVHSolver &) *solver);
+                if (solver->id() == "linear-bvh-4p")
+                    return new QuadrupoleLinearBVHSolverSettings((NBody::QuadrupoleLinearBVHSolver &) *solver);
                 if (solver->id() == "mvdr")
                     return new MVDRSolverSettings((NBody::MVDRSolver &) *solver);
+                if (solver->id() == "mvdr-4p")
+                    return new QuadrupoleMVDRSolverSettings((NBody::QuadrupoleMVDRSolver &) *solver);
                 if (solver->id() == "octree-dual-traversal")
                     return new OctreeDualTraversalSolverSettings((NBody::OctreeDualTraversalSolver &) *solver);
+                if (solver->id() == "fmm-4p")
+                    return new FMMSolverSettings((NBody::FMMSolver &) *solver);
                 return new Gtk::Label{"Unrecognized Solver"};
             }
     ));

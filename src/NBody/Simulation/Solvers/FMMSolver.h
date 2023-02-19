@@ -1,26 +1,26 @@
 //
-// Created by Jackson Campolattaro on 2/10/23.
+// Created by Jackson Campolattaro on 2/19/23.
 //
 
-#ifndef N_BODY_OCTREEDUALTRAVERSALSOLVER_H
-#define N_BODY_OCTREEDUALTRAVERSALSOLVER_H
+#ifndef N_BODY_FMMSOLVER_H
+#define N_BODY_FMMSOLVER_H
 
 #include <NBody/Simulation/Solvers/DualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 namespace NBody {
 
-    class OctreeDualTraversalSolver : public DualTraversalSolver<
-            DualOctree,
+    class FMMSolver : public DualTraversalSolver<
+            QuadrupoleDualOctree,
             DescentCriterion::SideLengthOverDistance
     > {
     public:
 
         using DualTraversalSolver::DualTraversalSolver;
 
-        std::string id() override { return "octree-dual-traversal"; };
+        std::string id() override { return "fmm-4p"; };
 
-        std::string name() override { return "Octree Dual Traversal"; };
+        std::string name() override { return "Fast Multipole Method (Quadrupole)"; };
 
         int &maxDepth() { return tree().maxDepth(); }
 
@@ -30,7 +30,7 @@ namespace NBody {
 
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
-
 }
 
-#endif //N_BODY_OCTREEDUALTRAVERSALSOLVER_H
+
+#endif //N_BODY_FMMSOLVER_H
