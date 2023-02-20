@@ -9,6 +9,7 @@
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/activeTree.h>
 #include <NBody/Simulation/Solvers/Descent/passiveTree.h>
+#include <NBody/Simulation/Solvers/Descent/none.h>
 
 namespace NBody::Descent {
 
@@ -31,8 +32,7 @@ namespace NBody::Descent {
             return;
 
         // If the nodes are far enough apart, we can use their summaries
-        if (descentCriterion(activeNode, passiveNode) == Recommendation::Approximate &&
-            !doIntersect(activeNode.boundingBox(), passiveNode.boundingBox())) {
+        if (descentCriterion(activeNode, passiveNode) == Recommendation::Approximate) {
 
             // node-node interaction
             passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
@@ -71,17 +71,15 @@ namespace NBody::Descent {
             // fixme: this never seems to happen, but I'm not sure why
 
             // If only the active node was a leaf, continue single-tree descent
-            for (auto activeParticle: activeNode.contents()) {
-                spdlog::error("x");
-
-                Descent::passiveTree(
-                        activeNode.summary().centerOfMass(), activeNode.summary().totalMass(),
-                        passiveNode,
-                        descentCriterion, rule,
-                        passiveContext
-                );
-
-            }
+            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            //            for (auto activeParticle: activeNode.contents()) {
+            //                Descent::passiveTree(
+            //                        activeNode.summary().centerOfMass(), activeNode.summary().totalMass(),
+            //                        passiveNode,
+            //                        descentCriterion, rule,
+            //                        passiveContext
+            //                );
+            //            }
 
         } else {
 

@@ -30,13 +30,9 @@ namespace NBody {
                                               );
                                           }
                     ) / (float) scenario["particles"].size());
-
-            spdlog::info("Average force = {}", _rmsForce);
         }
 
-        const json &scenario() const { return _scenario; }
-
-        Physics::Rule &rule() { return _rule; }
+        float error(const Simulation &candidateSimulation) const override { return maximumError(candidateSimulation); }
 
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
             assert(a == b);

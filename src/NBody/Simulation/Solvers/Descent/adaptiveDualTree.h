@@ -67,13 +67,13 @@ namespace NBody::Descent {
                 if (passiveNode.isLeaf()) {
 
                     // todo: it seems like in some cases it's better to skip passive traversal entirely
-                    //Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
-                    for (auto &passiveParticle: passiveNode.contents())
-                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
-                                activeNode, passiveContext.get<const Position>(passiveParticle),
-                                descentCriterion, rule,
-                                activeContext
-                        );
+                    Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+//                    for (auto &passiveParticle: passiveNode.contents())
+//                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
+//                                activeNode, passiveContext.get<const Position>(passiveParticle),
+//                                descentCriterion, rule,
+//                                activeContext
+//                        );
 
                 } else {
 

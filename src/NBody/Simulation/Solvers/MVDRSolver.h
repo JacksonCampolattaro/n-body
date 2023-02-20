@@ -55,8 +55,8 @@ namespace NBody {
                         QuadrupolePassiveOctree,
                         Descent::DiagonalOverDistance
                 >(simulation, rule) {
-            passiveTree().maxDepth() = 16;
-            passiveTree().maxLeafSize() = 64;
+            passiveTree().maxDepth() = 32;
+            passiveTree().maxLeafSize() = 8;
         }
 
         std::string id() override { return "mvdr-4p"; };

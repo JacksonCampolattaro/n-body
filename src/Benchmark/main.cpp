@@ -4,7 +4,9 @@
 
 #include "Comparison.h"
 #include "ConstitutionalGrader.h"
+#include "RMSGrader.h"
 #include "Generator.h"
+#include "bestTheta.h"
 
 #include <gtkmm.h>
 #include <matplot/matplot.h>
@@ -47,127 +49,21 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
     return (finishTime - startTime);
 }
 
-template<typename ReferenceSolver, typename CandidateSolver>
-void compare(std::size_t n, float theta) {
-
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 50);
-
-    Simulation baseline;
-    from_json(scenario, baseline);
-    Simulation reference;
-    from_json(scenario, reference);
-    Simulation candidate;
-    from_json(scenario, candidate);
-
-    Rule rule{};
-
-    NaiveSolver baselineSolver(baseline, rule);
-    ReferenceSolver referenceSolver(reference, rule);
-    referenceSolver.theta() = theta;
-    CandidateSolver candidateSolver(candidate, rule);
-    candidateSolver.theta() = theta;
-
-    auto baselineTime = timedRun(baselineSolver, 1);
-    auto referenceTime = timedRun(referenceSolver, 1);
-    auto candidateTime = timedRun(candidateSolver, 1);
-
-    float averageL2 = Comparison::fractional(&Comparison::average, &Comparison::L2Norm, baseline, reference, candidate);
-    float maximumL2 = Comparison::fractional(&Comparison::maximum, &Comparison::L2Norm, baseline, reference, candidate);
-    spdlog::info("{} Comparison (as a % of {} error):\n"
-                 "\taverage L2\t\t\t= {}%\n"
-                 "\tmaximum L2\t= {}%\n",
-                 candidateSolver.name(), referenceSolver.name(),
-                 averageL2 * 100.0f, maximumL2 * 100.0f);
-
-    float relativeRuntime = candidateTime.count() / referenceTime.count();
-    float speedup = candidateTime.count() / baselineTime.count();
-    spdlog::info("{} Performance:\n"
-                 "\t{} % of {} runtime\n"
-                 "\t{} % of {} runtime\n",
-                 candidateSolver.name(),
-                 relativeRuntime * 100.0f, referenceSolver.name(),
-                 speedup * 100.0f, baselineSolver.name()
-    );
-}
-
-template<typename CandidateSolver>
-float appropriateTheta(json scenario, json referenceScenario, float allowableError,
-                       const Comparison::Comparator &comparator, const Comparison::Metric &metric,
-                       std::pair<float, float> range = {0.1, 3.0}) {
-
-    // Binary search is partitioned around this value
-    float middleValue = (range.first + range.second) / 2.0f;
-
-    // After we've narrowed the range down enough, we can take the middle value
-    if (range.second - range.first < 0.1f)
-        return middleValue;
-
-    Rule rule{};
-    Simulation reference, candidate;
-    from_json(referenceScenario, reference);
-    from_json(scenario, candidate);
-
-    CandidateSolver candidateSolver{candidate, rule};
-    candidateSolver.theta() = middleValue;
-    candidateSolver.step();
-
-    auto error = comparator(metric, reference, candidate);
-
-    if (error <= allowableError)
-        return appropriateTheta<CandidateSolver>(scenario, referenceScenario, allowableError,
-                                                 comparator, metric,
-                                                 {range.first, middleValue});
-    else
-        return appropriateTheta<CandidateSolver>(scenario, referenceScenario, allowableError,
-                                                 comparator, metric,
-                                                 {middleValue, range.second});
-}
-
-template<typename ReferenceSolver, typename CandidateSolver>
-float appropriateTheta(json scenario, float referenceTheta, std::pair<float, float> range = {0.1, 3.0}) {
-
-    // Binary search is partitioned around this value
-    float middleValue = (range.first + range.second) / 2.0f;
-
-    // After we've narrowed the range down enough, we can take the middle value
-    if (range.second - range.first < 0.1f)
-        return middleValue;
-
-    // Determine if accuracy is too high or too low
-    Rule rule{};
-    Simulation baseline, reference, candidate;
-    from_json(scenario, baseline);
-    from_json(scenario, reference);
-    from_json(scenario, candidate);
-    NaiveSolver baselineSolver{baseline, rule};
-    ReferenceSolver referenceSolver{reference, rule};
-    referenceSolver.theta() = referenceTheta;
-    CandidateSolver candidateSolver{candidate, rule};
-    candidateSolver.theta() = middleValue;
-    baselineSolver.step();
-    referenceSolver.step();
-    candidateSolver.step();
-    float referenceError = Comparison::average(&Comparison::L2Norm, baseline, reference);
-    float candidateError = Comparison::average(&Comparison::L2Norm, baseline, candidate);
-    spdlog::info("{} --> {} (vs {})", middleValue, candidateError, referenceError);
-    if (referenceError <= candidateError)
-        return appropriateTheta<ReferenceSolver, CandidateSolver>(scenario, referenceTheta,
-                                                                  {range.first, middleValue});
-    else
-        return appropriateTheta<ReferenceSolver, CandidateSolver>(scenario, referenceTheta,
-                                                                  {middleValue, range.second});
-
-
-}
-
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
-    //json scenario = Generator::createScenario(&Generator::realisticGalaxy, n, 0);
-    json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
+    json scenario;
+    {
+        Simulation s;
+        std::ifstream file{"LOW.bin"};
+        from_tipsy(file, s);
+        to_json(scenario, s);
+    }
+
+    //json scenario = Generator::createScenario(&Generator::galaxy, n, 0);
+    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
-    spdlog::info("Performing naive integration to determine baseline");
     ConstitutionalGrader grader{scenario, rule};
     //Simulation baseline;
     //from_json(scenario, baseline);
@@ -192,7 +88,7 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
         results["theta"].emplace_back(theta);
         results["time"].emplace_back(timedStep(solver).count());
-        results["error"].emplace_back(grader.averageError(simulation));
+        results["error"].emplace_back(grader.error(simulation));
 
         ++display;
     }
@@ -278,16 +174,16 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
         from_json(scenario, dualTraversalSimulation);
 
         BarnesHutSolver barnesHutSolver{barnesHutSimulation, rule};
-        barnesHutSolver.theta() = theta;
+        //barnesHutSolver.theta() = theta;
         spdlog::info("{} theta = {}", barnesHutSolver.name(), barnesHutSolver.theta());
         LinearBVHSolver linearBVHSolver{linearBVHSimulation, rule};
-        linearBVHSolver.theta() = appropriateTheta<BarnesHutSolver, LinearBVHSolver>(scenario, theta);
+        //linearBVHSolver.theta() = appropriateTheta<BarnesHutSolver, LinearBVHSolver>(scenario, theta);
         spdlog::info("{} theta = {}", linearBVHSolver.name(), linearBVHSolver.theta());
         MVDRSolver mvdrSolver{mvdrSimulation, rule};
-        mvdrSolver.theta() = appropriateTheta<BarnesHutSolver, MVDRSolver>(scenario, theta);
+        //mvdrSolver.theta() = appropriateTheta<BarnesHutSolver, MVDRSolver>(scenario, theta);
         spdlog::info("{} theta = {}", mvdrSolver.name(), mvdrSolver.theta());
         OctreeDualTraversalSolver dualTraversalSolver{mvdrSimulation, rule};
-        dualTraversalSolver.theta() = appropriateTheta<BarnesHutSolver, OctreeDualTraversalSolver>(scenario, theta);
+        //dualTraversalSolver.theta() = appropriateTheta<BarnesHutSolver, OctreeDualTraversalSolver>(scenario, theta);
         spdlog::info("{} theta = {}", dualTraversalSolver.name(), dualTraversalSolver.theta());
 
         results["n"].emplace_back(n);
@@ -311,6 +207,23 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
     matplot::show();
 }
 
+template<typename CandidateSolver>
+std::chrono::duration<float> realPerformance(json scenario, const Grader &grader) {
+
+    // Create a solver
+    Rule rule{};
+    Simulation simulation;
+    from_json(scenario, simulation);
+    CandidateSolver solver{simulation, rule};
+
+    // Select a value of theta that can produce the necessary accuracy
+    solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
+    spdlog::info("Selected theta = {}", solver.theta());
+
+    // Time the solver
+    return timedRun(solver, 10);
+}
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
@@ -318,9 +231,27 @@ int main(int argc, char *argv[]) {
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
     //sweepTheta<FMMSolver>(100'000, thetaValues);
-    sweepTheta<QuadrupoleMVDRSolver>(100'000, thetaValues);
+    //sweepTheta<MVDRSolver>(100'000, thetaValues);
     //sweepTheta<QuadrupoleMVDRSolver>(100'000, thetaValues);
+    //sweepTheta<BarnesHutSolver>(100'000, thetaValues);
     //sweepTheta<QuadrupoleBarnesHutSolver>(100'000, thetaValues);
+    //sweepTheta<LinearBVHSolver>(100'000, thetaValues);
+
+
+    // Load the test scenario
+    Simulation s;
+    std::ifstream file{"LOW.bin"};
+    from_tipsy(file, s);
+    json scenario;
+    to_json(scenario, s);
+
+    // Create a grader
+    RMSGrader grader{scenario};
+
+    spdlog::info(realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader).count());
+    spdlog::info(realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader).count());
+    spdlog::info(realPerformance<FMMSolver>(scenario, grader).count());
+    spdlog::info(realPerformance<QuadrupoleMVDRSolver>(scenario, grader).count());
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);
