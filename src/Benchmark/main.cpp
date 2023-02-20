@@ -37,6 +37,10 @@ std::chrono::duration<float> timedStep(SolverType &solver) {
 
 template<typename SolverType>
 std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations) {
+
+    // Don't bother with a progress bar if it's only one step
+    if (iterations == 1) return timedStep(solver);
+
     spdlog::info("Running solver \"{}\" for {} iteration(s)", solver.name(), iterations);
     boost::progress_display display(iterations);
     auto startTime = std::chrono::steady_clock::now();
@@ -52,6 +56,8 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 template<typename CandidateSolver>
 void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
 
+    //json scenario = Generator::createScenario(&Generator::galaxy, n, 0);
+    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     json scenario;
     {
         Simulation s;
@@ -59,16 +65,9 @@ void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
         from_tipsy(file, s);
         to_json(scenario, s);
     }
-
-    //json scenario = Generator::createScenario(&Generator::galaxy, n, 0);
-    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
     Rule rule{};
 
     ConstitutionalGrader grader{scenario, rule};
-    //Simulation baseline;
-    //from_json(scenario, baseline);
-    //NaiveSolver baselineSolver(baseline, rule);
-    //timedStep(baselineSolver);
 
     std::map<std::string, std::vector<float>> results{
             {"theta", {}},
@@ -208,7 +207,7 @@ void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i)
 }
 
 template<typename CandidateSolver>
-std::chrono::duration<float> realPerformance(json scenario, const Grader &grader) {
+std::chrono::duration<float> realPerformance(json scenario, const Grader &grader, int iterations = 1) {
 
     // Create a solver
     Rule rule{};
@@ -218,10 +217,11 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
 
     // Select a value of theta that can produce the necessary accuracy
     solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
-    spdlog::info("Selected theta = {}", solver.theta());
 
     // Time the solver
-    return timedRun(solver, 10);
+    auto time = timedRun(solver, iterations);
+    spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count() / iterations);
+    return time;
 }
 
 int main(int argc, char *argv[]) {
@@ -238,20 +238,12 @@ int main(int argc, char *argv[]) {
     //sweepTheta<LinearBVHSolver>(100'000, thetaValues);
 
 
-    // Load the test scenario
-    Simulation s;
-    std::ifstream file{"LOW.bin"};
-    from_tipsy(file, s);
-    json scenario;
-    to_json(scenario, s);
-
-    // Create a grader
+    json scenario = Generator::realisticGalaxy();
     RMSGrader grader{scenario};
-
-    spdlog::info(realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader).count());
-    spdlog::info(realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader).count());
-    spdlog::info(realPerformance<FMMSolver>(scenario, grader).count());
-    spdlog::info(realPerformance<QuadrupoleMVDRSolver>(scenario, grader).count());
+    //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
+    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
+    realPerformance<FMMSolver>(scenario, grader);
+    realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);

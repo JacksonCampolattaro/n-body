@@ -27,30 +27,32 @@ namespace NBody::Descent {
         if (passiveNode.contents().empty()) return;
 
         if (descentCriterion(passiveNode, activePosition)) {
+
+            // If an approximation is allowed, compute particle-node interaction
             passiveNode.summary().acceleration() += rule(activePosition, activeMass, passiveNode);
+
         } else {
 
             // Otherwise, the passive node can't be summarized
             if (passiveNode.isLeaf()) {
 
                 // If this is a leaf passive node, interact with all particles contained
-                for (auto entity: passiveNode.contents()) {
+                for (auto entity: passiveNode.contents())
                     context.get<Acceleration>(entity) += rule(
                             activePosition, activeMass,
                             context.get<const Position>(entity)
                     );
-                }
 
             } else {
 
                 // If it's a non-leaf node, descend the tree (recursive case)
-                for (auto child: passiveNode.children()) {
+                for (auto child: passiveNode.children())
                     Descent::passiveTree(
                             activePosition, activeMass, child,
                             descentCriterion, rule,
                             context
                     );
-                }
+
             }
         }
     }

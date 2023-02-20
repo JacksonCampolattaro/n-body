@@ -40,17 +40,7 @@ namespace NBody::Descent {
         } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
 
             // If both nodes are leaves & weren't far enough to summarize, then compute individual interactions
-            // todo: maybe we can do node-particle interactions in some cases
-            for (auto activeParticle: activeNode.contents()) {
-                for (auto passiveParticle: passiveNode.contents()) {
-
-                    passiveContext.get<Acceleration>(passiveParticle) +=
-                            rule(activeContext.get<const Position>(activeParticle),
-                                 activeContext.get<const Mass>(activeParticle),
-                                 passiveContext.get<const Position>(passiveParticle));
-
-                }
-            }
+            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
 
         } else if (passiveNode.isLeaf()) {
 
@@ -68,18 +58,17 @@ namespace NBody::Descent {
 
         } else if (activeNode.isLeaf()) {
 
-            // fixme: this never seems to happen, but I'm not sure why
-
             // If only the active node was a leaf, continue single-tree descent
-            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
-            //            for (auto activeParticle: activeNode.contents()) {
-            //                Descent::passiveTree(
-            //                        activeNode.summary().centerOfMass(), activeNode.summary().totalMass(),
-            //                        passiveNode,
-            //                        descentCriterion, rule,
-            //                        passiveContext
-            //                );
-            //            }
+            //Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            for (auto activeParticle: activeNode.contents()) {
+                Descent::passiveTree(
+                        activeContext.template get<const Position>(activeParticle),
+                        activeContext.template get<const Mass>(activeParticle),
+                        passiveNode,
+                        descentCriterion, rule,
+                        passiveContext
+                );
+            }
 
         } else {
 
