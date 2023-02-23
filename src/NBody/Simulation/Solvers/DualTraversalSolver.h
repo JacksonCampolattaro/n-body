@@ -60,18 +60,36 @@ namespace NBody {
                     );
                 });
 
+//                auto startingNodes = _tree.root().children();
+//                tbb::parallel_for_each(startingNodes, [&](auto &node) {
+//                    Descent::lockstepDualTree(_tree.root(), node,
+//                                              _descentCriterion, _rule,
+//                                              _simulation.template view<const Position, const Mass>(),
+//                                              _simulation.template view<const Position, Acceleration>()
+//                    );
+//                });
+
                 // This seems like it should perform better, but it actually does worse
-                //                auto startingNodes = _tree.depthBreak(4);
-                //                tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> node) {
-                //                    for (auto &otherNode : startingNodes) {
-                //                        computeAccelerations(
-                //                                _simulation.template view<const Position, Acceleration>(),
+                // fixme: this is inaccurate, for some reason
+                //                auto startingNodes = _tree.depthBreak(0);
+                //                tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
+                //                    for (auto &activeNode: startingNodes) {
+                //                        Descent::lockstepDualTree(
+                //                                activeNode.get(), passiveNode.get(),
+                //                                _descentCriterion, _rule,
                 //                                _simulation.template view<const Position, const Mass>(),
-                //                                otherNode,
-                //                                node
+                //                                _simulation.template view<const Position, Acceleration>()
                 //                        );
                 //                    }
                 //                });
+
+                // fixme: so is this!
+                //                Descent::lockstepDualTree(
+                //                        _tree.root(), _tree.root(),
+                //                        _descentCriterion, _rule,
+                //                        _simulation.template view<const Position, const Mass>(),
+                //                        _simulation.template view<const Position, Acceleration>()
+                //                );
             }
 
             {

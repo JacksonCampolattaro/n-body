@@ -23,7 +23,7 @@ inline float searchTheta(json scenario, const Grader &grader,
     // After we've narrowed the range down enough, we can take the lower value
     // (it's guaranteed to be within allowable error)
     if (range.second - range.first < 0.005f)
-        return middleValue;
+        return range.first;
 
     Rule rule{};
     Simulation candidate;

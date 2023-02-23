@@ -7,6 +7,7 @@
 
 #include <glm/vec3.hpp>
 #include <nlohmann/json.hpp>
+#include <fmt/format.h>
 
 using nlohmann::json;
 
@@ -24,9 +25,14 @@ namespace NBody::Physics {
             glm::vec3::operator+=((glm::vec3) right);
             return *this;
         }
+
         inline Acceleration &operator-=(const Acceleration &right) {
             glm::vec3::operator-=((glm::vec3) right);
             return *this;
+        }
+
+        friend std::ostream &operator<<(std::ostream &out, const Acceleration &v) {
+            return out << fmt::format("<{}, {}, {}>", v.x, v.y, v.z);
         }
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Acceleration, x, y, z)

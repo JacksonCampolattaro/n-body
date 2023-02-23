@@ -46,20 +46,17 @@ namespace NBody::Descent {
 
             // If only the passive node was a leaf, continue single-tree descent
             for (auto passiveParticle: passiveNode.contents()) {
-
                 passiveContext.get<Acceleration>(passiveParticle) +=
                         Descent::activeTree(
                                 activeNode, passiveContext.get<const Position>(passiveParticle),
                                 descentCriterion, rule,
                                 activeContext
                         );
-
             }
 
         } else if (activeNode.isLeaf()) {
 
             // If only the active node was a leaf, continue single-tree descent
-            //Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
             for (auto activeParticle: activeNode.contents()) {
                 Descent::passiveTree(
                         activeContext.template get<const Position>(activeParticle),

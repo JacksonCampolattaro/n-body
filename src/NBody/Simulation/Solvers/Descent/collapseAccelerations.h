@@ -16,12 +16,12 @@ namespace NBody::Descent {
 
     template<typename PassiveNode>
     inline void collapseAccelerations(PassiveNode &node,
-                               const entt::basic_view<
-                                       entt::entity, entt::exclude_t<>,
-                                       const Position,
-                                       Acceleration
-                               > &context,
-                               Acceleration netAcceleration = {}) {
+                                      const entt::basic_view<
+                                              entt::entity, entt::exclude_t<>,
+                                              const Position,
+                                              Acceleration
+                                      > &context,
+                                      Acceleration netAcceleration = {}) {
 
         netAcceleration += node.summary().acceleration();
 
@@ -42,12 +42,12 @@ namespace NBody::Descent {
 
     template<typename PassiveNode>
     inline void collapseAccelerations(PassiveNode &node,
-                               const entt::basic_view<
-                                       entt::entity, entt::exclude_t<>,
-                                       const Position,
-                                       Acceleration
-                               > &context,
-                               QuadrupoleAcceleration netAcceleration = {}) {
+                                      const entt::basic_view<
+                                              entt::entity, entt::exclude_t<>,
+                                              const Position,
+                                              Acceleration
+                                      > &context,
+                                      QuadrupoleAcceleration netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
         netAcceleration += node.summary().acceleration();
@@ -59,8 +59,7 @@ namespace NBody::Descent {
 
                 // Find the vector from the center of this node to the particle's position
                 // and re-center the multipole expansion on the particle
-                //auto localAcceleration = netAcceleration.at(context.get<const Position>(i) - node.center());
-                auto localAcceleration = netAcceleration.at(node.center() - context.get<const Position>(i));
+                auto localAcceleration = netAcceleration.at(context.get<const Position>(i) - node.center());
 
                 // Apply the xyz component of the multipole acceleration to the particle
                 context.get<Acceleration>(i) += localAcceleration;
@@ -73,8 +72,7 @@ namespace NBody::Descent {
 
                 // Find the vector from the center of this node to the center of the child
                 // and re-center the multipole expansion on the child node's center
-                //auto localAcceleration = netAcceleration.translated(child.center() - node.center());
-                auto localAcceleration = netAcceleration.translated(node.center() - child.center());
+                auto localAcceleration = netAcceleration.translated(child.center() - node.center());
 
                 // Apply the shifted expansion to the child node (recursive)
                 collapseAccelerations(child, context, localAcceleration);

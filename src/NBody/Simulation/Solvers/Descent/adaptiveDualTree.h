@@ -42,13 +42,15 @@ namespace NBody::Descent {
 
                 if (activeNode.isLeaf()) {
 
-                    for (auto &activeParticle: activeNode.contents())
-                        Descent::passiveTree(
-                                activeNode.summary().centerOfMass(), activeNode.summary().totalMass(),
-                                passiveNode,
-                                descentCriterion, rule,
-                                passiveContext
-                        );
+                    Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+//                    for (auto &activeParticle: activeNode.contents())
+//                        Descent::passiveTree(
+//                                activeContext.template get<const Position>(activeParticle),
+//                                activeContext.template get<const Mass>(activeParticle),
+//                                passiveNode,
+//                                descentCriterion, rule,
+//                                passiveContext
+//                        );
 
                 } else {
 
@@ -66,7 +68,6 @@ namespace NBody::Descent {
 
                 if (passiveNode.isLeaf()) {
 
-                    // todo: it seems like in some cases it's better to skip passive traversal entirely
                     Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
 //                    for (auto &passiveParticle: passiveNode.contents())
 //                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
@@ -88,8 +89,7 @@ namespace NBody::Descent {
                 break;
 
             case Recommendation::DescendBothNodes:
-
-                spdlog::error("Not yet implemented!");
+                spdlog::error("Not implemented!");
                 break;
         }
 

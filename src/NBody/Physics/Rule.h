@@ -9,6 +9,8 @@
 #include <glm/geometric.hpp>
 #include <glm/gtx/norm.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include "Position.h"
 #include "Acceleration.h"
 #include "QuadrupoleAcceleration.h"
@@ -58,7 +60,7 @@ namespace NBody::Physics {
 
             // If the active node has a center of mass, prefer that over the overall center
             Position activePosition;
-            if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
                 activePosition = activeNode.summary().centerOfMass();
             else
                 activePosition = activeNode.center();
@@ -114,6 +116,10 @@ namespace NBody::Physics {
                 const Mass &activeMass,
                 const PassiveNode &passiveNode
         ) const {
+//            spdlog::error("s/d = {}/{}",
+//                          passiveNode.sideLength(),
+//                          glm::distance(glm::vec3(activePosition), passiveNode.center())
+//            );
             return operator()(activePosition, activeMass,
                               passiveNode.center(), passiveNode.summary());
         }
@@ -131,7 +137,7 @@ namespace NBody::Physics {
 
             // If the active node has a center of mass, prefer that over the overall center
             Position activePosition;
-            if constexpr(requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
                 activePosition = activeNode.summary().centerOfMass();
             else
                 activePosition = activeNode.center();

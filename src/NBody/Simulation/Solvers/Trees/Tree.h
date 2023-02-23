@@ -115,7 +115,7 @@ namespace NBody {
                 for (auto &node: queue) {
 
                     // if we bump into a leaf node, we should stop descending early
-                    if (node.get().isLeaf()) return queue;
+                    if (node.get().isLeaf()) spdlog::error("?");
 
                     for (auto &child: node.get().children()) {
                         children.push_back(child);
@@ -168,7 +168,7 @@ namespace NBody {
                               Context &&context) {
 
             // If the node to be summarized is already in the summarized list, we don't need to summarize it again
-            for (auto summarizedNode: alreadySummarized)
+            for (auto &summarizedNode: alreadySummarized)
                 if (&summarizedNode.get() == &toBeSummarized) return;
 
             for (auto &child: toBeSummarized.children()) {

@@ -46,7 +46,7 @@ namespace NBody::Descent {
             } else {
 
                 // If it's a non-leaf node, descend the tree (recursive case)
-                for (auto child: passiveNode.children())
+                for (auto &child: passiveNode.children())
                     Descent::passiveTree(
                             activePosition, activeMass, child,
                             descentCriterion, rule,

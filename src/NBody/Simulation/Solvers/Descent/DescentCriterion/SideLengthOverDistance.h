@@ -16,7 +16,8 @@ namespace NBody::Descent {
 
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
-            return (2.0f * node.sideLength() / glm::distance((glm::vec3) node.summary().centerOfMass(), point))
+            // todo: maybe I should always use center? centerOfMass might be offset
+            return (2.0f * node.sideLength() / glm::distance((glm::vec3) node.center(), point))
                    < _theta;
         }
 
