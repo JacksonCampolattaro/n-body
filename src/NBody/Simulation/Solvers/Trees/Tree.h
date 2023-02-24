@@ -114,11 +114,15 @@ namespace NBody {
             for (int i = 0; i < depth; ++i) {
                 for (auto &node: queue) {
 
-                    // if we bump into a leaf node, we should stop descending early
-                    if (node.get().isLeaf()) spdlog::error("?");
+                    // if we bump into a leaf node, include it as a starting point
+                    if (node.get().isLeaf()) {
+                        children.push_back(node);
+                        continue;
+                    }
 
                     for (auto &child: node.get().children()) {
-                        children.push_back(child);
+                        if (!child.contents().empty())
+                            children.push_back(child);
                     }
                 }
 

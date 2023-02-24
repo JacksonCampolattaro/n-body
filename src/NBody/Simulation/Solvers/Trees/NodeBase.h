@@ -32,6 +32,9 @@ namespace NBody {
 
         NodeBase(std::span<Entity> contents) : _contents(contents) {}
 
+        // todo: Nodes shouldn't be copy-constructible. This has caused me too many problems
+        //NodeBase(const NodeBase<NodeImplementation, S> &_) = delete;
+
         inline Summary &summary() { return _summary; }
 
         inline const Summary &summary() const { return _summary; }

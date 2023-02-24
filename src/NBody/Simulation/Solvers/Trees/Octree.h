@@ -168,7 +168,7 @@ namespace NBody {
     private:
 
         int _maxDepth = 16;
-        int _maxLeafSize = 8;
+        int _maxLeafSize = 1;
 
     public:
 

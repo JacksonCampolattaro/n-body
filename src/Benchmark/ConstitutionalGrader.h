@@ -42,7 +42,9 @@ namespace NBody {
             auto forceB = B.get<Physics::Acceleration>(b) * B.get<Physics::Mass>(b).mass();
             float differenceInForces = glm::distance(forceA, forceB);
 
-            return 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            auto error = 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            if (error > 67.0f) spdlog::error((ENTT_ID_TYPE) b);
+            return error;
         }
 
     };

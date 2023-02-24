@@ -30,7 +30,7 @@ namespace NBody::Descent {
             passiveContext.get<Acceleration>(passiveEntity) += std::transform_reduce(
                     activeNode.contents().begin(), activeNode.contents().end(),
                     Physics::Acceleration{}, std::plus{},
-                    [&](auto activeEntity) {
+                    [&](auto &activeEntity) {
                         return rule(activeContext.get<const Position>(activeEntity),
                                     activeContext.get<const Mass>(activeEntity),
                                     passivePosition);

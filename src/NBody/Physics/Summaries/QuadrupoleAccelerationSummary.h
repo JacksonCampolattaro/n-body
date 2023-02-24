@@ -45,7 +45,7 @@ namespace NBody {
         QuadrupoleAcceleration &acceleration() { return _acceleration; }
 
         friend std::ostream &operator<<(std::ostream &out, const QuadrupoleAccelerationSummary &s) {
-            return out << "(" << s._acceleration << ")";
+            return out << "(" << s.acceleration() << ")";
         }
     };
 }

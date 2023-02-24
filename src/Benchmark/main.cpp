@@ -56,17 +56,8 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
 }
 
 template<typename CandidateSolver>
-void sweepTheta(std::size_t n, const std::vector<float> &thetaValues) {
+void sweepTheta(json scenario, const std::vector<float> &thetaValues) {
 
-    json scenario = Generator::createScenario(&Generator::galaxy, n, 0);
-    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 5);
-    //    json scenario;
-    //    {
-    //        Simulation s;
-    //        std::ifstream file{"LOW.bin"};
-    //        from_tipsy(file, s);
-    //        to_json(scenario, s);
-    //    }
     Rule rule{};
 
     ConstitutionalGrader grader{scenario, rule};
@@ -247,9 +238,13 @@ int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
     Glib::init();
 
+    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'000, 0);
+    ConstitutionalGrader grader{scenario};
+
     std::vector<float> thetaValues{};
-    for (int i = 1; i < 20; i++) thetaValues.emplace_back((float) i / 10.0f);
-    //sweepTheta<FMMSolver>(10'000, thetaValues);
+    for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
+    //sweepTheta<FMMSolver>(scenario, thetaValues);
     //sweepTheta<MVDRSolver>(10'000, thetaValues);
     //sweepTheta<QuadrupoleMVDRSolver>(10'000, thetaValues);
     //sweepTheta<BarnesHutSolver>(10'000, thetaValues);
@@ -258,17 +253,14 @@ int main(int argc, char *argv[]) {
     //sweepTheta<ReverseBarnesHutSolver>(10'000, thetaValues);
 
 
-    json scenario = Generator::realisticGalaxy();
-    //Generator::createScenario(Generator::uniformRandomVolume, 80000, 0);
-    ConstitutionalGrader grader{scenario};
     //realPerformance<BarnesHutSolver>(scenario, grader);
-    realPerformance<ReverseBarnesHutSolver>(scenario, grader);
+    //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
     //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
-    //realPerformance<FMMSolver>(scenario, grader);
+    realPerformance<FMMSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
-    //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader));
+    //spdlog::info(accuracy<FMMSolver>(scenario, grader));
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);

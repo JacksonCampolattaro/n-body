@@ -35,6 +35,8 @@ namespace NBody::Descent {
         if (descentCriterion(activeNode, passiveNode) == Recommendation::Approximate) {
 
             // node-node interaction
+            auto _a = passiveNode.summary().acceleration();
+            auto a = rule(activeNode, passiveNode);
             passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
 
         } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
@@ -45,27 +47,29 @@ namespace NBody::Descent {
         } else if (passiveNode.isLeaf()) {
 
             // If only the passive node was a leaf, continue single-tree descent
-            for (auto passiveParticle: passiveNode.contents()) {
-                passiveContext.get<Acceleration>(passiveParticle) +=
-                        Descent::activeTree(
-                                activeNode, passiveContext.get<const Position>(passiveParticle),
-                                descentCriterion, rule,
-                                activeContext
-                        );
-            }
+            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            //            for (auto &passiveParticle: passiveNode.contents()) {
+            //                passiveContext.get<Acceleration>(passiveParticle) +=
+            //                        Descent::activeTree(
+            //                                activeNode, passiveContext.get<const Position>(passiveParticle),
+            //                                descentCriterion, rule,
+            //                                activeContext
+            //                        );
+            //            }
 
         } else if (activeNode.isLeaf()) {
 
             // If only the active node was a leaf, continue single-tree descent
-            for (auto activeParticle: activeNode.contents()) {
-                Descent::passiveTree(
-                        activeContext.template get<const Position>(activeParticle),
-                        activeContext.template get<const Mass>(activeParticle),
-                        passiveNode,
-                        descentCriterion, rule,
-                        passiveContext
-                );
-            }
+            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            //            for (auto &activeParticle: activeNode.contents()) {
+            //                Descent::passiveTree(
+            //                        activeContext.template get<const Position>(activeParticle),
+            //                        activeContext.template get<const Mass>(activeParticle),
+            //                        passiveNode,
+            //                        descentCriterion, rule,
+            //                        passiveContext
+            //                );
+            //            }
 
         } else {
 
