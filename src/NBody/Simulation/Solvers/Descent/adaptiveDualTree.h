@@ -42,15 +42,14 @@ namespace NBody::Descent {
 
                 if (activeNode.isLeaf()) {
 
-                    Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
-//                    for (auto &activeParticle: activeNode.contents())
-//                        Descent::passiveTree(
-//                                activeContext.template get<const Position>(activeParticle),
-//                                activeContext.template get<const Mass>(activeParticle),
-//                                passiveNode,
-//                                descentCriterion, rule,
-//                                passiveContext
-//                        );
+                    for (auto &activeParticle: activeNode.contents())
+                        Descent::passiveTree(
+                                activeContext.template get<const Position>(activeParticle),
+                                activeContext.template get<const Mass>(activeParticle),
+                                passiveNode,
+                                descentCriterion, rule,
+                                passiveContext
+                        );
 
                 } else {
 
@@ -68,13 +67,12 @@ namespace NBody::Descent {
 
                 if (passiveNode.isLeaf()) {
 
-                    Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
-//                    for (auto &passiveParticle: passiveNode.contents())
-//                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
-//                                activeNode, passiveContext.get<const Position>(passiveParticle),
-//                                descentCriterion, rule,
-//                                activeContext
-//                        );
+                    for (auto &passiveParticle: passiveNode.contents())
+                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
+                                activeNode, passiveContext.get<const Position>(passiveParticle),
+                                descentCriterion, rule,
+                                activeContext
+                        );
 
                 } else {
 
@@ -89,7 +87,7 @@ namespace NBody::Descent {
                 break;
 
             case Recommendation::DescendBothNodes:
-                spdlog::error("Not implemented!");
+                // todo: not in use, yet
                 break;
         }
 

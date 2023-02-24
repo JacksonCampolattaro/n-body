@@ -256,9 +256,9 @@ int main(int argc, char *argv[]) {
     //realPerformance<BarnesHutSolver>(scenario, grader);
     //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
+    realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<FMMSolver>(scenario, grader);
-    realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
+    //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
     //spdlog::info(accuracy<FMMSolver>(scenario, grader));
 
