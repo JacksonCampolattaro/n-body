@@ -27,7 +27,7 @@ namespace NBody::Descent {
             float passiveSideLength = passiveNode.sideLength();
 
             // todo: maybe I should always use center? centerOfMass might be offset
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+            float distance = glm::distance((glm::vec3) activeNode.center(), passiveNode.center());
 
             if ((2.0f * std::max(activeSideLength, passiveSideLength) / distance) < _theta)
                 return Recommendation::Approximate;

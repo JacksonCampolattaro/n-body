@@ -167,8 +167,8 @@ namespace NBody {
     class Octree : public Tree<OctreeNode<S>> {
     private:
 
-        int _maxDepth = 16;
-        int _maxLeafSize = 1;
+        int _maxDepth = 32;
+        int _maxLeafSize = 16;
 
     public:
 
@@ -205,13 +205,6 @@ namespace NBody {
                 );
             });
             summarizeTreeTop(toBeRefined, context);
-
-            // todo: maybe non-parallel construction should be available as an option?
-            //            root().refine(
-            //                    _maxDepth,
-            //                    [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
-            //                    simulation().template view<const Position, const Mass, const ActiveTag>()
-            //            );
         };
 
         int &maxDepth() { return _maxDepth; }

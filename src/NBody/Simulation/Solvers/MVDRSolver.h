@@ -19,15 +19,7 @@ namespace NBody {
     > {
     public:
 
-        MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<
-                        ActiveLinearBVH,
-                        PassiveOctree,
-                        Descent::DiagonalOverDistance
-                >(simulation, rule) {
-            passiveTree().maxDepth() = 16;
-            passiveTree().maxLeafSize() = 64;
-        }
+        using DualTreeSolver::DualTreeSolver;
 
         std::string id() override { return "mvdr"; };
 
@@ -49,15 +41,7 @@ namespace NBody {
     > {
     public:
 
-        QuadrupoleMVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<
-                        ActiveLinearBVH,
-                        QuadrupolePassiveOctree,
-                        Descent::DiagonalOverDistance
-                >(simulation, rule) {
-            passiveTree().maxDepth() = 32;
-            passiveTree().maxLeafSize() = 8;
-        }
+        using DualTreeSolver::DualTreeSolver;
 
         std::string id() override { return "mvdr-4p"; };
 

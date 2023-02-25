@@ -39,6 +39,8 @@ namespace NBody {
 
         [[nodiscard]] const BoundingBox &boundingBox() const { return summary().boundingBox(); }
 
+        [[nodiscard]] Position center() const { return summary().boundingBox().center(); }
+
         template<typename ViewType>
         void split(const ViewType &context) {
 

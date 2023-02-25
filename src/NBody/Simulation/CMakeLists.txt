@@ -40,7 +40,8 @@ add_library(Simulation
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
         Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
-        Solvers/FMMSolver.h Solvers/Descent/activeTree.h Solvers/Descent/lockstepDualTree.h Solvers/Descent/collapseAccelerations.h Solvers/Descent/DescentCriterion/SideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverDistance.h Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h Solvers/Descent/passiveTree.h Solvers/Descent/adaptiveDualTree.h Solvers/Descent/none.h Solvers/PassiveTreeSolver.h Solvers/ReverseBarnesHutSolver.h)
+        Solvers/FMMSolver.h Solvers/Descent/activeTree.h
+        Solvers/Descent/balancedLockstepDualTree.h Solvers/Descent/lockstepDualTree.h Solvers/Descent/collapseAccelerations.h Solvers/Descent/DescentCriterion/SideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverDistance.h Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h Solvers/Descent/passiveTree.h Solvers/Descent/adaptiveDualTree.h Solvers/Descent/none.h Solvers/PassiveTreeSolver.h Solvers/ReverseBarnesHutSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

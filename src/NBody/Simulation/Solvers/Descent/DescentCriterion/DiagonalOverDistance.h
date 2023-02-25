@@ -17,15 +17,8 @@ namespace NBody::Descent {
         template<typename TreeNode>
         inline bool operator()(const TreeNode &node, const Position &point) const {
 
-            // todo: I'd really like to avoid this kind of thing, maybe I should have a helper function?
-            Position nodePosition;
-            if constexpr(requires(const TreeNode &n) { n.summary().centerOfMass(); })
-                nodePosition = node.summary().centerOfMass();
-            else
-                nodePosition = node.center();
-
             return (node.boundingBox().diagonalLength() /
-                    glm::distance((glm::vec3) nodePosition, point))
+                    glm::distance((glm::vec3) node.center(), point))
                    < _theta;
         }
 
@@ -35,7 +28,7 @@ namespace NBody::Descent {
             float activeDiagonal = activeNode.boundingBox().diagonalLength();
             float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
 
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+            float distance = glm::distance((glm::vec3) activeNode.center(), passiveNode.center());
 
             if (std::max(activeDiagonal, passiveDiagonal) / distance < _theta)
                 return Recommendation::Approximate;
