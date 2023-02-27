@@ -18,7 +18,7 @@ namespace NBody {
 
         static constexpr std::size_t DataSize = Multipole<Order - 1>::DataSize + (Order + 1);
 
-    protected:
+    private:
 
         std::array<float, DataSize> _data;
 
@@ -44,17 +44,17 @@ namespace NBody {
 
     protected:
 
-template<std::size_t... Indices>
-static constexpr std::array<std::size_t, Order> orderedIndices() {
+        template<std::size_t... Indices>
+        static constexpr std::array<std::size_t, Order> orderedIndices() {
 
-    // Make sure the user passed the right number of indices
-    static_assert(sizeof...(Indices) == Order, "Incorrect number of indices for multipole order");
+            // Make sure the user passed the right number of indices
+            static_assert(sizeof...(Indices) == Order, "Incorrect number of indices for multipole order");
 
-    // Put the indices in XYZ order, to ensure we're accessing the wrong hyper-pyramid of the symmetric matrix
-    std::array<std::size_t, Order> array{Indices...};
-    std::sort(array.begin(), array.end());
-    return array;
-}
+            // Put the indices in XYZ order, to ensure we're accessing the correct hyper-pyramid of the symmetric matrix
+            std::array<std::size_t, Order> array{Indices...};
+            std::sort(array.begin(), array.end());
+            return array;
+        }
 
         template<std::array<std::size_t, Order> Indices>
         static constexpr std::array<std::size_t, Order - 1> lowerOrderIndices() {
