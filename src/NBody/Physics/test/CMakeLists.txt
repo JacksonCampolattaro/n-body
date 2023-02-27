@@ -1,14 +1,13 @@
 
-find_package(Catch2 REQUIRED)
+find_package(Catch2 3.1.0 REQUIRED)
 
-add_executable(test_Physics main.cpp
-        position.cpp
-        velocity.cpp
-        active.cpp
+add_executable(test_Physics
         gravity.cpp)
 
 target_link_libraries(test_Physics PRIVATE
+        Catch2::Catch2WithMain
         NBody::Physics
-        Catch2::Catch2)
+        NBody::Simulation)
 
-add_test(NAME TestPhysics COMMAND test_Physics)
+#include(Catch)
+#catch_discover_tests(test_Physics)

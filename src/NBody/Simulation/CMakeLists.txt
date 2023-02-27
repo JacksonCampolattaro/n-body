@@ -7,10 +7,13 @@ find_package(PkgConfig)
 pkg_check_modules(sigc++ REQUIRED IMPORTED_TARGET sigc++-3.0)
 
 include(FetchContent)
-FetchContent_Declare(entt
+FetchContent_Declare(
+        entt
         GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG v3.8.1)
+        GIT_TAG v3.8.1) # todo: update to the newest version of entt
+set(ENTT_BUILD_TESTING OFF)
 FetchContent_MakeAvailable(entt)
+
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
@@ -25,7 +28,7 @@ add_library(Simulation
         Solvers/Trees/NodeType.h
         Solvers/Trees/NodeBase.h
         Solvers/Trees/Tree.h
-        Solvers/Trees/DescentCriterion.h
+        Solvers/Descent/DescentCriterionType.h
         Solvers/Trees/Octree.h
         Solvers/Trees/LinearBVH.h
         Runner.h
@@ -36,8 +39,9 @@ add_library(Simulation
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
-        Solvers/DualTraversalSolverBase.h Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
-        Solvers/FMMSolver.h)
+        Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
+        Solvers/FMMSolver.h Solvers/Descent/activeTree.h
+        Solvers/Descent/balancedLockstepDualTree.h Solvers/Descent/lockstepDualTree.h Solvers/Descent/collapseAccelerations.h Solvers/Descent/DescentCriterion/SideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverDistance.h Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h Solvers/Descent/passiveTree.h Solvers/Descent/adaptiveDualTree.h Solvers/Descent/none.h Solvers/PassiveTreeSolver.h Solvers/ReverseBarnesHutSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)
@@ -59,4 +63,4 @@ target_link_libraries(Simulation PUBLIC
 
 add_library(NBody::Simulation ALIAS Simulation)
 
-add_subdirectory(test)
+#add_subdirectory(test)

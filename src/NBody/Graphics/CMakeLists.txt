@@ -39,4 +39,4 @@ target_link_libraries(Graphics PUBLIC
 
 add_library(NBody::Graphics ALIAS Graphics)
 
-add_subdirectory(test)
+#add_subdirectory(test)

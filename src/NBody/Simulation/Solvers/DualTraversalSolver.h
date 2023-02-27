@@ -5,28 +5,32 @@
 #ifndef N_BODY_DUALTRAVERSALSOLVER_H
 #define N_BODY_DUALTRAVERSALSOLVER_H
 
-#include <NBody/Simulation/Solvers/DualTraversalSolverBase.h>
+#include <NBody/Simulation/Solver.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
+#include <NBody/Simulation/Solvers/Descent/balancedLockstepDualTree.h>
+#include <NBody/Simulation/Solvers/Descent/collapseAccelerations.h>
 
 namespace NBody {
 
-    template<typename DualTree, typename DescentCriterionType>
-    class DualTraversalSolver : public DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType> {
+    using Descent::DescentCriterionType;
+
+    template<typename DualTree, DescentCriterionType DescentCriterion>
+    class DualTraversalSolver : public Solver {
     private:
 
         DualTree _tree;
 
-        // todo: eliminate this, if possible
-        using DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>::computeAccelerations;
-        using DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>::collapseAccelerations;
-        using DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>::_simulation;
-        using DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>::_dt;
-        using DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>::_statusDispatcher;
+        DescentCriterion _descentCriterion{0.4};
 
     public:
 
         DualTraversalSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTraversalSolverBase<DualTree, DualTree, DescentCriterionType>(simulation, rule),
+                Solver(simulation, rule),
                 _tree(simulation) {}
+
+        float &theta() { return _descentCriterion.theta(); }
+
+        const float &theta() const { return _descentCriterion.theta(); }
 
         const DualTree &tree() const { return _tree; }
 
@@ -47,13 +51,16 @@ namespace NBody {
 
             {
                 _statusDispatcher.emit({"Computing accelerations"});
+                // This seems like it should perform better, but it actually does worse
+                //auto startingNodes = _tree.depthBreak(8);
                 auto startingNodes = _tree.loadBalancedBreak(256);
-                tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> node) {
-                    computeAccelerations(
-                            _simulation.template view<const Position, Acceleration>(),
+                spdlog::debug(startingNodes.size());
+                tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
+                    Descent::balancedLockstepDualTree(
+                            _tree.root(), passiveNode.get(),
+                            _descentCriterion, _rule,
                             _simulation.template view<const Position, const Mass>(),
-                            _tree.root(),
-                            node
+                            _simulation.template view<const Position, Acceleration>()
                     );
                 });
             }
@@ -62,7 +69,10 @@ namespace NBody {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.template view<const Position, Acceleration>();
                 // todo: find a better way of avoiding ambiguity
-                collapseAccelerations(_tree.root(), view, typename DualTree::Node::Summary::Acceleration{});
+                Descent::collapseAccelerations(
+                        _tree.root(), view,
+                        typename DualTree::Node::Summary::Acceleration{}
+                );
             }
         }
 

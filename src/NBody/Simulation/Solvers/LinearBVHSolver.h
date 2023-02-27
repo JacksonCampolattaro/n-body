@@ -7,10 +7,12 @@
 
 #include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h>
 
 namespace NBody {
 
-    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, DescentCriterion::DiagonalOverDistance> {
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance> {
     public:
 
         using ActiveTreeSolver::ActiveTreeSolver;
@@ -23,7 +25,7 @@ namespace NBody {
 
     class QuadrupoleLinearBVHSolver : public ActiveTreeSolver<
             QuadrupoleActiveLinearBVH,
-            DescentCriterion::DiagonalOverDistance
+            Descent::DiagonalOverDistance
     > {
     public:
 

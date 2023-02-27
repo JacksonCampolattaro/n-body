@@ -32,6 +32,9 @@ namespace NBody {
 
         NodeBase(std::span<Entity> contents) : _contents(contents) {}
 
+        // todo: Nodes shouldn't be copy-constructible. This has caused me too many problems
+        //NodeBase(const NodeBase<NodeImplementation, S> &_) = delete;
+
         inline Summary &summary() { return _summary; }
 
         inline const Summary &summary() const { return _summary; }
@@ -40,6 +43,15 @@ namespace NBody {
         void summarize(const Context &context) {
             if (isLeaf()) _summary.summarize(implementation().contents(), context);
             else _summary.summarize(implementation().children());
+
+            // sanity check: a node should always enclose all of its children
+            for (auto &entity: contents()) {
+                auto bbox = implementation().boundingBox();
+                auto p = context.template get<const Position>(entity);
+                auto e = ENTT_ID_TYPE(entity);
+
+                assert(implementation().boundingBox().contains(context.template get<const Position>(entity)));
+            }
         }
 
         template<typename... Context>
@@ -75,6 +87,20 @@ namespace NBody {
         }
 
         [[nodiscard]] bool isLeaf() const { return implementation().children().empty(); }
+
+
+        [[nodiscard]] std::string toString(const std::string &offset = "") const {
+            auto &c = (std::span<ENTT_ID_TYPE> &) contents();
+            std::stringstream ss;
+            ss << offset << fmt::format("[{}] ", fmt::join(c, ", ")) << summary() << "\n";
+            for (auto &child: implementation().children())
+                ss << child.toString(offset + "\t");
+            return ss.str();
+        }
+
+        friend std::ostream &operator<<(std::ostream &out, const NodeBase<NodeImplementation, S> &n) {
+            return out << n.toString();
+        }
 
     private:
 

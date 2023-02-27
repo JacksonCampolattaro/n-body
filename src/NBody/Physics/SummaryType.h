@@ -8,7 +8,7 @@
 #include <concepts>
 #include <span>
 
-#include <NBody/Simulation/Simulation.h>
+#include <NBody/Simulation/Simulation.h> // fixme: this shouldn't be included here!
 
 #include <NBody/Physics/Acceleration.h>
 #include <NBody/Physics/QuadrupoleAcceleration.h>
@@ -76,6 +76,11 @@ namespace NBody {
             bbox.max() = glm::max((glm::vec3) bbox.max(), simulation.get<const Position>(e));
         };
         return bbox;
+    }
+
+    template<SummaryType S>
+    std::ostream &operator<<(std::ostream &out, const S &s) {
+        return out << "()";
     }
 }
 

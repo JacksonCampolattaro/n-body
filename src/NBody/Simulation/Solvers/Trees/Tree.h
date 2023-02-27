@@ -106,6 +106,34 @@ namespace NBody {
             return queue;
         }
 
+        [[nodiscard]] std::vector<std::reference_wrapper<Node>> depthBreak(std::size_t depth) {
+
+            std::vector<std::reference_wrapper<Node>> queue, children;
+            queue.push_back(root());
+
+            for (int i = 0; i < depth; ++i) {
+                for (auto &node: queue) {
+
+                    // if we bump into a leaf node, include it as a starting point
+                    if (node.get().isLeaf()) {
+                        children.push_back(node);
+                        continue;
+                    }
+
+                    for (auto &child: node.get().children()) {
+                        if (!child.contents().empty())
+                            children.push_back(child);
+                    }
+                }
+
+                queue = children;
+                children.clear();
+            }
+
+            return queue;
+        }
+
+
     protected:
 
         template<typename Context>
@@ -144,7 +172,7 @@ namespace NBody {
                               Context &&context) {
 
             // If the node to be summarized is already in the summarized list, we don't need to summarize it again
-            for (auto summarizedNode: alreadySummarized)
+            for (auto &summarizedNode: alreadySummarized)
                 if (&summarizedNode.get() == &toBeSummarized) return;
 
             for (auto &child: toBeSummarized.children()) {

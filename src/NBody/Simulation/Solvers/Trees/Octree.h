@@ -42,7 +42,7 @@ namespace {
         std::span more{&*c, static_cast<std::size_t>(entities.end() - c)};
         assert(less.size() + more.size() == entities.size());
 
-        if constexpr(Dimension == 0) {
+        if constexpr (Dimension == 0) {
 
             // Base case
             return std::tuple{less, more};
@@ -89,8 +89,8 @@ namespace NBody {
         [[nodiscard]] BoundingBox boundingBox() const {
             glm::vec3 dimensions{_sideLength, _sideLength, _sideLength};
             return {
-                    {_center - dimensions},
-                    {_center + dimensions}
+                    {_center - dimensions / 2.0f},
+                    {_center + dimensions / 2.0f}
             };
         }
 
@@ -120,30 +120,31 @@ namespace NBody {
 
             // Initialize 8 child nodes
             float childSideLength = sideLength() / 2.0f;
+            float childOffset = childSideLength / 2.0f;
             _children = {{
                                  {xyz000,
-                                  center() + glm::vec3{-childSideLength, -childSideLength, -childSideLength},
+                                  center() + glm::vec3{-childOffset, -childOffset, -childOffset},
                                   childSideLength},
                                  {xyz001,
-                                  center() + glm::vec3{-childSideLength, -childSideLength, childSideLength},
+                                  center() + glm::vec3{-childOffset, -childOffset, childOffset},
                                   childSideLength},
                                  {xyz010,
-                                  center() + glm::vec3{-childSideLength, childSideLength, -childSideLength},
+                                  center() + glm::vec3{-childOffset, childOffset, -childOffset},
                                   childSideLength},
                                  {xyz011,
-                                  center() + glm::vec3{-childSideLength, childSideLength, childSideLength},
+                                  center() + glm::vec3{-childOffset, childOffset, childOffset},
                                   childSideLength},
                                  {xyz100,
-                                  center() + glm::vec3{childSideLength, -childSideLength, -childSideLength},
+                                  center() + glm::vec3{childOffset, -childOffset, -childOffset},
                                   childSideLength},
                                  {xyz101,
-                                  center() + glm::vec3{childSideLength, -childSideLength, childSideLength},
+                                  center() + glm::vec3{childOffset, -childOffset, childOffset},
                                   childSideLength},
                                  {xyz110,
-                                  center() + glm::vec3{childSideLength, childSideLength, -childSideLength},
+                                  center() + glm::vec3{childOffset, childOffset, -childOffset},
                                   childSideLength},
                                  {xyz111,
-                                  center() + glm::vec3{childSideLength, childSideLength, childSideLength},
+                                  center() + glm::vec3{childOffset, childOffset, childOffset},
                                   childSideLength}
                          }};
         }
@@ -166,8 +167,8 @@ namespace NBody {
     class Octree : public Tree<OctreeNode<S>> {
     private:
 
-        int _maxDepth = 16;
-        int _maxLeafSize = 64;
+        int _maxDepth = 32;
+        int _maxLeafSize = 16;
 
     public:
 
@@ -188,8 +189,8 @@ namespace NBody {
 
             BoundingBox boundingBox = outerBoundingBox<typename Node::Summary>(simulation());
             glm::vec3 dimensions = boundingBox.dimensions();
-            root().center() = (boundingBox.max() - boundingBox.min()) / 2.0f;
-            root().sideLength() = std::max(std::max(dimensions.x, dimensions.y), dimensions.z);
+            root().center() = boundingBox.min() + (boundingBox.diagonal() / 2.0f);
+            root().sideLength() = boundingBox.maxSideLength() * 1.1f;
 
             const auto &context = Node::Summary::context(simulation());
             int preBuildDepth = 2;
@@ -204,13 +205,6 @@ namespace NBody {
                 );
             });
             summarizeTreeTop(toBeRefined, context);
-
-            // todo: maybe non-parallel construction should be available as an option?
-            //            root().refine(
-            //                    _maxDepth,
-            //                    [&](const auto &n) { return n.contents().size() > _maxLeafSize; },
-            //                    simulation().template view<const Position, const Mass, const ActiveTag>()
-            //            );
         };
 
         int &maxDepth() { return _maxDepth; }

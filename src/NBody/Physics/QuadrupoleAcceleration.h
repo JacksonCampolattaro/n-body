@@ -38,12 +38,19 @@ namespace NBody::Physics {
         }
 
         Acceleration at(const glm::vec3 &offset) const {
-            return _acceleration + (_quadrupole * offset);
+            return _acceleration - (_quadrupole * offset);
         }
 
         QuadrupoleAcceleration translated(const glm::vec3 &offset) const {
             // The quadrupole stays the same, but the local acceleration is adjusted based on the offset
             return {at(offset), _quadrupole};
+        }
+
+        friend std::ostream &operator<<(std::ostream &out, const QuadrupoleAcceleration &v) {
+            return out << fmt::format("<{}, {}, {}, ({}, {}, {}, {}, {}, {})>",
+                                      v.acceleration().x, v.acceleration().y, v.acceleration().y,
+                                      v.quadrupole().xx(), v.quadrupole().yy(), v._quadrupole.zz(),
+                                      v.quadrupole().xy(), v.quadrupole().yz(), v.quadrupole().zx());
         }
 
     };

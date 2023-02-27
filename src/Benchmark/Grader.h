@@ -29,6 +29,7 @@ namespace NBody {
             from_json(_scenario, _referenceSimulation);
 
             // Run the simulation one step, to prepare the reference
+            spdlog::debug("Performing Naive step, for accuracy reference");
             NaiveSolver referenceSolver{_referenceSimulation, _rule};
             referenceSolver.step();
         }
@@ -36,6 +37,8 @@ namespace NBody {
         const json &scenario() const { return _scenario; }
 
         Physics::Rule &rule() { return _rule; }
+
+        virtual float error(const Simulation &candidateSimulation) const = 0;
 
         float averageError(const Simulation &candidateSimulation) const {
             auto referenceValues = _referenceSimulation.view<const Physics::Acceleration>();

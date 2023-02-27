@@ -102,6 +102,17 @@ namespace NBody::Generator {
         return simulation;
     }
 
+    static json realisticGalaxy() {
+        Simulation s;
+        std::ifstream file{"LOW.bin"};
+        from_tipsy(file, s);
+        json scenario;
+        to_json(scenario, s);
+        return scenario;
+    }
+
+
+
     static Simulation &bake(Simulation &simulation, std::size_t iterations) {
         spdlog::info("\"Baking\" the simulation for {} iterations", iterations);
         Rule rule{};

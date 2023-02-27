@@ -3,3 +3,4 @@ cmake-build-release/*
 cmake-build-relwithdebinfo/*
 */_deps/*
 .idea
+scenarios/*bin

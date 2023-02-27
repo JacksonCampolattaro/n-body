@@ -8,26 +8,18 @@
 #include <NBody/Simulation/Solvers/DualTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
-#include <NBody/Simulation/Solvers/Trees/DescentCriterion.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
 
 namespace NBody {
 
     class MVDRSolver : public DualTreeSolver<
             ActiveLinearBVH,
             PassiveOctree,
-            DescentCriterion::DiagonalOverDistance
+            Descent::DiagonalOverDistance
     > {
     public:
 
-        MVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<
-                        ActiveLinearBVH,
-                        PassiveOctree,
-                        DescentCriterion::DiagonalOverDistance
-                >(simulation, rule) {
-            passiveTree().maxDepth() = 16;
-            passiveTree().maxLeafSize() = 64;
-        }
+        using DualTreeSolver::DualTreeSolver;
 
         std::string id() override { return "mvdr"; };
 
@@ -45,19 +37,11 @@ namespace NBody {
     class QuadrupoleMVDRSolver : public DualTreeSolver<
             ActiveLinearBVH,
             QuadrupolePassiveOctree,
-            DescentCriterion::DiagonalOverDistance
+            Descent::DiagonalOverDistance
     > {
     public:
 
-        QuadrupoleMVDRSolver(Simulation &simulation, Physics::Rule &rule) :
-                DualTreeSolver<
-                        ActiveLinearBVH,
-                        QuadrupolePassiveOctree,
-                        DescentCriterion::DiagonalOverDistance
-                >(simulation, rule) {
-            passiveTree().maxDepth() = 16;
-            passiveTree().maxLeafSize() = 64;
-        }
+        using DualTreeSolver::DualTreeSolver;
 
         std::string id() override { return "mvdr-4p"; };
 
