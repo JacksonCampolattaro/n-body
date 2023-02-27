@@ -18,11 +18,16 @@ namespace NBody::Descent {
     using Physics::Position;
 
     enum class Recommendation {
-        Approximate = 1 << 0,
-        DescendActiveNode = 1 << 1,
-        DescendPassiveNode = 1 << 2,
-        DescendBothNodes = (DescendActiveNode & DescendPassiveNode)
+        DoNotDescend = 0,
+        Approximate = 0,
+        DescendActiveNode = 1 << 0,
+        DescendPassiveNode = 1 << 1,
+        DescendBothNodes = (DescendActiveNode | DescendPassiveNode)
     };
+
+    inline Recommendation operator|(Recommendation a, Recommendation b) {
+        return static_cast<Recommendation>(static_cast<int>(a) | static_cast<int>(b));
+    }
 
     template<typename T>
     concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {

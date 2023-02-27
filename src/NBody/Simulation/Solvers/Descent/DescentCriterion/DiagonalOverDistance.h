@@ -33,8 +33,15 @@ namespace NBody::Descent {
             if (std::max(activeDiagonal, passiveDiagonal) / distance < _theta)
                 return Recommendation::Approximate;
 
-            return activeDiagonal < passiveDiagonal ?
-                   Recommendation::DescendPassiveNode : Recommendation::DescendActiveNode;
+            // Descend the passive node, as long as it's more than half the size of the active node
+            Recommendation shouldDescendPassive = (activeDiagonal < passiveDiagonal * 2.0f) ?
+                                                  Recommendation::DescendPassiveNode : Recommendation::DoNotDescend;
+
+            // Descend the active node, as long as it's more than half the size of the passive node
+            Recommendation shouldDescendActive = (passiveDiagonal < activeDiagonal * 2.0f) ?
+                                                 Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
+
+            return shouldDescendPassive | shouldDescendActive;
 
         }
 

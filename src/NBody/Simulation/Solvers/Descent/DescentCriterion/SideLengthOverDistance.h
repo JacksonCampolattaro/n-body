@@ -32,8 +32,15 @@ namespace NBody::Descent {
             if ((2.0f * std::max(activeSideLength, passiveSideLength) / distance) < _theta)
                 return Recommendation::Approximate;
 
-            return activeSideLength < passiveSideLength ?
-                   Recommendation::DescendPassiveNode : Recommendation::DescendActiveNode;
+            // Descend the passive node, as long as it's more than half the size of the active node
+            Recommendation shouldDescendPassive = (activeNode.sideLength() < passiveNode.sideLength() * 2.0f) ?
+                                                  Recommendation::DescendPassiveNode : Recommendation::DoNotDescend;
+
+            // Descend the active node, as long as it's more than half the size of the passive node
+            Recommendation shouldDescendActive = (passiveNode.sideLength() < activeNode.sideLength() * 2.0f) ?
+                                                 Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
+
+            return shouldDescendPassive | shouldDescendActive;
 
         }
 

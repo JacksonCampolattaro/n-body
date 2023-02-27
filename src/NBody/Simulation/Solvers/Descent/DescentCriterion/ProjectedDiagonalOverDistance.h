@@ -58,8 +58,16 @@ namespace NBody::Descent {
                 < (_theta * _theta))
                 return Recommendation::Approximate;
 
-            return projectedDiagonalLength2A < projectedDiagonalLength2P ?
-                   Recommendation::DescendPassiveNode : Recommendation::DescendActiveNode;
+
+            // Descend the passive node, as long as it's more than half the size of the active node
+            Recommendation shouldDescendPassive = (projectedDiagonalLength2A < projectedDiagonalLength2P * 2.0f) ?
+                                                  Recommendation::DescendPassiveNode : Recommendation::DoNotDescend;
+
+            // Descend the active node, as long as it's more than half the size of the passive node
+            Recommendation shouldDescendActive = (projectedDiagonalLength2P < projectedDiagonalLength2A * 2.0f) ?
+                                                 Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
+
+            return shouldDescendPassive | shouldDescendActive;
         }
 
     };

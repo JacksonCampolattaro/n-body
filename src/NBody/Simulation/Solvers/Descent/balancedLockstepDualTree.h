@@ -28,18 +28,11 @@ namespace NBody::Descent {
         // If either node is empty, we have no need to calculate forces between them
         if (activeNode.contents().empty() || passiveNode.contents().empty()) return;
 
-        // When the two nodes are around the same size, switch to lockstep!
-        if (activeNode.sideLength() < passiveNode.sideLength() * 2.0f &&
-            passiveNode.sideLength() < activeNode.sideLength() * 2.0f)
-            return lockstepDualTree(activeNode, passiveNode, descentCriterion, rule, activeContext, passiveContext);
-
         Recommendation recommendation = descentCriterion(activeNode, passiveNode);
 
         if (recommendation == Recommendation::Approximate) {
 
             // node-node interaction
-            auto _a = passiveNode.summary().acceleration();
-            auto a = rule(activeNode, passiveNode);
             passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
 
         } else if (recommendation == Recommendation::DescendActiveNode) {
@@ -88,6 +81,10 @@ namespace NBody::Descent {
 
             }
 
+        } else if (recommendation == Recommendation::DescendBothNodes) {
+
+            // Once the node sizes are close enough, switch to lockstep
+            lockstepDualTree(activeNode, passiveNode, descentCriterion, rule, activeContext, passiveContext);
         }
     }
 

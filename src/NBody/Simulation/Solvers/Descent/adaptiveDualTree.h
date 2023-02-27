@@ -31,64 +31,84 @@ namespace NBody::Descent {
         if (activeNode.contents().empty() || passiveNode.contents().empty())
             return;
 
-        switch (descentCriterion(activeNode, passiveNode)) {
+        Recommendation recommendation = descentCriterion(activeNode, passiveNode);
 
-            case Recommendation::Approximate:
+        if (recommendation == Recommendation::Approximate) {
 
-                passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
-                break;
+            passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
 
-            case Recommendation::DescendActiveNode:
+        } else if (recommendation == Recommendation::DescendActiveNode) {
 
-                if (activeNode.isLeaf()) {
+            if (activeNode.isLeaf()) {
 
-                    for (auto &activeParticle: activeNode.contents())
-                        Descent::passiveTree(
-                                activeContext.template get<const Position>(activeParticle),
-                                activeContext.template get<const Mass>(activeParticle),
-                                passiveNode,
-                                descentCriterion, rule,
-                                passiveContext
-                        );
+                for (auto &activeParticle: activeNode.contents())
+                    Descent::passiveTree(
+                            activeContext.template get<const Position>(activeParticle),
+                            activeContext.template get<const Mass>(activeParticle),
+                            passiveNode,
+                            descentCriterion, rule,
+                            passiveContext
+                    );
 
-                } else {
+            } else {
 
-                    for (auto &activeChild: activeNode.children())
-                        Descent::adaptiveDualTree(
-                                activeChild, passiveNode,
-                                descentCriterion, rule,
-                                activeContext, passiveContext
-                        );
+                for (auto &activeChild: activeNode.children())
+                    Descent::adaptiveDualTree(
+                            activeChild, passiveNode,
+                            descentCriterion, rule,
+                            activeContext, passiveContext
+                    );
 
+            }
+
+        } else if (recommendation == Recommendation::DescendPassiveNode) {
+
+            if (passiveNode.isLeaf()) {
+
+                for (auto &passiveParticle: passiveNode.contents())
+                    passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
+                            activeNode, passiveContext.get<const Position>(passiveParticle),
+                            descentCriterion, rule,
+                            activeContext
+                    );
+
+            } else {
+
+                for (auto &passiveChild: passiveNode.children())
+                    Descent::adaptiveDualTree(
+                            activeNode, passiveChild,
+                            descentCriterion, rule,
+                            activeContext, passiveContext
+                    );
+
+            }
+
+        } else if (recommendation == Recommendation::DescendBothNodes) {
+
+            if (activeNode.isLeaf() && passiveNode.isLeaf()) {
+                Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            } else {
+
+                // If the passive node isn't a leaf, we'll descend all its children
+                std::span<PassiveNode> passiveNodesToDescend =
+                        passiveNode.isLeaf() ? std::span<PassiveNode>{&passiveNode, 1}
+                                             : passiveNode.children();
+
+                // If the active node isn't a leaf, we'll descend all its children
+                std::span<const ActiveNode> activeNodesToDescend =
+                        activeNode.isLeaf() ? std::span<const ActiveNode>{&activeNode, 1}
+                                            : activeNode.children();
+
+                // Treat every combination of force & field node
+                for (auto &childPassiveNode: passiveNodesToDescend) {
+                    for (const auto &childActiveNode: activeNodesToDescend) {
+                        Descent::adaptiveDualTree(childActiveNode, childPassiveNode,
+                                                  descentCriterion, rule,
+                                                  activeContext, passiveContext);
+                    }
                 }
-                break;
+            }
 
-            case Recommendation::DescendPassiveNode:
-
-                if (passiveNode.isLeaf()) {
-
-                    for (auto &passiveParticle: passiveNode.contents())
-                        passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
-                                activeNode, passiveContext.get<const Position>(passiveParticle),
-                                descentCriterion, rule,
-                                activeContext
-                        );
-
-                } else {
-
-                    for (auto &passiveChild: passiveNode.children())
-                        Descent::adaptiveDualTree(
-                                activeNode, passiveChild,
-                                descentCriterion, rule,
-                                activeContext, passiveContext
-                        );
-
-                }
-                break;
-
-            case Recommendation::DescendBothNodes:
-                // todo: not in use, yet
-                break;
         }
 
     }
