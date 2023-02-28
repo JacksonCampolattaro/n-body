@@ -7,12 +7,12 @@
 #include <catch2/generators/catch_generators_random.hpp>
 #include <catch2/generators/catch_generators_adapters.hpp>
 
-#include <NBody/Physics/Multipole.h>
+#include <NBody/Physics/SymmetricMatrix3.h>
 
-TEST_CASE("Member access to a Quadrupole should be correct", "[Multipole]") {
+TEST_CASE("Member access to a Quadrupole should be correct", "[SymmetricMatrix3]") {
 
     // Construct a quadrupole with known values
-    NBody::Multipole<2> q{
+    NBody::SymmetricMatrix3<2> q{
             {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}
     };
 
@@ -36,10 +36,10 @@ TEST_CASE("Member access to a Quadrupole should be correct", "[Multipole]") {
     REQUIRE(q.get<Z, Z>() == 5.0f);
 }
 
-TEST_CASE("Member access to an Octupole should be correct", "[Multipole]") {
+TEST_CASE("Member access to an Octupole should be correct", "[SymmetricMatrix3]") {
 
     // Construct a quadrupole with known values
-    NBody::Multipole<3> q{
+    NBody::SymmetricMatrix3<3> q{
             {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f}
     };
 
@@ -59,7 +59,7 @@ TEST_CASE("Member access to an Octupole should be correct", "[Multipole]") {
     REQUIRE(q.get<Z, Z, Z>() == 9.0f);
 }
 
-TEST_CASE("The outer product of two Multipole<1>s is a Multipole<2>", "[Multipole]") {
+TEST_CASE("The outer product of two SymmetricMatrix3<1>s is a SymmetricMatrix3<2>", "[SymmetricMatrix3]") {
 
     // todo
 }
