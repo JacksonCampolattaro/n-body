@@ -19,7 +19,7 @@ namespace NBody {
         Z = 2
     };
 
-    template<int Order>
+    template<std::size_t Order>
     class SymmetricMatrix3 {
     public:
 
@@ -45,6 +45,22 @@ namespace NBody {
         template<Dimension... Indices>
         [[nodiscard]] const float &get() const {
             return _data[linearIndex<Indices...>()];
+        }
+
+        const std::array<float, DataSize> &flat() const { return _data; }
+
+        std::array<float, DataSize> &flat() { return _data; }
+
+        SymmetricMatrix3<Order> &operator+=(const SymmetricMatrix3<Order> &rhs) {
+            for (int i = 0; i < DataSize; ++i)
+                flat()[i] += rhs.flat()[i];
+            return *this;
+        }
+
+        SymmetricMatrix3<Order> &operator-=(const SymmetricMatrix3<Order> &rhs) {
+            for (int i = 0; i < DataSize; ++i)
+                flat()[i] -= rhs.flat()[i];
+            return *this;
         }
 
         template<Dimension... Indices>
@@ -96,9 +112,9 @@ namespace NBody {
     class SymmetricMatrix3<1> : public glm::vec3 {
     public:
 
-        using glm::vec3::vec;
-
         static constexpr std::size_t DataSize = 3;
+
+        using glm::vec3::vec;
 
         SymmetricMatrix3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
 
@@ -107,6 +123,10 @@ namespace NBody {
 
         template<Dimension Index>
         [[nodiscard]] const float &get() const { return operator[](linearIndex<Index>()); }
+
+        const glm::vec3 &flat() const { return *this; }
+
+        glm::vec3 &flat() { return *this; }
 
         template<Dimension Index>
         static constexpr std::size_t linearIndex() {
@@ -120,6 +140,30 @@ namespace NBody {
         }
 
     };
+
+
+    template<std::size_t Order>
+    static bool operator==(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
+        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+            if (lhs.flat()[i] != rhs.flat()[i]) return false;
+        return true;
+    }
+
+    template<std::size_t Order>
+    static SymmetricMatrix3<Order> operator+(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
+        SymmetricMatrix3<Order> sum{};
+        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+            sum.flat()[i] = lhs.flat()[i] + rhs.flat()[i];
+        return sum;
+    }
+
+    template<std::size_t Order>
+    static SymmetricMatrix3<Order> operator-(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
+        SymmetricMatrix3<Order> difference{};
+        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+            difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
+        return difference;
+    }
 
 }
 
