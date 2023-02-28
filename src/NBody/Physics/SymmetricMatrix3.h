@@ -12,6 +12,13 @@
 
 namespace NBody {
 
+    // todo: is there a better place to put this?
+    enum class Dimension : std::size_t {
+        X = 0,
+        Y = 1,
+        Z = 2
+    };
+
     template<int Order>
     class SymmetricMatrix3 {
     public:
@@ -30,17 +37,17 @@ namespace NBody {
         explicit SymmetricMatrix3(std::array<float, DataSize> values) :
                 _data(values) {}
 
-        template<std::size_t... Indices>
+        template<Dimension... Indices>
         float &get() {
             return _data[linearIndex<Indices...>()];
         }
 
-        template<std::size_t... Indices>
+        template<Dimension... Indices>
         [[nodiscard]] const float &get() const {
             return _data[linearIndex<Indices...>()];
         }
 
-        template<std::size_t... Indices>
+        template<Dimension... Indices>
         static constexpr std::size_t linearIndex() {
 
             // Make sure the user passed the right number of indices
@@ -53,33 +60,33 @@ namespace NBody {
             return linearIndex<indices>();
         }
 
-        template<std::array<std::size_t, Order> Indices>
+        template<std::array<Dimension, Order> Indices>
         static constexpr std::size_t linearIndex() {
 
             // If the first index is X, then we can use lower-dimensional indexing
-            if (Indices[0] == 0) {
+            if (Indices[0] == Dimension::X) {
                 constexpr auto copy = lowerOrderIndices<Indices>();
                 return SymmetricMatrix3<Order - 1>::template linearIndex<copy>();
             }
 
             // All the extra linear indices will correspond to indices which contain only Ys and Zs
             // We can determine the offset by counting the Zs
-            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), 2);
+            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
             return SymmetricMatrix3<Order - 1>::DataSize + numberOfZs;
         }
 
     protected:
 
-        template<std::size_t... Indices>
-        static constexpr std::array<std::size_t, Order> asSortedArray() {
-            std::array<std::size_t, Order> array{Indices...};
+        template<Dimension... Indices>
+        static constexpr std::array<Dimension, Order> asSortedArray() {
+            std::array<Dimension, Order> array{Indices...};
             std::sort(array.begin(), array.end());
             return array;
         }
 
-        template<std::array<std::size_t, Order> Indices>
-        static constexpr std::array<std::size_t, Order - 1> lowerOrderIndices() {
-            std::array<std::size_t, Order - 1> copy;
+        template<std::array<Dimension, Order> Indices>
+        static constexpr std::array<Dimension, Order - 1> lowerOrderIndices() {
+            std::array<Dimension, Order - 1> copy;
             std::copy(Indices.begin() + 1, Indices.end(), copy.begin());
             return copy;
         }
@@ -95,21 +102,21 @@ namespace NBody {
 
         SymmetricMatrix3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
 
-        template<std::array<std::size_t, 1> Indices>
-        float &get() { return operator[](Indices[0]); }
+        template<Dimension Index>
+        float &get() { return operator[](linearIndex<Index>()); }
 
-        template<std::array<std::size_t, 1> Indices>
-        [[nodiscard]] const float &get() const { return operator[](Indices[0]); }
+        template<Dimension Index>
+        [[nodiscard]] const float &get() const { return operator[](linearIndex<Index>()); }
 
-        template<std::size_t Index>
+        template<Dimension Index>
         static constexpr std::size_t linearIndex() {
-            return linearIndex<std::array<std::size_t, 1>{Index}>();
+            return linearIndex<std::array<Dimension, 1>{Index}>();
         }
 
-        template<std::array<std::size_t, 1> Indices>
+        template<std::array<Dimension, 1> Indices>
         static constexpr std::size_t linearIndex() {
-            static_assert(Indices[0] < 3, "Index out of bounds!");
-            return Indices[0];
+            static_assert((std::size_t) Indices[0] < 3, "Index out of bounds!");
+            return (std::size_t) Indices[0];
         }
 
     };
