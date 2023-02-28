@@ -36,18 +36,25 @@ namespace NBody {
                 auto entityMass = context.template get<const Mass>(entity).mass();
                 auto entityPosition = context.template get<const Position>(entity);
 
-                float qx = entityPosition.x - centerOfMass().x;
-                float qy = entityPosition.y - centerOfMass().y;
-                float qz = entityPosition.z - centerOfMass().z;
-                float qr2 = qx * qx + qy * qy + qz * qz;
+                glm::vec3 d = entityPosition - centerOfMass();
 
-                _quadrupoleMoment.xx() += entityMass * (3.0f * qx * qx - qr2);
-                _quadrupoleMoment.xy() += entityMass * (3.0f * qx * qy);
-                _quadrupoleMoment.xz() += entityMass * (3.0f * qx * qz);
-                _quadrupoleMoment.yy() += entityMass * (3.0f * qy * qy - qr2);
-                _quadrupoleMoment.yz() += entityMass * (3.0f * qy * qz);
+                // equation: 3 * outerProduct(d, d) - (I * |d|^2)
+
+                // 3.0 * d^Order
+                glm::mat3 m = glm::outerProduct(d, d) * 3.0f;
+
+                // ... made traceless
+                float trace = m[0][0] + m[1][1] + m[2][2];
+                m[0][0] -= trace / 3.0f;
+                m[1][1] -= trace / 3.0f;
+                m[2][2] -= trace / 3.0f; // this is optimized out automatically!
+
+                // ... and multiplied by the mass
+                _quadrupoleMoment += Quadrupole{m} * entityMass;
+
             }
-            _quadrupoleMoment.zz() = -_quadrupoleMoment.xx() -_quadrupoleMoment.yy();
+            // zz only needs to be computed once
+            _quadrupoleMoment.zz() = -_quadrupoleMoment.xx() - _quadrupoleMoment.yy();
         }
 
         template<typename NodeList>
@@ -74,7 +81,7 @@ namespace NBody {
                 _quadrupoleMoment.yz() += child.summary().moment().yz() +
                                           child.summary().totalMass().mass() * (3.0f * qy * qz);
             }
-            _quadrupoleMoment.zz() = -_quadrupoleMoment.xx() -_quadrupoleMoment.yy();
+            _quadrupoleMoment.zz() = -_quadrupoleMoment.xx() - _quadrupoleMoment.yy();
         }
 
         Quadrupole &moment() { return _quadrupoleMoment; }

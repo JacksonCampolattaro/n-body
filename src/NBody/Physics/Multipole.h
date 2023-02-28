@@ -50,6 +50,8 @@ namespace NBody {
             return matrix<sizeof...(Indices)>().template get<Indices...>();
         }
 
+        bool operator==(const Multipole<Order> &) const = default;
+
     };
 
     template<>

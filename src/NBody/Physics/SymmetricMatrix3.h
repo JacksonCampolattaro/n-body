@@ -25,9 +25,12 @@ namespace NBody {
 
         static constexpr std::size_t DataSize = SymmetricMatrix3<Order - 1>::DataSize + (Order + 1);
 
+        using
+        enum Dimension;
+
     private:
 
-        std::array<float, DataSize> _data;
+        std::array<float, DataSize> _data{0};
 
     public:
 
@@ -36,6 +39,14 @@ namespace NBody {
 
         explicit SymmetricMatrix3(std::array<float, DataSize> values) :
                 _data(values) {}
+
+        static SymmetricMatrix3<Order> identity() {
+            SymmetricMatrix3<Order> matrix{};
+            matrix.get<X, X>() = 1.0f;
+            matrix.get<Y, Y>() = 1.0f;
+            matrix.get<Z, Z>() = 1.0f;
+            return matrix;
+        }
 
         template<Dimension... Indices>
         float &get() {
@@ -50,6 +61,8 @@ namespace NBody {
         const std::array<float, DataSize> &flat() const { return _data; }
 
         std::array<float, DataSize> &flat() { return _data; }
+
+        bool operator==(const SymmetricMatrix3<Order> &) const = default;
 
         SymmetricMatrix3<Order> &operator+=(const SymmetricMatrix3<Order> &rhs) {
             for (int i = 0; i < DataSize; ++i)
@@ -91,6 +104,30 @@ namespace NBody {
             return SymmetricMatrix3<Order - 1>::DataSize + numberOfZs;
         }
 
+        template<std::size_t LinearIndex>
+        static constexpr std::array<Dimension, Order> dimensionalIndex() {
+            static_assert(LinearIndex < DataSize, "Linear index is out of bounds");
+
+            std::array<Dimension, Order> array{};
+            if constexpr (LinearIndex < SymmetricMatrix3<Order - 1>::DataSize) {
+
+                // If the linear index would fit in a smaller matrix, prefix with an X and recursively find the rest
+                constexpr auto lowerIndex = SymmetricMatrix3<Order - 1>::template dimensionalIndex<LinearIndex>();
+                array[0] = Dimension::X;
+                std::copy(lowerIndex.begin(), lowerIndex.end(), array.begin() + 1);
+
+            } else {
+
+                // Otherwise, the dimensional matrix is made up of Ys and Zs in appropriate proportions
+                constexpr std::size_t numberOfZs = LinearIndex - SymmetricMatrix3<Order - 1>::DataSize;
+                constexpr std::size_t numberOfYs = (DataSize - SymmetricMatrix3<Order - 1>::DataSize) - numberOfZs - 1;
+                std::fill(array.begin(), array.begin() + numberOfYs, Dimension::Y);
+                std::fill(array.begin() + numberOfYs, array.end(), Dimension::Z);
+            }
+
+            return array;
+        }
+
     protected:
 
         template<Dimension... Indices>
@@ -116,15 +153,15 @@ namespace NBody {
 
         using glm::vec3::vec;
 
-        SymmetricMatrix3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
-
-        template<Dimension Index>
-        float &get() { return operator[](linearIndex<Index>()); }
+        explicit SymmetricMatrix3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
 
         template<Dimension Index>
         [[nodiscard]] const float &get() const { return operator[](linearIndex<Index>()); }
 
-        const glm::vec3 &flat() const { return *this; }
+        template<Dimension Index>
+        float &get() { return operator[](linearIndex<Index>()); }
+
+        [[nodiscard]] const glm::vec3 &flat() const { return *this; }
 
         glm::vec3 &flat() { return *this; }
 
@@ -139,15 +176,13 @@ namespace NBody {
             return (std::size_t) Indices[0];
         }
 
+        template<std::size_t LinearIndex>
+        static constexpr std::array<Dimension, 1> dimensionalIndex() {
+            static_assert(LinearIndex < DataSize, "Linear index is out of bounds");
+            return {static_cast<Dimension>(LinearIndex)};
+        }
+
     };
-
-
-    template<std::size_t Order>
-    static bool operator==(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
-        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
-            if (lhs.flat()[i] != rhs.flat()[i]) return false;
-        return true;
-    }
 
     template<std::size_t Order>
     static SymmetricMatrix3<Order> operator+(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {

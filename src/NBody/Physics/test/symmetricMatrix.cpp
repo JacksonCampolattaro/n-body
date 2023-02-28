@@ -9,7 +9,8 @@
 
 #include <NBody/Physics/SymmetricMatrix3.h>
 
-using enum NBody::Dimension;
+using
+enum NBody::Dimension;
 
 TEST_CASE("Member access to a 3x3 symmetric matrix should be correct", "[SymmetricMatrix3]") {
 
@@ -99,6 +100,23 @@ TEST_CASE("Addition and subtraction of symmetric matrices", "[SymmetricMatrix3]"
 
     s3a += s3a;
     REQUIRE(s3a == s3b);
+}
+
+TEST_CASE("Linear indices can be converted to their dimensional counterparts in standard form", "[SymmetricMatrix3]") {
+
+    //std::array<NBody::Dimension, 3> index3;
+
+    constexpr auto linearIndexA = NBody::SymmetricMatrix3<3>::linearIndex<X, Y, Z>();
+    constexpr auto indexA = NBody::SymmetricMatrix3<3>::dimensionalIndex<linearIndexA>();
+    CHECK(indexA == std::array<NBody::Dimension, 3>{X, Y, Z});
+
+    constexpr auto linearIndexB = NBody::SymmetricMatrix3<3>::linearIndex<Z, Y, Z>();
+    constexpr auto indexB = NBody::SymmetricMatrix3<3>::dimensionalIndex<linearIndexB>();
+    CHECK(indexB == std::array<NBody::Dimension, 3>{Y, Z, Z});
+
+    constexpr auto linearIndexC = NBody::SymmetricMatrix3<5>::linearIndex<Z, Y, Z, Y, X>();
+    constexpr auto indexC = NBody::SymmetricMatrix3<5>::dimensionalIndex<linearIndexC>();
+    CHECK(indexC == std::array<NBody::Dimension, 5>{X, Y, Y, Z, Z});
 }
 
 TEST_CASE("The outer product of two SymmetricMatrix3<1>s is a SymmetricMatrix3<2>", "[SymmetricMatrix3]") {
