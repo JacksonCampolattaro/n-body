@@ -11,6 +11,17 @@
 #include <glm/vec3.hpp>
 
 namespace {
+
+    template<std::size_t N>
+    constexpr std::size_t factorial() {
+        return N * factorial<N - 1>();
+    }
+
+    template<>
+    constexpr std::size_t factorial<1>() { return 1; }
+
+    template<>
+    constexpr std::size_t factorial<0>() { return 1; }
 }
 
 namespace NBody {
@@ -89,9 +100,16 @@ namespace NBody {
         std::array<float, DataSize> &flat() { return _data; }
 
         [[nodiscard]] float trace() const {
+            // The diagonal only has 3 elements, no matter how many dimensions are matrix has!
             return _data[0] + // first value is XXX...X
                    _data[SymmetricMatrix3<Order - 1>::DataSize] + // first value after lower dim is YYY...Y
                    _data[DataSize - 1]; // last value is ZZZ...Z
+        }
+
+        [[nodiscard]] float sum() const {
+            return [&]<std::size_t... I>(std::index_sequence<I...>) {
+                return ((_data[I] * permutations<dimensionalIndex<I>()>()) + ...);
+            }(std::make_index_sequence<DataSize>());
         }
 
         SymmetricMatrix3<Order> traceless() const {
@@ -192,6 +210,14 @@ namespace NBody {
             return []<std::size_t... I>(std::index_sequence<I...>) {
                 return (((std::size_t) Dimensions[I]) == ...) ? 1.0f : 0.0f;
             }(std::make_index_sequence<Order>());
+        };
+
+        template<std::array<Dimension, Order> Indices>
+        static constexpr std::size_t permutations() {
+            constexpr std::size_t numberOfXs = std::count(Indices.begin(), Indices.end(), Dimension::X);
+            constexpr std::size_t numberOfYs = std::count(Indices.begin(), Indices.end(), Dimension::Y);
+            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
+            return factorial<Order>() / (factorial<numberOfXs>() * factorial<numberOfYs>() * factorial<numberOfZs>());
         };
     };
 

@@ -180,7 +180,14 @@ TEST_CASE("The trace of a matrix can be found and eliminated", "[SymmetricMatrix
 
 }
 
-TEST_CASE("The outer product of two SymmetricMatrix3<1>s is a SymmetricMatrix3<2>", "[SymmetricMatrix3]") {
+TEST_CASE("The sum of a matrices elements can be found", "[SymmetricMatrix3]") {
 
-    // todo
+    auto power2 = NBody::SymmetricMatrix3<2>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power2.flat());
+    REQUIRE(power2.sum() == 36.0f);
+
+    auto power3 = NBody::SymmetricMatrix3<3>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power3.flat());
+    REQUIRE(power3.sum() == 216.0f);
+
 }
