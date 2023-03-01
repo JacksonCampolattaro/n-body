@@ -2,8 +2,8 @@
 // Created by Jackson Campolattaro on 2/27/23.
 //
 
-#ifndef N_BODY_SYMMETRICMATRIX3_H
-#define N_BODY_SYMMETRICMATRIX3_H
+#ifndef N_BODY_SYMMETRICTENSOR3_H
+#define N_BODY_SYMMETRICTENSOR3_H
 
 #include <array>
 #include <span>
@@ -43,10 +43,10 @@ namespace NBody {
 
     // todo: should be renamed to SymmetricTensor3<>
     template<std::size_t Order>
-    class SymmetricMatrix3 {
+    class SymmetricTensor3 {
     public:
 
-        static constexpr std::size_t DataSize = SymmetricMatrix3<Order - 1>::DataSize + (Order + 1);
+        static constexpr std::size_t DataSize = SymmetricTensor3<Order - 1>::DataSize + (Order + 1);
 
         using
         enum Dimension;
@@ -57,15 +57,15 @@ namespace NBody {
 
     public:
 
-        SymmetricMatrix3() :
+        SymmetricTensor3() :
                 _data({0}) {}
 
-        explicit SymmetricMatrix3(std::array<float, DataSize> values) :
+        explicit SymmetricTensor3(std::array<float, DataSize> values) :
                 _data(values) {}
 
-        static SymmetricMatrix3<Order> identity() {
+        static SymmetricTensor3<Order> identity() {
 
-            SymmetricMatrix3<Order> matrix{};
+            SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = kroneckerDelta<dimensionalIndex<I>()>()), ...);
             }(std::make_index_sequence<DataSize>());
@@ -74,9 +74,9 @@ namespace NBody {
         }
 
         template<typename Func>
-        static SymmetricMatrix3<Order> nullary(Func &&f) {
+        static SymmetricTensor3<Order> nullary(Func &&f) {
 
-            SymmetricMatrix3<Order> matrix{};
+            SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = f(dimensionalIndex<I>())), ...);
             }(std::make_index_sequence<DataSize>());
@@ -84,9 +84,9 @@ namespace NBody {
             return matrix;
         }
 
-        static SymmetricMatrix3<Order> cartesianPower(const glm::vec3 &vec) {
+        static SymmetricTensor3<Order> cartesianPower(const glm::vec3 &vec) {
 
-            SymmetricMatrix3<Order> matrix{};
+            SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = productOfDimensions<dimensionalIndex<I>()>(vec)), ...);
             }(std::make_index_sequence<DataSize>());
@@ -111,17 +111,17 @@ namespace NBody {
         [[nodiscard]] float trace() const {
             // The diagonal only has 3 elements, no matter how many dimensions are matrix has!
             return _data[0] + // first value is XXX...X
-                   _data[SymmetricMatrix3<Order - 1>::DataSize] + // first value after lower dim is YYY...Y
+                   _data[SymmetricTensor3<Order - 1>::DataSize] + // first value after lower dim is YYY...Y
                    _data[DataSize - 1]; // last value is ZZZ...Z
         }
 
-        SymmetricMatrix3<Order> traceless() const {
+        SymmetricTensor3<Order> traceless() const {
             return *this - (identity() * (trace() / 3.0f));
         }
 
         void enforceTraceless() {
             // ensure ZZ...Z = -(XX...X + YY...Y)
-            _data[DataSize - 1] = -(_data[0] + _data[SymmetricMatrix3<Order - 1>::DataSize]);
+            _data[DataSize - 1] = -(_data[0] + _data[SymmetricTensor3<Order - 1>::DataSize]);
         }
 
         [[nodiscard]] float sum() const {
@@ -137,15 +137,15 @@ namespace NBody {
             }(std::make_index_sequence<DataSize>());
         }
 
-        bool operator==(const SymmetricMatrix3<Order> &) const = default;
+        bool operator==(const SymmetricTensor3<Order> &) const = default;
 
-        SymmetricMatrix3<Order> &operator+=(const SymmetricMatrix3<Order> &rhs) {
+        SymmetricTensor3<Order> &operator+=(const SymmetricTensor3<Order> &rhs) {
             for (int i = 0; i < DataSize; ++i)
                 flat()[i] += rhs.flat()[i];
             return *this;
         }
 
-        SymmetricMatrix3<Order> &operator-=(const SymmetricMatrix3<Order> &rhs) {
+        SymmetricTensor3<Order> &operator-=(const SymmetricTensor3<Order> &rhs) {
             for (int i = 0; i < DataSize; ++i)
                 flat()[i] -= rhs.flat()[i];
             return *this;
@@ -170,13 +170,13 @@ namespace NBody {
             // If the first index is X, then we can use lower-dimensional indexing
             if (Indices[0] == Dimension::X) {
                 constexpr auto copy = lowerOrderIndices<Indices>();
-                return SymmetricMatrix3<Order - 1>::template linearIndex<copy>();
+                return SymmetricTensor3<Order - 1>::template linearIndex<copy>();
             }
 
             // All the extra linear indices will correspond to indices which contain only Ys and Zs
             // We can determine the offset by counting the Zs
             constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
-            return SymmetricMatrix3<Order - 1>::DataSize + numberOfZs;
+            return SymmetricTensor3<Order - 1>::DataSize + numberOfZs;
         }
 
         template<std::size_t LinearIndex>
@@ -184,10 +184,10 @@ namespace NBody {
             static_assert(LinearIndex < DataSize, "Linear index is out of bounds");
 
             std::array<Dimension, Order> array{};
-            if constexpr (LinearIndex < SymmetricMatrix3<Order - 1>::DataSize) {
+            if constexpr (LinearIndex < SymmetricTensor3<Order - 1>::DataSize) {
 
                 // If the linear index would fit in a smaller matrix, prefix with an X and recursively find the rest
-                constexpr auto lowerIndex = SymmetricMatrix3<Order - 1>::template dimensionalIndex<LinearIndex>();
+                constexpr auto lowerIndex = SymmetricTensor3<Order - 1>::template dimensionalIndex<LinearIndex>();
                 array[0] = Dimension::X;
                 std::copy(lowerIndex.begin(), lowerIndex.end(), array.begin() + 1);
 
@@ -195,9 +195,9 @@ namespace NBody {
 
                 // Otherwise, the dimensional matrix is made up of Ys and Zs in appropriate proportions
                 constexpr std::size_t numberOfZs =
-                        LinearIndex - SymmetricMatrix3<Order - 1>::DataSize;
+                        LinearIndex - SymmetricTensor3<Order - 1>::DataSize;
                 constexpr std::size_t numberOfYs =
-                        (DataSize - SymmetricMatrix3<Order - 1>::DataSize) - numberOfZs - 1;
+                        (DataSize - SymmetricTensor3<Order - 1>::DataSize) - numberOfZs - 1;
                 std::fill(array.begin(), array.begin() + numberOfYs, Dimension::Y);
                 std::fill(array.begin() + numberOfYs, array.end(), Dimension::Z);
             }
@@ -247,14 +247,14 @@ namespace NBody {
     };
 
     template<>
-    class SymmetricMatrix3<1> : public glm::vec3 {
+    class SymmetricTensor3<1> : public glm::vec3 {
     public:
 
         static constexpr std::size_t DataSize = 3;
 
         using glm::vec3::vec;
 
-        explicit SymmetricMatrix3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
+        explicit SymmetricTensor3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
 
         template<Dimension Index>
         [[nodiscard]] const float &get() const { return operator[](linearIndex<Index>()); }
@@ -286,31 +286,31 @@ namespace NBody {
     };
 
     template<std::size_t Order>
-    static SymmetricMatrix3<Order> operator+(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
-        SymmetricMatrix3<Order> sum{};
-        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+    static SymmetricTensor3<Order> operator+(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
+        SymmetricTensor3<Order> sum{};
+        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
             sum.flat()[i] = lhs.flat()[i] + rhs.flat()[i];
         return sum;
     }
 
     template<std::size_t Order>
-    static SymmetricMatrix3<Order> operator-(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
-        SymmetricMatrix3<Order> difference{};
-        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+    static SymmetricTensor3<Order> operator-(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
+        SymmetricTensor3<Order> difference{};
+        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
             difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
         return difference;
     }
 
     template<std::size_t Order>
-    static SymmetricMatrix3<Order> operator*(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
-        SymmetricMatrix3<Order> difference{};
-        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+    static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
+        SymmetricTensor3<Order> difference{};
+        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
             difference.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
         return difference;
     }
 
     // fixme: This can probably be generalized to higher orders
-    static glm::vec3 operator*(const SymmetricMatrix3<2> &lhs, const glm::vec3 &rhs) {
+    static glm::vec3 operator*(const SymmetricTensor3<2> &lhs, const glm::vec3 &rhs) {
         using
         enum Dimension;
         return {
@@ -325,23 +325,23 @@ namespace NBody {
     concept ScalarType = std::is_scalar_v<T>;
 
     template<std::size_t Order, ScalarType Scalar>
-    static SymmetricMatrix3<Order> operator*(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
-        SymmetricMatrix3<Order> product{};
-        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+    static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const Scalar &rhs) {
+        SymmetricTensor3<Order> product{};
+        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
             product.flat()[i] = lhs.flat()[i] * rhs;
         return product;
     }
 
     template<std::size_t Order, ScalarType Scalar>
-    static SymmetricMatrix3<Order> operator*(const Scalar &lhs, const SymmetricMatrix3<Order> &rhs) {
+    static SymmetricTensor3<Order> operator*(const Scalar &lhs, const SymmetricTensor3<Order> &rhs) {
         return (rhs * lhs);
     }
 
     template<std::size_t Order, ScalarType Scalar>
-    static SymmetricMatrix3<Order> operator/(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
+    static SymmetricTensor3<Order> operator/(const SymmetricTensor3<Order> &lhs, const Scalar &rhs) {
         return (lhs * (1 / rhs));
     }
 
 }
 
-#endif //N_BODY_SYMMETRICMATRIX3_H
+#endif //N_BODY_SYMMETRICTENSOR3_H

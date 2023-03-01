@@ -2,7 +2,7 @@
 find_package(Catch2 3.1.0 REQUIRED)
 
 add_executable(test_Physics
-        gravity.cpp symmetricMatrix.cpp multipole.cpp)
+        gravity.cpp symmetricTensor.cpp multipole.cpp)
 
 target_link_libraries(test_Physics PRIVATE
         Catch2::Catch2WithMain

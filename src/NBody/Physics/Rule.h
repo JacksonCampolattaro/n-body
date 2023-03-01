@@ -96,7 +96,7 @@ namespace NBody::Physics {
 
             float qScaling = _g / (r * r * r * r * r);
 
-            float mrr = (activeSummary.moment() * SymmetricMatrix3<2>::cartesianPower(d)).sum();
+            float mrr = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(d)).sum();
 
             float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
             return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);

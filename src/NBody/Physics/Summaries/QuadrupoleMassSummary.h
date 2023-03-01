@@ -17,7 +17,7 @@ namespace NBody {
     class QuadrupoleMassSummary : protected CenterOfMassSummary {
     private:
 
-        SymmetricMatrix3<2> _moment{};
+        SymmetricTensor3<2> _moment{};
 
     public:
 
@@ -41,7 +41,7 @@ namespace NBody {
                 glm::vec3 d = entityPosition - centerOfMass();
 
                 // equation: 3 * outerProduct(d, d) - (I * |d|^2)
-                _moment += (SymmetricMatrix3<2>::cartesianPower(d) * 3.0f).traceless() * entityMass;
+                _moment += (SymmetricTensor3<2>::cartesianPower(d) * 3.0f).traceless() * entityMass;
 
             }
             _moment.enforceTraceless();
@@ -56,16 +56,16 @@ namespace NBody {
             for (const auto &child: childNodes) {
 
                 glm::vec3 d = child.summary().centerOfMass() - centerOfMass();
-                _moment += (SymmetricMatrix3<2>::cartesianPower(d) * 3.0f).traceless() *
+                _moment += (SymmetricTensor3<2>::cartesianPower(d) * 3.0f).traceless() *
                            child.summary().totalMass().mass() + child.summary().moment();
             }
             _moment.enforceTraceless();
 
         }
 
-        SymmetricMatrix3<2> &moment() { return _moment; }
+        SymmetricTensor3<2> &moment() { return _moment; }
 
-        [[nodiscard]] const SymmetricMatrix3<2> &moment() const { return _moment; }
+        [[nodiscard]] const SymmetricTensor3<2> &moment() const { return _moment; }
 
     };
 }

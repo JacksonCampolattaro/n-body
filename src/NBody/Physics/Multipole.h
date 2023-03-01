@@ -5,7 +5,7 @@
 #ifndef N_BODY_MULTIPOLE_H
 #define N_BODY_MULTIPOLE_H
 
-#include <NBody/Physics/SymmetricMatrix3.h>
+#include <NBody/Physics/SymmetricTensor3.h>
 
 #include <tuple>
 #include <utility>
@@ -18,7 +18,7 @@ namespace NBody {
 
         using SymmetricMatrices = decltype(std::tuple_cat(
                 std::declval<typename Multipole<Order - 1>::SymmetricMatrices>(),
-                std::declval<std::tuple<SymmetricMatrix3<Order>>>()
+                std::declval<std::tuple<SymmetricTensor3<Order>>>()
         ));
 
     private:
