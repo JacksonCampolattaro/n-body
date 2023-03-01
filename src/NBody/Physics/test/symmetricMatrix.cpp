@@ -8,9 +8,11 @@
 #include <catch2/generators/catch_generators_adapters.hpp>
 
 #include <NBody/Physics/SymmetricMatrix3.h>
+#include <iostream>
 
+using namespace NBody;
 using
-enum NBody::Dimension;
+enum Dimension;
 
 TEST_CASE("Member access to a 3x3 symmetric matrix should be correct", "[SymmetricMatrix3]") {
 
@@ -117,6 +119,46 @@ TEST_CASE("Linear indices can be converted to their dimensional counterparts in 
     constexpr auto linearIndexC = NBody::SymmetricMatrix3<5>::linearIndex<Z, Y, Z, Y, X>();
     constexpr auto indexC = NBody::SymmetricMatrix3<5>::dimensionalIndex<linearIndexC>();
     CHECK(indexC == std::array<NBody::Dimension, 5>{X, Y, Y, Z, Z});
+}
+
+TEST_CASE("A simple nullary function can initialize a symmetric matrix", "[SymmetricMatrix3]") {
+
+    auto ones = NBody::SymmetricMatrix3<3>::nullary([](std::array<Dimension, 3> _) {
+        return 1.0f;
+    });
+    CAPTURE(ones.flat());
+    REQUIRE(ones ==
+            NBody::SymmetricMatrix3<3>{{1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}});
+
+    int i = 0;
+    auto sequence = NBody::SymmetricMatrix3<3>::nullary([&](std::array<Dimension, 3> _) {
+        return i++;
+    });
+    CAPTURE(sequence.flat());
+    REQUIRE(sequence ==
+            NBody::SymmetricMatrix3<3>{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f}});
+
+    auto sumOfDimensions = NBody::SymmetricMatrix3<3>::nullary([&](std::array<Dimension, 3> dimensions) {
+        return (float) dimensions[0] + (float) dimensions[1] + (float) dimensions[2];
+    });
+    CAPTURE(sumOfDimensions.flat());
+    REQUIRE(sumOfDimensions ==
+            NBody::SymmetricMatrix3<3>{{0.0f, 1.0f, 2.0f, 2.0f, 3.0f, 4.0f, 3.0f, 4.0f, 5.0f, 6.0f}});
+
+}
+
+TEST_CASE("The cartesian power of a vector (repeated outer product) can produce a matrix", "[SymmetricMatrix3]") {
+
+    auto power2 = NBody::SymmetricMatrix3<2>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power2.flat());
+    REQUIRE(power2 ==
+            NBody::SymmetricMatrix3<2>{{1.0f, 2.0f, 3.0f, 4.0f, 6.0f, 9.0f}});
+
+    auto power3 = NBody::SymmetricMatrix3<3>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power3.flat());
+    REQUIRE(power3 ==
+            NBody::SymmetricMatrix3<3>{{1.0f, 2.0f, 3.0f, 4.0f, 6.0f, 9.0f, 8.0f, 12.0f, 18.0f, 27.0f}});
+
 }
 
 TEST_CASE("The outer product of two SymmetricMatrix3<1>s is a SymmetricMatrix3<2>", "[SymmetricMatrix3]") {

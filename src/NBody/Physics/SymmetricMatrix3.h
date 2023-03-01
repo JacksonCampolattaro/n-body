@@ -48,6 +48,26 @@ namespace NBody {
             return matrix;
         }
 
+        template<typename Func>
+        static SymmetricMatrix3<Order> nullary(Func &&f) {
+
+            SymmetricMatrix3<Order> matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix._data[I] = f(dimensionalIndex<I>())), ...);
+            }(std::make_index_sequence<DataSize>());
+
+            return matrix;
+        }
+
+        static SymmetricMatrix3<Order> cartesianPower(glm::vec3 vec) {
+            return nullary([&](std::array<Dimension, Order> dimensions) {
+                float product = 1.0f;
+                for (auto &d: dimensions)
+                    product *= vec[(std::size_t) d];
+                return product;
+            });
+        }
+
         template<Dimension... Indices>
         float &get() {
             return _data[linearIndex<Indices...>()];
@@ -142,6 +162,14 @@ namespace NBody {
             std::array<Dimension, Order - 1> copy;
             std::copy(Indices.begin() + 1, Indices.end(), copy.begin());
             return copy;
+        }
+
+
+        template<typename Func, std::size_t index>
+        static SymmetricMatrix3<Order> nullaryApply(Func &&f) {
+            SymmetricMatrix3<Order> matrix{};
+            // todo
+            return matrix;
         }
     };
 
