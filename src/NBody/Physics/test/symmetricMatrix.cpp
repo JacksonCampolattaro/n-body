@@ -3,9 +3,7 @@
 //
 
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/generators/catch_generators.hpp>
-#include <catch2/generators/catch_generators_random.hpp>
-#include <catch2/generators/catch_generators_adapters.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include <NBody/Physics/SymmetricMatrix3.h>
 #include <iostream>
@@ -158,6 +156,27 @@ TEST_CASE("The cartesian power of a vector (repeated outer product) can produce 
     CAPTURE(power3.flat());
     REQUIRE(power3 ==
             NBody::SymmetricMatrix3<3>{{1.0f, 2.0f, 3.0f, 4.0f, 6.0f, 9.0f, 8.0f, 12.0f, 18.0f, 27.0f}});
+
+}
+
+TEST_CASE("The trace of a matrix can be found and eliminated", "[SymmetricMatrix3]") {
+
+    auto power2 = NBody::SymmetricMatrix3<2>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power2.flat());
+    REQUIRE(power2.trace() == 14.0f);
+    auto traceless2 = power2.traceless();
+    CAPTURE(traceless2.flat());
+    REQUIRE(traceless2.get<X, X>() == Catch::Approx(-3.66667f));
+    REQUIRE(traceless2.get<Y, Y>() == Catch::Approx(-0.66667f));
+    REQUIRE(traceless2.get<Z, Z>() == Catch::Approx(4.33333f));
+
+    auto power3 = NBody::SymmetricMatrix3<3>::cartesianPower({1.0f, 2.0f, 3.0f});
+    CAPTURE(power3.flat());
+    REQUIRE(power3.trace() == 36.0f);
+    auto traceless3 = power3.traceless();
+    CAPTURE(traceless3.flat());
+    REQUIRE(traceless3 ==
+            NBody::SymmetricMatrix3<3>{{1.0f, -10.0f, -9.0f, 4.0f, -6.0f, 9.0f, -4.0f, 12.0f, 6.0f, 27.0f}});
 
 }
 

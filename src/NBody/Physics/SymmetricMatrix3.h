@@ -44,10 +44,12 @@ namespace NBody {
                 _data(values) {}
 
         static SymmetricMatrix3<Order> identity() {
+
             SymmetricMatrix3<Order> matrix{};
-            matrix.get<X, X>() = 1.0f;
-            matrix.get<Y, Y>() = 1.0f;
-            matrix.get<Z, Z>() = 1.0f;
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix._data[I] = kroneckerDelta<dimensionalIndex<I>()>()), ...);
+            }(std::make_index_sequence<DataSize>());
+
             return matrix;
         }
 
@@ -85,6 +87,16 @@ namespace NBody {
         const std::array<float, DataSize> &flat() const { return _data; }
 
         std::array<float, DataSize> &flat() { return _data; }
+
+        [[nodiscard]] float trace() const {
+            return _data[0] + // first value is XXX...X
+                   _data[SymmetricMatrix3<Order - 1>::DataSize] + // first value after lower dim is YYY...Y
+                   _data[DataSize - 1]; // last value is ZZZ...Z
+        }
+
+        SymmetricMatrix3<Order> traceless() const {
+            return *this - (identity() * (trace() / 3.0f));
+        }
 
         bool operator==(const SymmetricMatrix3<Order> &) const = default;
 
@@ -168,11 +180,18 @@ namespace NBody {
             return copy;
         }
 
-        template <std::array<Dimension, Order> Dimensions>
+        template<std::array<Dimension, Order> Dimensions>
         static constexpr float productOfDimensions(const glm::vec3 &vec) {
             return []<std::size_t... I>(std::index_sequence<I...>, const glm::vec3 &vec) {
                 return ((vec[(std::size_t) Dimensions[I]]) * ...);
             }(std::make_index_sequence<Order>(), vec);
+        };
+
+        template<std::array<Dimension, Order> Dimensions>
+        static constexpr float kroneckerDelta() {
+            return []<std::size_t... I>(std::index_sequence<I...>) {
+                return (((std::size_t) Dimensions[I]) == ...) ? 1.0f : 0.0f;
+            }(std::make_index_sequence<Order>());
         };
     };
 
@@ -229,6 +248,24 @@ namespace NBody {
         for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
             difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
         return difference;
+    }
+
+    template<std::size_t Order, typename Scalar>
+    static SymmetricMatrix3<Order> operator*(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
+        SymmetricMatrix3<Order> product{};
+        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+            product.flat()[i] = lhs.flat()[i] * rhs;
+        return product;
+    }
+
+    template<std::size_t Order, typename Scalar>
+    static SymmetricMatrix3<Order> operator*(const Scalar &lhs, const SymmetricMatrix3<Order> &rhs) {
+        return (rhs * lhs);
+    }
+
+    template<std::size_t Order, typename Scalar>
+    static SymmetricMatrix3<Order> operator/(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
+        return (lhs * (1 / rhs));
     }
 
 }
