@@ -10,6 +10,9 @@
 
 #include <glm/vec3.hpp>
 
+namespace {
+}
+
 namespace NBody {
 
     // todo: is there a better place to put this?
@@ -59,13 +62,14 @@ namespace NBody {
             return matrix;
         }
 
-        static SymmetricMatrix3<Order> cartesianPower(glm::vec3 vec) {
-            return nullary([&](std::array<Dimension, Order> dimensions) {
-                float product = 1.0f;
-                for (auto &d: dimensions)
-                    product *= vec[(std::size_t) d];
-                return product;
-            });
+        static SymmetricMatrix3<Order> cartesianPower(const glm::vec3 &vec) {
+
+            SymmetricMatrix3<Order> matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix._data[I] = productOfDimensions<dimensionalIndex<I>()>(vec)), ...);
+            }(std::make_index_sequence<DataSize>());
+
+            return matrix;
         }
 
         template<Dimension... Indices>
@@ -164,13 +168,12 @@ namespace NBody {
             return copy;
         }
 
-
-        template<typename Func, std::size_t index>
-        static SymmetricMatrix3<Order> nullaryApply(Func &&f) {
-            SymmetricMatrix3<Order> matrix{};
-            // todo
-            return matrix;
-        }
+        template <std::array<Dimension, Order> Dimensions>
+        static constexpr float productOfDimensions(const glm::vec3 &vec) {
+            return []<std::size_t... I>(std::index_sequence<I...>, const glm::vec3 &vec) {
+                return ((vec[(std::size_t) Dimensions[I]]) * ...);
+            }(std::make_index_sequence<Order>(), vec);
+        };
     };
 
     template<>
