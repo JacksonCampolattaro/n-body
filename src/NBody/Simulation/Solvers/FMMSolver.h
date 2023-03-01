@@ -21,7 +21,7 @@ namespace NBody {
 
         std::string id() override { return "fmm-4p"; };
 
-        std::string name() override { return "Fast SymmetricMatrix3 Method (Quadrupole)"; };
+        std::string name() override { return "Fast Multipole Method (Quadrupole)"; };
 
         int &maxDepth() { return tree().maxDepth(); }
 

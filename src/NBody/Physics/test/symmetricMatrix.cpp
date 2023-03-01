@@ -7,6 +7,7 @@
 
 #include <NBody/Physics/SymmetricMatrix3.h>
 #include <iostream>
+#include <glm/matrix.hpp>
 
 using namespace NBody;
 using
@@ -189,5 +190,47 @@ TEST_CASE("The sum of a matrices elements can be found", "[SymmetricMatrix3]") {
     auto power3 = NBody::SymmetricMatrix3<3>::cartesianPower({1.0f, 2.0f, 3.0f});
     CAPTURE(power3.flat());
     REQUIRE(power3.sum() == 216.0f);
+
+}
+
+TEST_CASE("Matrix-vector multiplication should produce correct results", "[SymmetricMatrix3]") {
+
+    auto identityProduct = NBody::SymmetricMatrix3<2>::identity() * glm::vec3{1.0f, 2.0f, 3.0f};
+    CAPTURE(identityProduct.x);
+    CAPTURE(identityProduct.y);
+    CAPTURE(identityProduct.z);
+    //REQUIRE(identityProduct == glm::vec3{1.0f, 2.0f, 3.0f});
+
+    auto ones = NBody::SymmetricMatrix3<2>::nullary([](auto _) { return 1.0f; });
+    auto glmOnes = glm::outerProduct(glm::vec3{1, 1, 1}, glm::vec3{1, 1, 1});
+    auto productWithOnes = ones * glm::vec3{1.0f, 2.0f, 3.0f};
+    auto productWithGLMOnes = glmOnes * glm::vec3{1.0f, 2.0f, 3.0f};
+    CAPTURE(productWithOnes.x);
+    CAPTURE(productWithOnes.y);
+    CAPTURE(productWithOnes.z);
+    CAPTURE(productWithGLMOnes.x);
+    CAPTURE(productWithGLMOnes.y);
+    CAPTURE(productWithGLMOnes.z);
+    REQUIRE(productWithOnes == productWithGLMOnes);
+
+    // More complex case, with some arbitrary vectors and matrices.
+    // Checked with glm
+    glm::vec3 v{1.0f, 2.0f, 3.0f};
+    auto power2 = NBody::SymmetricMatrix3<2>::cartesianPower(v);
+    auto glmPower2 = glm::outerProduct(v, v);
+    auto power2Copy = NBody::SymmetricMatrix3<2>::nullary([&](auto dimensions) {
+        return glmPower2[(std::size_t) dimensions[0]][(std::size_t) dimensions[1]];
+    });
+    glm::vec3 v2{1.0f, 0.0f, 0.0f};
+    REQUIRE(power2 == power2Copy);
+    auto productWithPower2 = power2 * v2;
+    CAPTURE(productWithPower2.x);
+    CAPTURE(productWithPower2.y);
+    CAPTURE(productWithPower2.z);
+    auto productWithGLMPower2 = glmPower2 * v2;
+    CAPTURE(productWithGLMPower2.x);
+    CAPTURE(productWithGLMPower2.y);
+    CAPTURE(productWithGLMPower2.z);
+    REQUIRE(productWithPower2 == productWithGLMPower2);
 
 }

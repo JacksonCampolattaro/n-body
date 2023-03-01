@@ -10,20 +10,6 @@
 
 #include <glm/vec3.hpp>
 
-namespace {
-
-    template<std::size_t N>
-    constexpr std::size_t factorial() {
-        return N * factorial<N - 1>();
-    }
-
-    template<>
-    constexpr std::size_t factorial<1>() { return 1; }
-
-    template<>
-    constexpr std::size_t factorial<0>() { return 1; }
-}
-
 namespace NBody {
 
     // todo: is there a better place to put this?
@@ -33,6 +19,29 @@ namespace NBody {
         Z = 2
     };
 
+    namespace {
+
+        template<std::size_t N>
+        constexpr std::size_t factorial() {
+            return N * factorial<N - 1>();
+        }
+
+        template<>
+        constexpr std::size_t factorial<1>() { return 1; }
+
+        template<>
+        constexpr std::size_t factorial<0>() { return 1; }
+
+        template<std::size_t N, std::array<Dimension, N> Indices>
+        constexpr std::size_t permutations() {
+            constexpr std::size_t numberOfXs = std::count(Indices.begin(), Indices.end(), Dimension::X);
+            constexpr std::size_t numberOfYs = std::count(Indices.begin(), Indices.end(), Dimension::Y);
+            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
+            return factorial<N>() / (factorial<numberOfXs>() * factorial<numberOfYs>() * factorial<numberOfZs>());
+        };
+    }
+
+    // todo: should be renamed to SymmetricTensor3<>
     template<std::size_t Order>
     class SymmetricMatrix3 {
     public:
@@ -106,14 +115,26 @@ namespace NBody {
                    _data[DataSize - 1]; // last value is ZZZ...Z
         }
 
+        SymmetricMatrix3<Order> traceless() const {
+            return *this - (identity() * (trace() / 3.0f));
+        }
+
+        void enforceTraceless() {
+            // ensure ZZ...Z = -(XX...X + YY...Y)
+            _data[DataSize - 1] = -(_data[0] + _data[SymmetricMatrix3<Order - 1>::DataSize]);
+        }
+
         [[nodiscard]] float sum() const {
             return [&]<std::size_t... I>(std::index_sequence<I...>) {
-                return ((_data[I] * permutations<dimensionalIndex<I>()>()) + ...);
+                return ((_data[I] * permutations<Order, dimensionalIndex<I>()>()) + ...);
             }(std::make_index_sequence<DataSize>());
         }
 
-        SymmetricMatrix3<Order> traceless() const {
-            return *this - (identity() * (trace() / 3.0f));
+        template<Dimension D>
+        [[nodiscard]] float sumOfSlice() const {
+            return [&]<std::size_t... I>(std::index_sequence<I...>) {
+                return ((_data[I] * permutationsInSlice<dimensionalIndex<I>(), D>()) + ...);
+            }(std::make_index_sequence<DataSize>());
         }
 
         bool operator==(const SymmetricMatrix3<Order> &) const = default;
@@ -173,14 +194,25 @@ namespace NBody {
             } else {
 
                 // Otherwise, the dimensional matrix is made up of Ys and Zs in appropriate proportions
-                constexpr std::size_t numberOfZs = LinearIndex - SymmetricMatrix3<Order - 1>::DataSize;
-                constexpr std::size_t numberOfYs = (DataSize - SymmetricMatrix3<Order - 1>::DataSize) - numberOfZs - 1;
+                constexpr std::size_t numberOfZs =
+                        LinearIndex - SymmetricMatrix3<Order - 1>::DataSize;
+                constexpr std::size_t numberOfYs =
+                        (DataSize - SymmetricMatrix3<Order - 1>::DataSize) - numberOfZs - 1;
                 std::fill(array.begin(), array.begin() + numberOfYs, Dimension::Y);
                 std::fill(array.begin() + numberOfYs, array.end(), Dimension::Z);
             }
 
             return array;
         }
+
+        template<std::array<Dimension, Order> Indices, Dimension D>
+        static constexpr std::size_t oneIfContainsD() {
+
+            // If D doesn't appear in this index, then the index isn't part of the slice (0 repetitions)
+            if (std::find(Indices.begin(), Indices.end(), D) == Indices.end())
+                return 0;
+            else return 1;
+        };
 
     protected:
 
@@ -212,13 +244,6 @@ namespace NBody {
             }(std::make_index_sequence<Order>());
         };
 
-        template<std::array<Dimension, Order> Indices>
-        static constexpr std::size_t permutations() {
-            constexpr std::size_t numberOfXs = std::count(Indices.begin(), Indices.end(), Dimension::X);
-            constexpr std::size_t numberOfYs = std::count(Indices.begin(), Indices.end(), Dimension::Y);
-            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
-            return factorial<Order>() / (factorial<numberOfXs>() * factorial<numberOfYs>() * factorial<numberOfZs>());
-        };
     };
 
     template<>
@@ -276,7 +301,30 @@ namespace NBody {
         return difference;
     }
 
-    template<std::size_t Order, typename Scalar>
+    template<std::size_t Order>
+    static SymmetricMatrix3<Order> operator*(const SymmetricMatrix3<Order> &lhs, const SymmetricMatrix3<Order> &rhs) {
+        SymmetricMatrix3<Order> difference{};
+        for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
+            difference.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
+        return difference;
+    }
+
+    // fixme: This can probably be generalized to higher orders
+    static glm::vec3 operator*(const SymmetricMatrix3<2> &lhs, const glm::vec3 &rhs) {
+        using
+        enum Dimension;
+        return {
+                (lhs.get<X, X>() * rhs.x) + (lhs.get<X, Y>() * rhs.y) + (lhs.get<X, Z>() * rhs.z),
+                (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
+                (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
+        };
+    }
+
+    // todo: is there a better place to put this?
+    template<typename T>
+    concept ScalarType = std::is_scalar_v<T>;
+
+    template<std::size_t Order, ScalarType Scalar>
     static SymmetricMatrix3<Order> operator*(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
         SymmetricMatrix3<Order> product{};
         for (int i = 0; i < SymmetricMatrix3<Order>::DataSize; ++i)
@@ -284,12 +332,12 @@ namespace NBody {
         return product;
     }
 
-    template<std::size_t Order, typename Scalar>
+    template<std::size_t Order, ScalarType Scalar>
     static SymmetricMatrix3<Order> operator*(const Scalar &lhs, const SymmetricMatrix3<Order> &rhs) {
         return (rhs * lhs);
     }
 
-    template<std::size_t Order, typename Scalar>
+    template<std::size_t Order, ScalarType Scalar>
     static SymmetricMatrix3<Order> operator/(const SymmetricMatrix3<Order> &lhs, const Scalar &rhs) {
         return (lhs * (1 / rhs));
     }

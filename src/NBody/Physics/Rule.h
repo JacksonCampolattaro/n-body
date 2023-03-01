@@ -87,6 +87,8 @@ namespace NBody::Physics {
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            // todo: more descriptive variable names
+
             glm::vec3 d = passivePosition - activePosition;
             float r2 = glm::length2(d);
             float r = std::sqrt(r2 + _epsilon);
@@ -94,17 +96,9 @@ namespace NBody::Physics {
 
             float qScaling = _g / (r * r * r * r * r);
 
-            // todo: maybe this could be better expressed as a matrix-vector multiplication?
-            float mrr = d.x * d.x * activeSummary.moment().xx() +
-                        d.y * d.y * activeSummary.moment().yy() +
-                        d.z * d.z * activeSummary.moment().zz() +
-                        2.0f * (
-                                d.x * d.y * activeSummary.moment().xy() +
-                                d.x * d.z * activeSummary.moment().xz() +
-                                d.y * d.z * activeSummary.moment().yz()
-                        );
-            float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
+            float mrr = (activeSummary.moment() * SymmetricMatrix3<2>::cartesianPower(d)).sum();
 
+            float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
             return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);
         }
 
