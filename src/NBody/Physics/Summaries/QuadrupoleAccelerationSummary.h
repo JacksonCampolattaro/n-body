@@ -6,18 +6,19 @@
 #define N_BODY_QUADRUPOLEACCELERATIONSUMMARY_H
 
 #include <NBody/Physics/SummaryType.h>
-#include <NBody/Physics/QuadrupoleAcceleration.h>
+#include <NBody/Physics/MultipoleAcceleration.h>
 
 namespace NBody {
 
     class QuadrupoleAccelerationSummary {
     public:
 
-        using Acceleration = Physics::QuadrupoleAcceleration;
+        //using Acceleration = Physics::QuadrupoleAcceleration;
+        using Acceleration = Physics::MultipoleAcceleration<2>;
 
     private:
 
-        QuadrupoleAcceleration _acceleration{};
+        Acceleration _acceleration_{};
 
     public:
 
@@ -40,13 +41,13 @@ namespace NBody {
         template<typename NodeList>
         void summarize(const NodeList &childNodes) {}
 
-        [[nodiscard]] const QuadrupoleAcceleration &acceleration() const { return _acceleration; }
+        [[nodiscard]] const Acceleration &acceleration() const { return _acceleration_; }
 
-        QuadrupoleAcceleration &acceleration() { return _acceleration; }
+        Acceleration &acceleration() { return _acceleration_; }
 
-        friend std::ostream &operator<<(std::ostream &out, const QuadrupoleAccelerationSummary &s) {
-            return out << "(" << s.acceleration() << ")";
-        }
+//        friend std::ostream &operator<<(std::ostream &out, const QuadrupoleAccelerationSummary &s) {
+//            return out << "(" << s.acceleration() << ")";
+//        }
     };
 }
 

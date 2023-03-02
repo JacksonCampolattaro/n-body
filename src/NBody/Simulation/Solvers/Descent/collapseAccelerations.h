@@ -6,13 +6,12 @@
 #define N_BODY_COLLAPSEACCELERATIONS_H
 
 #include <NBody/Physics/Acceleration.h>
-#include <NBody/Physics/QuadrupoleAcceleration.h>
 #include <NBody/Simulation/Simulation.h>
 
 namespace NBody::Descent {
 
     using Physics::Acceleration;
-    using Physics::QuadrupoleAcceleration;
+    using Physics::MultipoleAcceleration;
 
     template<typename PassiveNode>
     inline void collapseAccelerations(PassiveNode &node,
@@ -47,7 +46,7 @@ namespace NBody::Descent {
                                               const Position,
                                               Acceleration
                                       > &context,
-                                      QuadrupoleAcceleration netAcceleration = {}) {
+                                      MultipoleAcceleration<2> netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
         netAcceleration += node.summary().acceleration();

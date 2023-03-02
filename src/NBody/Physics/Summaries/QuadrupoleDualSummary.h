@@ -26,9 +26,9 @@ namespace NBody {
         using QuadrupoleAccelerationSummary::Acceleration;
         using QuadrupoleAccelerationSummary::acceleration;
 
-        friend std::ostream &operator<<(std::ostream &out, const QuadrupoleDualSummary &s) {
-            return out << "(" << s.acceleration() << ")";
-        }
+//        friend std::ostream &operator<<(std::ostream &out, const QuadrupoleDualSummary &s) {
+//            return out << "(" << s.acceleration() << ")";
+//        }
     };
 }
 

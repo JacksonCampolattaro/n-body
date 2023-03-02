@@ -13,16 +13,25 @@
 
 #include "Position.h"
 #include "Acceleration.h"
-#include "QuadrupoleAcceleration.h"
 #include "Force.h"
 #include "Mass.h"
-#include "Quadrupole.h"
 #include "SummaryType.h"
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/QuadrupoleAccelerationSummary.h>
+
+namespace {
+
+    template<std::size_t P, typename T>
+    inline T pow(T value) {
+        if constexpr (P == 0)
+            return 1;
+        else
+            return value * pow<P - 1>(value);
+    }
+}
 
 namespace NBody::Physics {
 
@@ -45,11 +54,10 @@ namespace NBody::Physics {
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-            glm::vec3 differenceInPositions = passivePosition - activePosition;
-            float r2 = glm::length2(differenceInPositions);
-            float r = std::sqrt(r2 + _epsilon);
-            float scaling = -_g * activeMass.mass() / (r * r * r);
-            return scaling * differenceInPositions;
+            glm::vec3 R = passivePosition - activePosition;
+            float r = std::sqrt(glm::length2(R) + _epsilon);
+            float scaling = -_g * activeMass.mass() / pow<3>(r);
+            return scaling * R;
         }
 
     public: // Node-particle interaction
@@ -89,17 +97,15 @@ namespace NBody::Physics {
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
             // todo: more descriptive variable names
 
-            glm::vec3 d = passivePosition - activePosition;
-            float r2 = glm::length2(d);
-            float r = std::sqrt(r2 + _epsilon);
-            float scaling = -_g * activeSummary.totalMass().mass() / (r * r * r);
+            glm::vec3 R = passivePosition - activePosition;
+            float r = std::sqrt(glm::length2(R) + _epsilon);
 
-            float qScaling = _g / (r * r * r * r * r);
+            float monopolePotential = -activeSummary.totalMass().mass() / pow<3>(r);
+            float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
+                                        * (-5.0f / (2.0f * pow<7>(r)));
+            float combinedPotential = monopolePotential + quadrupolePotential;
 
-            float mrr = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(d)).sum();
-
-            float combinedScaling = scaling + (qScaling * -5.0f / (2.0f * r * r) * mrr);
-            return (activeSummary.moment() * d * qScaling) + (d * combinedScaling);
+            return _g * ((activeSummary.moment() * R / pow<5>(r)) + (R * combinedPotential));
         }
 
     public: // Particle-node interaction
@@ -110,10 +116,6 @@ namespace NBody::Physics {
                 const Mass &activeMass,
                 const PassiveNode &passiveNode
         ) const {
-//            spdlog::error("s/d = {}/{}",
-//                          passiveNode.sideLength(),
-//                          glm::distance(glm::vec3(activePosition), passiveNode.center())
-//            );
             return operator()(activePosition, activeMass,
                               passiveNode.center(), passiveNode.summary());
         }
@@ -149,45 +151,32 @@ namespace NBody::Physics {
             return operator()(activePosition, activeMass, passivePosition);
         }
 
-        QuadrupoleAcceleration operator()(
+        MultipoleAcceleration<2> operator()(
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
                 const QuadrupoleAccelerationSummary &passiveSummary
         ) const {
 
+
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
             // "fmm_node_node_interaction"
+            // todo: clean up and figure out what's going on with this math
 
-            glm::vec3 d = passivePosition - activePosition;
-            float r2 = glm::length2(d);
-            float r = std::sqrt(r2 + _epsilon);
+            glm::vec3 R = passivePosition - activePosition;
+            float r = std::sqrt(glm::length2(R) + _epsilon);
 
-            float rinv = 1.0f / r;
-            float rinv2 = rinv * rinv;
-            float rinv3 = rinv2 * rinv;
+            auto D1_ = -R / pow<3>(r);
 
-            float fac1 = 0.0f;
-            float fac2 = 0.0f;
-
-            fac1 -= rinv2;
-            fac2 += 3.0f * rinv3;
-
-            float g1 = fac1 * rinv;
-            glm::vec3 D1 = d * g1;
-
-            float g2 = fac2 * rinv2;
-            glm::mat3 d2 = glm::outerProduct(d, d);
-            Quadrupole D2{d2 * g2};
-            D2.xx() += g1;
-            D2.yy() += g1;
-            D2.zz() += g1;
+            // todo: is this the same as making it traceless?
+            auto D2_ = SymmetricTensor3<2>::cartesianPower(R) * (3.0 / pow<5>(r)) -
+                       (SymmetricTensor3<2>::identity() / pow<3>(r));
 
             return {
-                    D1 * activeMass.mass() * _g,
-                    D2 * -activeMass.mass() * _g
+                    D1_ * activeMass.mass() * _g,
+                    SymmetricTensor3<2>{D2_ * -activeMass.mass() * _g}
             };
         }
 

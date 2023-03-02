@@ -5,7 +5,6 @@
 #ifndef N_BODY_QUADRUPOLEMASSSUMMARY_H
 #define N_BODY_QUADRUPOLEMASSSUMMARY_H
 
-#include "NBody/Physics/Quadrupole.h"
 #include "CenterOfMassSummary.h"
 
 #include <NBody/Physics/Multipole.h>

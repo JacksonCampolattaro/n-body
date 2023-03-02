@@ -54,7 +54,6 @@ namespace NBody {
                 // This seems like it should perform better, but it actually does worse
                 //auto startingNodes = _tree.depthBreak(8);
                 auto startingNodes = _tree.loadBalancedBreak(256);
-                spdlog::debug(startingNodes.size());
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
                     Descent::balancedLockstepDualTree(
                             _tree.root(), passiveNode.get(),

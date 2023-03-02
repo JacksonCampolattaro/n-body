@@ -19,7 +19,7 @@ add_library(Physics
         Summaries/AccelerationSummary.h
         Summaries/DualSummary.h
         Summaries/BoundingBoxSummary.h
-        Rule.h Force.h Acceleration.h Quadrupole.h Summaries/QuadrupoleDualSummary.h QuadrupoleAcceleration.h Summaries/QuadrupoleAccelerationSummary.h SymmetricTensor3.h Multipole.h Summaries/MultipoleMassSummary.h)
+        Rule.h Force.h Acceleration.h Summaries/QuadrupoleDualSummary.h Summaries/QuadrupoleAccelerationSummary.h SymmetricTensor3.h Multipole.h Summaries/MultipoleMassSummary.h MultipoleMoment.h MultipoleAcceleration.h)
 
 target_include_directories(Physics PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

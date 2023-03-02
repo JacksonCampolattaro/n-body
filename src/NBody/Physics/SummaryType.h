@@ -11,7 +11,7 @@
 #include <NBody/Simulation/Simulation.h> // fixme: this shouldn't be included here!
 
 #include <NBody/Physics/Acceleration.h>
-#include <NBody/Physics/QuadrupoleAcceleration.h>
+#include <NBody/Physics/MultipoleAcceleration.h>
 
 namespace NBody {
 
@@ -51,7 +51,7 @@ namespace NBody {
 
     template<typename T>
     concept QuadrupolePassiveSummaryType = PassiveSummaryType<T> && requires(T &t) {
-        { t.acceleration() } -> std::convertible_to<Physics::QuadrupoleAcceleration>;
+        { t.acceleration() } -> std::convertible_to<Physics::MultipoleAcceleration<2>>;
     };
 
     template<SummaryType S>

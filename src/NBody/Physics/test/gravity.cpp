@@ -117,7 +117,7 @@ TEST_CASE("Quadrupole should be a good approximation in a real scenario", "[Grav
     Position passivePosition{0.41169, 1.1282315, 19.398197};
     Position samplePosition{0.76725245, 1.0069804, 17.802502};
 
-    QuadrupoleAcceleration quadrupoleAcceleration{};
+    MultipoleAcceleration<2> quadrupoleAcceleration{};
     Acceleration actualAcceleration{};
     for (auto &[position, mass] : activePositionsAndMasses) {
         quadrupoleAcceleration += G(position, mass, samplePosition, NBody::QuadrupoleAccelerationSummary{});

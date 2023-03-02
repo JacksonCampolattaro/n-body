@@ -17,7 +17,7 @@ namespace NBody {
     public:
 
         using SymmetricTensors = decltype(std::tuple_cat(
-                std::declval<typename Multipole<Order - 1>::SymmetricMatrices>(),
+                std::declval<typename Multipole<Order - 1>::SymmetricTensors>(),
                 std::declval<std::tuple<SymmetricTensor3<Order>>>()
         ));
 
@@ -27,37 +27,50 @@ namespace NBody {
 
     public:
 
+        Multipole() = default;
+
         template<typename... Args>
-        explicit Multipole(Args&&... args) : _tensors(std::forward<Args>(args)...) {}
+        Multipole(Args &&... args) : _tensors(std::forward<Args>(args)...) {}
+
+        [[nodiscard]] const SymmetricTensors &tensors() const { return _tensors; }
+
+        SymmetricTensors &tensors() { return _tensors; }
 
         template<std::size_t TensorOrder>
-        auto &matrix() {
+        auto &tensor() {
             return std::get<TensorOrder - 1>(_tensors);
         }
 
         template<std::size_t TensorOrder>
-        const auto &matrix() const {
-            return std::get<TensorOrder-1>(_tensors);
+        [[nodiscard]] const auto &tensor() const {
+            return std::get<TensorOrder - 1>(_tensors);
         }
 
         template<Dimension... Indices>
         float &get() {
-            return matrix<sizeof...(Indices)>().template get<Indices...>();
+            return tensor<sizeof...(Indices)>().template get<Indices...>();
         }
 
         template<Dimension... Indices>
         [[nodiscard]] const float &get() const {
-            return matrix<sizeof...(Indices)>().template get<Indices...>();
+            return tensor<sizeof...(Indices)>().template get<Indices...>();
         }
 
         bool operator==(const Multipole<Order> &) const = default;
 
+        Multipole<Order> &operator+=(const Multipole<Order> &rhs) {
+            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
+                ((tensor<Orders+1>() += rhs.tensor<Orders+1>()), ...);
+            }(std::make_index_sequence<Order>());
+            return *this;
+        };
+
     };
 
     template<>
-    class Multipole<0> {
+    class Multipole<1> {
     public:
-        using SymmetricTensors = std::tuple<>;
+        using SymmetricTensors = std::tuple<glm::vec3>;
     };
 }
 
