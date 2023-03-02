@@ -32,33 +32,34 @@ namespace NBody {
         void summarize(const std::span<Entity> &entities, const C &context) {
             CenterOfMassSummary::summarize(entities, context);
 
-            _moment = {};
-
-            for (const auto &entity: entities) {
-                auto entityMass = context.template get<const Mass>(entity).mass();
-                auto entityPosition = context.template get<const Position>(entity);
-
-                glm::vec3 d = entityPosition - centerOfMass();
-
-                // equation: 3 * outerProduct(d, d) - (I * |d|^2)
-                _moment += (SymmetricTensor3<2>::cartesianPower(d) * 3.0f).traceless() * entityMass;
-
-            }
+            _moment = std::transform_reduce(
+                    entities.begin(), entities.end(),
+                    SymmetricTensor3<2>{}, std::plus<>(),
+                    [&](const auto &entity) {
+                        auto entityMass = context.template get<const Mass>(entity).mass();
+                        auto entityPosition = context.template get<const Position>(entity);
+                        glm::vec3 d = entityPosition - centerOfMass();
+                        return SymmetricTensor3<2>::cartesianPower(d).traceless() * entityMass * 3.0f;
+                    }
+            );
             _moment.enforceTraceless();
+
         }
 
         template<typename NodeList>
         void summarize(const NodeList &childNodes) {
             CenterOfMassSummary::summarize(childNodes);
 
-            _moment = {};
-
-            for (const auto &child: childNodes) {
-
-                glm::vec3 d = child.summary().centerOfMass() - centerOfMass();
-                _moment += (SymmetricTensor3<2>::cartesianPower(d) * 3.0f).traceless() *
-                           child.summary().totalMass().mass() + child.summary().moment();
-            }
+            _moment = std::transform_reduce(
+                    childNodes.begin(), childNodes.end(),
+                    SymmetricTensor3<2>{}, std::plus<>(),
+                    [&](const auto &child) {
+                        auto childMass = child.summary().totalMass().mass();
+                        glm::vec3 d = child.summary().centerOfMass() - centerOfMass();
+                        return SymmetricTensor3<2>::cartesianPower(d).traceless() * childMass * 3.0f +
+                               child.summary().moment();
+                    }
+            );
             _moment.enforceTraceless();
 
         }

@@ -104,7 +104,7 @@ namespace NBody {
             return _data[linearIndex<Indices...>()];
         }
 
-        const std::array<float, DataSize> &flat() const { return _data; }
+        [[nodiscard]] const std::array<float, DataSize> &flat() const { return _data; }
 
         std::array<float, DataSize> &flat() { return _data; }
 
@@ -115,7 +115,7 @@ namespace NBody {
                    _data[DataSize - 1]; // last value is ZZZ...Z
         }
 
-        SymmetricTensor3<Order> traceless() const {
+        [[nodiscard]] SymmetricTensor3<Order> traceless() const {
             return *this - (identity() * (trace() / 3.0f));
         }
 
@@ -225,7 +225,7 @@ namespace NBody {
 
         template<std::array<Dimension, Order> Indices>
         static constexpr std::array<Dimension, Order - 1> lowerOrderIndices() {
-            std::array<Dimension, Order - 1> copy;
+            std::array<Dimension, Order - 1> copy{};
             std::copy(Indices.begin() + 1, Indices.end(), copy.begin());
             return copy;
         }

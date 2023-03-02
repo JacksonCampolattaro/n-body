@@ -16,28 +16,28 @@ namespace NBody {
     class Multipole {
     public:
 
-        using SymmetricMatrices = decltype(std::tuple_cat(
+        using SymmetricTensors = decltype(std::tuple_cat(
                 std::declval<typename Multipole<Order - 1>::SymmetricMatrices>(),
                 std::declval<std::tuple<SymmetricTensor3<Order>>>()
         ));
 
     private:
 
-        SymmetricMatrices _matrices;
+        SymmetricTensors _tensors;
 
     public:
 
         template<typename... Args>
-        explicit Multipole(Args&&... args) : _matrices(std::forward<Args>(args)...) {}
+        explicit Multipole(Args&&... args) : _tensors(std::forward<Args>(args)...) {}
 
-        template<std::size_t MatrixOrder>
+        template<std::size_t TensorOrder>
         auto &matrix() {
-            return std::get<MatrixOrder-1>(_matrices);
+            return std::get<TensorOrder - 1>(_tensors);
         }
 
-        template<std::size_t MatrixOrder>
+        template<std::size_t TensorOrder>
         const auto &matrix() const {
-            return std::get<MatrixOrder-1>(_matrices);
+            return std::get<TensorOrder-1>(_tensors);
         }
 
         template<Dimension... Indices>
@@ -57,7 +57,7 @@ namespace NBody {
     template<>
     class Multipole<0> {
     public:
-        using SymmetricMatrices = std::tuple<>;
+        using SymmetricTensors = std::tuple<>;
     };
 }
 
