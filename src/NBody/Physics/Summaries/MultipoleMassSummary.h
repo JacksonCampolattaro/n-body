@@ -6,7 +6,7 @@
 #define N_BODY_MULTIPOLEMASSSUMMARY_H
 
 #include <NBody/Physics/SummaryType.h>
-#include <NBody/Physics/Multipole.h>
+#include <NBody/Physics/MultipoleMoment.h>
 
 namespace NBody {
 
@@ -17,7 +17,7 @@ namespace NBody {
     private:
 
         Mass _totalMass{0.0f};
-        Multipole<Order> _multipole{};
+        MultipoleMoment<Order> _multipole{};
 
     public:
 
@@ -39,83 +39,81 @@ namespace NBody {
         template<typename Context>
         void summarize(const std::span<Entity> &entities, const Context &context) {
 
-            _totalMass = Mass{0.0f};
-            _multipole = Multipole<Order>{};
+            // Total Mass
+            _totalMass.mass() = std::transform_reduce(
+                    entities.begin(), entities.end(),
+                    0.0f, std::plus<>(),
+                    [&](const auto &entity) {
+                        return context.template get<const Mass>(entity).mass();
+                    }
+            );
 
-            // todo: dispatching shouldn't be done with constexpr, if possible
+            // Multipole
+            _multipole = std::transform_reduce(
+                    entities.begin(), entities.end(),
+                    MultipoleMoment<Order>{}, std::plus<>(),
+                    [&](const auto &entity) {
+                        const auto &position = context.template get<const Position>(entity);
+                        const auto &mass = context.template get<const Mass>(entity);
+                        auto v = MultipoleMoment<Order>{position};
+                        v *= mass;
+                        return v;
+                    }
+            ) / _totalMass.mass();
 
-            //            // Total Mass
-            //            if constexpr (Order >= 0) {
-            //                _totalMass.mass() = std::transform_reduce(
-            //                        entities.begin(), entities.end(),
-            //                        0.0f, std::plus<>(),
-            //                        [&](const auto &entity) {
-            //                            return context.template get<const Mass>(entity).mass();
-            //                        }
-            //                );
-            //            }
-            //
-            //            // Center of mass
-            //            if constexpr (Order >= 1) {
-            //                _multipole.template tensor<1>() = std::transform_reduce(
-            //                        entities.begin(), entities.end(),
-            //                        glm::vec3{}, std::plus<>(),
-            //                        [&](const auto &entity) {
-            //                            return context.template get<const Position>(entity) *
-            //                                   context.template get<const Mass>(entity).mass();
-            //                        }
-            //                ) / _totalMass.mass();
-            //            }
-            //
-            //            // Quadrupole Moment
-            //            if constexpr (Order >= 2) {
-            //                _multipole.template tensor<2>() = std::transform_reduce(
-            //                        entities.begin(), entities.end(),
-            //                        SymmetricTensor3<2>{}, std::plus<>(),
-            //                        [&](const auto &entity) {
-            //                            auto entityMass = context.template get<const Mass>(entity).mass();
-            //                            auto entityPosition = context.template get<const Position>(entity);
-            //                            glm::vec3 d = entityPosition - centerOfMass();
-            //                            return SymmetricTensor3<2>::cartesianPower(d).traceless() * entityMass * 3.0f;
-            //                        }
-            //                );
-            //                _multipole.template tensor<2>().enforceTraceless();
-            //                // todo
-            //            }
-            //
-            //            // Octupole Moment
-            //            if constexpr (Order >= 3) {
-            //                // todo
-            //            }
+            // todo: should this be done here?
+            _multipole.applyCoefficients();
+            //_multipole.template tensor<2>().enforceTraceless();
         }
 
         template<typename NodeList>
         void summarize(const NodeList &childNodes) {
 
-            // Find the total mass
 
-            // Find each multipole order
-            std::apply([](auto &&... tensors) {
+            Mass totalMass{0.0f};
+            Position centerOfMass{0.0f, 0.0f, 0.0f};
+            for (const auto &node: childNodes) {
+                auto nodeMass = node.summary().totalMass().mass();
+                totalMass.mass() += nodeMass;
+                centerOfMass = centerOfMass + (nodeMass * node.summary().centerOfMass());
+            }
+            centerOfMass = centerOfMass / totalMass.mass();
 
-                auto summarizeTensor = [&](const auto &t) {
+            // Total Mass
+            _totalMass.mass() = std::transform_reduce(
+                    childNodes.begin(), childNodes.end(),
+                    0.0f, std::plus<>(),
+                    [&](const auto &childNode) {
+                        return childNode.summary().totalMass().mass();
+                    }
+            );
 
-                    spdlog::info("summarizing {}", sizeof t.flat());
-                };
+            // Multipole
+            _multipole = std::transform_reduce(
+                    childNodes.begin(), childNodes.end(),
+                    MultipoleMoment<Order>{}, std::plus<>(),
+                    [&](const auto &childNode) {
+                        auto &position = childNode.summary().centerOfMass();
+                        return MultipoleMoment<Order>{position} *
+                               childNode.summary().totalMass();
+                    }
+            ) / _totalMass.mass();
 
-                (summarizeTensor(tensors), ...);
 
-            }, _multipole.tensors());
+//            if (_multipole.template tensor<1>() != centerOfMass)
+//                std::cout << (Position) (centerOfMass / totalMass.mass()) <<
+//                          " != " << (Position) _multipole.template tensor<1>() << std::endl;
 
-            // Remove the total mass from the center of mass
-            _multipole.template tensor<1>() /= _totalMass;
-
+            // todo: should this be done here?
+            _multipole.applyCoefficients();
+            //_multipole.template tensor<2>().enforceTraceless();
         }
 
         [[nodiscard]] const Mass &totalMass() const { return _totalMass; }
 
-        SymmetricTensor3<1> &centerOfMass() { return _multipole.template tensor<1>(); }
+        glm::vec3 &centerOfMass() { return _multipole.template tensor<1>(); }
 
-        [[nodiscard]] const SymmetricTensor3<1> &centerOfMass() const { return _multipole.template tensor<1>(); }
+        [[nodiscard]] const glm::vec3 &centerOfMass() const { return _multipole.template tensor<1>(); }
 
         SymmetricTensor3<2> &moment() { return _multipole.template tensor<2>(); }
 

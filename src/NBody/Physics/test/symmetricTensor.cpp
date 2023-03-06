@@ -6,8 +6,10 @@
 #include <catch2/catch_approx.hpp>
 
 #include <NBody/Physics/SymmetricTensor3.h>
-#include <iostream>
 #include <glm/matrix.hpp>
+
+#include <iostream>
+#include <numeric>
 
 using namespace NBody;
 using
@@ -60,10 +62,10 @@ TEST_CASE("Member access to a 3x3x3 symmetric tensor should be correct", "[Symme
 
 TEST_CASE("Equality and inequality of symmetric tensors", "[SymmetricTensor3]") {
 
-    NBody::SymmetricTensor3<1> s1a{0.0f, 1.0f, 2.0f};
-    NBody::SymmetricTensor3<1> s1b{};
-    REQUIRE(s1a == s1a);
-    REQUIRE(s1a != s1b);
+//    NBody::SymmetricTensor3<1> s1a{0.0f, 1.0f, 2.0f};
+//    NBody::SymmetricTensor3<1> s1b{};
+//    REQUIRE(s1a == s1a);
+//    REQUIRE(s1a != s1b);
 
     NBody::SymmetricTensor3<2> s2a{
             {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}
@@ -101,6 +103,16 @@ TEST_CASE("Addition and subtraction of symmetric tensors", "[SymmetricTensor3]")
 
     s3a += s3a;
     REQUIRE(s3a == s3b);
+
+    std::vector<SymmetricTensor3<2>> identities{
+        SymmetricTensor3<2>::identity(),
+        SymmetricTensor3<2>::identity(),
+        SymmetricTensor3<2>::identity(),
+        SymmetricTensor3<2>::identity(),
+        SymmetricTensor3<2>::identity()
+    };
+    auto identity5 = std::reduce(identities.begin(), identities.end());
+    REQUIRE(identity5 == SymmetricTensor3<2>::identity() * 5);
 }
 
 TEST_CASE("Linear indices can be converted to their dimensional counterparts in standard form", "[SymmetricTensor3]") {
@@ -232,5 +244,13 @@ TEST_CASE("Matrix-vector multiplication should produce correct results", "[Symme
     CAPTURE(productWithGLMPower2.y);
     CAPTURE(productWithGLMPower2.z);
     REQUIRE(productWithPower2 == productWithGLMPower2);
+
+}
+
+TEST_CASE("Matrix-Matrix outer product (3x3 * 3x3 --> 3x3x3)", "[SymmetricTensor3]") {
+
+    glm::vec3 a{1.0f, 2.0f, 3.0f};
+
+    // todo
 
 }

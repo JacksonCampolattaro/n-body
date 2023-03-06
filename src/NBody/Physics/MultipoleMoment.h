@@ -12,32 +12,84 @@
 namespace NBody::Physics {
 
     template<std::size_t Order>
-    class MultipoleMoment : Multipole<Order> {
+    class MultipoleMoment : public Multipole<Order> {
     public:
 
+        MultipoleMoment() = default;
+
+        explicit MultipoleMoment(const glm::vec3 &position) : Multipole<Order>() {
+            init(position);
+        }
+
+        using Multipole<Order>::tensors;
+        using Multipole<Order>::tensor;
+        using Multipole<Order>::get;
+
+        MultipoleMoment<Order> &operator*=(const Mass &rhs) {
+            Multipole<Order>::operator*=(rhs.mass());
+            return *this;
+        };
+
         template<std::size_t TensorOrder = Order>
-        void insert(const Position &position, const Mass &mass) {
-
-            // todo
-
-            // Base case
-            if constexpr (TensorOrder == 0) {
-
-                return;
+        inline void applyCoefficients() {
+            if constexpr (TensorOrder == 0) return;
+            else {
+                // todo: multiplying by a negative number seems to produce infinity?
+                Multipole<Order>::template tensor<TensorOrder>() *= coefficient<TensorOrder>();
+                applyCoefficients<TensorOrder - 1>();
             }
-
         }
 
     private:
 
+        template<std::size_t TensorOrder = Order>
+        void init(const glm::vec3 &position) {
+            // The tensor of order-1 is just the position
+            if constexpr (TensorOrder == 1) Multipole<Order>::template tensor<1>() = position;
+            else {
+
+                // Recursively find all the lower order tensors
+                init<TensorOrder - 1>(position);
+
+
+                // The new tensor is produced by the outer product of the second-highest tensor with itself
+                Multipole<Order>::template tensor<TensorOrder>() = SymmetricTensor3<Order>::outerProduct(
+                        Multipole<Order>::template tensor<TensorOrder - 1>(),
+                        Multipole<Order>::template tensor<TensorOrder - 1>()
+                );
+            }
+        }
+
+
+        // todo: this should probably be used during construction, and not during physics computations
         template<std::size_t TensorOrder>
         constexpr std::size_t coefficient() {
-            constexpr std::array coefficients{-1, 3, -15, 105, -945}; // todo
-            return coefficients[TensorOrder];
+            constexpr std::array coefficients{1, -3, 15, -105, 945}; // todo: extend this list
+            return coefficients[TensorOrder - 1];
         }
 
     };
 
+    template<std::size_t Order>
+    static MultipoleMoment<Order> operator*(const MultipoleMoment<Order> &lhs, const Mass &rhs) {
+        MultipoleMoment<Order> result = lhs;
+        result *= rhs;
+        return result;
+    }
+
+    template<std::size_t Order>
+    static MultipoleMoment<Order> operator/(const MultipoleMoment<Order> &lhs, const Mass &rhs) {
+        MultipoleMoment<Order> result = lhs;
+        result /= rhs.mass();
+        return result;
+    }
+
+    template<std::size_t Order>
+    static MultipoleMoment<Order> operator+(const MultipoleMoment<Order> &lhs, const MultipoleMoment<Order> &rhs) {
+        MultipoleMoment<Order> result = lhs;
+        result += rhs;
+        return result;
+    }
 }
 
 #endif //N_BODY_MULTIPOLEMOMENT_H

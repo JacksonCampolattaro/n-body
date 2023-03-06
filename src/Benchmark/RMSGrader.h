@@ -27,6 +27,9 @@ namespace NBody {
             auto forceB = B.get<Physics::Acceleration>(b) * B.get<Physics::Mass>(b).mass();
             float differenceInForces = glm::distance(forceA, forceB);
 
+            if (glm::any(glm::isinf((glm::vec3)forceB) || glm::isnan((glm::vec3)forceB)))
+                return std::numeric_limits<float>::infinity();
+
             return std::pow(differenceInForces / glm::length(forceA), 2.0f);
         }
 

@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
     Glib::init();
 
     json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'000, 0);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
     ConstitutionalGrader grader{scenario};
 
     std::vector<float> thetaValues{};
@@ -266,14 +266,14 @@ int main(int argc, char *argv[]) {
     //sweepTheta<ReverseBarnesHutSolver>(10'000, thetaValues);
 
 
-    //realPerformance<BarnesHutSolver>(scenario, grader);
+    realPerformance<BarnesHutSolver>(scenario, grader);
     //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
-    realPerformance<FMMSolver>(scenario, grader);
+    realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
+    //realPerformance<FMMSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
-    //spdlog::info(accuracy<FMMSolver>(scenario, grader));
+    //spdlog::info(accuracy<QuadrupoleBarnesHutSolver>(scenario, grader));
     //spdlog::info(performance<QuadrupoleMVDRSolver>(scenario, 100, 0.5).count());
 
     //std::vector<std::size_t> nValues{};

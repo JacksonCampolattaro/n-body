@@ -12,16 +12,30 @@
 
 namespace NBody {
 
+    namespace {
+
+        template<std::size_t Order>
+        struct [[maybe_unused]] SymmetricTensorTuple {
+            using type = decltype(std::tuple_cat(
+                    std::declval<typename SymmetricTensorTuple<Order - 1>::type>(),
+                    std::declval<std::tuple<SymmetricTensor3<Order>>>()
+            ));
+        };
+
+        template<>
+        struct [[maybe_unused]] SymmetricTensorTuple<1> {
+            using type = std::tuple<glm::vec3>;
+        };
+
+    }
+
     template<std::size_t Order>
     class Multipole {
     public:
 
-        using SymmetricTensors = decltype(std::tuple_cat(
-                std::declval<typename Multipole<Order - 1>::SymmetricTensors>(),
-                std::declval<std::tuple<SymmetricTensor3<Order>>>()
-        ));
+        using SymmetricTensors = typename SymmetricTensorTuple<Order>::type;
 
-    private:
+    protected:
 
         SymmetricTensors _tensors;
 
@@ -29,8 +43,13 @@ namespace NBody {
 
         Multipole() = default;
 
+        Multipole(const Multipole<Order> &other) : _tensors(other._tensors) {}
+
+        Multipole(const SymmetricTensors &tensors) : _tensors(tensors) {}
+
+        // todo: for some reason, it's necessary to manually declare the first arg
         template<typename... Args>
-        Multipole(Args &&... args) : _tensors(std::forward<Args>(args)...) {}
+        Multipole(const glm::vec3 &first, Args &&... args) : _tensors(std::forward_as_tuple(first, args...)) {}
 
         [[nodiscard]] const SymmetricTensors &tensors() const { return _tensors; }
 
@@ -59,19 +78,44 @@ namespace NBody {
         bool operator==(const Multipole<Order> &) const = default;
 
         Multipole<Order> &operator+=(const Multipole<Order> &rhs) {
+
             [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((tensor<Orders+1>() += rhs.tensor<Orders+1>()), ...);
+                ((tensor<Orders + 1>() += rhs.tensor<Orders + 1>()), ...);
+            }(std::make_index_sequence<Order>());
+            return *this;
+        };
+
+        template<ScalarType Scalar>
+        Multipole<Order> &operator*=(const Scalar &rhs) {
+            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
+                ((tensor<Orders + 1>() *= rhs), ...);
+            }(std::make_index_sequence<Order>());
+            return *this;
+        };
+
+        template<ScalarType Scalar>
+        Multipole<Order> &operator/=(const Scalar &rhs) {
+            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
+                ((tensor<Orders + 1>() /= rhs), ...);
             }(std::make_index_sequence<Order>());
             return *this;
         };
 
     };
 
-    template<>
-    class Multipole<1> {
-    public:
-        using SymmetricTensors = std::tuple<glm::vec3>;
-    };
+    template<std::size_t Order>
+    static Multipole<Order> operator+(const Multipole<Order> &lhs, const Multipole<Order> &rhs) {
+        Multipole<Order> result = lhs;
+        result += rhs;
+        return result;
+    }
+
+    template<std::size_t Order, ScalarType Scalar>
+    static Multipole<Order> operator*(const Multipole<Order> &lhs, const Scalar &rhs) {
+        Multipole<Order> result = lhs;
+        result *= rhs;
+        return result;
+    }
 }
 
 #endif //N_BODY_MULTIPOLE_H

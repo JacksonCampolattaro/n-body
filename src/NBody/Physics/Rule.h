@@ -97,15 +97,29 @@ namespace NBody::Physics {
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
             // todo: more descriptive variable names
 
+//            if (std::isinf(activeSummary.centerOfMass().x))
+//                spdlog::error("2");
+
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
             float monopolePotential = -activeSummary.totalMass().mass() / pow<3>(r);
-            float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
-                                        * (-5.0f / (2.0f * pow<7>(r)));
-            float combinedPotential = monopolePotential + quadrupolePotential;
+            //float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
+            //                            * (-5.0f / (2.0f * pow<7>(r)));
+            float combinedPotential = monopolePotential;// + quadrupolePotential;
 
-            return _g * ((activeSummary.moment() * R / pow<5>(r)) + (R * combinedPotential));
+            auto a = _g *
+                   (//(activeSummary.moment() * R / pow<5>(r)) +
+                    (R * combinedPotential));
+
+//            if (std::isinf(activePosition.x))
+//                spdlog::error("3");
+//
+//            // quick way to check for any NaNs!
+//            if (a != a)
+//                spdlog::error("4");
+
+            return a;
         }
 
     public: // Particle-node interaction
@@ -158,7 +172,6 @@ namespace NBody::Physics {
                 const QuadrupoleAccelerationSummary &passiveSummary
         ) const {
 
-
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
@@ -171,10 +184,10 @@ namespace NBody::Physics {
             auto D1_ = -R / pow<3>(r);
 
             // todo: is this the same as making it traceless?
-            auto D2_ = SymmetricTensor3<2>::cartesianPower(R) * (3.0 / pow<5>(r)) -
+            auto D2_ = SymmetricTensor3<2>::cartesianPower(R) * (-3.0 / pow<5>(r)) -
                        (SymmetricTensor3<2>::identity() / pow<3>(r));
 
-            return {
+            return MultipoleAcceleration<2>{
                     D1_ * activeMass.mass() * _g,
                     SymmetricTensor3<2>{D2_ * -activeMass.mass() * _g}
             };

@@ -13,6 +13,10 @@
 namespace NBody {
 
     // todo: is there a better place to put this?
+    template<typename T>
+    concept ScalarType = std::is_scalar_v<T>;
+
+    // todo: is there a better place to put this?
     enum class Dimension : std::size_t {
         X = 0,
         Y = 1,
@@ -38,29 +42,42 @@ namespace NBody {
             constexpr std::size_t numberOfYs = std::count(Indices.begin(), Indices.end(), Dimension::Y);
             constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
             return factorial<N>() / (factorial<numberOfXs>() * factorial<numberOfYs>() * factorial<numberOfZs>());
-        };
+        }
+
+        template<std::size_t Order>
+        constexpr std::size_t valuesInMatrixOrder() {
+            if constexpr (Order == 1) return 3;
+            else return valuesInMatrixOrder<Order - 1>() * 3;
+        }
+
+        template<std::size_t Order>
+        constexpr std::size_t uniqueValuesInMatrixOrder() {
+            if constexpr (Order == 1) return 3;
+            else return uniqueValuesInMatrixOrder<Order - 1>() + Order + 1;
+        }
+
     }
 
-    // todo: should be renamed to SymmetricTensor3<>
     template<std::size_t Order>
     class SymmetricTensor3 {
     public:
 
-        static constexpr std::size_t DataSize = SymmetricTensor3<Order - 1>::DataSize + (Order + 1);
+        static constexpr std::size_t NumValues = valuesInMatrixOrder<Order>();
+        static constexpr std::size_t NumUniqueValues = uniqueValuesInMatrixOrder<Order>();
 
         using
         enum Dimension;
 
     private:
 
-        std::array<float, DataSize> _data{0};
+        std::array<float, NumUniqueValues> _data{0};
 
     public:
 
         SymmetricTensor3() :
                 _data({0}) {}
 
-        explicit SymmetricTensor3(std::array<float, DataSize> values) :
+        explicit SymmetricTensor3(std::array<float, NumUniqueValues> values) :
                 _data(values) {}
 
         static SymmetricTensor3<Order> identity() {
@@ -68,7 +85,7 @@ namespace NBody {
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = kroneckerDelta<dimensionalIndex<I>()>()), ...);
-            }(std::make_index_sequence<DataSize>());
+            }(std::make_index_sequence<NumUniqueValues>());
 
             return matrix;
         }
@@ -79,7 +96,7 @@ namespace NBody {
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = f(dimensionalIndex<I>())), ...);
-            }(std::make_index_sequence<DataSize>());
+            }(std::make_index_sequence<NumUniqueValues>());
 
             return matrix;
         }
@@ -89,9 +106,26 @@ namespace NBody {
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = productOfDimensions<dimensionalIndex<I>()>(vec)), ...);
-            }(std::make_index_sequence<DataSize>());
+            }(std::make_index_sequence<NumUniqueValues>());
 
             return matrix;
+        }
+
+
+        template<typename LowerOrderTensor>
+        static SymmetricTensor3<Order> outerProduct(const LowerOrderTensor &lhs,
+                                                    const LowerOrderTensor &rhs) {
+            SymmetricTensor3<Order> matrix{};
+            // todo
+            return matrix;
+        }
+
+        template<typename LowerOrderTensor>
+        static SymmetricTensor3<2> outerProduct(const glm::vec3 &lhs,
+                                                const glm::vec3 &rhs) {
+            SymmetricTensor3<Order> matrix{};
+            // todo: temporary, for testing
+            return cartesianPower(lhs);
         }
 
         template<Dimension... Indices>
@@ -104,15 +138,15 @@ namespace NBody {
             return _data[linearIndex<Indices...>()];
         }
 
-        [[nodiscard]] const std::array<float, DataSize> &flat() const { return _data; }
+        [[nodiscard]] const std::array<float, NumUniqueValues> &flat() const { return _data; }
 
-        std::array<float, DataSize> &flat() { return _data; }
+        std::array<float, NumUniqueValues> &flat() { return _data; }
 
         [[nodiscard]] float trace() const {
             // The diagonal only has 3 elements, no matter how many dimensions are matrix has!
             return _data[0] + // first value is XXX...X
-                   _data[SymmetricTensor3<Order - 1>::DataSize] + // first value after lower dim is YYY...Y
-                   _data[DataSize - 1]; // last value is ZZZ...Z
+                   _data[SymmetricTensor3<Order - 1>::NumUniqueValues] + // first value after lower dim is YYY...Y
+                   _data[NumUniqueValues - 1]; // last value is ZZZ...Z
         }
 
         [[nodiscard]] SymmetricTensor3<Order> traceless() const {
@@ -121,33 +155,41 @@ namespace NBody {
 
         void enforceTraceless() {
             // ensure ZZ...Z = -(XX...X + YY...Y)
-            _data[DataSize - 1] = -(_data[0] + _data[SymmetricTensor3<Order - 1>::DataSize]);
+            _data[NumUniqueValues - 1] = -(_data[0] + _data[SymmetricTensor3<Order - 1>::NumUniqueValues]);
         }
 
         [[nodiscard]] float sum() const {
+
             return [&]<std::size_t... I>(std::index_sequence<I...>) {
                 return ((_data[I] * permutations<Order, dimensionalIndex<I>()>()) + ...);
-            }(std::make_index_sequence<DataSize>());
-        }
-
-        template<Dimension D>
-        [[nodiscard]] float sumOfSlice() const {
-            return [&]<std::size_t... I>(std::index_sequence<I...>) {
-                return ((_data[I] * permutationsInSlice<dimensionalIndex<I>(), D>()) + ...);
-            }(std::make_index_sequence<DataSize>());
+            }(std::make_index_sequence<NumUniqueValues>());
         }
 
         bool operator==(const SymmetricTensor3<Order> &) const = default;
 
         SymmetricTensor3<Order> &operator+=(const SymmetricTensor3<Order> &rhs) {
-            for (int i = 0; i < DataSize; ++i)
+            for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] += rhs.flat()[i];
             return *this;
         }
 
         SymmetricTensor3<Order> &operator-=(const SymmetricTensor3<Order> &rhs) {
-            for (int i = 0; i < DataSize; ++i)
+            for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] -= rhs.flat()[i];
+            return *this;
+        }
+
+        template<ScalarType Scalar>
+        SymmetricTensor3<Order> &operator*=(const Scalar &rhs) {
+            for (int i = 0; i < NumUniqueValues; ++i)
+                flat()[i] *= rhs;
+            return *this;
+        }
+
+        template<ScalarType Scalar>
+        SymmetricTensor3<Order> &operator/=(const Scalar &rhs) {
+            for (int i = 0; i < NumUniqueValues; ++i)
+                flat()[i] /= rhs;
             return *this;
         }
 
@@ -176,15 +218,15 @@ namespace NBody {
             // All the extra linear indices will correspond to indices which contain only Ys and Zs
             // We can determine the offset by counting the Zs
             constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
-            return SymmetricTensor3<Order - 1>::DataSize + numberOfZs;
+            return SymmetricTensor3<Order - 1>::NumUniqueValues + numberOfZs;
         }
 
         template<std::size_t LinearIndex>
         static constexpr std::array<Dimension, Order> dimensionalIndex() {
-            static_assert(LinearIndex < DataSize, "Linear index is out of bounds");
+            static_assert(LinearIndex < NumUniqueValues, "Linear index is out of bounds");
 
             std::array<Dimension, Order> array{};
-            if constexpr (LinearIndex < SymmetricTensor3<Order - 1>::DataSize) {
+            if constexpr (LinearIndex < SymmetricTensor3<Order - 1>::NumUniqueValues) {
 
                 // If the linear index would fit in a smaller matrix, prefix with an X and recursively find the rest
                 constexpr auto lowerIndex = SymmetricTensor3<Order - 1>::template dimensionalIndex<LinearIndex>();
@@ -195,9 +237,9 @@ namespace NBody {
 
                 // Otherwise, the dimensional matrix is made up of Ys and Zs in appropriate proportions
                 constexpr std::size_t numberOfZs =
-                        LinearIndex - SymmetricTensor3<Order - 1>::DataSize;
+                        LinearIndex - SymmetricTensor3<Order - 1>::NumUniqueValues;
                 constexpr std::size_t numberOfYs =
-                        (DataSize - SymmetricTensor3<Order - 1>::DataSize) - numberOfZs - 1;
+                        (NumUniqueValues - SymmetricTensor3<Order - 1>::NumUniqueValues) - numberOfZs - 1;
                 std::fill(array.begin(), array.begin() + numberOfYs, Dimension::Y);
                 std::fill(array.begin() + numberOfYs, array.end(), Dimension::Z);
             }
@@ -205,14 +247,22 @@ namespace NBody {
             return array;
         }
 
-        template<std::array<Dimension, Order> Indices, Dimension D>
-        static constexpr std::size_t oneIfContainsD() {
 
-            // If D doesn't appear in this index, then the index isn't part of the slice (0 repetitions)
-            if (std::find(Indices.begin(), Indices.end(), D) == Indices.end())
-                return 0;
-            else return 1;
-        };
+        // todo: untested
+        //        template<std::size_t LinearIndex>
+        //        static constexpr std::array<Dimension, Order> lexicographicalIndex() {
+        //            static_assert(LinearIndex < NumValues, "Lexicographical index is out of bounds");
+        //            std::array<Dimension, Order> dimensions{};
+        //
+        //            constexpr std::size_t topIndex = LinearIndex % 3;
+        //            constexpr std::size_t lowerLinearIndex = (LinearIndex - topIndex) / 3;
+        //
+        //            dimensions[0] = topIndex;
+        //            auto lowerDimensions = SymmetricTensor3<Order - 1>::template lexicographicalIndex<lowerLinearIndex>();
+        //            std::copy(lowerDimensions.begin(), lowerDimensions.end(), dimensions.begin() + 1);
+        //
+        //            return dimensions;
+        //        }
 
     protected:
 
@@ -247,24 +297,13 @@ namespace NBody {
     };
 
     template<>
-    class SymmetricTensor3<1> : public glm::vec3 {
+    class SymmetricTensor3<1> {
     public:
 
-        static constexpr std::size_t DataSize = 3;
+        static constexpr std::size_t NumValues = 3;
+        static constexpr std::size_t NumUniqueValues = 3;
 
-        using glm::vec3::vec;
-
-        explicit SymmetricTensor3(std::array<float, DataSize> values) : glm::vec3(values[0], values[1], values[2]) {}
-
-        template<Dimension Index>
-        [[nodiscard]] const float &get() const { return operator[](linearIndex<Index>()); }
-
-        template<Dimension Index>
-        float &get() { return operator[](linearIndex<Index>()); }
-
-        [[nodiscard]] const glm::vec3 &flat() const { return *this; }
-
-        glm::vec3 &flat() { return *this; }
+        SymmetricTensor3<1>() = delete;
 
         template<Dimension Index>
         static constexpr std::size_t linearIndex() {
@@ -279,7 +318,7 @@ namespace NBody {
 
         template<std::size_t LinearIndex>
         static constexpr std::array<Dimension, 1> dimensionalIndex() {
-            static_assert(LinearIndex < DataSize, "Linear index is out of bounds");
+            static_assert(LinearIndex < NumUniqueValues, "Linear index is out of bounds");
             return {static_cast<Dimension>(LinearIndex)};
         }
 
@@ -288,7 +327,7 @@ namespace NBody {
     template<std::size_t Order>
     static SymmetricTensor3<Order> operator+(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
         SymmetricTensor3<Order> sum{};
-        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
+        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
             sum.flat()[i] = lhs.flat()[i] + rhs.flat()[i];
         return sum;
     }
@@ -296,7 +335,7 @@ namespace NBody {
     template<std::size_t Order>
     static SymmetricTensor3<Order> operator-(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
         SymmetricTensor3<Order> difference{};
-        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
+        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
             difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
         return difference;
     }
@@ -304,7 +343,7 @@ namespace NBody {
     template<std::size_t Order>
     static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
         SymmetricTensor3<Order> difference{};
-        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
+        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
             difference.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
         return difference;
     }
@@ -320,14 +359,10 @@ namespace NBody {
         };
     }
 
-    // todo: is there a better place to put this?
-    template<typename T>
-    concept ScalarType = std::is_scalar_v<T>;
-
     template<std::size_t Order, ScalarType Scalar>
     static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const Scalar &rhs) {
         SymmetricTensor3<Order> product{};
-        for (int i = 0; i < SymmetricTensor3<Order>::DataSize; ++i)
+        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
             product.flat()[i] = lhs.flat()[i] * rhs;
         return product;
     }

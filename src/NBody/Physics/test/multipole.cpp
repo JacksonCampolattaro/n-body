@@ -21,7 +21,7 @@ TEST_CASE("An Octupole should contain symmetric matrices of dimensions 3x3x3, 3x
 }
 
 
-TEST_CASE("A quadrupole can be constructed as a vector and a 3x3 matrix", "[Multipole]") {
+TEST_CASE("Quadrupole construction from a vector and a 3x3 matrix", "[Multipole]") {
 
     Multipole<2> constructedInPlace{
             glm::vec3{0},
@@ -29,12 +29,12 @@ TEST_CASE("A quadrupole can be constructed as a vector and a 3x3 matrix", "[Mult
     };
 
     Multipole<2> constructedFromCopies{
-            SymmetricTensor3<1>{{0.0f, 1.0f, 2.0f}},
+            glm::vec3{0.0f, 1.0f, 2.0f},
             SymmetricTensor3<2>{{3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}}
     };
 }
 
-TEST_CASE("It should be possible to access members of quadrupole matrices", "[Multipole]") {
+TEST_CASE("Member access for quadrupoles", "[Multipole]") {
 
     Multipole<2> quadrupole{
             glm::vec3{0.0f, 1.0f, 2.0f},
@@ -54,4 +54,23 @@ TEST_CASE("It should be possible to access members of quadrupole matrices", "[Mu
     // etc....
 }
 
+
+TEST_CASE("Quadrupole addition", "[Multipole]") {
+
+    Multipole<2> quadrupoleA{
+            glm::vec3{0.0f, 1.0f, 2.0f},
+            SymmetricTensor3<2>{{3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}}
+    };
+
+    Multipole<2> quadrupoleB{
+            glm::vec3{0.0f, 1.0f, 2.0f},
+            SymmetricTensor3<2>::identity()
+    };
+
+    auto quadrupoleSum = quadrupoleA + quadrupoleB;
+
+
+
+    // etc....
+}
 
