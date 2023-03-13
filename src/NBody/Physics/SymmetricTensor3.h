@@ -120,7 +120,6 @@ namespace NBody {
             return matrix;
         }
 
-        template<typename LowerOrderTensor>
         static SymmetricTensor3<2> outerProduct(const glm::vec3 &lhs,
                                                 const glm::vec3 &rhs) {
             SymmetricTensor3<Order> matrix{};

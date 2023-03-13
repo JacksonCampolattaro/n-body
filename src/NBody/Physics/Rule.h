@@ -97,28 +97,16 @@ namespace NBody::Physics {
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
             // todo: more descriptive variable names
 
-//            if (std::isinf(activeSummary.centerOfMass().x))
-//                spdlog::error("2");
-
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
             float monopolePotential = -activeSummary.totalMass().mass() / pow<3>(r);
-            //float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
-            //                            * (-5.0f / (2.0f * pow<7>(r)));
-            float combinedPotential = monopolePotential;// + quadrupolePotential;
+            float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
+                                        * (-5.0f / (2.0f * pow<7>(r)));
+            float combinedPotential = monopolePotential + quadrupolePotential;
 
-            auto a = _g *
-                   (//(activeSummary.moment() * R / pow<5>(r)) +
-                    (R * combinedPotential));
-
-//            if (std::isinf(activePosition.x))
-//                spdlog::error("3");
-//
-//            // quick way to check for any NaNs!
-//            if (a != a)
-//                spdlog::error("4");
-
+            auto a = _g * ((activeSummary.moment() * R / pow<5>(r)) + (R * combinedPotential));
+            //std::cout << (Position) a << std::endl;
             return a;
         }
 

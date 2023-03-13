@@ -53,18 +53,18 @@ namespace NBody::Physics {
 
 
                 // The new tensor is produced by the outer product of the second-highest tensor with itself
-                Multipole<Order>::template tensor<TensorOrder>() = SymmetricTensor3<Order>::outerProduct(
+                Multipole<Order>::template tensor<TensorOrder>() = SymmetricTensor3<TensorOrder>::outerProduct(
                         Multipole<Order>::template tensor<TensorOrder - 1>(),
                         Multipole<Order>::template tensor<TensorOrder - 1>()
-                );
+                ).traceless();
             }
         }
 
 
-        // todo: this should probably be used during construction, and not during physics computations
         template<std::size_t TensorOrder>
         constexpr std::size_t coefficient() {
-            constexpr std::array coefficients{1, -3, 15, -105, 945}; // todo: extend this list
+            // fixme: signs must be consistent with those assumed by rule()
+            constexpr std::array coefficients{1, 3, 15, -105, 945}; // todo: extend this list
             return coefficients[TensorOrder - 1];
         }
 
