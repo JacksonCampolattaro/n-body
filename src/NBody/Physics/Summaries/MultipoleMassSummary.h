@@ -59,19 +59,17 @@ namespace NBody {
                     }
             ) / _totalMass.mass();
 
-            // Multipole
-            _multipole = std::transform_reduce(
+            // Quadrupole
+            _multipole.template tensor<2>() = std::transform_reduce(
                     entities.begin(), entities.end(),
-                    MultipoleMoment<Order>{}, std::plus<>(),
+                    SymmetricTensor3<2>{}, std::plus<>(),
                     [&](const auto &entity) {
                         const auto &position = context.template get<const Position>(entity);
-                        const auto &mass = context.template get<const Mass>(entity);
-                        return MultipoleMoment<Order>{position - centerOfMass()} * mass;
+                        const auto &mass = context.template get<const Mass>(entity).mass();
+                        glm::vec3 d = position - centerOfMass();
+                        return SymmetricTensor3<2>::cartesianPower(d).traceless() * mass * 3.0f;
                     }
-            ) / _totalMass.mass();
-
-            // todo: should this be done here?
-            _multipole.applyCoefficients();
+            );
             _multipole.template tensor<2>().enforceTraceless();
         }
 
@@ -98,22 +96,18 @@ namespace NBody {
                     }
             ) / _totalMass.mass();
 
-            // Multipole
-            _multipole = std::transform_reduce(
+            // Quadrupole
+            _multipole.template tensor<2>() = std::transform_reduce(
                     childNodes.begin(), childNodes.end(),
-                    MultipoleMoment<Order>{}, std::plus<>(),
+                    SymmetricTensor3<2>{}, std::plus<>(),
                     [&](const auto &childNode) {
                         auto &position = childNode.summary().centerOfMass();
-                        auto &mass = childNode.summary().totalMass();
-                        auto moment = MultipoleMoment<Order>{position - centerOfMass()} * mass;
-                        moment.applyCoefficients();
-                        moment.template tensor<2>() += childNode.summary().moment();
-                        return moment;
+                        auto &mass = childNode.summary().totalMass().mass();
+                        glm::vec3 d = position - centerOfMass();
+                        return SymmetricTensor3<2>::cartesianPower(d).traceless() * mass * 3.0f +
+                               childNode.summary().moment();
                     }
-            ) / _totalMass.mass();
-
-            // todo: should this be done here?
-            //_multipole.applyCoefficients();
+            );
             _multipole.template tensor<2>().enforceTraceless();
         }
 
