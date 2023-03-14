@@ -17,13 +17,27 @@ namespace NBody::Physics {
 
         MultipoleMoment() = default;
 
-        explicit MultipoleMoment(const glm::vec3 &position) : Multipole<Order>() {
-            init(position);
+        explicit MultipoleMoment(const glm::vec3 &offset) : Multipole<Order>() {
+            init(offset);
         }
 
         using Multipole<Order>::tensors;
         using Multipole<Order>::tensor;
         using Multipole<Order>::get;
+
+        MultipoleMoment<Order> traceless() const {
+            MultipoleMoment<Order> copy;
+            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
+                ((std::get<Orders + 1>(copy.tensors()) = std::get<Orders + 1>(tensors()).traceless()), ...);
+            }(std::make_index_sequence<Order - 1>());
+            return copy;
+        };
+
+        void enforceTraceless() {
+            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
+                ((std::get<Orders + 1>(tensors()).enforceTraceless()), ...);
+            }(std::make_index_sequence<Order - 1>());
+        };
 
         MultipoleMoment<Order> &operator*=(const Mass &rhs) {
             Multipole<Order>::operator*=(rhs.mass());
@@ -34,7 +48,6 @@ namespace NBody::Physics {
         inline void applyCoefficients() {
             if constexpr (TensorOrder == 0) return;
             else {
-                // todo: multiplying by a negative number seems to produce infinity?
                 Multipole<Order>::template tensor<TensorOrder>() *= coefficient<TensorOrder>();
                 applyCoefficients<TensorOrder - 1>();
             }
@@ -43,20 +56,21 @@ namespace NBody::Physics {
     private:
 
         template<std::size_t TensorOrder = Order>
-        void init(const glm::vec3 &position) {
-            // The tensor of order-1 is just the position
-            if constexpr (TensorOrder == 1) Multipole<Order>::template tensor<1>() = position;
+        void init(const glm::vec3 &offset) {
+            if constexpr (TensorOrder == 2)
+                Multipole<Order>::template tensor<2>() =
+                        SymmetricTensor3<2>::outerProduct(offset, offset).traceless() * coefficient<2>();
             else {
 
                 // Recursively find all the lower order tensors
-                init<TensorOrder - 1>(position);
-
+                init<TensorOrder - 1>(offset);
 
                 // The new tensor is produced by the outer product of the second-highest tensor with itself
                 Multipole<Order>::template tensor<TensorOrder>() = SymmetricTensor3<TensorOrder>::outerProduct(
                         Multipole<Order>::template tensor<TensorOrder - 1>(),
                         Multipole<Order>::template tensor<TensorOrder - 1>()
-                ).traceless();
+                ).traceless() * coefficient<TensorOrder>();
+
             }
         }
 
