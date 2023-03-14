@@ -10,6 +10,8 @@
 
 #include <glm/vec3.hpp>
 
+#include <iostream>
+
 namespace NBody {
 
     // todo: is there a better place to put this?
@@ -158,10 +160,9 @@ namespace NBody {
         }
 
         [[nodiscard]] float sum() const {
-
             return [&]<std::size_t... I>(std::index_sequence<I...>) {
-                return ((_data[I] * permutations<Order, dimensionalIndex<I>()>()) + ...);
-            }(std::make_index_sequence<NumUniqueValues>());
+                return ((_data[linearIndex<lexicographicalIndex<I>()>()]) + ...);
+            }(std::make_index_sequence<NumValues>());
         }
 
         bool operator==(const SymmetricTensor3<Order> &) const = default;
@@ -208,15 +209,19 @@ namespace NBody {
         template<std::array<Dimension, Order> Indices>
         static constexpr std::size_t linearIndex() {
 
+            // Make certain the indices are sorted
+            // todo: this doesn't need to be done elsewhere, if it's done here!
+            constexpr auto indices = sorted<Indices>();
+
             // If the first index is X, then we can use lower-dimensional indexing
-            if (Indices[0] == Dimension::X) {
-                constexpr auto copy = lowerOrderIndices<Indices>();
+            if (indices[0] == Dimension::X) {
+                constexpr auto copy = lowerOrderIndices<indices>();
                 return SymmetricTensor3<Order - 1>::template linearIndex<copy>();
             }
 
             // All the extra linear indices will correspond to indices which contain only Ys and Zs
             // We can determine the offset by counting the Zs
-            constexpr std::size_t numberOfZs = std::count(Indices.begin(), Indices.end(), Dimension::Z);
+            constexpr std::size_t numberOfZs = std::count(indices.begin(), indices.end(), Dimension::Z);
             return SymmetricTensor3<Order - 1>::NumUniqueValues + numberOfZs;
         }
 
@@ -263,6 +268,13 @@ namespace NBody {
         }
 
     protected:
+
+        template<std::array<Dimension, Order> Unsorted>
+        static constexpr std::array<Dimension, Order> sorted() {
+            std::array<Dimension, Order> array = Unsorted;
+            std::sort(array.begin(), array.end());
+            return array;
+        }
 
         template<Dimension... Indices>
         static constexpr std::array<Dimension, Order> asSortedArray() {
