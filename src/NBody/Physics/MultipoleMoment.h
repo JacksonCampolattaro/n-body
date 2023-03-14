@@ -35,8 +35,8 @@ namespace NBody::Physics {
 
         void enforceTraceless() {
             [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((std::get<Orders + 1>(tensors()).enforceTraceless()), ...);
-            }(std::make_index_sequence<Order - 1>());
+                ((std::get<Orders + 2>(tensors()).enforceTraceless()), ...);
+            }(std::make_index_sequence<Order - 2>());
         };
 
         MultipoleMoment<Order> &operator*=(const Mass &rhs) {

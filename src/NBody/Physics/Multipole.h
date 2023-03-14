@@ -24,7 +24,7 @@ namespace NBody {
 
         template<>
         struct [[maybe_unused]] SymmetricTensorTuple<1> {
-            using type = std::tuple<glm::vec3>;
+            using type = std::tuple<>;
         };
 
     }
@@ -47,22 +47,18 @@ namespace NBody {
 
         Multipole(const SymmetricTensors &tensors) : _tensors(tensors) {}
 
-        // todo: for some reason, it's necessary to manually declare the first arg
-        template<typename... Args>
-        Multipole(const glm::vec3 &first, Args &&... args) : _tensors(std::forward_as_tuple(first, args...)) {}
-
         [[nodiscard]] const SymmetricTensors &tensors() const { return _tensors; }
 
         SymmetricTensors &tensors() { return _tensors; }
 
         template<std::size_t TensorOrder>
         auto &tensor() {
-            return std::get<TensorOrder - 1>(_tensors);
+            return std::get<TensorOrder - 2>(_tensors);
         }
 
         template<std::size_t TensorOrder>
         [[nodiscard]] const auto &tensor() const {
-            return std::get<TensorOrder - 1>(_tensors);
+            return std::get<TensorOrder - 2>(_tensors);
         }
 
         template<Dimension... Indices>
@@ -78,26 +74,25 @@ namespace NBody {
         bool operator==(const Multipole<Order> &) const = default;
 
         Multipole<Order> &operator+=(const Multipole<Order> &rhs) {
-
             [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((tensor<Orders + 1>() += rhs.tensor<Orders + 1>()), ...);
-            }(std::make_index_sequence<Order>());
+                ((tensor<Orders + 2>() += rhs.tensor<Orders + 2>()), ...);
+            }(std::make_index_sequence<Order - 1>());
             return *this;
         };
 
         template<ScalarType Scalar>
         Multipole<Order> &operator*=(const Scalar &rhs) {
             [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((tensor<Orders + 1>() *= rhs), ...);
-            }(std::make_index_sequence<Order>());
+                ((tensor<Orders + 2>() *= rhs), ...);
+            }(std::make_index_sequence<Order - 1>());
             return *this;
         };
 
         template<ScalarType Scalar>
         Multipole<Order> &operator/=(const Scalar &rhs) {
             [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((tensor<Orders + 1>() /= rhs), ...);
-            }(std::make_index_sequence<Order>());
+                ((tensor<Orders + 2>() /= rhs), ...);
+            }(std::make_index_sequence<Order - 1>());
             return *this;
         };
 
