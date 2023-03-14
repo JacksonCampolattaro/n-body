@@ -246,22 +246,21 @@ namespace NBody {
             return array;
         }
 
+        template<std::size_t LinearIndex>
+        static constexpr std::array<Dimension, Order> lexicographicalIndex() {
+            static_assert(LinearIndex < NumValues, "Lexicographical index is out of bounds");
 
-        // todo: untested
-        //        template<std::size_t LinearIndex>
-        //        static constexpr std::array<Dimension, Order> lexicographicalIndex() {
-        //            static_assert(LinearIndex < NumValues, "Lexicographical index is out of bounds");
-        //            std::array<Dimension, Order> dimensions{};
-        //
-        //            constexpr std::size_t topIndex = LinearIndex % 3;
-        //            constexpr std::size_t lowerLinearIndex = (LinearIndex - topIndex) / 3;
-        //
-        //            dimensions[0] = topIndex;
-        //            auto lowerDimensions = SymmetricTensor3<Order - 1>::template lexicographicalIndex<lowerLinearIndex>();
-        //            std::copy(lowerDimensions.begin(), lowerDimensions.end(), dimensions.begin() + 1);
-        //
-        //            return dimensions;
-        //        }
+            std::array<Dimension, Order> dimensions{};
+
+            constexpr std::size_t topIndex = LinearIndex % 3;
+            constexpr std::size_t lowerLinearIndex = (LinearIndex - topIndex) / 3;
+
+            dimensions[Order - 1] = (Dimension) topIndex;
+            auto lowerDimensions = SymmetricTensor3<Order - 1>::template lexicographicalIndex<lowerLinearIndex>();
+            std::copy(lowerDimensions.begin(), lowerDimensions.end(), dimensions.begin());
+
+            return dimensions;
+        }
 
     protected:
 
@@ -319,6 +318,12 @@ namespace NBody {
         static constexpr std::array<Dimension, 1> dimensionalIndex() {
             static_assert(LinearIndex < NumUniqueValues, "Linear index is out of bounds");
             return {static_cast<Dimension>(LinearIndex)};
+        }
+
+        template<std::size_t LinearIndex>
+        static constexpr std::array<Dimension, 1> lexicographicalIndex() {
+            static_assert(LinearIndex < NumValues, "Lexicographical index is out of bounds");
+            return {(Dimension) LinearIndex};
         }
 
     };
