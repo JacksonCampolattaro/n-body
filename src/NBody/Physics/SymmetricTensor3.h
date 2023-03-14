@@ -116,11 +116,17 @@ namespace NBody {
             // todo
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
-                ((
-                        matrix.get<dimensionalIndex<I>()>() =
-                                lhs.template get<(head<dimensionalIndex<I>()>())>() *
-                                rhs[(std::size_t) dimensionalIndex<I>()[Order - 1]]
-                ), ...);
+                ((matrix.get<dimensionalIndex<I>()>() = productAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
+            }(std::make_index_sequence<NumUniqueValues>());
+            return matrix;
+        }
+
+        static SymmetricTensor3<Order> sumOfOuterProducts(const SymmetricTensor3<Order - 1> &lhs,
+                                                          const glm::vec3 &rhs) {
+            // todo
+            SymmetricTensor3<Order> matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix.get<dimensionalIndex<I>()>() = sumOfProductsAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
             }(std::make_index_sequence<NumUniqueValues>());
             return matrix;
         }
@@ -287,6 +293,13 @@ namespace NBody {
 
     protected:
 
+        template<Dimension... Indices>
+        static constexpr std::array<Dimension, Order> asSortedArray() {
+            std::array<Dimension, Order> array{Indices...};
+            std::sort(array.begin(), array.end());
+            return array;
+        }
+
         template<std::array<Dimension, Order> Unsorted>
         static constexpr std::array<Dimension, Order> sorted() {
             std::array<Dimension, Order> array = Unsorted;
@@ -294,11 +307,11 @@ namespace NBody {
             return array;
         }
 
-        template<Dimension... Indices>
-        static constexpr std::array<Dimension, Order> asSortedArray() {
-            std::array<Dimension, Order> array{Indices...};
-            std::sort(array.begin(), array.end());
-            return array;
+        template<std::array<Dimension, Order> Array, std::size_t N>
+        static constexpr std::array<Dimension, Order> rotated() {
+            std::array<Dimension, Order> copy = Array;
+            std::rotate(copy.begin(), copy.begin() + N, copy.end());
+            return copy;
         }
 
         template<std::array<Dimension, Order> Array, std::size_t N = Order - 1>
@@ -328,6 +341,18 @@ namespace NBody {
             return []<std::size_t... I>(std::index_sequence<I...>, const glm::vec3 &vec) {
                 return ((vec[(std::size_t) Dimensions[I]]) * ...);
             }(std::make_index_sequence<Order>(), vec);
+        };
+
+        template<std::array<Dimension, Order> Index>
+        static constexpr float productAtIndex(const SymmetricTensor3<Order - 1> &lhs, const glm::vec3 &rhs) {
+            return lhs.template get<head<Index>()>() * rhs[(std::size_t) Index[Order - 1]];
+        };
+
+        template<std::array<Dimension, Order> Index>
+        static constexpr float sumOfProductsAtIndex(const SymmetricTensor3<Order - 1> &lhs, const glm::vec3 &rhs) {
+            return [&]<std::size_t... I>(std::index_sequence<I...>) {
+                return ((productAtIndex<rotated<Index, I>()>(lhs, rhs)) + ...);
+            }(std::make_index_sequence<Order>());
         };
 
         template<std::array<Dimension, Order> Dimensions>

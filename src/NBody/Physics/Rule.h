@@ -16,6 +16,7 @@
 #include "Force.h"
 #include "Mass.h"
 #include "SummaryType.h"
+#include "NBody/Physics/Summaries/MultipoleMassSummary.h"
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
@@ -86,9 +87,9 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
-        template<MultipoleActiveSummaryType ActiveSummary>
+        template<std::size_t Order = 2>
         Acceleration operator()(const Position &activePosition,
-                                const ActiveSummary &activeSummary,
+                                const MultipoleMassSummary<Order> &activeSummary,
                                 const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
@@ -98,14 +99,15 @@ namespace NBody::Physics {
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
-            float monopolePotential = -activeSummary.totalMass().mass() / pow<3>(r);
-            float quadrupolePotential =
-                    (activeSummary.moment().template tensor<2>() *
-                     SymmetricTensor3<2>::cartesianPower(R)).sum() *
-                    (-5.0f / (2.0f * pow<7>(r)));
-            float combinedPotential = monopolePotential + quadrupolePotential;
+            float potential = -activeSummary.totalMass().mass() / pow<3>(r);
+            potential += (activeSummary.moment().template tensor<2>() *
+                          SymmetricTensor3<2>::cartesianPower(R)).sum() *
+                         (-5.0f / (2.0f * pow<7>(r))); // todo: why is this -5 here?!
 
-            return _g * ((activeSummary.moment().template tensor<2>() * R / pow<5>(r)) + (combinedPotential * R));
+            auto forceVector = potential * R;
+            forceVector += activeSummary.moment().template tensor<2>() * R / pow<5>(r);
+
+            return _g * forceVector;
         }
 
     public: // Particle-node interaction

@@ -13,11 +13,16 @@ namespace NBody::Physics {
 
     template<std::size_t Order>
     class MultipoleMoment : public Multipole<Order> {
+    private:
+
+        // todo: I don't want to have to store this
+        glm::vec3 _offset{};
+
     public:
 
         MultipoleMoment() = default;
 
-        explicit MultipoleMoment(const glm::vec3 &offset) : Multipole<Order>() {
+        explicit MultipoleMoment(const glm::vec3 &offset) : Multipole<Order>(), _offset(offset) {
             init(offset);
         }
 
@@ -32,7 +37,7 @@ namespace NBody::Physics {
         };
 
         MultipoleMoment<Order> &operator*=(const Mass &rhs) {
-            Multipole<Order>::operator*=(rhs.mass());
+            Multipole < Order > ::operator*=(rhs.mass());
             return *this;
         };
 
@@ -41,7 +46,7 @@ namespace NBody::Physics {
         template<std::size_t TensorOrder = Order>
         void init(const glm::vec3 &offset) {
             if constexpr (TensorOrder == 2)
-                Multipole<Order>::template tensor<2>() =
+                Multipole < Order > ::template tensor<2>() =
                         SymmetricTensor3<2>::outerProduct(offset, offset).traceless() * coefficient<2>();
             else {
 
@@ -49,8 +54,8 @@ namespace NBody::Physics {
                 init<TensorOrder - 1>(offset);
 
                 // The new tensor is produced by the outer product of the second-highest tensor with the offset
-                Multipole<Order>::template tensor<TensorOrder>() = outerProduct(
-                        Multipole<Order>::template tensor<TensorOrder - 1>(),
+                Multipole < Order > ::template tensor<TensorOrder>() = outerProduct(
+                        Multipole < Order > ::template tensor<TensorOrder - 1>(),
                         offset
                 ).traceless() * coefficient<TensorOrder>();
 
@@ -83,6 +88,7 @@ namespace NBody::Physics {
 
     template<std::size_t Order>
     static MultipoleMoment<Order> operator+(const MultipoleMoment<Order> &lhs, const MultipoleMoment<Order> &rhs) {
+
         MultipoleMoment<Order> result = lhs;
         result += rhs;
         return result;

@@ -63,8 +63,24 @@ namespace NBody {
                         const auto &position = childNode.summary().centerOfMass();
                         const auto &mass = childNode.summary().totalMass();
                         glm::vec3 offset = position - centerOfMass();
-                        // todo: there's also a few other terms involved here, for octupole and higher!
-                        return (MultipoleMoment<Order>{offset} * mass) + childNode.summary().moment();
+                        auto moment = (MultipoleMoment<Order>{offset} * mass) + childNode.summary().moment();
+
+                        // todo: Is there a cleaner way to handle the additional terms?
+                        if constexpr (Order >= 3) {
+                            moment.template tensor<3>() += SymmetricTensor3<3>::sumOfOuterProducts(
+                                    childNode.summary().moment().template tensor<2>(),
+                                    offset
+                            );
+                        }
+                        if constexpr (Order >= 4) {
+                            // todo
+                        }
+                        if constexpr (Order >= 5) {
+                            // todo
+                        }
+                        // etc.
+
+                        return moment;
                     }
             );
             _multipole.enforceTraceless();
