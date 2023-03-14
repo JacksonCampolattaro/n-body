@@ -9,6 +9,9 @@
 #include <NBody/Physics/MultipoleMoment.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 
+// Loosely follows:
+// https://github.com/weiguangcui/Gadget4/blob/123a58f2501b7e7becfaf1ceccd563998c13e124/src/gravtree/gravtree_build.cc
+
 namespace NBody {
 
     using namespace Physics;
@@ -60,6 +63,7 @@ namespace NBody {
                         const auto &position = childNode.summary().centerOfMass();
                         const auto &mass = childNode.summary().totalMass();
                         glm::vec3 offset = position - centerOfMass();
+                        // todo: there's also a few other terms involved here, for octupole and higher!
                         return (MultipoleMoment<Order>{offset} * mass) + childNode.summary().moment();
                     }
             );

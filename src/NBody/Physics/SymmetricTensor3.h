@@ -391,6 +391,7 @@ namespace NBody {
 
     template<std::size_t Order>
     static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
+        // todo: this should actually probably implement tensor contraction!
         SymmetricTensor3<Order> difference{};
         for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
             difference.flat()[i] = lhs.flat()[i] * rhs.flat()[i];

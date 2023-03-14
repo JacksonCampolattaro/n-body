@@ -39,7 +39,7 @@ namespace NBody {
     };
 
     template<typename T>
-    concept QuadrupoleActiveSummaryType = ActiveSummaryType<T> && requires(T &t) {
+    concept MultipoleActiveSummaryType = ActiveSummaryType<T> && requires(T &t) {
         t.moment();
     };
 

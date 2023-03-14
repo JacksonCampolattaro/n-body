@@ -50,6 +50,27 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
+    class OctupoleBarnesHutSolver : public ActiveTreeSolver<
+            OctupoleActiveOctree ,
+            Descent::SideLengthOverDistance
+    > {
+    public:
+
+        using ActiveTreeSolver::ActiveTreeSolver;
+
+        std::string id() override { return "barnes-hut-8p"; };
+
+        std::string name() override { return "Barnes-Hut (Octupole)"; };
+
+        int &maxDepth() { return tree().maxDepth(); }
+
+        const int &maxDepth() const { return tree().maxDepth(); }
+
+        int &maxLeafSize() { return tree().maxLeafSize(); }
+
+        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+    };
+
 }
 
 

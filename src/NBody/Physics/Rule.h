@@ -86,7 +86,7 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
-        template<QuadrupoleActiveSummaryType ActiveSummary>
+        template<MultipoleActiveSummaryType ActiveSummary>
         Acceleration operator()(const Position &activePosition,
                                 const ActiveSummary &activeSummary,
                                 const Position &passivePosition) const {

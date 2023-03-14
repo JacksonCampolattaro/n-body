@@ -25,33 +25,16 @@ namespace NBody::Physics {
         using Multipole<Order>::tensor;
         using Multipole<Order>::get;
 
-        MultipoleMoment<Order> traceless() const {
-            MultipoleMoment<Order> copy;
-            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((std::get<Orders + 1>(copy.tensors()) = std::get<Orders + 1>(tensors()).traceless()), ...);
-            }(std::make_index_sequence<Order - 1>());
-            return copy;
-        };
-
         void enforceTraceless() {
-            [&]<std::size_t... Orders>(std::index_sequence<Orders...>) {
-                ((std::get<Orders + 2>(tensors()).enforceTraceless()), ...);
-            }(std::make_index_sequence<Order - 2>());
+            std::apply([&](auto &... symmetricTensors) {
+                ((symmetricTensors.enforceTraceless()), ...);
+            }, tensors());
         };
 
         MultipoleMoment<Order> &operator*=(const Mass &rhs) {
             Multipole<Order>::operator*=(rhs.mass());
             return *this;
         };
-
-        template<std::size_t TensorOrder = Order>
-        inline void applyCoefficients() {
-            if constexpr (TensorOrder == 0) return;
-            else {
-                Multipole<Order>::template tensor<TensorOrder>() *= coefficient<TensorOrder>();
-                applyCoefficients<TensorOrder - 1>();
-            }
-        }
 
     private:
 
@@ -65,10 +48,10 @@ namespace NBody::Physics {
                 // Recursively find all the lower order tensors
                 init<TensorOrder - 1>(offset);
 
-                // The new tensor is produced by the outer product of the second-highest tensor with itself
-                Multipole<Order>::template tensor<TensorOrder>() = SymmetricTensor3<TensorOrder>::outerProduct(
+                // The new tensor is produced by the outer product of the second-highest tensor with the offset
+                Multipole<Order>::template tensor<TensorOrder>() = outerProduct(
                         Multipole<Order>::template tensor<TensorOrder - 1>(),
-                        Multipole<Order>::template tensor<TensorOrder - 1>()
+                        offset
                 ).traceless() * coefficient<TensorOrder>();
 
             }
