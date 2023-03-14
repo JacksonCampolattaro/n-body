@@ -78,7 +78,7 @@ namespace NBody::Physics {
         template<std::size_t TensorOrder>
         constexpr std::size_t coefficient() {
             // fixme: signs must be consistent with those assumed by rule()
-            constexpr std::array coefficients{1, 3, 15, -105, 945}; // todo: extend this list
+            constexpr std::array coefficients{1, 3, 15, 105, 945}; // todo: extend this list
             return coefficients[TensorOrder - 1];
         }
 

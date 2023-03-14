@@ -18,7 +18,6 @@
 #include "SummaryType.h"
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
-#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/QuadrupoleAccelerationSummary.h>
 
@@ -95,19 +94,18 @@ namespace NBody::Physics {
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-            // todo: more descriptive variable names
 
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
             float monopolePotential = -activeSummary.totalMass().mass() / pow<3>(r);
-            float quadrupolePotential = (activeSummary.moment() * SymmetricTensor3<2>::cartesianPower(R)).sum()
-                                        * (-5.0f / (2.0f * pow<7>(r)));
+            float quadrupolePotential =
+                    (activeSummary.moment().template tensor<2>() *
+                     SymmetricTensor3<2>::cartesianPower(R)).sum() *
+                    (-5.0f / (2.0f * pow<7>(r)));
             float combinedPotential = monopolePotential + quadrupolePotential;
 
-            auto a = _g * ((activeSummary.moment() * R / pow<5>(r)) + (R * combinedPotential));
-            //std::cout << (Position) a << std::endl;
-            return a;
+            return _g * ((activeSummary.moment().template tensor<2>() * R / pow<5>(r)) + (combinedPotential * R));
         }
 
     public: // Particle-node interaction

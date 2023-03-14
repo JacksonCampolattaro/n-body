@@ -13,7 +13,6 @@
 #include "NBody/Physics/BoundingBox.h"
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
-#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
 #include <NBody/Physics/Summaries/BoundingBoxSummary.h>
 
 namespace NBody {
@@ -120,7 +119,7 @@ namespace NBody {
     };
 
     using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
-    using QuadrupoleActiveLinearBVH = LinearBVH<QuadrupoleMassSummary>;
+    using QuadrupoleActiveLinearBVH = LinearBVH<MultipoleMassSummary<2>>;
 
 }
 

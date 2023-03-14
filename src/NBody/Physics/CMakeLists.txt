@@ -15,7 +15,6 @@ add_library(Physics
         BoundingBox.h
         SummaryType.h
         Summaries/CenterOfMassSummary.h
-        Summaries/QuadrupoleMassSummary.h
         Summaries/AccelerationSummary.h
         Summaries/DualSummary.h
         Summaries/BoundingBoxSummary.h

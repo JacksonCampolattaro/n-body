@@ -6,7 +6,6 @@
 #define N_BODY_QUADRUPOLEDUALSUMMARY_H
 
 #include "QuadrupoleAccelerationSummary.h"
-#include "QuadrupoleMassSummary.h"
 
 namespace NBody {
 

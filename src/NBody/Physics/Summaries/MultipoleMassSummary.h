@@ -47,8 +47,6 @@ namespace NBody {
                     }
             );
             _multipole.enforceTraceless();
-
-
         }
 
         template<typename NodeList>
@@ -62,19 +60,18 @@ namespace NBody {
                         const auto &position = childNode.summary().centerOfMass();
                         const auto &mass = childNode.summary().totalMass();
                         glm::vec3 offset = position - centerOfMass();
-                        return MultipoleMoment<Order>{offset} * mass +
-                               childNode.summary()._multipole; // todo: moment() should return the multipole
+                        return (MultipoleMoment<Order>{offset} * mass) + childNode.summary().moment();
                     }
             );
             _multipole.enforceTraceless();
         }
 
-        SymmetricTensor3<2> &moment() { return _multipole.template tensor<2>(); }
+        MultipoleMoment<Order> &moment() { return _multipole; }
 
-        [[nodiscard]] const SymmetricTensor3<2> &moment() const { return _multipole.template tensor<2>(); }
+        [[nodiscard]] const MultipoleMoment<Order> &moment() const { return _multipole; }
 
         friend std::ostream &operator<<(std::ostream &out, const MultipoleMassSummary<Order> &s) {
-            return out << "(" << (s.moment() == SymmetricTensor3<2>{} ? "0..." : "") << ")";
+            return out << "()";
         }
     };
 }
