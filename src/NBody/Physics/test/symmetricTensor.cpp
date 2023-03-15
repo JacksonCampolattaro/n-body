@@ -290,7 +290,7 @@ TEST_CASE("Lexicographical Indices", "[SymmetricTensor3]") {
     REQUIRE(SymmetricTensor3<3>::lexicographicalIndex<26>() == std::array<Dimension, 3>{Z, Z, Z});
 }
 
-TEST_CASE("Tensor-Vector outer product (3x3 * 3 --> 3x3x3)", "[SymmetricTensor3]") {
+TEST_CASE("Tensor-Vector outer product (3x3 % 3 --> 3x3x3)", "[SymmetricTensor3]") {
 
     NBody::SymmetricTensor3<2> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
     glm::vec3 b{0.0f, 1.0f, 2.0f};
@@ -301,7 +301,7 @@ TEST_CASE("Tensor-Vector outer product (3x3 * 3 --> 3x3x3)", "[SymmetricTensor3]
     REQUIRE(product == NBody::SymmetricTensor3<3>{{0, 0, 0, 1, 2, 4, 3, 6, 8, 10}});
 }
 
-TEST_CASE("Tensor-Tensor outer product (3x3 * 3x3 --> 3x3x3x3)", "[SymmetricTensor3]") {
+TEST_CASE("Tensor-Tensor outer product (3x3 % 3x3 --> 3x3x3x3)", "[SymmetricTensor3]") {
 
     NBody::SymmetricTensor3<2> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
     NBody::SymmetricTensor3<2> b{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
@@ -310,4 +310,55 @@ TEST_CASE("Tensor-Tensor outer product (3x3 * 3x3 --> 3x3x3x3)", "[SymmetricTens
 
     CAPTURE(product.flat());
     REQUIRE(product == NBody::SymmetricTensor3<3>{{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}});
+}
+
+TEST_CASE("Tensor contraction to produce a vector (3x3x3 * 3x3 --> 3)", "[SymmetricTensor3]") {
+
+    NBody::SymmetricTensor3<3> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f}};
+    NBody::SymmetricTensor3<2> b{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
+
+    // xxx := 0
+    // xxy := 1
+    // xxz := 2
+    // xyy := 3
+    // xyz := 4
+    // xzz := 5
+    // yyy := 6
+    // yyz := 7
+    // yzz := 8
+    // zzz := 9
+
+    // xx := 0
+    // xy := 1
+    // xz := 2
+    // yy := 3
+    // yz := 4
+    // zz := 5
+
+    // x = (xxx * xx) +                 { = 0 }
+    //     (xxy * xy) + (xyx * yx) +    { = 2 * (1*1) }
+    //     (xxz * xz) + (xzx * zx) +    { = 2 * (2*2) }
+    //     (xyy * yy) +                 { = 3*3 }
+    //     (xyz * yz) + (xzy * zy) +    { = 2 * (4*4) }
+    //     (xzz * zz)                   { = 5*5 }
+    //     = 76
+    // y = (yxx * xx) +
+    //     (yxy * xy) + (yyx * yx) +
+    //     (yxz * xz) + (yzx * zx) +
+    //     (yyy * yy) +
+    //     (yyz * yz) + (yzy * zy) +
+    //     (yzz * zz)
+    //     = 136 (?)
+    // z = (zxx * xx) +
+    //     (zxy * xy) + (zyx * yx) +
+    //     (zxz * xz) + (zzx * zx) +
+    //     (zyy * yy) +
+    //     (zyz * yz) + (zzy * zy) +
+    //     (zzz * zz)
+    //     = 158 (?)
+
+    auto product = a * b;
+
+    CAPTURE(product.x, product.y, product.z);
+    REQUIRE(product == glm::vec3{76, 136, 158});
 }
