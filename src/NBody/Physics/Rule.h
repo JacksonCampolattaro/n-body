@@ -97,8 +97,6 @@ namespace NBody::Physics {
 
             if (activePosition == passivePosition) return {};
 
-            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
@@ -109,33 +107,74 @@ namespace NBody::Physics {
             float f5 = -945.0f / pow<6>(r);
 
             float g1 = f1 / r;
+            float g2 = f2 / pow<2>(r);
+            float g3 = f3 / pow<3>(r);
+            float g4 = f4 / pow<4>(r);
+            float g5 = f5 / pow<4>(r);
+
             glm::vec3 D1 = g1 * R;
 
-            float g2 = f2 / pow<2>(r);
-            SymmetricTensor3<2> D2 = g2 * SymmetricTensor3<2>::cartesianPower(R);
-            D2.get<X, X>() += g1;
-            D2.get<Y, Y>() += g1;
-            D2.get<Z, Z>() += g1;
-
-            float g3 = f3 / pow<3>(r);
-            SymmetricTensor3<3> D3 = g3 * SymmetricTensor3<3>::cartesianPower(R);
-            // todo: what is this operation?
-            D3.get<X, Y, Y>() += g2 * R.x;
-            D3.get<X, Z, Z>() += g2 * R.x;
-            D3.get<X, X, Y>() += g2 * R.y;
-            D3.get<Y, Z, Z>() += g2 * R.y;
-            D3.get<X, X, Z>() += g2 * R.z;
-            D3.get<Y, Y, Z>() += g2 * R.z;
-            D3.get<X, X, X>() += 3 * g2 * R.x;
-            D3.get<Y, Y, Y>() += 3 * g2 * R.y;
-            D3.get<Z, Z, Z>() += 3 * g2 * R.z;
+            // todo: D2 isn't used, but maybe it's still useful for reference
+            SymmetricTensor3<2> D2 = g2 * SymmetricTensor3<2>::cartesianPower(R) +
+                                     (g1 * SymmetricTensor3<2>::identity());
 
             glm::vec3 dPhi = activeSummary.totalMass().mass() * D1;
-            dPhi += (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
+
+            if constexpr (Order >= 2) {
+
+                SymmetricTensor3<3> D3 = g3 * SymmetricTensor3<3>::cartesianPower(R);
+                // todo: what is this operation?
+                D3.get<X, Y, Y>() += g2 * R.x;
+                D3.get<X, Z, Z>() += g2 * R.x;
+                D3.get<X, X, Y>() += g2 * R.y;
+                D3.get<Y, Z, Z>() += g2 * R.y;
+                D3.get<X, X, Z>() += g2 * R.z;
+                D3.get<Y, Y, Z>() += g2 * R.z;
+                D3.get<X, X, X>() += 3 * g2 * R.x;
+                D3.get<Y, Y, Y>() += 3 * g2 * R.y;
+                D3.get<Z, Z, Z>() += 3 * g2 * R.z;
+
+                dPhi += (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
+            }
+
+            if constexpr (Order >= 3) {
+
+                SymmetricTensor3<4> D4 = g4 * SymmetricTensor3<4>::cartesianPower(R);
+                // todo: what's going on here?
+                SymmetricTensor3<2> g3aux2 = g3 * SymmetricTensor3<2>::cartesianPower(R);
+                D4.get<X, X, X, X>() += 3 * g2;
+                D4.get<Y, Y, Y, Y>() += 3 * g2;
+                D4.get<Z, Z, Z, Z>() += 3 * g2;
+                D4.get<X, X, Y, Y>() += g2;
+                D4.get<X, X, Z, Z>() += g2;
+                D4.get<Y, Y, Z, Z>() += g2;
+                D4.get<X, X, X, X>() += 6 * g3aux2.get<X, X>();
+                D4.get<Y, Y, Y, Y>() += 6 * g3aux2.get<Y, Y>();
+                D4.get<Z, Z, Z, Z>() += 6 * g3aux2.get<Z, Z>();
+                D4.get<X, X, X, Y>() += 3 * g3aux2.get<X, Y>();
+                D4.get<X, Y, Y, Y>() += 3 * g3aux2.get<X, Y>();
+                D4.get<X, X, X, Z>() += 3 * g3aux2.get<X, Z>();
+                D4.get<X, Z, Z, Z>() += 3 * g3aux2.get<X, Z>();
+                D4.get<Y, Y, Y, Z>() += 3 * g3aux2.get<Y, Z>();
+                D4.get<Y, Z, Z, Z>() += 3 * g3aux2.get<Y, Z>();
+                D4.get<X, X, Y, Y>() += g3aux2.get<X, X>() + g3aux2.get<Y, Y>();
+                D4.get<X, X, Z, Z>() += g3aux2.get<X, X>() + g3aux2.get<Z, Z>();
+                D4.get<Y, Y, Z, Z>() += g3aux2.get<Y, Y>() + g3aux2.get<Z, Z>();
+                D4.get<X, X, Y, Z>() += g3aux2.get<Y, Z>();
+                D4.get<X, Y, Y, Z>() += g3aux2.get<X, Z>();
+                D4.get<X, Y, Z, Z>() += g3aux2.get<X, Y>();
+
+                // fixme: this should ~not~ be negative! Where's the sign getting flipped?
+                dPhi -= (D4 * activeSummary.moment().template tensor<3>()) / 6.0f;
+
+            }
 
             return _g * dPhi;
 
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+            // todo: this is equivalent to the previous for quadrupoles!
 
             float potential = -activeSummary.totalMass().mass() / pow<3>(r);
             potential += (activeSummary.moment().template tensor<2>() * SymmetricTensor3<2>::cartesianPower(R)) *

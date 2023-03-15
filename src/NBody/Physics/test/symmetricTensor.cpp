@@ -362,3 +362,36 @@ TEST_CASE("Tensor contraction to produce a vector (3x3x3 * 3x3 --> 3)", "[Symmet
     CAPTURE(product.x, product.y, product.z);
     REQUIRE(product == glm::vec3{76, 136, 158});
 }
+
+TEST_CASE("Sum of outer products between a 2d-tensor & a vector (3x3 * 3 --> 3x3x3)", "[SymmetricTensor3]") {
+
+    NBody::SymmetricTensor3<2> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
+    glm::vec3 b{0.0f, 1.0f, 2.0f};
+
+    // xx := 0
+    // xy := 1
+    // xz := 2
+    // yy := 3
+    // yz := 4
+    // zz := 5
+
+    // x := 0
+    // y := 1
+    // z := 2
+
+    // xxx = (xx * x) + (xx * x) + (xx * x) = 0
+    // xxy = (xx * y) + (yx * x) + (xy * x) = 0
+    // xxz = (xx * z) + (zx * x) + (xz * x) = 0
+    // xyy = (xy * y) + (yx * y) + (yy * x) = 2
+    // xyz = (xy * z) + (zx * y) + (yz * x) = 4
+    // xzz = (xz * z) + (zx * z) + (zz * x) = 8
+    // yyy = (yy * y) + (yy * y) + (yy * y) = 9
+    // yyz = (yy * z) + (zy * y) + (yz * y) = 14
+    // yzz = (yz * z) + (zy * z) + (zz * y) = 21
+    // zzz = (zz * z) + (zz * z) + (zz * z) = 30
+
+    auto sumOfProducts = NBody::SymmetricTensor3<3>::sumOfOuterProducts(a, b);
+
+    CAPTURE(sumOfProducts.flat());
+    REQUIRE(sumOfProducts == NBody::SymmetricTensor3<3>{{0, 0, 0, 2, 4, 8, 9, 14, 21, 30}});
+}
