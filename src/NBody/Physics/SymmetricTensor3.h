@@ -123,7 +123,7 @@ namespace NBody {
 
         static SymmetricTensor3<Order> sumOfOuterProducts(const SymmetricTensor3<Order - 1> &lhs,
                                                           const glm::vec3 &rhs) {
-            // todo
+            // todo: check that this is correct
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix.get<dimensionalIndex<I>()>() = sumOfProductsAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
@@ -415,22 +415,33 @@ namespace NBody {
     }
 
     template<std::size_t Order>
-    static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
+    static float operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
         // todo: this should actually probably implement tensor contraction!
-        SymmetricTensor3<Order> difference{};
+        SymmetricTensor3<Order> elementWiseProduct{};
         for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
-            difference.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
-        return difference;
+            elementWiseProduct.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
+        return elementWiseProduct.sum();
     }
 
-    // fixme: This can probably be generalized to higher orders
     static glm::vec3 operator*(const SymmetricTensor3<2> &lhs, const glm::vec3 &rhs) {
+
         using
         enum Dimension;
         return {
                 (lhs.get<X, X>() * rhs.x) + (lhs.get<X, Y>() * rhs.y) + (lhs.get<X, Z>() * rhs.z),
                 (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
                 (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
+        };
+    }
+
+    // fixme: This can probably be generalized to higher orders
+    static glm::vec3 operator*(const SymmetricTensor3<3> &lhs, const SymmetricTensor3<2> &rhs) {
+
+        // todo
+        using
+        enum Dimension;
+        return {
+
         };
     }
 
