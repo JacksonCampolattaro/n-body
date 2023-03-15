@@ -92,12 +92,50 @@ namespace NBody::Physics {
                                 const MultipoleMassSummary<Order> &activeSummary,
                                 const Position &passivePosition) const {
 
+            using
+            enum Dimension;
+
             if (activePosition == passivePosition) return {};
 
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
 
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
+
+            float f1 = -1.0f / pow<2>(r);
+            float f2 = 3.0f / pow<3>(r);
+            float f3 = -15.0f / pow<4>(r);
+            float f4 = 105.0f / pow<5>(r);
+            float f5 = -945.0f / pow<6>(r);
+
+            float g1 = f1 / r;
+            glm::vec3 D1 = g1 * R;
+
+            float g2 = f2 / pow<2>(r);
+            SymmetricTensor3<2> D2 = g2 * SymmetricTensor3<2>::cartesianPower(R);
+            D2.get<X, X>() += g1;
+            D2.get<Y, Y>() += g1;
+            D2.get<Z, Z>() += g1;
+
+            float g3 = f3 / pow<3>(r);
+            SymmetricTensor3<3> D3 = g3 * SymmetricTensor3<3>::cartesianPower(R);
+            // todo: what is this operation?
+            D3.get<X, X, X>() += 3 * g2 * R.x;
+            D3.get<X, X, Y>() += g2 * R.y;
+            D3.get<X, X, Z>() += g2 * R.z;
+            D3.get<X, Y, Y>() += g2 * R.x;
+            D3.get<X, Z, Z>() += g2 * R.x;
+            D3.get<Y, Y, Y>() += 3 * g2 * R.y;
+            D3.get<Y, Y, Z>() += g2 * R.z;
+            D3.get<Y, Z, Z>() += g2 * R.y;
+            D3.get<Z, Z, Z>() += 3 * g2 * R.z;
+
+            glm::vec3 dPhi = activeSummary.totalMass().mass() * D1;
+            //dPhi += 0.5 * (D3 * activeSummary.moment().tensor<2>());
+
+            //return _g * dPhi;
+
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
             float potential = -activeSummary.totalMass().mass() / pow<3>(r);
             potential += (activeSummary.moment().template tensor<2>() *
@@ -189,5 +227,119 @@ namespace NBody::Physics {
     };
 
 }
+
+//#define MULTIPOLE_ORDER 3
+//inline void fmm::fmm_particle_node_interaction(int no_sink, int no_source, int type_sink, int type_source,
+//                                               unsigned char shmrank_sink,
+//                                               unsigned char shmrank_source, gravnode *noptr_source,
+//                                               vector <MyReal> &dxyz, MyReal &r2) {
+//
+//    /* 'sink' is a particle
+//     * 'source' node is a node with multipole moments.
+//     * 'dxyz' is the distance vector, pointing from sink to source, i.e. dxyz = pos(source) - pos(sink)
+//     */
+//
+//    MyReal mass_i, h_i;
+//
+//    MyIntPosType *intpos_i;
+//
+//    if (type_sink == NODE_TYPE_LOCAL_PARTICLE) {
+//        particle_data *P = get_Pp(no_sink, shmrank_sink);
+//
+//        intpos_i = P->IntPos;
+//        mass_i = P->getMass();
+//        h_i = All.ForceSoftening[P->getSofteningClass()];
+//    } else if (type_sink == NODE_TYPE_TREEPOINT_PARTICLE) {
+//        gravpoint_data *Pointp = get_pointsp(no_sink - ImportedNodeOffset, shmrank_sink);
+//
+//        intpos_i = Pointp->IntPos;
+//        mass_i = Pointp->Mass;
+//        h_i = All.ForceSoftening[Pointp->getSofteningClass()];
+//    } else /* a point that was fetched */
+//    {
+//        foreign_gravpoint_data *foreignpoint = get_foreignpointsp(no_sink - EndOfForeignNodes, shmrank_sink);
+//
+//        intpos_i = foreignpoint->IntPos;
+//        mass_i = foreignpoint->Mass;
+//        h_i = All.ForceSoftening[foreignpoint->getSofteningClass()];
+//    }
+//
+//    MyReal h_j = All.ForceSoftening[noptr_source->getSofteningClass()];
+//    MyReal h_max = (h_j > h_i) ? h_j : h_i;
+//
+//    /* do cell-particle interaction, node can be used */
+//    MyReal r = sqrt(r2);
+//
+//    MyReal rinv = (r > 0) ? 1 / r : 0;
+//
+//    gfactors gfac;
+//
+//
+//    get_gfactors_multipole(gfac, r, h_max, rinv);
+//
+//    MyReal g1 = gfac.fac1 * rinv;
+//    vector <MyReal> D1 = g1 * dxyz;
+//
+//#if(MULTIPOLE_ORDER >= 2)
+//    MyReal g2 = gfac.fac2 * gfac.rinv2;
+//    symtensor2 <MyReal> aux2 = dxyz % dxyz;  // construct outer product of the two vectors
+//    symtensor2 <MyReal> D2 = g2 * aux2;
+//    D2[qXX] += g1;
+//    D2[qYY] += g1;
+//    D2[qZZ] += g1;
+//#endif
+//#if(MULTIPOLE_ORDER >= 3)
+//    MyReal g3 = gfac.fac3 * gfac.rinv3;
+//    symtensor3 <MyReal> D3;
+//    symtensor3 <MyReal> aux3;
+//    setup_D3(INIT, D3, dxyz, aux2, aux3, g2, g3);
+//#endif
+//
+//#if(MULTIPOLE_ORDER >= 4)
+//    MyReal g4 = gfac.fac4 * gfac.rinv2 * gfac.rinv2;
+//  symtensor4<MyReal> D4;
+//  symtensor4<MyReal> aux4;
+//  setup_D4(INIT, D4, dxyz, aux2, aux3, aux4, g2, g3, g4);
+//#endif
+//
+//#if(MULTIPOLE_ORDER >= 5)
+//    MyReal g5 = gfac.fac5 * gfac.rinv3 * gfac.rinv2;
+//  symtensor5<MyReal> D5;
+//  symtensor5<MyReal> aux5;
+//  setup_D5(INIT, D5, dxyz, aux3, aux4, aux5, g3, g4, g5);
+//#endif
+//
+//    /* finally store the force on the particle */
+//    MyReal mass_j = noptr_source->mass;
+//
+//#if(MULTIPOLE_ORDER >= 3) || ((MULTIPOLE_ORDER >= 2) && defined(EXTRAPOTTERM))
+//    symtensor2 <MyDouble> &Q2_j = noptr_source->Q2Tensor;
+//#endif
+//#if(MULTIPOLE_ORDER >= 4) || ((MULTIPOLE_ORDER >= 3) && defined(EXTRAPOTTERM))
+//    symtensor3<MyDouble> &Q3_j = noptr_source->Q3Tensor;
+//#endif
+//#if(MULTIPOLE_ORDER >= 5) || ((MULTIPOLE_ORDER >= 4) && defined(EXTRAPOTTERM))
+//    symtensor4<MyDouble> &Q4_j = noptr_source->Q4Tensor;
+//#endif
+//#if(MULTIPOLE_ORDER >= 5) && defined(EXTRAPOTTERM)
+//    symtensor5<MyDouble> &Q5_j = noptr_source->Q5Tensor;
+//#endif
+//
+//
+//    vector <MyReal> dphi = mass_j * D1;
+//
+//#if(MULTIPOLE_ORDER >= 3)
+//    dphi += static_cast<MyReal>(0.5) * (D3 * Q2_j);
+//#endif
+//#if(MULTIPOLE_ORDER >= 4)
+//    dphi += static_cast<MyReal>(1.0 / 6) * (D4 * Q3_j);
+//#endif
+//#if(MULTIPOLE_ORDER >= 5)
+//    dphi += static_cast<MyReal>(1.0 / 24) * (D5 * Q4_j);
+//#endif
+//
+//    Tp->P[no_sink].GravAccel -= dphi;
+//
+//}
 
 #endif //N_BODY_RULE_H
