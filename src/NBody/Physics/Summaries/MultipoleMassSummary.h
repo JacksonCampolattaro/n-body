@@ -49,7 +49,7 @@ namespace NBody {
                         return MultipoleMoment<Order>{offset} * mass;
                     }
             );
-            _multipole.enforceTraceless();
+            //_multipole.enforceTraceless();
         }
 
         template<typename NodeList>
@@ -83,7 +83,7 @@ namespace NBody {
                         return moment;
                     }
             );
-            _multipole.enforceTraceless();
+            //_multipole.enforceTraceless();
         }
 
         MultipoleMoment<Order> &moment() { return _multipole; }

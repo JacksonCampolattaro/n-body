@@ -45,9 +45,10 @@ namespace NBody::Physics {
 
         template<std::size_t TensorOrder = Order>
         void init(const glm::vec3 &offset) {
+            // fixme: Gadget doesn't make these traceless, so maybe that needs to be removed?
             if constexpr (TensorOrder == 2)
                 Multipole<Order>::template tensor<2>() =
-                        NBody::outerProduct(offset, offset).traceless();
+                        NBody::outerProduct(offset, offset);
             else {
 
                 // Recursively find all the lower order tensors
@@ -57,7 +58,7 @@ namespace NBody::Physics {
                 Multipole<Order>::template tensor<TensorOrder>() = outerProduct(
                         Multipole<Order>::template tensor<TensorOrder - 1>(),
                         offset
-                ).traceless();
+                );
 
             }
         }

@@ -248,29 +248,30 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
 }
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     Glib::init();
 
     json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 5'000, 0);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
     ConstitutionalGrader grader{scenario};
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
     //sweepTheta<FMMSolver>(scenario, thetaValues);
-    //sweepTheta<MVDRSolver>(10'000, thetaValues);
-    //sweepTheta<QuadrupoleMVDRSolver>(10'000, thetaValues);
-    //sweepTheta<BarnesHutSolver>(10'000, thetaValues);
-    //sweepTheta<QuadrupoleBarnesHutSolver>(10'000, thetaValues);
-    //sweepTheta<LinearBVHSolver>(10'000, thetaValues);
-    //sweepTheta<ReverseBarnesHutSolver>(10'000, thetaValues);
+    //sweepTheta<MVDRSolver>(scenario, thetaValues);
+    //sweepTheta<QuadrupoleMVDRSolver>(scenario, thetaValues);
+    //sweepTheta<BarnesHutSolver>(scenario, thetaValues);
+    //sweepTheta<QuadrupoleBarnesHutSolver>(scenario, thetaValues);
+    //sweepTheta<OctupoleBarnesHutSolver>(scenario, thetaValues);
+    //sweepTheta<LinearBVHSolver>(scenario, thetaValues);
+    //sweepTheta<ReverseBarnesHutSolver>(scenario, thetaValues);
 
 
-    //realPerformance<BarnesHutSolver>(scenario, grader);
-    //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
+    realPerformance<BarnesHutSolver>(scenario, grader);
     realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
+    //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
+    //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
     //realPerformance<FMMSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
