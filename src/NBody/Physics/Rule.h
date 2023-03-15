@@ -120,33 +120,29 @@ namespace NBody::Physics {
             float g3 = f3 / pow<3>(r);
             SymmetricTensor3<3> D3 = g3 * SymmetricTensor3<3>::cartesianPower(R);
             // todo: what is this operation?
-            D3.get<X, X, X>() += 2 * g2 * R.x;
-            D3.get<Y, Y, Y>() += 2 * g2 * R.y;
-            D3.get<Z, Z, Z>() += 2 * g2 * R.z;
-
-            D3.get<X, X, X>() += g2 * R.x;
-            D3.get<X, X, Y>() += g2 * R.y;
-            D3.get<X, X, Z>() += g2 * R.z;
             D3.get<X, Y, Y>() += g2 * R.x;
             D3.get<X, Z, Z>() += g2 * R.x;
-            D3.get<Y, Y, Y>() += g2 * R.y;
-            D3.get<Y, Y, Z>() += g2 * R.z;
+            D3.get<X, X, Y>() += g2 * R.y;
             D3.get<Y, Z, Z>() += g2 * R.y;
-            D3.get<Z, Z, Z>() += g2 * R.z;
+            D3.get<X, X, Z>() += g2 * R.z;
+            D3.get<Y, Y, Z>() += g2 * R.z;
+            D3.get<X, X, X>() += 3 * g2 * R.x;
+            D3.get<Y, Y, Y>() += 3 * g2 * R.y;
+            D3.get<Z, Z, Z>() += 3 * g2 * R.z;
 
             glm::vec3 dPhi = activeSummary.totalMass().mass() * D1;
-            //dPhi += 0.5 * (D3 * activeSummary.moment().tensor<2>());
+            dPhi += (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
 
-            //return _g * dPhi;
+            return _g * dPhi;
 
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
             float potential = -activeSummary.totalMass().mass() / pow<3>(r);
             potential += (activeSummary.moment().template tensor<2>() * SymmetricTensor3<2>::cartesianPower(R)) *
-                         (-5.0f / (2.0f * pow<7>(r))); // todo: why is this -5 here?!
+                         (-15.0f / (2.0f * pow<7>(r)));
 
             auto forceVector = potential * R;
-            forceVector += activeSummary.moment().template tensor<2>() * R / pow<5>(r);
+            forceVector += (3.0f * activeSummary.moment().template tensor<2>()) * R / pow<5>(r);
 
             return _g * forceVector;
         }

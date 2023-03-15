@@ -47,7 +47,7 @@ namespace NBody::Physics {
         void init(const glm::vec3 &offset) {
             if constexpr (TensorOrder == 2)
                 Multipole<Order>::template tensor<2>() =
-                        NBody::outerProduct(offset, offset).traceless() * coefficient<2>();
+                        NBody::outerProduct(offset, offset).traceless();
             else {
 
                 // Recursively find all the lower order tensors
@@ -57,7 +57,7 @@ namespace NBody::Physics {
                 Multipole<Order>::template tensor<TensorOrder>() = outerProduct(
                         Multipole<Order>::template tensor<TensorOrder - 1>(),
                         offset
-                ).traceless() * coefficient<TensorOrder>();
+                ).traceless();
 
             }
         }
@@ -66,7 +66,7 @@ namespace NBody::Physics {
         template<std::size_t TensorOrder>
         constexpr std::size_t coefficient() {
             // fixme: signs must be consistent with those assumed by rule()
-            constexpr std::array coefficients{1, 3, 15, 105, 945}; // todo: extend this list
+            constexpr std::array coefficients{1, -3, 15, -105, 945}; // todo: extend this list
             return coefficients[TensorOrder - 1];
         }
 
