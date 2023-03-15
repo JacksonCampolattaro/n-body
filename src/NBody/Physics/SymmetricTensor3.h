@@ -55,7 +55,7 @@ namespace NBody {
 
         std::array<float, NumUniqueValues> _data{0};
 
-    public:
+    public: // Constructors
 
         SymmetricTensor3() :
                 _data({0}) {}
@@ -63,9 +63,9 @@ namespace NBody {
         explicit SymmetricTensor3(std::array<float, NumUniqueValues> values) :
                 _data(values) {}
 
-        static SymmetricTensor3<Order> identity() {
+        static SymmetricTensor3 <Order> identity() {
 
-            SymmetricTensor3<Order> matrix{};
+            SymmetricTensor3 < Order > matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = kroneckerDelta<dimensionalIndex<I>()>()), ...);
             }(std::make_index_sequence<NumUniqueValues>());
@@ -74,9 +74,9 @@ namespace NBody {
         }
 
         template<typename Func>
-        static SymmetricTensor3<Order> nullary(Func &&f) {
+        static SymmetricTensor3 <Order> nullary(Func &&f) {
 
-            SymmetricTensor3<Order> matrix{};
+            SymmetricTensor3 < Order > matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = f(dimensionalIndex<I>())), ...);
             }(std::make_index_sequence<NumUniqueValues>());
@@ -84,9 +84,9 @@ namespace NBody {
             return matrix;
         }
 
-        static SymmetricTensor3<Order> cartesianPower(const glm::vec3 &vec) {
+        static SymmetricTensor3 <Order> cartesianPower(const glm::vec3 &vec) {
 
-            SymmetricTensor3<Order> matrix{};
+            SymmetricTensor3 < Order > matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((matrix._data[I] = productOfDimensions<dimensionalIndex<I>()>(vec)), ...);
             }(std::make_index_sequence<NumUniqueValues>());
@@ -94,49 +94,7 @@ namespace NBody {
             return matrix;
         }
 
-
-        // todo: this could be generalized to arbitrary lower-order tensors
-        static SymmetricTensor3<Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
-                                                    const SymmetricTensor3<Order - 1> &rhs) {
-
-            // todo: this is incorrect as an outer product, but maybe useful elsewhere?
-            SymmetricTensor3<Order> matrix{};
-            [&]<std::size_t... I>(std::index_sequence<I...>) {
-                ((
-                        matrix.get<lexicographicalIndex<I>()>() =
-                                lhs.template get<(head<lexicographicalIndex<I>()>())>() *
-                                rhs.template get<(tail<lexicographicalIndex<I>()>())>()
-                ), ...);
-            }(std::make_index_sequence<NumValues>());
-            return matrix;
-        }
-
-        static SymmetricTensor3<Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
-                                                    const glm::vec3 &rhs) {
-            // todo
-            SymmetricTensor3<Order> matrix{};
-            [&]<std::size_t... I>(std::index_sequence<I...>) {
-                ((matrix.get<dimensionalIndex<I>()>() = productAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
-            }(std::make_index_sequence<NumUniqueValues>());
-            return matrix;
-        }
-
-        static SymmetricTensor3<Order> sumOfOuterProducts(const SymmetricTensor3<Order - 1> &lhs,
-                                                          const glm::vec3 &rhs) {
-            // todo: check that this is correct
-            SymmetricTensor3<Order> matrix{};
-            [&]<std::size_t... I>(std::index_sequence<I...>) {
-                ((matrix.get<dimensionalIndex<I>()>() = sumOfProductsAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
-            }(std::make_index_sequence<NumUniqueValues>());
-            return matrix;
-        }
-
-        static SymmetricTensor3<2> outerProduct(const glm::vec3 &lhs,
-                                                const glm::vec3 &rhs) {
-            return SymmetricTensor3<2>{std::array<float, 6>{lhs.x * rhs.x, lhs.x * rhs.y, lhs.x * rhs.z,
-                                                            lhs.y * rhs.y, lhs.y * rhs.z,
-                                                            lhs.z * rhs.z}};
-        }
+    public: // Member Access
 
         template<Dimension... Indices>
         float &get() {
@@ -162,55 +120,162 @@ namespace NBody {
 
         std::array<float, NumUniqueValues> &flat() { return _data; }
 
+    public: // Tensor properties
+
         [[nodiscard]] float trace() const {
             // The diagonal only has 3 elements, no matter how many dimensions are matrix has!
             return _data[0] + // first value is XXX...X
-                   _data[SymmetricTensor3<Order - 1>::NumUniqueValues] + // first value after lower dim is YYY...Y
+                   _data[SymmetricTensor3 < Order - 1 > ::NumUniqueValues] + // first value after lower dim is YYY...Y
                    _data[NumUniqueValues - 1]; // last value is ZZZ...Z
         }
 
-        [[nodiscard]] SymmetricTensor3<Order> traceless() const {
+        [[nodiscard]] float sum() const {
+            return [&]<std::size_t... I>(std::index_sequence<I...>) {
+                return ((get<lexicographicalIndex<I>()>()) + ...);
+            }(std::make_index_sequence<NumValues>());
+        }
+
+    public: // Transformations
+
+        [[nodiscard]] SymmetricTensor3 <Order> traceless() const {
             return *this - (identity() * (trace() / 3.0f));
         }
 
         void enforceTraceless() {
             // ensure ZZ...Z = -(XX...X + YY...Y)
-            _data[NumUniqueValues - 1] = -(_data[0] + _data[SymmetricTensor3<Order - 1>::NumUniqueValues]);
+            _data[NumUniqueValues - 1] = -(_data[0] + _data[SymmetricTensor3 < Order - 1 > ::NumUniqueValues]);
         }
 
-        [[nodiscard]] float sum() const {
-            return [&]<std::size_t... I>(std::index_sequence<I...>) {
-                return ((_data[linearIndexWithRepeats<I>()]) + ...);
-            }(std::make_index_sequence<NumValues>());
-        }
+    public: // Unary Operators
 
-        bool operator==(const SymmetricTensor3<Order> &) const = default;
+        bool operator==(const SymmetricTensor3 <Order> &) const = default;
 
-        SymmetricTensor3<Order> &operator+=(const SymmetricTensor3<Order> &rhs) {
+        SymmetricTensor3 <Order> &operator+=(const SymmetricTensor3 <Order> &rhs) {
             for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] += rhs.flat()[i];
             return *this;
         }
 
-        SymmetricTensor3<Order> &operator-=(const SymmetricTensor3<Order> &rhs) {
+        SymmetricTensor3 <Order> &operator-=(const SymmetricTensor3 <Order> &rhs) {
             for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] -= rhs.flat()[i];
             return *this;
         }
 
         template<ScalarType Scalar>
-        SymmetricTensor3<Order> &operator*=(const Scalar &rhs) {
+        SymmetricTensor3 <Order> &operator*=(const Scalar &rhs) {
             for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] *= rhs;
             return *this;
         }
 
         template<ScalarType Scalar>
-        SymmetricTensor3<Order> &operator/=(const Scalar &rhs) {
+        SymmetricTensor3 <Order> &operator/=(const Scalar &rhs) {
             for (int i = 0; i < NumUniqueValues; ++i)
                 flat()[i] /= rhs;
             return *this;
         }
+
+    public: // Binary Operators
+
+        static SymmetricTensor3 <Order> sumOfOuterProducts(const SymmetricTensor3<Order - 1> &lhs,
+                                                           const glm::vec3 &rhs) {
+            // todo: check that this is correct
+            SymmetricTensor3 < Order > matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix.get<dimensionalIndex<I>()>() = sumOfProductsAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
+            }(std::make_index_sequence<NumUniqueValues>());
+            return matrix;
+        }
+
+        friend SymmetricTensor3 <Order> operator+(const SymmetricTensor3 <Order> &lhs,
+                                                  const SymmetricTensor3 <Order> &rhs) {
+            SymmetricTensor3 < Order > sum{};
+            for (int i = 0; i < NumUniqueValues; ++i)
+                sum.flat()[i] = lhs.flat()[i] + rhs.flat()[i];
+            return sum;
+        }
+
+        friend SymmetricTensor3 <Order> operator-(const SymmetricTensor3 <Order> &lhs,
+                                                  const SymmetricTensor3 <Order> &rhs) {
+            SymmetricTensor3 < Order > difference{};
+            for (int i = 0; i < NumUniqueValues; ++i)
+                difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
+            return difference;
+        }
+
+
+        friend glm::vec3 operator*(const SymmetricTensor3 <Order> &lhs,
+                                   const SymmetricTensor3<Order - 1> &rhs) {
+            // todo tensor-tensor contraction!
+            return {};
+        }
+
+        friend float operator*(const SymmetricTensor3 <Order> &lhs, const SymmetricTensor3 <Order> &rhs) {
+            SymmetricTensor3 < Order > elementWiseProduct{};
+            for (int i = 0; i < NumUniqueValues; ++i)
+                elementWiseProduct.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
+            return elementWiseProduct.sum();
+        }
+
+        friend SymmetricTensor3 <Order> operator*(const SymmetricTensor3 <Order> &lhs, const float &rhs) {
+            SymmetricTensor3 < Order > product{};
+            for (int i = 0; i < SymmetricTensor3 < Order > ::NumUniqueValues; ++i)
+                product.flat()[i] = lhs.flat()[i] * rhs;
+            return product;
+        }
+
+        friend SymmetricTensor3 <Order> operator*(const float &lhs, const SymmetricTensor3 <Order> &rhs) {
+            return (rhs * lhs);
+        }
+
+        friend SymmetricTensor3 <Order> operator/(const SymmetricTensor3 <Order> &lhs, const float &rhs) {
+            return (lhs * (1 / rhs));
+        }
+
+        // todo: this could be generalized to arbitrary lower-order tensors
+        friend SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3 <Order> &lhs,
+                                                        const SymmetricTensor3 <Order> &rhs) {
+            return SymmetricTensor3 < Order + 1 > ::outerProduct(lhs, rhs);
+        }
+
+        friend SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3 <Order> &lhs,
+                                                        const glm::vec3 &rhs) {
+            return SymmetricTensor3 < Order + 1 > ::outerProduct(lhs, rhs);
+        }
+
+        friend SymmetricTensor3<Order + 1> outerProduct(const glm::vec3 &lhs,
+                                                        const SymmetricTensor3 <Order> &rhs) {
+            return outerProduct(rhs, lhs);
+        }
+
+
+        static SymmetricTensor3 <Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
+                                                     const SymmetricTensor3<Order - 1> &rhs) {
+
+            // todo: this is incorrect as an outer product, but maybe useful elsewhere?
+            SymmetricTensor3 < Order > matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((
+                        matrix.get<lexicographicalIndex<I>()>() =
+                                lhs.template get<(head<lexicographicalIndex<I>()>())>() *
+                                rhs.template get<(tail<lexicographicalIndex<I>()>())>()
+                ), ...);
+            }(std::make_index_sequence<NumValues>());
+            return matrix;
+        }
+
+        static SymmetricTensor3 <Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
+                                                     const glm::vec3 &rhs) {
+            // todo
+            SymmetricTensor3 < Order > matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix.get<dimensionalIndex<I>()>() = productAtIndex<dimensionalIndex<I>()>(lhs, rhs)), ...);
+            }(std::make_index_sequence<NumUniqueValues>());
+            return matrix;
+        }
+
+    public: // Indexing helper methods
 
         template<Dimension... Indices>
         static constexpr std::size_t linearIndex() {
@@ -218,35 +283,24 @@ namespace NBody {
             // Make sure the user passed the right number of indices
             static_assert(sizeof...(Indices) == Order, "Incorrect number of indices for multipole order");
 
-            // Put the indices in XYZ order, to ensure we're accessing the correct hyper-pyramid of the symmetric matrix
-            constexpr auto indices = asSortedArray<Indices...>();
-
-            // Convert the array to a linear index
-            return linearIndex<indices>();
+            return linearIndex<asArray<Indices...>()>();
         }
 
         template<std::array<Dimension, Order> Indices>
         static constexpr std::size_t linearIndex() {
 
             // Make certain the indices are sorted
-            // todo: this doesn't need to be done elsewhere, if it's done here!
             constexpr auto indices = sorted<Indices>();
 
-            // If the first index is X, then we can use lower-dimensional indexing
+            // If the first index is X, then we can defer to lower-dimensional indexing
             if (indices[0] == Dimension::X) {
-                constexpr auto copy = lowerOrderIndices<indices>();
-                return SymmetricTensor3<Order - 1>::template linearIndex<copy>();
+                return SymmetricTensor3 < Order - 1 > ::template linearIndex<tail<indices>()>();
             }
 
             // All the extra linear indices will correspond to indices which contain only Ys and Zs
             // We can determine the offset by counting the Zs
             constexpr std::size_t numberOfZs = std::count(indices.begin(), indices.end(), Dimension::Z);
-            return SymmetricTensor3<Order - 1>::NumUniqueValues + numberOfZs;
-        }
-
-        template<std::size_t I>
-        static constexpr std::size_t linearIndexWithRepeats() {
-            return linearIndex<lexicographicalIndex<I>()>();
+            return SymmetricTensor3 < Order - 1 > ::NumUniqueValues + numberOfZs;
         }
 
         template<std::size_t LinearIndex>
@@ -254,10 +308,10 @@ namespace NBody {
             static_assert(LinearIndex < NumUniqueValues, "Linear index is out of bounds");
 
             std::array<Dimension, Order> array{};
-            if constexpr (LinearIndex < SymmetricTensor3<Order - 1>::NumUniqueValues) {
+            if constexpr (LinearIndex < SymmetricTensor3 < Order - 1 > ::NumUniqueValues) {
 
                 // If the linear index would fit in a smaller matrix, prefix with an X and recursively find the rest
-                constexpr auto lowerIndex = SymmetricTensor3<Order - 1>::template dimensionalIndex<LinearIndex>();
+                constexpr auto lowerIndex = SymmetricTensor3 < Order - 1 > ::template dimensionalIndex<LinearIndex>();
                 array[0] = Dimension::X;
                 std::copy(lowerIndex.begin(), lowerIndex.end(), array.begin() + 1);
 
@@ -265,9 +319,9 @@ namespace NBody {
 
                 // Otherwise, the dimensional matrix is made up of Ys and Zs in appropriate proportions
                 constexpr std::size_t numberOfZs =
-                        LinearIndex - SymmetricTensor3<Order - 1>::NumUniqueValues;
+                        LinearIndex - SymmetricTensor3 < Order - 1 > ::NumUniqueValues;
                 constexpr std::size_t numberOfYs =
-                        (NumUniqueValues - SymmetricTensor3<Order - 1>::NumUniqueValues) - numberOfZs - 1;
+                        (NumUniqueValues - SymmetricTensor3 < Order - 1 > ::NumUniqueValues) - numberOfZs - 1;
                 std::fill(array.begin(), array.begin() + numberOfYs, Dimension::Y);
                 std::fill(array.begin() + numberOfYs, array.end(), Dimension::Z);
             }
@@ -285,19 +339,17 @@ namespace NBody {
             constexpr std::size_t lowerLinearIndex = (LinearIndex - topIndex) / 3;
 
             dimensions[Order - 1] = (Dimension) topIndex;
-            auto lowerDimensions = SymmetricTensor3<Order - 1>::template lexicographicalIndex<lowerLinearIndex>();
+            auto lowerDimensions = SymmetricTensor3 < Order - 1 > ::template lexicographicalIndex<lowerLinearIndex>();
             std::copy(lowerDimensions.begin(), lowerDimensions.end(), dimensions.begin());
 
             return dimensions;
         }
 
-    protected:
+    protected: // Array operation helper methods
 
         template<Dimension... Indices>
-        static constexpr std::array<Dimension, Order> asSortedArray() {
-            std::array<Dimension, Order> array{Indices...};
-            std::sort(array.begin(), array.end());
-            return array;
+        static constexpr std::array<Dimension, Order> asArray() {
+            return std::array<Dimension, Order>{Indices...};
         }
 
         template<std::array<Dimension, Order> Unsorted>
@@ -316,25 +368,19 @@ namespace NBody {
 
         template<std::array<Dimension, Order> Array, std::size_t N = Order - 1>
         static constexpr std::array<Dimension, N> head() {
-            std::array<Dimension, N> copy;
+            std::array<Dimension, N> copy{};
             std::copy(Array.begin(), Array.begin() + N, copy.begin());
             return copy;
         }
 
         template<std::array<Dimension, Order> Array, std::size_t N = Order - 1>
         static constexpr std::array<Dimension, N> tail() {
-            std::array<Dimension, N> copy;
+            std::array<Dimension, N> copy{};
             std::copy(Array.end() - N, Array.end(), copy.begin());
             return copy;
         }
 
-
-        template<std::array<Dimension, Order> Indices>
-        static constexpr std::array<Dimension, Order - 1> lowerOrderIndices() {
-            std::array<Dimension, Order - 1> copy{};
-            std::copy(Indices.begin() + 1, Indices.end(), copy.begin());
-            return copy;
-        }
+    protected: // Helper methods for math operations
 
         template<std::array<Dimension, Order> Dimensions>
         static constexpr float productOfDimensions(const glm::vec3 &vec) {
@@ -398,29 +444,11 @@ namespace NBody {
 
     };
 
-    template<std::size_t Order>
-    static SymmetricTensor3<Order> operator+(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
-        SymmetricTensor3<Order> sum{};
-        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
-            sum.flat()[i] = lhs.flat()[i] + rhs.flat()[i];
-        return sum;
-    }
-
-    template<std::size_t Order>
-    static SymmetricTensor3<Order> operator-(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
-        SymmetricTensor3<Order> difference{};
-        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
-            difference.flat()[i] = lhs.flat()[i] - rhs.flat()[i];
-        return difference;
-    }
-
-    template<std::size_t Order>
-    static float operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
-        // todo: this should actually probably implement tensor contraction!
-        SymmetricTensor3<Order> elementWiseProduct{};
-        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
-            elementWiseProduct.flat()[i] = lhs.flat()[i] * rhs.flat()[i];
-        return elementWiseProduct.sum();
+    static SymmetricTensor3<2> outerProduct(const glm::vec3 &lhs,
+                                            const glm::vec3 &rhs) {
+        return SymmetricTensor3 < 2 > {std::array<float, 6>{lhs.x * rhs.x, lhs.x * rhs.y, lhs.x * rhs.z,
+                                                            lhs.y * rhs.y, lhs.y * rhs.z,
+                                                            lhs.z * rhs.z}};
     }
 
     static glm::vec3 operator*(const SymmetricTensor3<2> &lhs, const glm::vec3 &rhs) {
@@ -432,60 +460,6 @@ namespace NBody {
                 (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
                 (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
         };
-    }
-
-    // fixme: This can probably be generalized to higher orders
-    static glm::vec3 operator*(const SymmetricTensor3<3> &lhs, const SymmetricTensor3<2> &rhs) {
-
-        // todo
-        using
-        enum Dimension;
-        return {
-
-        };
-    }
-
-    template<std::size_t Order, ScalarType Scalar>
-    static SymmetricTensor3<Order> operator*(const SymmetricTensor3<Order> &lhs, const Scalar &rhs) {
-        SymmetricTensor3<Order> product{};
-        for (int i = 0; i < SymmetricTensor3<Order>::NumUniqueValues; ++i)
-            product.flat()[i] = lhs.flat()[i] * rhs;
-        return product;
-    }
-
-    template<std::size_t Order, ScalarType Scalar>
-    static SymmetricTensor3<Order> operator*(const Scalar &lhs, const SymmetricTensor3<Order> &rhs) {
-        return (rhs * lhs);
-    }
-
-    template<std::size_t Order, ScalarType Scalar>
-    static SymmetricTensor3<Order> operator/(const SymmetricTensor3<Order> &lhs, const Scalar &rhs) {
-        return (lhs * (1 / rhs));
-    }
-
-
-    // todo: this could be generalized to arbitrary lower-order tensors
-    template<std::size_t Order>
-    static SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3<Order> &lhs,
-                                                    const SymmetricTensor3<Order> &rhs) {
-        return SymmetricTensor3<Order + 1>::outerProduct(lhs, rhs);
-    }
-
-    template<std::size_t Order>
-    static SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3<Order> &lhs,
-                                                    const glm::vec3 &rhs) {
-        return SymmetricTensor3<Order + 1>::outerProduct(lhs, rhs);
-    }
-
-    template<std::size_t Order>
-    static SymmetricTensor3<Order + 1> outerProduct(const glm::vec3 &lhs,
-                                                    const SymmetricTensor3<Order> &rhs) {
-        return outerProduct(rhs, lhs);
-    }
-
-    static SymmetricTensor3<2> outerProduct(const glm::vec3 &lhs,
-                                            const glm::vec3 &rhs) {
-        return SymmetricTensor3<2>::outerProduct(lhs, rhs);
     }
 
 }
