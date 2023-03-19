@@ -251,8 +251,8 @@ int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
 
-    json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
+    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 5'000, 0);
     ConstitutionalGrader grader{scenario};
 
     std::vector<float> thetaValues{};
@@ -267,8 +267,8 @@ int main(int argc, char *argv[]) {
     //sweepTheta<ReverseBarnesHutSolver>(scenario, thetaValues);
 
 
-    realPerformance<BarnesHutSolver>(scenario, grader);
-    realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
+    //realPerformance<BarnesHutSolver>(scenario, grader);
+    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);

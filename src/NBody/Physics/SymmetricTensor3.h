@@ -73,6 +73,25 @@ namespace NBody {
             return matrix;
         }
 
+        static SymmetricTensor3<Order> ones() {
+
+            SymmetricTensor3<Order> matrix{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((matrix._data[I] = 1.0f), ...);
+            }(std::make_index_sequence<NumUniqueValues>());
+
+            return matrix;
+        }
+
+        static SymmetricTensor3<Order> diagonal(glm::vec3 vec) {
+
+            SymmetricTensor3<Order> tensor;
+            tensor.flat()[0] = vec.x;
+            tensor.flat()[SymmetricTensor3<Order - 1>::NumUniqueValues] = vec.y;
+            tensor.flat()[SymmetricTensor3<Order>::NumUniqueValues - 1] = vec.z;
+            return tensor;
+        }
+
         template<typename Func>
         static SymmetricTensor3<Order> nullary(Func &&f) {
 
@@ -467,6 +486,11 @@ namespace NBody {
                 (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
                 (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
         };
+    }
+
+    static glm::vec3 operator*(const glm::vec3 &lhs, const SymmetricTensor3<2> &rhs) {
+        // todo: is tensor contraction really commutative like this?
+        return operator*(rhs, lhs);
     }
 
 }

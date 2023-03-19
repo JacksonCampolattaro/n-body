@@ -110,7 +110,7 @@ namespace NBody::Physics {
             float g2 = f2 / pow<2>(r);
             float g3 = f3 / pow<3>(r);
             float g4 = f4 / pow<4>(r);
-            float g5 = f5 / pow<4>(r);
+            float g5 = f5 / pow<5>(r);
 
             glm::vec3 D1 = g1 * R;
 
@@ -122,68 +122,91 @@ namespace NBody::Physics {
 
             if constexpr (Order >= 2) {
 
-                SymmetricTensor3<3> D3 = g3 * SymmetricTensor3<3>::cartesianPower(R);
                 // todo: what is this operation?
-                D3.get<X, Y, Y>() += g2 * R.x;
-                D3.get<X, Z, Z>() += g2 * R.x;
-                D3.get<X, X, Y>() += g2 * R.y;
-                D3.get<Y, Z, Z>() += g2 * R.y;
-                D3.get<X, X, Z>() += g2 * R.z;
-                D3.get<Y, Y, Z>() += g2 * R.z;
-                D3.get<X, X, X>() += 3 * g2 * R.x;
-                D3.get<Y, Y, Y>() += 3 * g2 * R.y;
-                D3.get<Z, Z, Z>() += 3 * g2 * R.z;
+                // XYZ is never touched?
+                auto A = g3 * SymmetricTensor3<3>::cartesianPower(R);
+                auto B = 3 * SymmetricTensor3<3>::diagonal(R);
+                B.get<X, Y, Y>() = R.x;
+                B.get<X, Z, Z>() = R.x;
+                B.get<Y, X, X>() = R.y;
+                B.get<Y, Z, Z>() = R.y;
+                B.get<Z, X, X>() = R.z;
+                B.get<Z, Y, Y>() = R.z;
+                B *= g2;
+                SymmetricTensor3<3> D3 = A + B;
 
-                dPhi += (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
+                auto quadrupoleAdjustment = (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
+                dPhi += quadrupoleAdjustment;
+
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+                // todo: this is equivalent to the previous!
+                const auto Q = activeSummary.moment().template tensor<2>().traceless();
+                auto reboundA = g3 * SymmetricTensor3<3>::cartesianPower(R);
+                auto maybeReboundB = 2.0f * g2 * R; // Note: this is only a vector
+                auto reboundQuadrupoleAdjustment = ((reboundA * Q) + (maybeReboundB * Q)) / 2.0f;
+
+                auto error = glm::distance(quadrupoleAdjustment, reboundQuadrupoleAdjustment) /
+                             glm::length(quadrupoleAdjustment);
+                if (error > 0.0001)
+                    spdlog::error(error);
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
 
             if constexpr (Order >= 3) {
 
                 SymmetricTensor3<4> D4 = g4 * SymmetricTensor3<4>::cartesianPower(R);
                 // todo: what's going on here?
-                SymmetricTensor3<2> g3aux2 = g3 * SymmetricTensor3<2>::cartesianPower(R);
+                SymmetricTensor3<2> R2 = SymmetricTensor3<2>::cartesianPower(R);
+
                 D4.get<X, X, X, X>() += 3 * g2;
                 D4.get<Y, Y, Y, Y>() += 3 * g2;
                 D4.get<Z, Z, Z, Z>() += 3 * g2;
                 D4.get<X, X, Y, Y>() += g2;
                 D4.get<X, X, Z, Z>() += g2;
                 D4.get<Y, Y, Z, Z>() += g2;
-                D4.get<X, X, X, X>() += 6 * g3aux2.get<X, X>();
-                D4.get<Y, Y, Y, Y>() += 6 * g3aux2.get<Y, Y>();
-                D4.get<Z, Z, Z, Z>() += 6 * g3aux2.get<Z, Z>();
-                D4.get<X, X, X, Y>() += 3 * g3aux2.get<X, Y>();
-                D4.get<X, Y, Y, Y>() += 3 * g3aux2.get<X, Y>();
-                D4.get<X, X, X, Z>() += 3 * g3aux2.get<X, Z>();
-                D4.get<X, Z, Z, Z>() += 3 * g3aux2.get<X, Z>();
-                D4.get<Y, Y, Y, Z>() += 3 * g3aux2.get<Y, Z>();
-                D4.get<Y, Z, Z, Z>() += 3 * g3aux2.get<Y, Z>();
-                D4.get<X, X, Y, Y>() += g3aux2.get<X, X>() + g3aux2.get<Y, Y>();
-                D4.get<X, X, Z, Z>() += g3aux2.get<X, X>() + g3aux2.get<Z, Z>();
-                D4.get<Y, Y, Z, Z>() += g3aux2.get<Y, Y>() + g3aux2.get<Z, Z>();
-                D4.get<X, X, Y, Z>() += g3aux2.get<Y, Z>();
-                D4.get<X, Y, Y, Z>() += g3aux2.get<X, Z>();
-                D4.get<X, Y, Z, Z>() += g3aux2.get<X, Y>();
+
+                D4.get<X, X, X, X>() += 6 * g3 * R2.get<X, X>();
+                D4.get<Y, Y, Y, Y>() += 6 * g3 * R2.get<Y, Y>();
+                D4.get<Z, Z, Z, Z>() += 6 * g3 * R2.get<Z, Z>();
+                D4.get<X, X, X, Y>() += 3 * g3 * R2.get<X, Y>();
+                D4.get<X, Y, Y, Y>() += 3 * g3 * R2.get<X, Y>();
+                D4.get<X, X, X, Z>() += 3 * g3 * R2.get<X, Z>();
+                D4.get<X, Z, Z, Z>() += 3 * g3 * R2.get<X, Z>();
+                D4.get<Y, Y, Y, Z>() += 3 * g3 * R2.get<Y, Z>();
+                D4.get<Y, Z, Z, Z>() += 3 * g3 * R2.get<Y, Z>();
+                D4.get<X, X, Y, Y>() += g3 * R2.get<X, X>() + g3 * R2.get<Y, Y>();
+                D4.get<X, X, Z, Z>() += g3 * R2.get<X, X>() + g3 * R2.get<Z, Z>();
+                D4.get<Y, Y, Z, Z>() += g3 * R2.get<Y, Y>() + g3 * R2.get<Z, Z>();
+                D4.get<X, X, Y, Z>() += g3 * R2.get<Y, Z>();
+                D4.get<X, Y, Y, Z>() += g3 * R2.get<X, Z>();
+                D4.get<X, Y, Z, Z>() += g3 * R2.get<X, Y>();
 
                 // fixme: this should ~not~ be negative! Where's the sign getting flipped?
-                dPhi -= (D4 * activeSummary.moment().template tensor<3>()) / 6.0f;
+                auto octupoleAdjustment = (D4 * activeSummary.moment().template tensor<3>()) / 6.0f;
+                dPhi -= octupoleAdjustment;
 
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
+                //                const auto &Q = activeSummary.moment().template tensor<2>();
+                //                const auto &O = activeSummary.moment().template tensor<3>();
+                //                auto reboundOctupoleAdjustment = (
+                //                        (
+                //                                O.traceless() *
+                //                                SymmetricTensor3<3>::cartesianPower(R)
+                //                        ) * Q * (105.0f / (6.0f * pow<7>(r))) +
+                //                        (
+                //                                O.traceless()
+                //                        ) * Q * (-15.0f / pow<5>(r))
+                //                );
+                //                auto error = glm::distance(octupoleAdjustment, reboundOctupoleAdjustment) /
+                //                             glm::length(octupoleAdjustment);
+                //                if (error > 0.0001)
+                //                    spdlog::error(error);
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
 
             return _g * dPhi;
-
-            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-            // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-            // todo: this is equivalent to the previous for quadrupoles!
-
-            float potential = -activeSummary.totalMass().mass() / pow<3>(r);
-            potential += (activeSummary.moment().template tensor<2>() * SymmetricTensor3<2>::cartesianPower(R)) *
-                         (-15.0f / (2.0f * pow<7>(r)));
-
-            auto forceVector = potential * R;
-            forceVector += (3.0f * activeSummary.moment().template tensor<2>()) * R / pow<5>(r);
-
-            return _g * forceVector;
         }
 
     public: // Particle-node interaction
@@ -265,119 +288,5 @@ namespace NBody::Physics {
     };
 
 }
-
-//#define MULTIPOLE_ORDER 3
-//inline void fmm::fmm_particle_node_interaction(int no_sink, int no_source, int type_sink, int type_source,
-//                                               unsigned char shmrank_sink,
-//                                               unsigned char shmrank_source, gravnode *noptr_source,
-//                                               vector <MyReal> &dxyz, MyReal &r2) {
-//
-//    /* 'sink' is a particle
-//     * 'source' node is a node with multipole moments.
-//     * 'dxyz' is the distance vector, pointing from sink to source, i.e. dxyz = pos(source) - pos(sink)
-//     */
-//
-//    MyReal mass_i, h_i;
-//
-//    MyIntPosType *intpos_i;
-//
-//    if (type_sink == NODE_TYPE_LOCAL_PARTICLE) {
-//        particle_data *P = get_Pp(no_sink, shmrank_sink);
-//
-//        intpos_i = P->IntPos;
-//        mass_i = P->getMass();
-//        h_i = All.ForceSoftening[P->getSofteningClass()];
-//    } else if (type_sink == NODE_TYPE_TREEPOINT_PARTICLE) {
-//        gravpoint_data *Pointp = get_pointsp(no_sink - ImportedNodeOffset, shmrank_sink);
-//
-//        intpos_i = Pointp->IntPos;
-//        mass_i = Pointp->Mass;
-//        h_i = All.ForceSoftening[Pointp->getSofteningClass()];
-//    } else /* a point that was fetched */
-//    {
-//        foreign_gravpoint_data *foreignpoint = get_foreignpointsp(no_sink - EndOfForeignNodes, shmrank_sink);
-//
-//        intpos_i = foreignpoint->IntPos;
-//        mass_i = foreignpoint->Mass;
-//        h_i = All.ForceSoftening[foreignpoint->getSofteningClass()];
-//    }
-//
-//    MyReal h_j = All.ForceSoftening[noptr_source->getSofteningClass()];
-//    MyReal h_max = (h_j > h_i) ? h_j : h_i;
-//
-//    /* do cell-particle interaction, node can be used */
-//    MyReal r = sqrt(r2);
-//
-//    MyReal rinv = (r > 0) ? 1 / r : 0;
-//
-//    gfactors gfac;
-//
-//
-//    get_gfactors_multipole(gfac, r, h_max, rinv);
-//
-//    MyReal g1 = gfac.fac1 * rinv;
-//    vector <MyReal> D1 = g1 * dxyz;
-//
-//#if(MULTIPOLE_ORDER >= 2)
-//    MyReal g2 = gfac.fac2 * gfac.rinv2;
-//    symtensor2 <MyReal> aux2 = dxyz % dxyz;  // construct outer product of the two vectors
-//    symtensor2 <MyReal> D2 = g2 * aux2;
-//    D2[qXX] += g1;
-//    D2[qYY] += g1;
-//    D2[qZZ] += g1;
-//#endif
-//#if(MULTIPOLE_ORDER >= 3)
-//    MyReal g3 = gfac.fac3 * gfac.rinv3;
-//    symtensor3 <MyReal> D3;
-//    symtensor3 <MyReal> aux3;
-//    setup_D3(INIT, D3, dxyz, aux2, aux3, g2, g3);
-//#endif
-//
-//#if(MULTIPOLE_ORDER >= 4)
-//    MyReal g4 = gfac.fac4 * gfac.rinv2 * gfac.rinv2;
-//  symtensor4<MyReal> D4;
-//  symtensor4<MyReal> aux4;
-//  setup_D4(INIT, D4, dxyz, aux2, aux3, aux4, g2, g3, g4);
-//#endif
-//
-//#if(MULTIPOLE_ORDER >= 5)
-//    MyReal g5 = gfac.fac5 * gfac.rinv3 * gfac.rinv2;
-//  symtensor5<MyReal> D5;
-//  symtensor5<MyReal> aux5;
-//  setup_D5(INIT, D5, dxyz, aux3, aux4, aux5, g3, g4, g5);
-//#endif
-//
-//    /* finally store the force on the particle */
-//    MyReal mass_j = noptr_source->mass;
-//
-//#if(MULTIPOLE_ORDER >= 3) || ((MULTIPOLE_ORDER >= 2) && defined(EXTRAPOTTERM))
-//    symtensor2 <MyDouble> &Q2_j = noptr_source->Q2Tensor;
-//#endif
-//#if(MULTIPOLE_ORDER >= 4) || ((MULTIPOLE_ORDER >= 3) && defined(EXTRAPOTTERM))
-//    symtensor3<MyDouble> &Q3_j = noptr_source->Q3Tensor;
-//#endif
-//#if(MULTIPOLE_ORDER >= 5) || ((MULTIPOLE_ORDER >= 4) && defined(EXTRAPOTTERM))
-//    symtensor4<MyDouble> &Q4_j = noptr_source->Q4Tensor;
-//#endif
-//#if(MULTIPOLE_ORDER >= 5) && defined(EXTRAPOTTERM)
-//    symtensor5<MyDouble> &Q5_j = noptr_source->Q5Tensor;
-//#endif
-//
-//
-//    vector <MyReal> dphi = mass_j * D1;
-//
-//#if(MULTIPOLE_ORDER >= 3)
-//    dphi += static_cast<MyReal>(0.5) * (D3 * Q2_j);
-//#endif
-//#if(MULTIPOLE_ORDER >= 4)
-//    dphi += static_cast<MyReal>(1.0 / 6) * (D4 * Q3_j);
-//#endif
-//#if(MULTIPOLE_ORDER >= 5)
-//    dphi += static_cast<MyReal>(1.0 / 24) * (D5 * Q4_j);
-//#endif
-//
-//    Tp->P[no_sink].GravAccel -= dphi;
-//
-//}
 
 #endif //N_BODY_RULE_H
