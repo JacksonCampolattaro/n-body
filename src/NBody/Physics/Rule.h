@@ -122,29 +122,32 @@ namespace NBody::Physics {
 
             if constexpr (Order >= 2) {
 
+                const auto Q = activeSummary.moment().template tensor<2>();
+
                 // todo: what is this operation?
                 // XYZ is never touched?
                 auto A = g3 * SymmetricTensor3<3>::cartesianPower(R);
-                auto B = 3 * SymmetricTensor3<3>::diagonal(R);
+                auto B = SymmetricTensor3<3>{};
                 B.get<X, Y, Y>() = R.x;
                 B.get<X, Z, Z>() = R.x;
                 B.get<Y, X, X>() = R.y;
                 B.get<Y, Z, Z>() = R.y;
                 B.get<Z, X, X>() = R.z;
                 B.get<Z, Y, Y>() = R.z;
+                B += 3 * SymmetricTensor3<3>::diagonal(R);
                 B *= g2;
                 SymmetricTensor3<3> D3 = A + B;
 
-                auto quadrupoleAdjustment = (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
+                auto quadrupoleAdjustment = ((A * Q) + (B * Q)) / 2.0f;
+                //auto quadrupoleAdjustment = (D3 * activeSummary.moment().template tensor<2>()) / 2.0f;
                 dPhi += quadrupoleAdjustment;
 
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
                 // todo: this is equivalent to the previous!
-                const auto Q = activeSummary.moment().template tensor<2>().traceless();
-                auto reboundA = g3 * SymmetricTensor3<3>::cartesianPower(R);
-                auto maybeReboundB = 2.0f * g2 * R; // Note: this is only a vector
-                auto reboundQuadrupoleAdjustment = ((reboundA * Q) + (maybeReboundB * Q)) / 2.0f;
+                auto maybeReboundB = 2.0f * g2 * R;
+                auto reboundQuadrupoleAdjustment =
+                        ((A * Q.traceless()) + (maybeReboundB * Q.traceless())) / 2.0f;
 
                 auto error = glm::distance(quadrupoleAdjustment, reboundQuadrupoleAdjustment) /
                              glm::length(quadrupoleAdjustment);
@@ -186,24 +189,6 @@ namespace NBody::Physics {
                 auto octupoleAdjustment = (D4 * activeSummary.moment().template tensor<3>()) / 6.0f;
                 dPhi -= octupoleAdjustment;
 
-                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
-                //                const auto &Q = activeSummary.moment().template tensor<2>();
-                //                const auto &O = activeSummary.moment().template tensor<3>();
-                //                auto reboundOctupoleAdjustment = (
-                //                        (
-                //                                O.traceless() *
-                //                                SymmetricTensor3<3>::cartesianPower(R)
-                //                        ) * Q * (105.0f / (6.0f * pow<7>(r))) +
-                //                        (
-                //                                O.traceless()
-                //                        ) * Q * (-15.0f / pow<5>(r))
-                //                );
-                //                auto error = glm::distance(octupoleAdjustment, reboundOctupoleAdjustment) /
-                //                             glm::length(octupoleAdjustment);
-                //                if (error > 0.0001)
-                //                    spdlog::error(error);
-                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             }
 
             return _g * dPhi;
