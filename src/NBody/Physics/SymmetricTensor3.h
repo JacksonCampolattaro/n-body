@@ -154,6 +154,14 @@ namespace NBody {
             }(std::make_index_sequence<NumValues>());
         }
 
+        [[nodiscard]] glm::vec3 diagonal() const {
+            return {
+                    flat()[0],
+                    flat()[SymmetricTensor3<Order - 1>::NumUniqueValues],
+                    flat()[SymmetricTensor3<Order>::NumUniqueValues - 1]
+            };
+        }
+
     public: // Transformations
 
         [[nodiscard]] SymmetricTensor3<Order> traceless() const {
@@ -237,6 +245,11 @@ namespace NBody {
             return product;
         }
 
+        friend glm::vec3 operator*(const SymmetricTensor3<Order - 1> &lhs,
+                                   const SymmetricTensor3<Order> &rhs) {
+            return operator*(rhs, lhs);
+        }
+
         friend float operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
             SymmetricTensor3<Order> elementWiseProduct{};
             for (int i = 0; i < NumUniqueValues; ++i)
@@ -279,7 +292,6 @@ namespace NBody {
         static SymmetricTensor3<Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
                                                     const SymmetricTensor3<Order - 1> &rhs) {
 
-            // todo: this is incorrect as an outer product, but maybe useful elsewhere?
             SymmetricTensor3<Order> matrix{};
             [&]<std::size_t... I>(std::index_sequence<I...>) {
                 ((
