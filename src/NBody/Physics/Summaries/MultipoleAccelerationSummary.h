@@ -44,6 +44,10 @@ namespace NBody {
 
         MultipoleAcceleration<Order> &acceleration() { return _acceleration; }
 
+        friend std::ostream &operator<<(std::ostream &out, const MultipoleAccelerationSummary<Order> &m) {
+            return out << m.acceleration();
+        }
+
     };
 }
 

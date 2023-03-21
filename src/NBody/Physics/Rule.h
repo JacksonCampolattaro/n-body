@@ -131,8 +131,7 @@ namespace NBody::Physics {
             // See: https://github.com/hannorein/rebound/blob/9fb9ee9aa20c547e1e6c67e7a58f07fd7176c181/src/gravity.c
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
-            float scaling = -_g * activeMass.mass() / pow<3>(r);
-            return scaling * R;
+            return -R * activeMass.mass() * _g / pow<3>(r);
         }
 
     public: // Node-particle interaction

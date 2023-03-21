@@ -250,9 +250,11 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
     Glib::init();
+    // Limit to 1 thread when debugging
+    //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    //json scenario = Generator::realisticGalaxy();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 5'000, 0);
+    json scenario = Generator::realisticGalaxy();
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
     ConstitutionalGrader grader{scenario};
 
     std::vector<float> thetaValues{};
@@ -270,13 +272,14 @@ int main(int argc, char *argv[]) {
     //realPerformance<BarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
-    realPerformance<ReverseBarnesHutSolver>(scenario, grader);
+    //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
     //realPerformance<FMMSolver>(scenario, grader);
-    //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
+    realPerformance<MVDRSolver>(scenario, grader);
+    realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 
-    //spdlog::info(accuracy<QuadrupoleBarnesHutSolver>(scenario, grader));
-    //spdlog::info(performance<QuadrupoleMVDRSolver>(scenario, 100, 0.5).count());
+    //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.5));
+    //spdlog::info(performance<ReverseBarnesHutSolver>(scenario, 1, 0.5).count());
 
     //std::vector<std::size_t> nValues{};
     //for (int i = 50'000; i < 1'000'000; i *= 1.5) nValues.emplace_back(i);

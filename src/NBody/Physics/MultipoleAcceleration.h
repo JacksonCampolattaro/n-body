@@ -6,6 +6,7 @@
 #define N_BODY_MULTIPOLEACCELERATION_H
 
 #include <NBody/Physics/Multipole.h>
+#include <glm/gtx/string_cast.hpp>
 
 namespace NBody::Physics {
 
@@ -38,6 +39,16 @@ namespace NBody::Physics {
             // The quadrupole stays the same, but the local acceleration is adjusted based on the offset
             // todo: generalize to higher orders
             return MultipoleAcceleration<Order>{at(offset), Multipole<Order>::template tensor<2>()};
+        }
+
+        MultipoleAcceleration<Order> &operator+=(const MultipoleAcceleration<Order> &rhs) {
+            _acceleration += rhs.vector();
+            Multipole<Order>::operator+=(rhs);
+            return *this;
+        };
+
+        friend std::ostream &operator<<(std::ostream &out, const MultipoleAcceleration<Order> &m) {
+            return out << glm::to_string((glm::vec3) m.vector());
         }
     };
 }
