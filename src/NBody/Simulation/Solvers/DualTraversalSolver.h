@@ -67,11 +67,7 @@ namespace NBody {
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.template view<const Position, Acceleration>();
-                // todo: find a better way of avoiding ambiguity
-                Descent::collapseAccelerations(
-                        _tree.root(), view,
-                        typename DualTree::Node::Summary::Acceleration{}
-                );
+                Descent::collapseAccelerations(_tree.root(), view);
             }
         }
 

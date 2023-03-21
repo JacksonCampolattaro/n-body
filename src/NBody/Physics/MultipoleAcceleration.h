@@ -24,16 +24,10 @@ namespace NBody::Physics {
                 _acceleration(acceleration), Multipole<Order>(std::forward_as_tuple(args...)) {}
 
         using Multipole<Order>::tensor;
-        using Multipole<Order>::operator==;
-        using Multipole<Order>::operator+=;
 
-        [[nodiscard]] Acceleration &acceleration() {
-            return _acceleration;
-        }
+        [[nodiscard]] Acceleration &vector() { return _acceleration; }
 
-        [[nodiscard]] const Acceleration &acceleration() const {
-            return _acceleration;
-        }
+        [[nodiscard]] const Acceleration &vector() const { return _acceleration; }
 
         [[nodiscard]] Acceleration at(const glm::vec3 &offset) const {
             // todo: generalize to higher orders
@@ -45,8 +39,6 @@ namespace NBody::Physics {
             // todo: generalize to higher orders
             return MultipoleAcceleration<Order>{at(offset), Multipole<Order>::template tensor<2>()};
         }
-
-        // todo
     };
 }
 

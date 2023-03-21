@@ -14,6 +14,10 @@ namespace NBody::Descent {
     using Physics::MultipoleAcceleration;
 
     template<typename PassiveNode>
+    requires requires(PassiveNode &p) {
+        // fixme: this is a terrible way of constraining the template
+        p.summary().acceleration().x;
+    }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
                                               entt::entity, entt::exclude_t<>,
@@ -40,6 +44,9 @@ namespace NBody::Descent {
     }
 
     template<typename PassiveNode>
+    requires requires(PassiveNode &p) {
+        p.summary().acceleration().vector();
+    }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
                                               entt::entity, entt::exclude_t<>,

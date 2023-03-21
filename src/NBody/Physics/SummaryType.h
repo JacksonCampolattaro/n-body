@@ -46,7 +46,6 @@ namespace NBody {
     template<typename T>
     concept PassiveSummaryType = SummaryType<T> && requires(T &t) {
         t.acceleration();
-        t.centerOfMass();
     };
 
     template<typename T>

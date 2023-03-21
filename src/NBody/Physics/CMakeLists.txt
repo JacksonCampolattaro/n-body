@@ -16,6 +16,7 @@ add_library(Physics
         SummaryType.h
         Summaries/CenterOfMassSummary.h
         Summaries/AccelerationSummary.h
+        Summaries/MultipoleAccelerationSummary.h
         Summaries/DualSummary.h
         Summaries/BoundingBoxSummary.h
         Rule.h Force.h Acceleration.h Summaries/QuadrupoleDualSummary.h Summaries/QuadrupoleAccelerationSummary.h SymmetricTensor3.h Multipole.h Summaries/MultipoleMassSummary.h MultipoleMoment.h MultipoleAcceleration.h)

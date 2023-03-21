@@ -29,7 +29,7 @@ namespace NBody::Descent {
         if (descentCriterion(passiveNode, activePosition)) {
 
             // If an approximation is allowed, compute particle-node interaction
-            passiveNode.summary().acceleration() += rule(activePosition, activeMass, passiveNode);
+            rule(activePosition, activeMass, passiveNode);
 
         } else {
 

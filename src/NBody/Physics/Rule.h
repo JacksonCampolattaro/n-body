@@ -16,8 +16,9 @@
 #include "Force.h"
 #include "Mass.h"
 #include "SummaryType.h"
-#include "NBody/Physics/Summaries/MultipoleMassSummary.h"
 
+#include <NBody/Physics/Summaries/MultipoleMassSummary.h>
+#include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/QuadrupoleAccelerationSummary.h>
@@ -37,7 +38,7 @@ namespace {
     }
 
     template<std::size_t Order>
-    inline SymmetricTensor3<Order> D(const glm::vec3 &R, float r) {
+    inline auto D(const glm::vec3 &R, float r) {
 
         float f1 = -1.0f / pow<2>(r);
         float f2 = 3.0f / pow<3>(r);
@@ -161,7 +162,7 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
-        template<std::size_t Order = 2>
+        template<std::size_t Order>
         Acceleration operator()(const Position &activePosition,
                                 const MultipoleMassSummary<Order> &activeSummary,
                                 const Position &passivePosition) const {
@@ -183,21 +184,43 @@ namespace NBody::Physics {
     public: // Particle-node interaction
 
         template<typename PassiveNode>
-        typename PassiveNode::Summary::Acceleration operator()(
+        requires PassiveSummaryType<typename PassiveNode::Summary>
+        void operator()(
                 const Position &activePosition,
                 const Mass &activeMass,
-                const PassiveNode &passiveNode
+                PassiveNode &passiveNode
         ) const {
             return operator()(activePosition, activeMass,
                               passiveNode.center(), passiveNode.summary());
         }
 
+        template<std::size_t Order>
+        void operator()(
+                const Position &activePosition,
+                const Mass &activeMass,
+                const Position &passivePosition,
+                MultipoleAccelerationSummary<Order> &passiveSummary
+        ) const {
+
+            if (activePosition == passivePosition) return;
+
+            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
+
+            glm::vec3 R = passivePosition - activePosition;
+            float r = std::sqrt(glm::length2(R) + _epsilon);
+
+            passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
+
+            if (Order >= 2)
+                passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
+        }
+
     public: // Node-node interaction
 
         template<typename ActiveNode, typename PassiveNode>
-        typename PassiveNode::Summary::Acceleration operator()(
+        void operator()(
                 const ActiveNode &activeNode,
-                const PassiveNode &passiveNode
+                PassiveNode &passiveNode
         ) const {
 
             // Self-interaction should never happen!
@@ -210,45 +233,18 @@ namespace NBody::Physics {
             else
                 activePosition = activeNode.center();
 
-            return operator()(activePosition, activeNode.summary().totalMass(),
-                              passiveNode.center(), passiveNode.summary());
+            operator()(activePosition, activeNode.summary().totalMass(),
+                       passiveNode.center(), passiveNode.summary());
+
         }
 
-        Acceleration operator()(
+        void operator()(
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
-                const AccelerationSummary &passiveSummary
+                AccelerationSummary &passiveSummary
         ) const {
-            return operator()(activePosition, activeMass, passivePosition);
-        }
-
-        MultipoleAcceleration<2> operator()(
-                const Position &activePosition,
-                const Mass &activeMass,
-                const Position &passivePosition,
-                const QuadrupoleAccelerationSummary &passiveSummary
-        ) const {
-
-            if (activePosition == passivePosition) return {};
-
-            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
-            // "fmm_node_node_interaction"
-            // todo: clean up and figure out what's going on with this math
-
-            glm::vec3 R = passivePosition - activePosition;
-            float r = std::sqrt(glm::length2(R) + _epsilon);
-
-            auto D1_ = -R / pow<3>(r);
-
-            // todo: is this the same as making it traceless?
-            auto D2_ = SymmetricTensor3<2>::cartesianPower(R) * (-3.0 / pow<5>(r)) -
-                       (SymmetricTensor3<2>::identity() / pow<3>(r));
-
-            return MultipoleAcceleration<2>{
-                    D1_ * activeMass.mass() * _g,
-                    SymmetricTensor3<2>{D2_ * -activeMass.mass() * _g}
-            };
+            passiveSummary.acceleration() += operator()(activePosition, activeMass, passivePosition);
         }
 
     public:
