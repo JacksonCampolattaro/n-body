@@ -49,6 +49,9 @@ namespace NBody {
         }
 
     };
+
+    using QuadrupoleAccelerationSummary = MultipoleAccelerationSummary<2>;
+
 }
 
 #endif //N_BODY_MULTIPOLEACCELERATIONSUMMARY_H

@@ -21,7 +21,7 @@
 #include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
-#include <NBody/Physics/Summaries/QuadrupoleAccelerationSummary.h>
+#include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
 
 namespace {
 

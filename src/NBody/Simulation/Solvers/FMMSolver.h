@@ -31,6 +31,27 @@ namespace NBody {
 
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
+
+//    class QuadrupoleFMMSolver : public DualTraversalSolver<
+//            MultipoleDualOctree<2>,
+//            Descent::SideLengthOverDistance
+//    > {
+//    public:
+//
+//        using DualTraversalSolver::DualTraversalSolver;
+//
+//        std::string id() override { return "fmm-4p"; };
+//
+//        std::string name() override { return "Fast Multipole Method (Quadrupole)"; };
+//
+//        int &maxDepth() { return tree().maxDepth(); }
+//
+//        const int &maxDepth() const { return tree().maxDepth(); }
+//
+//        int &maxLeafSize() { return tree().maxLeafSize(); }
+//
+//        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+//    };
 }
 
 
