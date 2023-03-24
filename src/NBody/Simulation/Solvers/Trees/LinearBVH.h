@@ -118,8 +118,12 @@ namespace NBody {
 
     };
 
+
+    template<std::size_t Order>
+    using MultipoleActiveLinearBVH = LinearBVH<MultipoleMassSummary<Order>>;
+
     using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
-    using QuadrupoleActiveLinearBVH = LinearBVH<MultipoleMassSummary<2>>;
+    using QuadrupoleActiveLinearBVH = MultipoleActiveLinearBVH<2>;
 
 }
 

@@ -273,8 +273,11 @@ int main(int argc, char *argv[]) {
     //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
-    realPerformance<FMMSolver>(scenario, grader);
+    //realPerformance<QuadrupoleReverseBarnesHutSolver>(scenario, grader);
+    realPerformance<LinearBVHSolver>(scenario, grader);
+    realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
+    realPerformance<OctupoleLinearBVHSolver>(scenario, grader);
+    //realPerformance<FMMSolver>(scenario, grader);
     //realPerformance<MVDRSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
 

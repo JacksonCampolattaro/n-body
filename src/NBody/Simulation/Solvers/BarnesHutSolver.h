@@ -15,6 +15,7 @@ namespace NBody {
     public:
 
         using ActiveTreeSolver::ActiveTreeSolver;
+        using ActiveTreeSolver::tree;
 
         std::string id() override { return "barnes-hut"; };
 
@@ -29,47 +30,32 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    class QuadrupoleBarnesHutSolver : public ActiveTreeSolver<
-            QuadrupoleActiveOctree,
+    template<std::size_t Order>
+    class MultipoleBarnesHutSolver : public ActiveTreeSolver<
+            MultipoleActiveOctree<Order>,
             Descent::SideLengthOverDistance
     > {
     public:
 
-        using ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleBarnesHutSolver<Order>::ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleBarnesHutSolver<Order>::ActiveTreeSolver::tree;
 
-        std::string id() override { return "barnes-hut-4p"; };
+        // todo: these should be free functions
+        std::string id() override { return fmt::format("barnes-hut-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return "Barnes-Hut (Quadrupole)"; };
-
-        int &maxDepth() { return tree().maxDepth(); }
-
-        const int &maxDepth() const { return tree().maxDepth(); }
-
-        int &maxLeafSize() { return tree().maxLeafSize(); }
-
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
-    };
-
-    class OctupoleBarnesHutSolver : public ActiveTreeSolver<
-            OctupoleActiveOctree ,
-            Descent::SideLengthOverDistance
-    > {
-    public:
-
-        using ActiveTreeSolver::ActiveTreeSolver;
-
-        std::string id() override { return "barnes-hut-8p"; };
-
-        std::string name() override { return "Barnes-Hut (Octupole)"; };
+        std::string name() override { return fmt::format("Barnes-Hut (Multipole-{})", Order); };
 
         int &maxDepth() { return tree().maxDepth(); }
 
-        const int &maxDepth() const { return tree().maxDepth(); }
+        [[nodiscard]] const int &maxDepth() const { return tree().maxDepth(); }
 
         int &maxLeafSize() { return tree().maxLeafSize(); }
 
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+        [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
+
+    using QuadrupoleBarnesHutSolver = MultipoleBarnesHutSolver<2>;
+    using OctupoleBarnesHutSolver = MultipoleBarnesHutSolver<3>;
 
 }
 

@@ -34,18 +34,20 @@ namespace NBody {
         const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
     };
 
-    class QuadrupoleMVDRSolver : public DualTreeSolver<
-            ActiveLinearBVH,
-            QuadrupolePassiveOctree,
+    template<std::size_t Order>
+    class MultipoleMVDRSolver : public DualTreeSolver<
+            MultipoleActiveLinearBVH<Order>,
+            PassiveOctree,
             Descent::DiagonalOverDistance
     > {
     public:
 
-        using DualTreeSolver::DualTreeSolver;
+        using MultipoleMVDRSolver<Order>::DualTreeSolver::DualTreeSolver;
+        using MultipoleMVDRSolver<Order>::DualTreeSolver::passiveTree;
 
-        std::string id() override { return "mvdr-4p"; };
+        std::string id() override { return fmt::format("mvdr-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return "Mark van de Ruit (Quadrupole)"; };
+        std::string name() override { return fmt::format("Mark van de Ruit (Multipole-{})", Order); };
 
         int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
 
@@ -55,6 +57,9 @@ namespace NBody {
 
         const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
     };
+
+    using QuadrupoleMVDRSolver = MultipoleMVDRSolver<2>;
+
 }
 
 #endif //N_BODY_MVDRSOLVER_H

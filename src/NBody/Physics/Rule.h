@@ -17,6 +17,7 @@
 #include "Mass.h"
 #include "SummaryType.h"
 
+#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/MultipoleMassSummary.h>
 #include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
@@ -151,9 +152,8 @@ namespace NBody::Physics {
                               passivePosition);
         }
 
-        template<ActiveSummaryType ActiveSummary>
         Acceleration operator()(const Position &activePosition,
-                                const ActiveSummary &activeSummary,
+                                const CenterOfMassSummary &activeSummary,
                                 const Position &passivePosition) const {
 
             // If the active node isn't multipolar, we can just treat it like a single particle
