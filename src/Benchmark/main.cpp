@@ -253,8 +253,8 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
+    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
 
     //MeanGrader grader{scenario};
     ConstitutionalGrader grader{scenario};

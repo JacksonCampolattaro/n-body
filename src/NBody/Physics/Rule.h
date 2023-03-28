@@ -202,12 +202,12 @@ namespace NBody::Physics {
             passiveSummary.acceleration() += operator()(activePosition, activeMass, passivePosition);
         }
 
-        template<std::size_t Order>
+        template<std::size_t PassiveOrder>
         void operator()(
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary<Order> &passiveSummary
+                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
         ) const {
 
             if (activePosition == passivePosition) return;
@@ -218,10 +218,12 @@ namespace NBody::Physics {
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
             passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
-            if constexpr (Order >= 2)
+            if constexpr (PassiveOrder >= 2)
                 passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
-            if constexpr (Order >= 3)
+            if constexpr (PassiveOrder >= 3)
                 passiveSummary.acceleration().template tensor<3>() -= D<3>(R, r) * activeMass.mass();
+            if constexpr (PassiveOrder >= 4)
+                passiveSummary.acceleration().template tensor<4>() -= D<4>(R, r) * activeMass.mass();
         }
 
     public: // Node-node interaction
@@ -295,7 +297,7 @@ namespace NBody::Physics {
             if constexpr (PassiveOrder >= 3) {
                 passiveSummary.acceleration().vector() +=
                         (D<3>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
-                passiveSummary.acceleration().template tensor<3>() -= D<3>(R, r) * activeMass.mass();
+                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
             }
             if constexpr (PassiveOrder >= 4) {
                 passiveSummary.acceleration().vector() +=

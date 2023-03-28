@@ -37,9 +37,9 @@ namespace NBody::Physics {
             if constexpr (Order >= 2)
                 a -= (Multipole<Order>::template tensor<2>() * offset);
             if constexpr (Order >= 3) // todo: is this equivalent to repeated contraction with the vector?
-                a -= (Multipole<Order>::template tensor<3>() * SymmetricTensor3<2>::cartesianPower(offset)) / 2.0f;
-            if constexpr (Order >= 4) // todo: why does this sign need to be flipped?
-                a -= (Multipole<Order>::template tensor<4>() * SymmetricTensor3<3>::cartesianPower(offset)) / 6.0f;
+                a += (Multipole<Order>::template tensor<3>() * SymmetricTensor3<2>::cartesianPower(offset)) / 2.0f;
+            if constexpr (Order >= 4)
+                a += (Multipole<Order>::template tensor<4>() * SymmetricTensor3<3>::cartesianPower(offset)) / 6.0f;
 
             return a;
         }
