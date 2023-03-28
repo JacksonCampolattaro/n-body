@@ -32,13 +32,23 @@ namespace NBody::Physics {
 
         [[nodiscard]] Acceleration at(const glm::vec3 &offset) const {
             // todo: generalize to higher orders
-            return _acceleration - (Multipole<Order>::template tensor<2>() * offset);
+            auto a = _acceleration;
+
+            if constexpr (Order >= 2)
+                a -= (Multipole<Order>::template tensor<2>() * offset);
+            if constexpr (Order >= 3) // todo: is this equivalent to repeated contraction with the vector?
+                a -= (Multipole<Order>::template tensor<3>() * SymmetricTensor3<2>::cartesianPower(offset)) / 2.0f;
+            if constexpr (Order >= 4) // todo: why does this sign need to be flipped?
+                a -= (Multipole<Order>::template tensor<4>() * SymmetricTensor3<3>::cartesianPower(offset)) / 6.0f;
+
+            return a;
         }
 
         MultipoleAcceleration<Order> translated(const glm::vec3 &offset) const {
             // The quadrupole stays the same, but the local acceleration is adjusted based on the offset
-            // todo: generalize to higher orders
-            return MultipoleAcceleration<Order>{at(offset), Multipole<Order>::template tensor<2>()};
+            MultipoleAcceleration<Order> t{*this};
+            t._acceleration = at(offset);
+            return t;
         }
 
         MultipoleAcceleration<Order> &operator+=(const MultipoleAcceleration<Order> &rhs) {

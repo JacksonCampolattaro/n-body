@@ -232,6 +232,37 @@ namespace NBody {
         }
 
 
+        friend auto operator*(const SymmetricTensor3<Order> &lhs,
+                              const glm::vec3 &rhs) {
+
+            if constexpr (Order == 2) {
+                using
+                enum Dimension;
+                return glm::vec3{
+                        (lhs.get<X, X>() * rhs.x) + (lhs.get<X, Y>() * rhs.y) + (lhs.get<X, Z>() * rhs.z),
+                        (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
+                        (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
+                };
+
+            } else {
+
+                SymmetricTensor3<Order - 1> product{};
+                [&]<std::size_t... I>(std::index_sequence<I...>) {
+                    ((
+                            product.template get<tail<lexicographicalIndex<I>()>()>() +=
+                                    lhs.get<(lexicographicalIndex<I>())>() *
+                                    rhs[(std::size_t) lexicographicalIndex<I>()[0]]
+                    ), ...);
+                }(std::make_index_sequence<NumValues>());
+                return product;
+            }
+        }
+
+        friend auto operator*(const glm::vec3 &lhs,
+                              const SymmetricTensor3<Order> &rhs) {
+            return operator*(rhs, lhs);
+        }
+
         friend glm::vec3 operator*(const SymmetricTensor3<Order> &lhs,
                                    const SymmetricTensor3<Order - 1> &rhs) {
             glm::vec3 product{};
@@ -248,6 +279,23 @@ namespace NBody {
         friend glm::vec3 operator*(const SymmetricTensor3<Order - 1> &lhs,
                                    const SymmetricTensor3<Order> &rhs) {
             return operator*(rhs, lhs);
+        }
+
+
+        template<std::size_t OtherOrder>
+        friend SymmetricTensor3<Order - OtherOrder> operator*(const SymmetricTensor3<Order> &lhs,
+                                                              const SymmetricTensor3<OtherOrder> &rhs) {
+            // todo: is this correct?
+            constexpr std::size_t ProductOrder = Order - OtherOrder;
+            SymmetricTensor3<ProductOrder> product{};
+            [&]<std::size_t... I>(std::index_sequence<I...>) {
+                ((
+                        product.template get<(head<lexicographicalIndex<I>(), ProductOrder>())>() +=
+                                lhs.template get<(lexicographicalIndex<I>())>() *
+                                rhs.template get<(tail<lexicographicalIndex<I>(), OtherOrder>())>()
+                ), ...);
+            }(std::make_index_sequence<NumValues>());
+            return product;
         }
 
         friend float operator*(const SymmetricTensor3<Order> &lhs, const SymmetricTensor3<Order> &rhs) {
@@ -288,6 +336,12 @@ namespace NBody {
             return outerProduct(rhs, lhs);
         }
 
+
+        friend glm::vec3 fullyContract(const SymmetricTensor3<Order> &tensor,
+                                       const glm::vec3 &vector) {
+            if constexpr (Order == 2) return tensor * vector;
+            else return fullyContract(tensor * vector, vector);
+        }
 
         static SymmetricTensor3<Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
                                                     const SymmetricTensor3<Order - 1> &rhs) {
@@ -489,21 +543,21 @@ namespace NBody {
                                                         lhs.z * rhs.z}};
     }
 
-    static glm::vec3 operator*(const SymmetricTensor3<2> &lhs, const glm::vec3 &rhs) {
-
-        using
-        enum Dimension;
-        return {
-                (lhs.get<X, X>() * rhs.x) + (lhs.get<X, Y>() * rhs.y) + (lhs.get<X, Z>() * rhs.z),
-                (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
-                (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
-        };
-    }
-
-    static glm::vec3 operator*(const glm::vec3 &lhs, const SymmetricTensor3<2> &rhs) {
-        // todo: is tensor contraction really commutative like this?
-        return operator*(rhs, lhs);
-    }
+    //    static glm::vec3 operator*(const SymmetricTensor3<2> &lhs, const glm::vec3 &rhs) {
+    //
+    //        using
+    //        enum Dimension;
+    //        return {
+    //                (lhs.get<X, X>() * rhs.x) + (lhs.get<X, Y>() * rhs.y) + (lhs.get<X, Z>() * rhs.z),
+    //                (lhs.get<Y, X>() * rhs.x) + (lhs.get<Y, Y>() * rhs.y) + (lhs.get<Y, Z>() * rhs.z),
+    //                (lhs.get<Z, X>() * rhs.x) + (lhs.get<Z, Y>() * rhs.y) + (lhs.get<Z, Z>() * rhs.z)
+    //        };
+    //    }
+    //
+    //    static glm::vec3 operator*(const glm::vec3 &lhs, const SymmetricTensor3<2> &rhs) {
+    //        // todo: is tensor contraction really commutative like this?
+    //        return operator*(rhs, lhs);
+    //    }
 
 }
 

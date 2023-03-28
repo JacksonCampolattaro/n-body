@@ -193,6 +193,15 @@ namespace NBody::Physics {
                               passiveNode.center(), passiveNode.summary());
         }
 
+        void operator()(
+                const Position &activePosition,
+                const Mass &activeMass,
+                const Position &passivePosition,
+                AccelerationSummary &passiveSummary
+        ) const {
+            passiveSummary.acceleration() += operator()(activePosition, activeMass, passivePosition);
+        }
+
         template<std::size_t Order>
         void operator()(
                 const Position &activePosition,
@@ -209,9 +218,10 @@ namespace NBody::Physics {
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
             passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
-
-            if (Order >= 2)
+            if constexpr (Order >= 2)
                 passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
+            if constexpr (Order >= 3)
+                passiveSummary.acceleration().template tensor<3>() -= D<3>(R, r) * activeMass.mass();
         }
 
     public: // Node-node interaction
@@ -232,18 +242,79 @@ namespace NBody::Physics {
             else
                 activePosition = activeNode.center();
 
-            operator()(activePosition, activeNode.summary().totalMass(),
+            operator()(activePosition, activeNode.summary(),
                        passiveNode.center(), passiveNode.summary());
 
         }
 
         void operator()(
                 const Position &activePosition,
-                const Mass &activeMass,
+                const CenterOfMassSummary &activeSummary,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {
-            passiveSummary.acceleration() += operator()(activePosition, activeMass, passivePosition);
+            passiveSummary.acceleration() += operator()(activePosition, activeSummary.totalMass(),
+                                                        passivePosition);
+        }
+
+        template<std::size_t Order>
+        void operator()(
+                const Position &activePosition,
+                const CenterOfMassSummary &activeSummary,
+                const Position &passivePosition,
+                MultipoleAccelerationSummary<Order> &passiveSummary
+        ) const {
+            operator()(activePosition, activeSummary.totalMass(),
+                       passivePosition, passiveSummary);
+        }
+
+
+        template<std::size_t ActiveOrder, std::size_t PassiveOrder>
+        void operator()(
+                const Position &activePosition,
+                const MultipoleMassSummary<ActiveOrder> &activeSummary,
+                const Position &passivePosition,
+                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
+        ) const {
+
+            // todo: temporary constraint, for simplicity & consistency with GADGET-4
+            static_assert(ActiveOrder == PassiveOrder - 1);
+
+            if (activePosition == passivePosition) return;
+
+            // See: https://github.com/weiguangcui/Gadget4/blob/7d3b425e3e0aa7b6b0e0dbefa1d4120c55980a8f/src/fmm/fmm.cc
+
+            glm::vec3 R = passivePosition - activePosition;
+            float r = std::sqrt(glm::length2(R) + _epsilon);
+            const auto &activeMass = activeSummary.totalMass();
+
+            passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
+            if constexpr (PassiveOrder >= 2) {
+                passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
+            }
+            if constexpr (PassiveOrder >= 3) {
+                passiveSummary.acceleration().vector() +=
+                        (D<3>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
+                passiveSummary.acceleration().template tensor<3>() -= D<3>(R, r) * activeMass.mass();
+            }
+            if constexpr (PassiveOrder >= 4) {
+                passiveSummary.acceleration().vector() +=
+                        (D<4>(R, r) * activeSummary.moment().template tensor<3>()) / 6.0f;
+                passiveSummary.acceleration().template tensor<2>() -=
+                        (D<4>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
+                passiveSummary.acceleration().template tensor<4>() -= D<4>(R, r) * activeMass.mass();
+            }
+        }
+
+
+        template<std::size_t ActiveOrder>
+        void operator()(
+                const Position &activePosition,
+                const MultipoleMassSummary<ActiveOrder> &activeSummary,
+                const Position &passivePosition,
+                AccelerationSummary &passiveSummary
+        ) const {
+            passiveSummary.acceleration() += operator()(activePosition, activeSummary, passivePosition);
         }
 
     public:

@@ -43,7 +43,7 @@ namespace NBody::Descent {
         }
     }
 
-    template<typename PassiveNode>
+    template<typename PassiveNode, std::size_t Order>
     requires requires(PassiveNode &p) {
         p.summary().acceleration().vector();
     }
@@ -53,7 +53,7 @@ namespace NBody::Descent {
                                               const Position,
                                               Acceleration
                                       > &context,
-                                      MultipoleAcceleration<2> netAcceleration = {}) {
+                                      MultipoleAcceleration<Order> netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
         netAcceleration += node.summary().acceleration();
@@ -85,6 +85,21 @@ namespace NBody::Descent {
             }
 
         }
+    }
+
+    template<typename PassiveNode>
+    requires requires(PassiveNode &p) {
+        p.summary().acceleration().vector();
+    }
+    inline void collapseAccelerations(PassiveNode &node,
+                                      const entt::basic_view<
+                                              entt::entity, entt::exclude_t<>,
+                                              const Position,
+                                              Acceleration
+                                      > &context) {
+
+        using AccelerationType = typename std::remove_reference<decltype(node.summary().acceleration())>::type;
+        collapseAccelerations(node, context, AccelerationType{});
     }
 }
 

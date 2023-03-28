@@ -34,7 +34,9 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    using FMMSolver = MultipoleFMMSolver<2>;
+    using FMMSolver = MultipoleFMMSolver<1>;
+    using QuadrupoleFMMSolver = MultipoleFMMSolver<2>;
+    using OctupoleFMMSolver = MultipoleFMMSolver<3>;
 }
 
 
