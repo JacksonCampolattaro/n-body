@@ -53,6 +53,7 @@ namespace NBody {
 
     using QuadrupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<2>;
     using OctupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<3>;
+    using HexadecapoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<4>;
 
 }
 

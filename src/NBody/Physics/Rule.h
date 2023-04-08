@@ -59,7 +59,8 @@ namespace {
 
         } else if constexpr (Order == 2) {
 
-            return (g2 * SymmetricTensor3<2>::cartesianPower(R)) + (g1 * SymmetricTensor3<2>::identity());
+            return (g1 * SymmetricTensor3<2>::identity()) +
+                   (g2 * SymmetricTensor3<2>::cartesianPower(R));
 
         } else if constexpr (Order == 3) {
 
@@ -176,6 +177,8 @@ namespace NBody::Physics {
                 dPhi += D<3>(R, r) * activeSummary.moment().template tensor<2>() / 2.0f;
             if constexpr (Order >= 3)
                 dPhi -= D<4>(R, r) * activeSummary.moment().template tensor<3>() / 6.0f;
+            if constexpr (Order >= 5)
+                dPhi -= D<5>(R, r) * activeSummary.moment().template tensor<4>() / 24.0f;
 
             return _g * dPhi;
         }
@@ -219,10 +222,10 @@ namespace NBody::Physics {
 
             passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
             if constexpr (PassiveOrder >= 2)
-                passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
+                passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass();
             if constexpr (PassiveOrder >= 3)
-                passiveSummary.acceleration().template tensor<3>() -= D<3>(R, r) * activeMass.mass();
-            if constexpr (PassiveOrder >= 4)
+                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
+            if constexpr (PassiveOrder >= 4) // todo: why is this sign flipped only?
                 passiveSummary.acceleration().template tensor<4>() -= D<4>(R, r) * activeMass.mass();
         }
 
@@ -292,19 +295,19 @@ namespace NBody::Physics {
 
             passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
             if constexpr (PassiveOrder >= 2) {
-                passiveSummary.acceleration().template tensor<2>() -= D<2>(R, r) * activeMass.mass();
+                passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass();
             }
             if constexpr (PassiveOrder >= 3) {
+                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
                 passiveSummary.acceleration().vector() +=
                         (D<3>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
-                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
             }
             if constexpr (PassiveOrder >= 4) {
-                passiveSummary.acceleration().vector() +=
-                        (D<4>(R, r) * activeSummary.moment().template tensor<3>()) / 6.0f;
+                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass();
                 passiveSummary.acceleration().template tensor<2>() -=
                         (D<4>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
-                passiveSummary.acceleration().template tensor<4>() -= D<4>(R, r) * activeMass.mass();
+                passiveSummary.acceleration().vector() +=
+                        (D<4>(R, r) * activeSummary.moment().template tensor<3>()) / 6.0f;
             }
         }
 

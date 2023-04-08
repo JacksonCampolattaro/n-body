@@ -249,9 +249,9 @@ namespace NBody {
                 SymmetricTensor3<Order - 1> product{};
                 [&]<std::size_t... I>(std::index_sequence<I...>) {
                     ((
-                            product.template get<tail<lexicographicalIndex<I>()>()>() +=
+                            product.template get<head<lexicographicalIndex<I>()>()>() +=
                                     lhs.get<(lexicographicalIndex<I>())>() *
-                                    rhs[(std::size_t) lexicographicalIndex<I>()[0]]
+                                    rhs[(std::size_t) lexicographicalIndex<I>()[Order - 1]]
                     ), ...);
                 }(std::make_index_sequence<NumValues>());
                 return product;
@@ -340,7 +340,7 @@ namespace NBody {
         friend glm::vec3 fullyContract(const SymmetricTensor3<Order> &tensor,
                                        const glm::vec3 &vector) {
             if constexpr (Order == 2) return tensor * vector;
-            else return fullyContract(tensor * vector, vector);
+            else return fullyContract((tensor * vector), vector);
         }
 
         static SymmetricTensor3<Order> outerProduct(const SymmetricTensor3<Order - 1> &lhs,
