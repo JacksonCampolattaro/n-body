@@ -59,8 +59,7 @@ namespace {
 
         } else if constexpr (Order == 2) {
 
-            return (g1 * SymmetricTensor3<2>::identity()) +
-                   (g2 * SymmetricTensor3<2>::cartesianPower(R));
+            return (g2 * SymmetricTensor3<2>::cartesianPower(R)) + (g1 * SymmetricTensor3<2>::identity());
 
         } else if constexpr (Order == 3) {
 
@@ -226,7 +225,7 @@ namespace NBody::Physics {
             if constexpr (PassiveOrder >= 3)
                 passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
             if constexpr (PassiveOrder >= 4) // todo: why is this sign flipped only?
-                passiveSummary.acceleration().template tensor<4>() -= D<4>(R, r) * activeMass.mass();
+                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass();
         }
 
     public: // Node-node interaction

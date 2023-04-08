@@ -255,13 +255,14 @@ int main(int argc, char *argv[]) {
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
     //json scenario = Generator::realisticGalaxy();
-    json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10, 0);
+    //json scenario = Generator::trio();
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
 
     //MeanGrader grader{scenario};
     ConstitutionalGrader grader{scenario};
 
-    plotExactField(scenario);
+    //plotExactField(scenario);
+    plotApproximateField(scenario);
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);

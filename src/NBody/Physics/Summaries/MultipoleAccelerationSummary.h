@@ -51,6 +51,8 @@ namespace NBody {
     };
 
     using QuadrupoleAccelerationSummary = MultipoleAccelerationSummary<2>;
+    using OctupoleAccelerationSummary = MultipoleAccelerationSummary<3>;
+    using HexadecupoleAccelerationSummary = MultipoleAccelerationSummary<3>;
 
 }
 
