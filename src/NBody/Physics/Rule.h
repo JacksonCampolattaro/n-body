@@ -89,6 +89,7 @@ namespace {
 
             SymmetricTensor3<4> C{};
             SymmetricTensor3<2> R2 = SymmetricTensor3<2>::cartesianPower(R);
+            C += 6.0f * SymmetricTensor3<4>::diagonal(R2.diagonal());
             C.get<X, X, X, Y>() = 3 * R2.get<X, Y>();
             C.get<X, Y, Y, Y>() = 3 * R2.get<X, Y>();
             C.get<X, X, X, Z>() = 3 * R2.get<X, Z>();
@@ -101,8 +102,20 @@ namespace {
             C.get<X, X, Y, Z>() = R2.get<Y, Z>();
             C.get<X, Y, Y, Z>() = R2.get<X, Z>();
             C.get<X, Y, Z, Z>() = R2.get<X, Y>();
-            C += 6.0f * SymmetricTensor3<4>::diagonal(R2.diagonal());
             C *= g3;
+
+            return A + B + C;
+
+        } else if constexpr (Order == 5) {
+
+            auto A = g4 * SymmetricTensor3<5>::cartesianPower(R);
+
+            SymmetricTensor3<5> B{};
+
+            SymmetricTensor3<5> C{};
+            SymmetricTensor3<2> R2 = SymmetricTensor3<2>::cartesianPower(R);
+
+            // todo
 
             return A + B + C;
         }
@@ -224,8 +237,10 @@ namespace NBody::Physics {
                 passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass();
             if constexpr (PassiveOrder >= 3)
                 passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass();
-            if constexpr (PassiveOrder >= 4) // todo: why is this sign flipped only?
+            if constexpr (PassiveOrder >= 4)
                 passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass();
+            if constexpr (PassiveOrder >= 5)
+                passiveSummary.acceleration().template tensor<5>() += D<5>(R, r) * activeMass.mass();
         }
 
     public: // Node-node interaction

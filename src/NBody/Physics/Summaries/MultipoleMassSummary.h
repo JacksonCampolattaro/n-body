@@ -94,6 +94,10 @@ namespace NBody {
             return out << "()";
         }
     };
+
+    using QuadrupoleMassSummary = MultipoleMassSummary<2>;
+    using OctupoleMassSummary = MultipoleMassSummary<3>;
+    using HexadecupoleMassSummary = MultipoleMassSummary<4>;
 }
 
 #endif //N_BODY_MULTIPOLEMASSSUMMARY_H

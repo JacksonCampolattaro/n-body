@@ -31,17 +31,19 @@ namespace NBody::Physics {
         [[nodiscard]] const Acceleration &vector() const { return _acceleration; }
 
         [[nodiscard]] Acceleration at(const glm::vec3 &offset) const {
-            // todo: generalize to higher orders
             auto a = _acceleration;
 
+            // todo: generalize to higher orders
             if constexpr (Order >= 2)
                 a += (Multipole<Order>::template tensor<2>() * offset);
-            if constexpr (Order >= 3) // todo: is this equivalent to repeated contraction with the vector?
+            if constexpr (Order >= 3)
                 a += fullyContract(Multipole<Order>::template tensor<3>(), offset) / 2.0f;
             if constexpr (Order >= 4)
                 a += fullyContract(Multipole<Order>::template tensor<4>(), offset) / 6.0f;
             if constexpr (Order >= 5)
                 a += fullyContract(Multipole<Order>::template tensor<5>(), offset) / 24.0f;
+            if constexpr (Order >= 6)
+                a += fullyContract(Multipole<Order>::template tensor<6>(), offset) / 120.0f;
 
             return a;
         }
