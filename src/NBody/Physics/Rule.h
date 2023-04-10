@@ -108,14 +108,70 @@ namespace {
 
         } else if constexpr (Order == 5) {
 
-            auto A = g4 * SymmetricTensor3<5>::cartesianPower(R);
+            SymmetricTensor3<2> R2 = SymmetricTensor3<2>::cartesianPower(R);
+            SymmetricTensor3<3> R3 = SymmetricTensor3<3>::cartesianPower(R);
+
+            auto A = g5 * SymmetricTensor3<5>::cartesianPower(R);
+
+            // ~~~
 
             SymmetricTensor3<5> B{};
+            B.get<X, X, X, X, X>() += 15 * g3 * R.x;
+            B.get<Y, Y, Y, Y, Y>() += 15 * g3 * R.y;
+            B.get<Z, Z, Z, Z, Z>() += 15 * g3 * R.z;
+
+            B.get<X, X, X, X, Y>() += 3 * g3 * R.y;
+            B.get<X, X, X, X, Z>() += 3 * g3 * R.z;
+            B.get<X, Y, Y, Y, Y>() += 3 * g3 * R.x;
+            B.get<X, Z, Z, Z, Z>() += 3 * g3 * R.x;
+            B.get<Y, Y, Y, Y, Z>() += 3 * g3 * R.z;
+            B.get<Y, Z, Z, Z, Z>() += 3 * g3 * R.y;
+
+            B.get<X, X, X, Y, Y>() += 3 * g3 * R.x;
+            B.get<X, X, X, Z, Z>() += 3 * g3 * R.x;
+            B.get<X, X, Y, Y, Y>() += 3 * g3 * R.y;
+            B.get<X, X, Z, Z, Z>() += 3 * g3 * R.z;
+            B.get<Y, Y, Y, Z, Z>() += 3 * g3 * R.y;
+            B.get<Y, Y, Z, Z, Z>() += 3 * g3 * R.z;
+
+            B.get<X, X, Y, Z, Z>() += g3 * R.y;
+            B.get<X, X, Y, Y, Z>() += g3 * R.z;
+            B.get<X, Y, Y, Z, Z>() += g3 * R.x;
+
+            B.get<X, X, X, Y, Z>() += 0;
+            B.get<X, Y, Y, Y, Z>() += 0;
+            B.get<X, Y, Z, Z, Z>() += 0;
+
+            // ~~~
 
             SymmetricTensor3<5> C{};
-            SymmetricTensor3<2> R2 = SymmetricTensor3<2>::cartesianPower(R);
+            C.get<X, X, X, X, X>() += 10 * g4 * R3.get<X, X, X>();
+            C.get<Y, Y, Y, Y, Y>() += 10 * g4 * R3.get<Y, Y, Y>();
+            C.get<Z, Z, Z, Z, Z>() += 10 * g4 * R3.get<Z, Z, Z>();
 
-            // todo
+            C.get<X, X, X, X, Y>() += 6 * g4 * R3.get<X, X, Y>();
+            C.get<X, X, X, X, Z>() += 6 * g4 * R3.get<X, X, Z>();
+            C.get<X, Y, Y, Y, Y>() += 6 * g4 * R3.get<Y, Y, X>();
+            C.get<X, Z, Z, Z, Z>() += 6 * g4 * R3.get<Z, Z, X>();
+            C.get<Y, Y, Y, Y, Z>() += 6 * g4 * R3.get<Y, Y, Z>();
+            C.get<Y, Z, Z, Z, Z>() += 6 * g4 * R3.get<Z, Z, Y>();
+
+            C.get<X, X, X, Y, Y>() += g4 * R3.get<X, X, X>() + 3 * g4 * R3.get<X, Y, Y>();
+            C.get<X, X, X, Z, Z>() += g4 * R3.get<X, X, X>() + 3 * g4 * R3.get<X, Z, Z>();
+            C.get<X, X, Y, Y, Y>() += g4 * R3.get<Y, Y, Y>() + 3 * g4 * R3.get<Y, X, X>();
+            C.get<X, X, Z, Z, Z>() += g4 * R3.get<Z, Z, Z>() + 3 * g4 * R3.get<Z, X, X>();
+            C.get<Y, Y, Y, Z, Z>() += g4 * R3.get<Y, Y, Y>() + 3 * g4 * R3.get<Y, Z, Z>();
+            C.get<Y, Y, Z, Z, Z>() += g4 * R3.get<Z, Z, Z>() + 3 * g4 * R3.get<Z, Y, Y>();
+
+            C.get<X, X, Y, Z, Z>() += g4 * R3.get<Y, Z, Z>() + g4 * R3.get<X, X, Y>();
+            C.get<X, X, Y, Y, Z>() += g4 * R3.get<Y, Y, Z>() + g4 * R3.get<X, X, Z>();
+            C.get<X, Y, Y, Z, Z>() += g4 * R3.get<X, Z, Z>() + g4 * R3.get<X, Y, Y>();
+
+            C.get<X, X, X, Y, Z>() += 3 * g4 * R3.get<X, Y, Z>();
+            C.get<X, Y, Y, Y, Z>() += 3 * g4 * R3.get<X, Y, Z>();
+            C.get<X, Y, Z, Z, Z>() += 3 * g4 * R3.get<X, Y, Z>();
+
+            // todo: is this right?
 
             return A + B + C;
         }
@@ -189,8 +245,10 @@ namespace NBody::Physics {
                 dPhi += D<3>(R, r) * activeSummary.moment().template tensor<2>() / 2.0f;
             if constexpr (Order >= 3)
                 dPhi -= D<4>(R, r) * activeSummary.moment().template tensor<3>() / 6.0f;
+            if constexpr (Order >= 4)
+                dPhi += D<5>(R, r) * activeSummary.moment().template tensor<4>() / 24.0f; // todo: is this right?
             if constexpr (Order >= 5)
-                dPhi -= D<5>(R, r) * activeSummary.moment().template tensor<4>() / 24.0f;
+                dPhi -= D<6>(R, r) * activeSummary.moment().template tensor<5>() / 120.0f;
 
             return _g * dPhi;
         }
