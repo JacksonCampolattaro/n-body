@@ -36,7 +36,7 @@ void plotFunctionInRange(
     });
     auto saturations = matplot::transform(X, Y, [&](double x, double y) {
         auto v = function(x, y);
-        return std::cbrt(glm::length(v) / maxMagnitude);
+        return (glm::length(v) / maxMagnitude);
     });
 
     std::tuple<matplot::vector_2d, matplot::vector_2d, matplot::vector_2d> colorsRGB;
@@ -215,17 +215,17 @@ void plotExactField(json scenario, Rule rule = Rule{1.0f},
 
     plotFunctionWithZoom(fieldFunction, xRange, yRange, xZoomRange, yZoomRange);
 
-//    auto f = matplot::figure();
-//    auto ax = matplot::axes();
-//    plotFunctionInRange(ax, fieldFunction, xRange, yRange, 0.5f);
-//    f->show();
+    //    auto f = matplot::figure();
+    //    auto ax = matplot::axes();
+    //    plotFunctionInRange(ax, fieldFunction, xRange, yRange, 0.5f);
+    //    f->show();
 
 }
 
 void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
                              std::pair<float, float> xRange = {1.0f, 1.5f},
                              std::pair<float, float> yRange = {0.0, 0.5f},
-                             double resolution = 0.01f
+                             double resolution = 0.01
 ) {
 
 
@@ -241,13 +241,11 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
     QuadrupoleAccelerationSummary netQuadrupoleAcceleration{};
     OctupoleAccelerationSummary netOctupoleAcceleration{};
     HexadecupoleAccelerationSummary netHexadecupoleAcceleration{};
-    TriacontadyupoleAccelerationSummary netTriacontadyupoleAcceleration{};
     actorsView.each([&](const Position &activePosition, const Mass &activeMass) {
         netApproximateAcceleration += (glm::vec3) rule(activePosition, activeMass, samplePosition);
         rule(activePosition, activeMass, samplePosition, netQuadrupoleAcceleration);
         rule(activePosition, activeMass, samplePosition, netOctupoleAcceleration);
         rule(activePosition, activeMass, samplePosition, netHexadecupoleAcceleration);
-        rule(activePosition, activeMass, samplePosition, netTriacontadyupoleAcceleration);
     });
 
     auto approximateFunction = [&](double x, double y) {
@@ -260,9 +258,6 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
         return netOctupoleAcceleration.acceleration().at({x - samplePosition.x, y - samplePosition.y, 0.0f});
     };
     auto hexadecupoleApproximateFunction = [&](double x, double y) {
-        return netHexadecupoleAcceleration.acceleration().at({x - samplePosition.x, y - samplePosition.y, 0.0f});
-    };
-    auto triacontadyupoleApproximateFunction = [&](double x, double y) {
         return netHexadecupoleAcceleration.acceleration().at({x - samplePosition.x, y - samplePosition.y, 0.0f});
     };
 
@@ -278,9 +273,6 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
     auto hexadecupoleComponentFunction = [&](double x, double y) {
         return hexadecupoleApproximateFunction(x, y) - octupoleApproximateFunction(x, y);
     };
-    auto triacontadyupoleComponentFunction = [&](double x, double y) {
-        return triacontadyupoleApproximateFunction(x, y) - hexadecupoleApproximateFunction(x, y);
-    };
 
     auto f = matplot::figure();
     f->size(550, 825);
@@ -290,39 +282,33 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
             {matplot::nexttile(), matplot::nexttile()},
             {matplot::nexttile(), matplot::nexttile()},
             {matplot::nexttile(), matplot::nexttile()},
-            //{matplot::nexttile(), matplot::nexttile()}
     };
 
-    axes[0][0]->title("Uniform Component Magnitude");
-    plotFieldMagnitudeInRange(axes[0][0], uniformComponentFunction, xRange, yRange, resolution);
+    axes[0][0]->title("Uniform Component");
+    plotFunctionInRange(axes[0][0], uniformComponentFunction, xRange, yRange, resolution);
     axes[0][1]->title("Approximate Field Error");
     plotFieldErrorInRange(axes[0][1], approximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[1][0]->title("Quadrupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[1][0], quadrupoleComponentFunction, xRange, yRange, resolution);
+    axes[1][0]->title("Quadrupole Component");
+    plotFunctionInRange(axes[1][0], quadrupoleComponentFunction, xRange, yRange, resolution);
     axes[1][1]->title("Quadrupole Approximate Field Error");
     plotFieldErrorInRange(axes[1][1], quadrupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[2][0]->title("Octupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[2][0], octupoleComponentFunction, xRange, yRange, resolution);
+    axes[2][0]->title("Octupole Component");
+    plotFunctionInRange(axes[2][0], octupoleComponentFunction, xRange, yRange, resolution);
     axes[2][1]->title("Octupole Approximate Field Error");
     plotFieldErrorInRange(axes[2][1], octupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[3][0]->title("Hexadecupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[3][0], hexadecupoleComponentFunction, xRange, yRange, resolution);
+    axes[3][0]->title("Hexadecupole Component");
+    plotFunctionInRange(axes[3][0], hexadecupoleComponentFunction, xRange, yRange, resolution);
     axes[3][1]->title("Hexadecupole Approximate Field Error");
     plotFieldErrorInRange(axes[3][1], hexadecupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    //    axes[4][0]->title("Triacontadyupole Component Magnitude");
-    //    plotFieldMagnitudeInRange(axes[4][0], triacontadyupoleComponentFunction, xRange, yRange, resolution);
-    //    axes[4][1]->title("Triacontadyupole Approximate Field Error");
-    //    plotFieldErrorInRange(axes[4][1], triacontadyupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
-
     // Make sure all errors are shown in the same range
+    axes[0][1]->color_box_range({0.0, 0.05});
     axes[1][1]->color_box_range(axes[0][1]->color_box_range());
     axes[2][1]->color_box_range(axes[0][1]->color_box_range());
     axes[3][1]->color_box_range(axes[0][1]->color_box_range());
-    //axes[4][1]->color_box_range(axes[0][1]->color_box_range());
 
     for (auto &ax: f->children()) {
         matplot::ellipse(ax, samplePosition.x, samplePosition.y, resolution, resolution)->color("white");
@@ -334,9 +320,9 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
 }
 
 void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
-                              std::pair<float, float> xRange = {-2.0f, 2.0f},
-                              std::pair<float, float> yRange = {-2.0, 2.0f},
-                              double resolution = 0.1f
+                              std::pair<float, float> xRange = {-10.0f, 10.0f},
+                              std::pair<float, float> yRange = {-10.0, 10.0f},
+                              double resolution = 0.25
 ) {
 
 
@@ -393,27 +379,28 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
             {matplot::nexttile(), matplot::nexttile()},
     };
 
-    axes[0][0]->title("Uniform Component Magnitude");
-    plotFieldMagnitudeInRange(axes[0][0], centerOfMassComponentFunction, xRange, yRange, resolution);
+    axes[0][0]->title("Center of Mass Component");
+    plotFunctionInRange(axes[0][0], centerOfMassComponentFunction, xRange, yRange, resolution);
     axes[0][1]->title("Approximate Field Error");
     plotFieldErrorInRange(axes[0][1], centerOfMassApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[1][0]->title("Quadrupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[1][0], quadrupoleComponentFunction, xRange, yRange, resolution);
+    axes[1][0]->title("Quadrupole Component");
+    plotFunctionInRange(axes[1][0], quadrupoleComponentFunction, xRange, yRange, resolution);
     axes[1][1]->title("Quadrupole Approximate Field Error");
     plotFieldErrorInRange(axes[1][1], quadrupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[2][0]->title("Octupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[2][0], octupoleComponentFunction, xRange, yRange, resolution);
+    axes[2][0]->title("Octupole Component");
+    plotFunctionInRange(axes[2][0], octupoleComponentFunction, xRange, yRange, resolution);
     axes[2][1]->title("Octupole Approximate Field Error");
     plotFieldErrorInRange(axes[2][1], octupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
-    axes[3][0]->title("Hexadecupole Component Magnitude");
-    plotFieldMagnitudeInRange(axes[3][0], hexadecupoleComponentFunction, xRange, yRange, resolution);
+    axes[3][0]->title("Hexadecupole Component");
+    plotFunctionInRange(axes[3][0], hexadecupoleComponentFunction, xRange, yRange, resolution);
     axes[3][1]->title("Hexadecupole Approximate Field Error");
     plotFieldErrorInRange(axes[3][1], hexadecupoleApproximateFunction, simulation, rule, xRange, yRange, resolution);
 
     // Make sure all errors are shown in the same range
+    axes[0][1]->color_box_range({0.0, 0.05});
     axes[1][1]->color_box_range(axes[0][1]->color_box_range());
     axes[2][1]->color_box_range(axes[0][1]->color_box_range());
     axes[3][1]->color_box_range(axes[0][1]->color_box_range());
@@ -427,5 +414,104 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
     f->show();
 
 }
+
+// todo: this is awful
+//template<class PassiveSummary, class ActiveSummary>
+//glm::vec3 dualApproximate(double x, double y,
+//                          const Rule &rule, const Position &samplePosition,
+//                          const ActiveSummary &activeSummary) {
+//    PassiveSummary accelerationSummary{};
+//    rule(activeSummary.centerOfMass(), activeSummary, {x, y, 0.0f}, accelerationSummary);
+//    return accelerationSummary.at(samplePosition - glm::vec3{x, y, 0.0f});
+//}
+
+// todo: and this is even worse
+//void plotDualApproximations(json scenario, Rule rule = Rule{1.0f},
+//                            std::pair<float, float> xRange = {-10.0f, 10.0f},
+//                            std::pair<float, float> yRange = {-10.0, 10.0f},
+//                            double resolution = 0.25
+//) {
+//
+//    Simulation simulation;
+//    from_json(scenario, simulation);
+//
+//    Position samplePosition{(xRange.first + xRange.second) / 2.0f,
+//                            (yRange.first + yRange.second) / 2.0f,
+//                            0.0f};
+//
+//
+//    CenterOfMassSummary centerOfMassSummary{};
+//    QuadrupoleMassSummary quadrupoleMassSummary{};
+//    OctupoleMassSummary octupoleMassSummary{};
+//    HexadecupoleMassSummary hexadecupoleMassSummary{};
+//
+//    auto actorsView = simulation.view<const Position, const Mass>();
+//    std::vector<Entity> a{actorsView.begin(), actorsView.end()};
+//    std::span<Entity> actors{a.begin(), a.end()};
+//    centerOfMassSummary.summarize(actors, actorsView);
+//    quadrupoleMassSummary.summarize(actors, actorsView);
+//    octupoleMassSummary.summarize(actors, actorsView);
+//    hexadecupoleMassSummary.summarize(actors, actorsView);
+//
+//    auto a11f = [&](double x, double y) {
+//        return dualApproximate<AccelerationSummary>(x, y, rule, samplePosition, centerOfMassSummary);
+//    };
+//    auto a12f = [&](double x, double y) {
+//        return dualApproximate<QuadrupoleAccelerationSummary>(x, y, rule, samplePosition, centerOfMassSummary);
+//    };
+//    auto a13f = [&](double x, double y) {
+//        return dualApproximate<OctupoleAccelerationSummary>(x, y, rule, samplePosition, centerOfMassSummary);
+//    };
+//    auto a14f = [&](double x, double y) {
+//        return dualApproximate<HexadecupoleAccelerationSummary>(x, y, rule, samplePosition, centerOfMassSummary);
+//    };
+//    auto a21f = [&](double x, double y) {
+//        return dualApproximate<AccelerationSummary>(x, y, rule, samplePosition, quadrupoleMassSummary);
+//    };
+//    auto a22f = [&](double x, double y) {
+//        return dualApproximate<QuadrupoleAccelerationSummary>(x, y, rule, samplePosition, quadrupoleMassSummary);
+//    };
+//    auto a23f = [&](double x, double y) {
+//        return dualApproximate<OctupoleAccelerationSummary>(x, y, rule, samplePosition, quadrupoleMassSummary);
+//    };
+//    auto a24f = [&](double x, double y) {
+//        return dualApproximate<HexadecupoleAccelerationSummary>(x, y, rule, samplePosition, quadrupoleMassSummary);
+//    };
+//    auto a31f = [&](double x, double y) {
+//        return dualApproximate<AccelerationSummary>(x, y, rule, samplePosition, octupoleMassSummary);
+//    };
+//    auto a32f = [&](double x, double y) {
+//        return dualApproximate<QuadrupoleAccelerationSummary>(x, y, rule, samplePosition, octupoleMassSummary);
+//    };
+//    auto a33f = [&](double x, double y) {
+//        return dualApproximate<OctupoleAccelerationSummary>(x, y, rule, samplePosition, octupoleMassSummary);
+//    };
+//    auto a34f = [&](double x, double y) {
+//        return dualApproximate<HexadecupoleAccelerationSummary>(x, y, rule, samplePosition, octupoleMassSummary);
+//    };
+//    auto a41f = [&](double x, double y) {
+//        return dualApproximate<AccelerationSummary>(x, y, rule, samplePosition, hexadecupoleMassSummary);
+//    };
+//    auto a42f = [&](double x, double y) {
+//        return dualApproximate<QuadrupoleAccelerationSummary>(x, y, rule, samplePosition, hexadecupoleMassSummary);
+//    };
+//    auto a43f = [&](double x, double y) {
+//        return dualApproximate<OctupoleAccelerationSummary>(x, y, rule, samplePosition, hexadecupoleMassSummary);
+//    };
+//    auto a44f = [&](double x, double y) {
+//        return dualApproximate<HexadecupoleAccelerationSummary>(x, y, rule, samplePosition, hexadecupoleMassSummary);
+//    };
+//
+//    auto f = matplot::figure();
+//    f->size(550, 825);
+//    matplot::tiledlayout(4, 2);
+//    std::vector<std::vector<matplot::axes_handle>> axes{
+//            {matplot::nexttile(), matplot::nexttile()},
+//            {matplot::nexttile(), matplot::nexttile()},
+//            {matplot::nexttile(), matplot::nexttile()},
+//            {matplot::nexttile(), matplot::nexttile()},
+//    };
+//
+//}
 
 #endif //N_BODY_GRAVITATIONALVIEWINGSHEET_H

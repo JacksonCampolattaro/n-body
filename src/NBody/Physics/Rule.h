@@ -246,7 +246,7 @@ namespace NBody::Physics {
             if constexpr (Order >= 3)
                 dPhi -= D<4>(R, r) * activeSummary.moment().template tensor<3>() / 6.0f;
             if constexpr (Order >= 4)
-                dPhi += D<5>(R, r) * activeSummary.moment().template tensor<4>() / 24.0f; // todo: is this right?
+                dPhi += D<5>(R, r) * activeSummary.moment().template tensor<4>() / 24.0f;
             if constexpr (Order >= 5)
                 dPhi -= D<6>(R, r) * activeSummary.moment().template tensor<5>() / 120.0f;
 

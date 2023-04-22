@@ -73,7 +73,11 @@ namespace NBody {
                             );
                         }
                         if constexpr (Order >= 4) {
-                            // todo
+                            // todo: is this correct?
+                            moment.template tensor<4>() += SymmetricTensor3<4>::sumOfOuterProducts(
+                                    childNode.summary().moment().template tensor<3>(),
+                                    offset
+                            );
                         }
                         if constexpr (Order >= 5) {
                             // todo
