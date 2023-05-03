@@ -12,57 +12,78 @@ namespace NBody::Descent {
 
     template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
     inline void passiveTreeImplicitField(
-            const Position &activePosition,
-            const Mass &activeMass,
+            std::span<Entity> &relevantActiveEntities,
+            const entt::basic_view<
+                    entt::entity, entt::exclude_t<>,
+                    const Position, const Mass
+            > &activeContext,
             PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion,
-            const Physics::Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, Acceleration
-            > &context,
+            > &passiveContext,
+            const DescentCriterion &descentCriterion,
+            const Physics::Rule &rule,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
 
-        if (descentCriterion(passiveNode, activePosition)) {
+        // Partition the active particle list to find the ones which can be approximated
+        // Rearranging the list is only safe in single-threaded operation!
+        // Each recursive root case _must_ be given its own list to rearrange.
+        auto middle = std::partition(
+                relevantActiveEntities.begin(), relevantActiveEntities.end(),
+                [&](const Entity &e) {
+                    return descentCriterion(passiveNode, activeContext.get<const Position>(e));
+                }
+        );
+        std::span<Entity> farActiveEntities{relevantActiveEntities.begin(), middle};
+        std::span<Entity> closeActiveEntities{middle, relevantActiveEntities.end()};
 
-            // If an approximation is allowed, compute particle-node interaction
-            rule(activePosition, activeMass, passiveNode.center(), localField);
+        // Treat the far particles using the approximated approach
+        {
+            for (auto activeEntity: farActiveEntities)
+                rule(activeContext.get<const Position>(activeEntity), activeContext.get<const Mass>(activeEntity),
+                     passiveNode.center(), localField);
 
-            // fixme: temporarily write to all contained particles (O(n^2))
-            for (auto entity: passiveNode.contents())
-                context.get<Acceleration>(entity) += localField.acceleration().at(
-                        context.get<const Position>(entity) - passiveNode.center()
+        }
+
+        // If this is a leaf node
+        if (passiveNode.isLeaf()) {
+
+            // Apply forces to all contained passive entities
+            for (auto passiveEntity: passiveNode.contents()) {
+
+                // Treat the close particles individually
+                for (auto activeEntity: closeActiveEntities)
+                    passiveContext.get<Acceleration>(passiveEntity) += rule(
+                            activeContext.get<const Position>(activeEntity),
+                            activeContext.get<const Mass>(activeEntity),
+                            passiveContext.get<const Position>(passiveEntity)
+                    );
+
+                // Include the net local force from far particles
+                passiveContext.get<Acceleration>(passiveEntity) += localField.acceleration().at(
+                        passiveContext.get<const Position>(passiveEntity) - passiveNode.center()
                 );
+
+            }
 
         } else {
 
-            // Otherwise, the passive node can't be summarized
-            if (passiveNode.isLeaf()) {
-
-                // If this is a leaf passive node, interact with all particles contained
-                for (auto entity: passiveNode.contents())
-                    context.get<Acceleration>(entity) += rule(
-                            activePosition, activeMass,
-                            context.get<const Position>(entity)
-                    );
-
-            } else {
-
-                // If it's a non-leaf node, descend the tree (recursive case)
-                for (auto &child: passiveNode.children())
-                    Descent::passiveTreeImplicitField(
-                            activePosition, activeMass, child,
-                            descentCriterion, rule,
-                            context,
-                            {localField.acceleration().translated(child.center() - passiveNode.center())}
-                    );
-
-            }
+            // If it's a non-leaf node, descend the tree (recursive case)
+            // The local field -- including forces from far entities -- is passed down
+            for (auto &child: passiveNode.children())
+                Descent::passiveTreeImplicitField(
+                        closeActiveEntities, activeContext,
+                        child, passiveContext,
+                        descentCriterion, rule,
+                        {localField.acceleration().translated(child.center() - passiveNode.center())}
+                );
         }
+
     }
 
 }

@@ -48,14 +48,13 @@ namespace NBody {
                 auto startingNodes = _tree.loadBalancedBreak(256);
                 auto view = _simulation.template view<const Position, const Mass>();
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename TreeType::Node> node) {
-                    view.each([&](const Position &p, const Mass &m) {
-                        Descent::passiveTreeImplicitField(
-                                p, m, node.get(),
-                                _descentCriterion, _rule,
-                                _simulation.template view<const Position, Acceleration>()
-                        );
-
-                    });
+                    std::vector<Entity> activeEntities{view.begin(), view.end()};
+                    std::span<Entity> activeEntitiesView{activeEntities};
+                    Descent::passiveTreeImplicitField(
+                            activeEntitiesView, view,
+                            node.get(), _simulation.template view<const Position, Acceleration>(),
+                            _descentCriterion, _rule
+                    );
                 });
             }
         }
