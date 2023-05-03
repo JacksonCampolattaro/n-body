@@ -112,6 +112,17 @@ namespace NBody::Generator {
     }
 
 
+    static json trio() {
+
+        Simulation s;
+        s.newParticle().setPosition({0.0f, 2.0f, 0.0f}).setMass(2.0f);
+        s.newParticle().setPosition({-1.0f, -1.0f, 0.0f}).setMass(1.0f);
+        s.newParticle().setPosition({1.0f, -1.0f, 0.0f}).setMass(1.0f);
+
+        json scenario;
+        to_json(scenario, s);
+        return scenario;
+    }
 
     static Simulation &bake(Simulation &simulation, std::size_t iterations) {
         spdlog::info("\"Baking\" the simulation for {} iterations", iterations);

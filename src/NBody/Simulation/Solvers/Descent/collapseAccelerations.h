@@ -6,15 +6,18 @@
 #define N_BODY_COLLAPSEACCELERATIONS_H
 
 #include <NBody/Physics/Acceleration.h>
-#include <NBody/Physics/QuadrupoleAcceleration.h>
 #include <NBody/Simulation/Simulation.h>
 
 namespace NBody::Descent {
 
     using Physics::Acceleration;
-    using Physics::QuadrupoleAcceleration;
+    using Physics::MultipoleAcceleration;
 
     template<typename PassiveNode>
+    requires requires(PassiveNode &p) {
+        // fixme: this is a terrible way of constraining the template
+        p.summary().acceleration().x;
+    }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
                                               entt::entity, entt::exclude_t<>,
@@ -40,14 +43,17 @@ namespace NBody::Descent {
         }
     }
 
-    template<typename PassiveNode>
+    template<typename PassiveNode, std::size_t Order>
+    requires requires(PassiveNode &p) {
+        p.summary().acceleration().vector();
+    }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
                                               entt::entity, entt::exclude_t<>,
                                               const Position,
                                               Acceleration
                                       > &context,
-                                      QuadrupoleAcceleration netAcceleration = {}) {
+                                      MultipoleAcceleration<Order> netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
         netAcceleration += node.summary().acceleration();
@@ -79,6 +85,21 @@ namespace NBody::Descent {
             }
 
         }
+    }
+
+    template<typename PassiveNode>
+    requires requires(PassiveNode &p) {
+        p.summary().acceleration().vector();
+    }
+    inline void collapseAccelerations(PassiveNode &node,
+                                      const entt::basic_view<
+                                              entt::entity, entt::exclude_t<>,
+                                              const Position,
+                                              Acceleration
+                                      > &context) {
+
+        using AccelerationType = typename std::remove_reference<decltype(node.summary().acceleration())>::type;
+        collapseAccelerations(node, context, AccelerationType{});
     }
 }
 

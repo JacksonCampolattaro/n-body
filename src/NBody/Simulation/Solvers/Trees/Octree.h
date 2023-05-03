@@ -18,8 +18,8 @@
 
 #include <NBody/Simulation/Solvers/Trees/Tree.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
-#include <NBody/Physics/Summaries/QuadrupoleMassSummary.h>
-#include <NBody/Physics/Summaries/QuadrupoleDualSummary.h>
+#include <NBody/Physics/Summaries/MultipoleMassSummary.h>
+#include <NBody/Physics/Summaries/MultipoleDualSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/DualSummary.h>
 
@@ -168,7 +168,7 @@ namespace NBody {
     private:
 
         int _maxDepth = 32;
-        int _maxLeafSize = 16;
+        int _maxLeafSize = 32;
 
     public:
 
@@ -216,12 +216,26 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return _maxLeafSize; }
     };
 
+    template<std::size_t Order>
+    using MultipoleActiveOctree = Octree<MultipoleMassSummary<Order>>;
+
     using ActiveOctree = Octree<CenterOfMassSummary>;
-    using QuadrupoleActiveOctree = Octree<QuadrupoleMassSummary>;
+    using QuadrupoleActiveOctree = MultipoleActiveOctree<2>;
+    using OctupoleActiveOctree = MultipoleActiveOctree<3>;
+
+    template<std::size_t Order>
+    using MultipolePassiveOctree = Octree<MultipoleAccelerationSummary<Order>>;
+
     using PassiveOctree = Octree<AccelerationSummary>;
-    using QuadrupolePassiveOctree = Octree<QuadrupoleAccelerationSummary>;
+    using QuadrupolePassiveOctree = MultipolePassiveOctree<2>;
+    using OctupolePassiveOctree = MultipolePassiveOctree<3>;
+
+    template<std::size_t Order>
+    using MultipoleDualOctree = Octree<MultipoleDualSummary<Order>>;
+
     using DualOctree = Octree<DualSummary>;
-    using QuadrupoleDualOctree = Octree<QuadrupoleDualSummary>;
+    using QuadrupoleDualOctree = MultipoleDualOctree<2>;
+    using OctupoleDualOctree = MultipoleDualOctree<3>;
 
 }
 

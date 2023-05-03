@@ -33,7 +33,7 @@ namespace NBody::Descent {
         if (recommendation == Recommendation::Approximate) {
 
             // node-node interaction
-            passiveNode.summary().acceleration() += rule(activeNode, passiveNode);
+            rule(activeNode, passiveNode);
 
         } else if (recommendation == Recommendation::DescendActiveNode) {
 

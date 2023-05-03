@@ -38,6 +38,8 @@ namespace NBody {
 
         Physics::Rule &rule() { return _rule; }
 
+        const Physics::Rule &rule() const { return _rule; }
+
         virtual float error(const Simulation &candidateSimulation) const = 0;
 
         float averageError(const Simulation &candidateSimulation) const {

@@ -54,7 +54,6 @@ namespace NBody {
                 // This seems like it should perform better, but it actually does worse
                 //auto startingNodes = _tree.depthBreak(8);
                 auto startingNodes = _tree.loadBalancedBreak(256);
-                spdlog::debug(startingNodes.size());
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
                     Descent::balancedLockstepDualTree(
                             _tree.root(), passiveNode.get(),
@@ -68,11 +67,7 @@ namespace NBody {
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.template view<const Position, Acceleration>();
-                // todo: find a better way of avoiding ambiguity
-                Descent::collapseAccelerations(
-                        _tree.root(), view,
-                        typename DualTree::Node::Summary::Acceleration{}
-                );
+                Descent::collapseAccelerations(_tree.root(), view);
             }
         }
 

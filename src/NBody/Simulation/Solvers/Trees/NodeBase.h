@@ -90,6 +90,7 @@ namespace NBody {
 
 
         [[nodiscard]] std::string toString(const std::string &offset = "") const {
+            if (contents().empty()) return "";
             auto &c = (std::span<ENTT_ID_TYPE> &) contents();
             std::stringstream ss;
             ss << offset << fmt::format("[{}] ", fmt::join(c, ", ")) << summary() << "\n";

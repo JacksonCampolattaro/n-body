@@ -55,9 +55,6 @@ namespace NBody {
                                 _simulation.template view<const Position, Acceleration>()
                         );
 
-                        if ((ENTT_ID_TYPE) node.get().contents()[0] == 5)
-                            std::cout << node.get() << std::endl;
-
                     });
                 });
             }
@@ -65,11 +62,7 @@ namespace NBody {
             {
                 _statusDispatcher.emit({"Collapsing accelerations"});
                 auto view = _simulation.template view<const Position, Acceleration>();
-                // todo: there are better ways of avoiding ambiguity here
-                Descent::collapseAccelerations(
-                        _tree.root(), view,
-                        typename TreeType::Node::Summary::Acceleration{}
-                );
+                Descent::collapseAccelerations(_tree.root(), view);
             }
         }
 

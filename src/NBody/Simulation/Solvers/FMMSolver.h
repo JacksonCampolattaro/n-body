@@ -11,26 +11,32 @@
 
 namespace NBody {
 
-    class FMMSolver : public DualTraversalSolver<
-            QuadrupoleDualOctree,
+    template<std::size_t Order>
+    class MultipoleFMMSolver : public DualTraversalSolver<
+            MultipoleDualOctree<Order>,
             Descent::SideLengthOverDistance
     > {
     public:
 
-        using DualTraversalSolver::DualTraversalSolver;
+        using MultipoleFMMSolver<Order>::DualTraversalSolver::DualTraversalSolver;
+        using MultipoleFMMSolver<Order>::DualTraversalSolver::tree;
 
-        std::string id() override { return "fmm-4p"; };
+        std::string id() override { return fmt::format("fmm-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return "Fast Multipole Method (Quadrupole)"; };
+        std::string name() override { return fmt::format("Fast Multipole Method ({})", Multipole<Order>::name()); };
 
         int &maxDepth() { return tree().maxDepth(); }
 
-        const int &maxDepth() const { return tree().maxDepth(); }
+        [[nodiscard]] const int &maxDepth() const { return tree().maxDepth(); }
 
         int &maxLeafSize() { return tree().maxLeafSize(); }
 
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+        [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
+
+    using FMMSolver = MultipoleFMMSolver<1>;
+    using QuadrupoleFMMSolver = MultipoleFMMSolver<2>;
+    using OctupoleFMMSolver = MultipoleFMMSolver<3>;
 }
 
 

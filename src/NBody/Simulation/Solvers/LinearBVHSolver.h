@@ -23,19 +23,24 @@ namespace NBody {
 
     };
 
-    class QuadrupoleLinearBVHSolver : public ActiveTreeSolver<
-            QuadrupoleActiveLinearBVH,
+    template<std::size_t Order>
+    class MultipoleLinearBVHSolver : public ActiveTreeSolver<
+            MultipoleActiveLinearBVH<Order>, // fixme: why doesn't this make a difference to performance?
             Descent::DiagonalOverDistance
     > {
     public:
 
-        using ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleLinearBVHSolver<Order>::ActiveTreeSolver::ActiveTreeSolver;
 
-        std::string id() override { return "linear-bvh-4p"; };
+        std::string id() override { return fmt::format("linear-bvh-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return "Linear-BVH (Quadrupole)"; };
+        std::string name() override { return fmt::format("Linear BVH ({})", Multipole<Order>::name()); };
 
     };
+
+    using QuadrupoleLinearBVHSolver = MultipoleLinearBVHSolver<2>;
+    using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3>;
+
 }
 
 #endif //N_BODY_LINEARBVHSOLVER_H

@@ -32,7 +32,7 @@ namespace NBody {
 
     public:
 
-        CenterOfMassSummary() {}
+        CenterOfMassSummary() = default;
 
         template<typename C>
         void summarize(const std::span<Entity> &entities, const C &context) {

@@ -23,12 +23,14 @@ void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matr
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
                                  const NBody::BarnesHutSolver &solver) {
-    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+         0xFFFFFFAA_rgbaf);
 }
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
                                  const NBody::LinearBVHSolver &solver) {
-    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+         0xFFFFFFAA_rgbaf);
 }
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
@@ -39,5 +41,6 @@ void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matr
 
 void NBody::SolverRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix,
                                  const NBody::OctreeDualTraversalSolver &solver) {
-    draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0x0A0A0AAA_rgbaf);
+    draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+         0xFFFFFFAA_rgbaf);
 }
