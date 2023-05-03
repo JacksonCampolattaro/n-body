@@ -22,6 +22,7 @@
 #include <NBody/Physics/Summaries/MultipoleDualSummary.h>
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/Summaries/DualSummary.h>
+#include <NBody/Physics/Summaries/EmptySummary.h>
 
 using NBody::Physics::Position;
 using NBody::Physics::Velocity;
@@ -237,6 +238,9 @@ namespace NBody {
     using QuadrupoleDualOctree = MultipoleDualOctree<2>;
     using OctupoleDualOctree = MultipoleDualOctree<3>;
 
+    template<std::size_t Order>
+    using MultipoleImplicitPassiveOctree = Octree<EmptySummary<MultipoleAccelerationSummary<Order>>>;
+    using ImplicitPassiveOctree = Octree<EmptySummary<AccelerationSummary>>;
 }
 
 #endif //N_BODY_OCTREE_H
