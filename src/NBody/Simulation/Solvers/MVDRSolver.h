@@ -47,7 +47,7 @@ namespace NBody {
 
         std::string id() override { return fmt::format("mvdr-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return fmt::format("Mark van de Ruit (Multipole-{})", Order); };
+        std::string name() override { return fmt::format("Mark van de Ruit ({})", Multipole<Order>::name()); };
 
         int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
 

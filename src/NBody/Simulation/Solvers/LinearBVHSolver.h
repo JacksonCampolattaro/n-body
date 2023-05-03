@@ -34,7 +34,7 @@ namespace NBody {
 
         std::string id() override { return fmt::format("linear-bvh-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return fmt::format("Linear BVH (Multipole-{})", Order); };
+        std::string name() override { return fmt::format("Linear BVH ({})", Multipole<Order>::name()); };
 
     };
 

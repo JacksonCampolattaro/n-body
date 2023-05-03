@@ -144,10 +144,13 @@ void Application::on_open(const Application::type_vec_files &files, const Glib::
             _fileManager.importFromPath(file);
 
         // todo: this should be done as part of JSON parsing
-//        std::ifstream scenario_data{file->get_parse_name().raw()};
-//        json data = json::parse(scenario_data);
-//        if (data.contains("G"))
-//            _rule.g() = data["G"].get<float>();
+        auto path = std::filesystem::path(file->get_path());
+        if (path.extension().string() == ".json") {
+            std::ifstream scenario_data{file->get_parse_name().raw()};
+            json data = json::parse(scenario_data);
+            if (data.contains("G"))
+                _rule.g() = data["G"].get<float>();
+        }
 
     }
 

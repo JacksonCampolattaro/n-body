@@ -26,8 +26,15 @@ NBody::SimulationFileManager::SimulationFileManager(NBody::Simulation &simulatio
             sigc::mem_fun(*this, &NBody::SimulationFileManager::saveToPath));
 }
 
-void NBody::SimulationFileManager::import() {
-    _importerDialog.show();
+void NBody::SimulationFileManager::
+
+import
+
+() {
+_importerDialog.
+
+show();
+
 }
 
 void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> &file) {
@@ -41,6 +48,7 @@ void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> 
         inputFile >> j;
 
         from_json(j, _simulation);
+
         return;
     }
 

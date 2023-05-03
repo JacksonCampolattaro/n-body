@@ -43,7 +43,7 @@ namespace NBody {
         // todo: these should be free functions
         std::string id() override { return fmt::format("barnes-hut-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return fmt::format("Barnes-Hut (Multipole-{})", Order); };
+        std::string name() override { return fmt::format("Barnes-Hut ({})", Multipole<Order>::name()); };
 
         int &maxDepth() { return tree().maxDepth(); }
 

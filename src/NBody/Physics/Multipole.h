@@ -41,6 +41,16 @@ namespace NBody {
 
     public:
 
+        static std::string name() {
+            switch (Order) {
+                case 1: return "Quadrupole";
+                case 2: return "Octupole";
+                case 3: return "Hexadecupole";
+                case 4: return "Triacontadyupole";
+                default: return fmt::format("{}-pole", Order);
+            }
+        }
+
         Multipole() = default;
 
         Multipole(const Multipole<Order> &other) : _tensors(other._tensors) {}

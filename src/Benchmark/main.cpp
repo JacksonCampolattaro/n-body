@@ -226,7 +226,7 @@ template<typename CandidateSolver>
 float accuracy(json scenario, const Grader &grader, float theta = 0.5) {
 
     // Create a solver
-    Rule rule{};
+    Rule rule{grader.rule()};
     Simulation simulation;
     from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
@@ -276,12 +276,12 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
+    //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 1'000, 0);
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
 
     //MeanGrader grader{scenario};
-    ConstitutionalGrader grader{scenario};
+    ConstitutionalGrader grader{scenario, Rule{1.0f}};
 
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
@@ -318,6 +318,7 @@ int main(int argc, char *argv[]) {
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.5));
     //spdlog::info(performance<ReverseBarnesHutSolver>(scenario, 1, 0.5).count());
+    spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.2));
 
     std::vector<std::size_t> nValues{};
     for (int i = 10'000; i < 500'000; i *= 1.5) nValues.emplace_back(i);

@@ -40,7 +40,7 @@ namespace NBody {
 
         std::string id() override { return fmt::format("reverse-barnes-hut-{}p", std::pow(2, Order)); };
 
-        std::string name() override { return fmt::format("Reverse Barnes-Hut (Multipole-{})", Order); };
+        std::string name() override { return fmt::format("Reverse Barnes-Hut ({})", Multipole<Order>::name()); };
 
         int &maxDepth() { return tree().maxDepth(); }
 
