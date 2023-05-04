@@ -43,12 +43,10 @@ namespace NBody::Descent {
         std::span<Entity> closeActiveEntities{middle, relevantActiveEntities.end()};
 
         // Treat the far particles using the approximated approach
-        {
-            for (auto activeEntity: farActiveEntities)
-                rule(activeContext.get<const Position>(activeEntity), activeContext.get<const Mass>(activeEntity),
-                     passiveNode.center(), localField);
+        for (auto activeEntity: farActiveEntities)
+            rule(activeContext.get<const Position>(activeEntity), activeContext.get<const Mass>(activeEntity),
+                 passiveNode.center(), localField);
 
-        }
 
         // If this is a leaf node
         if (passiveNode.isLeaf()) {

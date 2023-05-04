@@ -43,10 +43,10 @@ namespace NBody {
 
         static std::string name() {
             switch (Order) {
-                case 1: return "Quadrupole";
-                case 2: return "Octupole";
-                case 3: return "Hexadecupole";
-                case 4: return "Triacontadyupole";
+                case 2: return "Quadrupole";
+                case 3: return "Octupole";
+                case 4: return "Hexadecupole";
+                case 5: return "Triacontadyupole";
                 default: return fmt::format("{}-pole", Order);
             }
         }
