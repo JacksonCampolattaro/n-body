@@ -29,6 +29,10 @@ namespace NBody::Descent {
         return static_cast<Recommendation>(static_cast<int>(a) | static_cast<int>(b));
     }
 
+    inline Recommendation operator&(Recommendation a, Recommendation b) {
+        return static_cast<Recommendation>(static_cast<int>(a) & static_cast<int>(b));
+    }
+
     template<typename T>
     concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {
         { t(n, p) } -> std::convertible_to<bool>;

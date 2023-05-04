@@ -18,8 +18,52 @@
 namespace NBody::Descent {
 
     template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    inline std::tuple<
+            std::span<std::reference_wrapper<const ActiveNode>>,
+            std::span<std::reference_wrapper<const ActiveNode>>,
+            std::vector<std::reference_wrapper<const ActiveNode>>
+    > partitionByDescentCriterion(
+            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+            PassiveNode &passiveNode, const DescentCriterion &descentCriterion
+    ) {
+
+        auto endFarNodes = activeNodes.begin();
+        auto beginLeafNodes = activeNodes.end();
+        std::vector<std::reference_wrapper<const ActiveNode>> otherNodes{};
+
+        for (auto i = activeNodes.begin(); i != beginLeafNodes; ++i) {
+
+            auto recommendation = descentCriterion((*i).get(), passiveNode);
+
+            if (recommendation == Recommendation::Approximate) {
+                std::iter_swap(i, endFarNodes);
+                ++endFarNodes;
+            } else if ((*i).get().isLeaf()) {
+                --beginLeafNodes;
+                std::iter_swap(i, beginLeafNodes);
+            } else {
+
+                if ((recommendation & Recommendation::DescendActiveNode) == Recommendation::DoNotDescend)
+                    otherNodes.emplace_back(*i);
+                else
+                    otherNodes.insert(
+                            otherNodes.end(),
+                            (*i).get().children().begin(), (*i).get().children().end()
+                    );
+            }
+
+        }
+
+        return {
+                {activeNodes.begin(), endFarNodes},
+                {beginLeafNodes, activeNodes.end()},
+                otherNodes
+        };
+    }
+
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
     inline void adaptiveDualTreeImplicitField(
-            const std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, const Physics::Rule &rule,
             const entt::basic_view<
@@ -35,6 +79,16 @@ namespace NBody::Descent {
 
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
+
+        // If there are no more forces to calculate, just apply the local field to the particles
+        if (activeNodes.empty()) {
+            for (auto passiveEntity: passiveNode.contents()) {
+                passiveContext.get<Acceleration>(passiveEntity) += localField.acceleration().at(
+                        passiveContext.get<const Position>(passiveEntity) - passiveNode.center()
+                );
+            }
+            return;
+        }
 
         // Begin by sorting the active nodes based on their recommendation
         std::vector<std::reference_wrapper<const ActiveNode>> farActiveNodes; // todo: use a span for this!
@@ -53,7 +107,10 @@ namespace NBody::Descent {
                 );
         }
 
-        // Far-field interactions are calculated first, and contribute to the local field
+        //        auto [farActiveNodes, leafActiveNodes, closeActiveNodes] =
+        //                partitionByDescentCriterion(activeNodes, passiveNode, descentCriterion);
+
+        // Far-field interactions contribute to the local field
         for (auto &activeNode: farActiveNodes)
             rule(
                     activeNode.get().summary().centerOfMass(),
@@ -61,6 +118,18 @@ namespace NBody::Descent {
                     passiveNode.center(),
                     localField
             );
+
+//        // Leaf interactions decay to passive-tree
+//        for (auto &activeNode: leafActiveNodes) {
+//            std::vector<Entity> activeEntities{activeNode.get().contents().begin(), activeNode.get().contents().end()};
+//            std::span<Entity> activeEntitiesView{activeEntities};
+//            passiveTreeImplicitField(
+//                    activeEntitiesView, activeContext,
+//                    passiveNode, passiveContext,
+//                    descentCriterion, rule,
+//                    localField
+//            );
+//        }
 
         // If this is a leaf node
         if (passiveNode.isLeaf()) {

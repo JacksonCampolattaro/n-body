@@ -280,7 +280,7 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
 
     //MeanGrader grader{scenario};
     ConstitutionalGrader grader{scenario, Rule{1.0f}};
@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
 
 
     //realPerformance<BarnesHutSolver>(scenario, grader);
-    realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
+    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
     //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
     //realPerformance<QuadrupoleReverseBarnesHutSolver>(scenario, grader);
@@ -316,18 +316,18 @@ int main(int argc, char *argv[]) {
     //realPerformance<QuadrupoleFMMSolver>(scenario, grader);
     //realPerformance<OctupoleFMMSolver>(scenario, grader);
     //realPerformance<MVDRSolver>(scenario, grader);
-    //realPerformance<ImplicitMVDRSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
+    //realPerformance<OctupoleMVDRSolver>(scenario, grader);
+    //realPerformance<ImplicitMVDRSolver>(scenario, grader);
     realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver>(scenario, grader);
-    //realPerformance<OctupoleMVDRSolver>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.5));
     //spdlog::info(performance<ReverseBarnesHutSolver>(scenario, 1, 0.5).count());
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.5));
 
     std::vector<std::size_t> nValues{};
     for (int i = 10'000; i < 500'000; i *= 1.5) nValues.emplace_back(i);
