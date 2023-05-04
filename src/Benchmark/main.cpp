@@ -159,7 +159,7 @@ void sweepN(const std::vector<std::size_t> &nValues, std::size_t i) {
 
         json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 0);
 
-        //ConstitutionalGrader grader(scenario, rule);
+        ConstitutionalGrader grader(scenario, rule);
 
         Simulation barnesHutSimulation;
         from_json(scenario, barnesHutSimulation);
@@ -186,13 +186,13 @@ void sweepN(const std::vector<std::size_t> &nValues, std::size_t i) {
 //        linearBVHSolver.theta() = 0.15625;
 //        //linearBVHSolver.theta() = searchTheta<LinearBVHSolver>(scenario, grader, {0.1, 0.5});
 //        spdlog::info("{} theta = {}", linearBVHSolver.name(), linearBVHSolver.theta());
-        MVDRSolver mvdrSolver{mvdrSimulation, rule};
-        mvdrSolver.theta() = 0.15625;
-        //mvdrSolver.theta() = searchTheta<MVDRSolver>(scenario, grader, {0.1, 0.5});
+        ImplicitMVDRSolver mvdrSolver{mvdrSimulation, rule};
+        //mvdrSolver.theta() = 0.15625;
+        mvdrSolver.theta() = searchTheta<ImplicitMVDRSolver>(scenario, grader, {0.1, 0.9});
         spdlog::info("{} theta = {}", mvdrSolver.name(), mvdrSolver.theta());
-        QuadrupoleMVDRSolver quadrupoleMvdrSolver{quadrupoleMvdrSimulation, rule};
-        quadrupoleMvdrSolver.theta() = 0.17500001;
-        //quadrupoleMvdrSolver.theta() = searchTheta<QuadrupoleMVDRSolver>(scenario, grader, {0.1, 0.5});
+        QuadrupoleImplicitMVDRSolver quadrupoleMvdrSolver{quadrupoleMvdrSimulation, rule};
+        //quadrupoleMvdrSolver.theta() = 0.17500001;
+        quadrupoleMvdrSolver.theta() = searchTheta<QuadrupoleImplicitMVDRSolver>(scenario, grader, {0.1, 0.9});
         spdlog::info("{} theta = {}", quadrupoleMvdrSolver.name(), quadrupoleMvdrSolver.theta());
         FMMSolver fmmSolver{fmmSimulation, rule};
         fmmSolver.theta() = 0.16250001;
@@ -280,7 +280,7 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
 
     //MeanGrader grader{scenario};
     ConstitutionalGrader grader{scenario, Rule{1.0f}};
@@ -327,7 +327,7 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.5));
+    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.4));
 
     std::vector<std::size_t> nValues{};
     for (int i = 10'000; i < 500'000; i *= 1.5) nValues.emplace_back(i);
@@ -336,4 +336,11 @@ int main(int argc, char *argv[]) {
 
 
     //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, 100'000, 10);
+
+//    Rule rule{};
+//    Simulation simulation;
+//    from_json(scenario, simulation);
+//    QuadrupoleImplicitMVDRSolver solver{simulation, rule};
+//    solver.theta() = 0.4;
+//    spdlog::info("{} s", timedStep(solver).count());
 }

@@ -168,7 +168,7 @@ namespace NBody {
     class Octree : public Tree<OctreeNode<S>> {
     private:
 
-        int _maxDepth = 32;
+        int _maxDepth = 64;
         int _maxLeafSize = 32;
 
     public:
