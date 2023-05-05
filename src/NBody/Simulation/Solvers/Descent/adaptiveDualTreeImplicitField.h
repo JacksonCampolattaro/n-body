@@ -73,8 +73,6 @@ namespace NBody::Descent {
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 
-        spdlog::error(activeNodes.size());
-
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
 

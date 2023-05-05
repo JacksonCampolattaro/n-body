@@ -294,11 +294,11 @@ namespace NBody::Physics {
             if constexpr (PassiveOrder >= 2)
                 passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass() * _g;
             if constexpr (PassiveOrder >= 3)
-                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass() * _g;
+                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass() * _g / 2.0f;
             if constexpr (PassiveOrder >= 4)
-                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass() * _g;
+                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass() * _g / 6.0f;
             if constexpr (PassiveOrder >= 5)
-                passiveSummary.acceleration().template tensor<5>() += D<5>(R, r) * activeMass.mass() * _g;
+                passiveSummary.acceleration().template tensor<5>() += D<5>(R, r) * activeMass.mass() * _g / 24.0f;
         }
 
     public: // Node-node interaction
@@ -370,17 +370,20 @@ namespace NBody::Physics {
                 passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass() * _g;
             }
             if constexpr (PassiveOrder >= 3) {
-                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass() * _g;
+                // todo: these coefficients were determined experimentally, and are probably not quite right!
+                passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass() * _g / 2.0f;
                 passiveSummary.acceleration().vector() +=
                         (D<3>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
             }
             if constexpr (PassiveOrder >= 4) {
-                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass() * _g;
-                passiveSummary.acceleration().template tensor<2>() -=
+                // todo: these coefficients were determined experimentally, and are probably not quite right!
+                passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass() * _g / 6.0f;
+                passiveSummary.acceleration().template tensor<2>() +=
                         (D<4>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
                 passiveSummary.acceleration().vector() +=
                         (D<4>(R, r) * activeSummary.moment().template tensor<3>()) / 6.0f;
             }
+            // todo: higher orders
         }
 
 
