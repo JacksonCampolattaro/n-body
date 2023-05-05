@@ -38,6 +38,33 @@ namespace NBody {
 
     };
 
+    template<std::size_t Order>
+    class MultipoleDualEmptySummary :
+            public MultipoleMassSummary<Order>, public EmptySummary<MultipoleAccelerationSummary<Order + 1>> {
+    public:
+
+        using typename MultipoleMassSummary<Order>::Context;
+        using MultipoleMassSummary<Order>::context;
+
+        using MultipoleMassSummary<Order>::MultipoleMassSummary;
+        using MultipoleMassSummary<Order>::summarize;
+        using MultipoleMassSummary<Order>::totalMass;
+        using MultipoleMassSummary<Order>::centerOfMass;
+    };
+
+    template<>
+    class MultipoleDualEmptySummary<1> :
+            public CenterOfMassSummary, public EmptySummary<MultipoleAccelerationSummary<2>> {
+    public:
+
+        using typename CenterOfMassSummary::Context;
+        using CenterOfMassSummary::context;
+
+        using CenterOfMassSummary::CenterOfMassSummary;
+        using CenterOfMassSummary::summarize;
+        using CenterOfMassSummary::totalMass;
+        using CenterOfMassSummary::centerOfMass;
+    };
 }
 
 #endif //N_BODY_EMPTYSUMMARY_H

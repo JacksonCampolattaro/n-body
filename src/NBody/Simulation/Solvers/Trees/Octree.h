@@ -242,6 +242,9 @@ namespace NBody {
     using MultipoleImplicitPassiveOctree = Octree<EmptySummary<MultipoleAccelerationSummary<Order>>>;
     using ImplicitPassiveOctree = Octree<EmptySummary<AccelerationSummary>>;
     using QuadrupoleImplicitPassiveOctree = MultipoleImplicitPassiveOctree<2>;
+
+    template<std::size_t Order>
+    using MultipoleImplicitDualOctree = Octree<MultipoleDualEmptySummary<Order>>;
 }
 
 #endif //N_BODY_OCTREE_H

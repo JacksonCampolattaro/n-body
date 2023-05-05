@@ -1,14 +1,14 @@
 //
-// Created by Jackson Campolattaro on 5/3/23.
+// Created by Jackson Campolattaro on 5/5/23.
 //
 
-#ifndef N_BODY_ADAPTIVEDUALTREEIMPLICITFIELD_H
-#define N_BODY_ADAPTIVEDUALTREEIMPLICITFIELD_H
+#ifndef N_BODY_LOCKSTEPDUALTREEIMPLICITFIELD_H
+#define N_BODY_LOCKSTEPDUALTREEIMPLICITFIELD_H
 
 #include <NBody/Simulation/Solvers/Trees/NodeType.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/activeTree.h>
-#include <NBody/Simulation/Solvers/Descent/passiveTree.h>
+#include <NBody/Simulation/Solvers/Descent/passiveTreeImplicitField.h>
 #include <NBody/Simulation/Solvers/Descent/none.h>
 
 #include <NBody/Physics/Summaries/EmptySummary.h>
@@ -22,15 +22,15 @@ namespace NBody::Descent {
             std::span<std::reference_wrapper<const ActiveNode>>,
             std::span<std::reference_wrapper<const ActiveNode>>,
             std::span<std::reference_wrapper<const ActiveNode>>
-    > partitionByDescentCriterion(
-            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+    > partitionByDescentCriterionLockstep(
+            std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode, const DescentCriterion &descentCriterion
     ) {
 
         auto endFarNodes = activeNodes.begin();
-        auto beginBigNodes = activeNodes.end();
+        auto beginNonLeafNodes = activeNodes.end();
 
-        for (auto i = activeNodes.begin(); i < beginBigNodes; ++i) {
+        for (auto i = activeNodes.begin(); i < beginNonLeafNodes; ++i) {
             auto &activeNode = (*i).get();
             auto recommendation = descentCriterion(activeNode, passiveNode);
 
@@ -39,11 +39,10 @@ namespace NBody::Descent {
                 std::iter_swap(i, endFarNodes);
                 ++endFarNodes;
 
-            } else if (recommendation != Recommendation::DescendPassiveNode &&
-                       !activeNode.isLeaf()) {
+            } else if (!activeNode.isLeaf()) {
 
-                --beginBigNodes;
-                std::iter_swap(i, beginBigNodes);
+                --beginNonLeafNodes;
+                std::iter_swap(i, beginNonLeafNodes);
 
                 // we've swapped an unknown value into position i, so we'll need to re-examine it
                 i--;
@@ -52,14 +51,14 @@ namespace NBody::Descent {
 
         return {
                 {activeNodes.begin(), endFarNodes},
-                {endFarNodes,         beginBigNodes},
-                {beginBigNodes,       activeNodes.end()}
+                {endFarNodes,         beginNonLeafNodes},
+                {beginNonLeafNodes,   activeNodes.end()}
         };
     }
 
     template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
-    inline void adaptiveDualTreeImplicitField(
-            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+    inline void lockstepDualTreeImplicitField(
+            std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, const Physics::Rule &rule,
             const entt::basic_view<
@@ -72,8 +71,6 @@ namespace NBody::Descent {
             > &passiveContext,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
-
-        spdlog::error(activeNodes.size());
 
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
@@ -89,8 +86,8 @@ namespace NBody::Descent {
         }
 
         // Begin by sorting the active nodes based on their recommendation
-        auto [farActiveNodes, smallActiveNodes, bigActiveNodes] =
-                partitionByDescentCriterion(activeNodes, passiveNode, descentCriterion);
+        auto [farActiveNodes, leafActiveNodes, nonLeafActiveNodes] =
+                partitionByDescentCriterionLockstep(activeNodes, passiveNode, descentCriterion);
 
         // Far-field interactions contribute to the local field
         for (auto &activeNode: farActiveNodes)
@@ -101,22 +98,10 @@ namespace NBody::Descent {
                     localField
             );
 
-        //        // Leaf interactions decay to passive-tree
-        //        for (auto &activeNode: leafActiveNodes) {
-        //            std::vector<Entity> activeEntities{activeNode.get().contents().begin(), activeNode.get().contents().end()};
-        //            std::span<Entity> activeEntitiesView{activeEntities};
-        //            passiveTreeImplicitField(
-        //                    activeEntitiesView, activeContext,
-        //                    passiveNode, passiveContext,
-        //                    descentCriterion, rule,
-        //                    localField
-        //            );
-        //        }
-
         // If this is a leaf node
         if (passiveNode.isLeaf()) {
 
-            std::span<std::reference_wrapper<const ActiveNode>> _closeActiveNodes{
+            std::span<std::reference_wrapper<const ActiveNode>> closeActiveNodes{
                     farActiveNodes.end(),
                     activeNodes.end()
             };
@@ -125,8 +110,7 @@ namespace NBody::Descent {
             for (auto passiveEntity: passiveNode.contents()) {
 
                 // Switch to active-tree
-                for (auto &activeNode: _closeActiveNodes) {
-
+                for (auto &activeNode: closeActiveNodes) {
                     passiveContext.get<Acceleration>(passiveEntity) += activeTree(
                             activeNode.get(),
                             passiveContext.get<const Position>(passiveEntity),
@@ -143,28 +127,43 @@ namespace NBody::Descent {
             }
 
         } else {
-            // If it's a non-leaf node, we'll descend the tree (recursive case)
 
-            // Descend nearby nodes to create the active node list for the next depth
-            std::vector<std::reference_wrapper<const ActiveNode>> deeperActiveNodes{};
-            deeperActiveNodes.reserve(
-                    smallActiveNodes.size()
-                    + bigActiveNodes.size() * 2 // todo: this is different depending on the tree type!
+            // Treat leaf active nodes using the passive-tree solver
+            std::vector<Entity> activeEntititesInLeaves;
+            for (auto &activeNode: leafActiveNodes)
+                activeEntititesInLeaves.insert(
+                        activeEntititesInLeaves.end(),
+                        activeNode.get().contents().begin(), activeNode.get().contents().end()
+                );
+            std::span<Entity> activeEntititesInLeavesSpan{
+                    activeEntititesInLeaves.begin(), activeEntititesInLeaves.end()
+            };
+            passiveTreeImplicitField(
+                    activeEntititesInLeavesSpan, activeContext,
+                    passiveNode, passiveContext,
+                    descentCriterion, rule
+                    // _Don't_ pass down the local field, otherwise it'll be counted twice!
             );
-            deeperActiveNodes.insert(deeperActiveNodes.end(), smallActiveNodes.begin(), smallActiveNodes.end());
-            for (auto &activeNode: bigActiveNodes) {
+
+
+            // For non-leaf, non-leaf interactions, we'll descend the tree (recursive case)
+
+            // Descend other active nodes to create the active node list for the next depth
+            std::vector<std::reference_wrapper<const ActiveNode>> deeperActiveNodes{};
+            // todo: this is different depending on the tree type!
+            deeperActiveNodes.reserve(nonLeafActiveNodes.size() * 8);
+            for (auto &activeNode: nonLeafActiveNodes)
                 deeperActiveNodes.insert(
                         deeperActiveNodes.end(),
                         activeNode.get().children().begin(), activeNode.get().children().end()
                 );
-            }
 
-            // The local field -- including forces from far entities -- is passed down
             for (auto &child: passiveNode.children())
-                adaptiveDualTreeImplicitField(
+                lockstepDualTreeImplicitField<ActiveNode>(
                         deeperActiveNodes, child,
                         descentCriterion, rule,
                         activeContext, passiveContext,
+                        // The local field -- including forces from far entities -- is passed down
                         {localField.acceleration().translated(child.center() - passiveNode.center())}
                 );
         }
@@ -173,4 +172,4 @@ namespace NBody::Descent {
 
 }
 
-#endif //N_BODY_ADAPTIVEDUALTREEIMPLICITFIELD_H
+#endif //N_BODY_LOCKSTEPDUALTREEIMPLICITFIELD_H

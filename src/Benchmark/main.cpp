@@ -29,6 +29,7 @@
 #include <NBody/Simulation/Solvers/ImplicitMVDRSolver.h>
 #include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/FMMSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
 
 using namespace NBody;
 
@@ -280,7 +281,7 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 20'000, 0);
 
     //MeanGrader grader{scenario};
     ConstitutionalGrader grader{scenario, Rule{1.0f}};
@@ -315,11 +316,14 @@ int main(int argc, char *argv[]) {
     //realPerformance<FMMSolver>(scenario, grader);
     //realPerformance<QuadrupoleFMMSolver>(scenario, grader);
     //realPerformance<OctupoleFMMSolver>(scenario, grader);
+    //realPerformance<ImplicitFMMSolver>(scenario, grader);
+    //realPerformance<QuadrupoleImplicitFMMSolver>(scenario, grader);
+    //realPerformance<OctupoleImplicitFMMSolver>(scenario, grader);
     //realPerformance<MVDRSolver>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleMVDRSolver>(scenario, grader);
     //realPerformance<ImplicitMVDRSolver>(scenario, grader);
-    realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
+    //realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.5));
@@ -328,6 +332,7 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<QuadrupoleImplicitFMMSolver>(scenario, grader, 0.2));
 
     std::vector<std::size_t> nValues{};
     for (int i = 10'000; i < 500'000; i *= 1.5) nValues.emplace_back(i);
@@ -340,7 +345,7 @@ int main(int argc, char *argv[]) {
 //    Rule rule{};
 //    Simulation simulation;
 //    from_json(scenario, simulation);
-//    QuadrupoleImplicitMVDRSolver solver{simulation, rule};
-//    solver.theta() = 0.4;
+//    QuadrupoleImplicitFMMSolver solver{simulation, rule};
+//    solver.theta() = 0.2;
 //    spdlog::info("{} s", timedStep(solver).count());
 }

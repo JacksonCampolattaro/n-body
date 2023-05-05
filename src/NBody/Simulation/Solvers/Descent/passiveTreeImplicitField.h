@@ -12,7 +12,7 @@ namespace NBody::Descent {
 
     template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
     inline void passiveTreeImplicitField(
-            std::span<Entity> &relevantActiveEntities,
+            const std::span<Entity> &relevantActiveEntities,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
