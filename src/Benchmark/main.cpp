@@ -259,7 +259,7 @@ template<typename CandidateSolver>
 std::chrono::duration<float> realPerformance(json scenario, const Grader &grader, int iterations = 1) {
 
     // Create a solver
-    Rule rule{};
+    Rule rule = grader.rule();
     Simulation simulation;
     from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
@@ -279,12 +279,13 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
+    //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000, 0);
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
 
     //MeanGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Rule{1.0f}};
+    //RMSGrader grader{scenario};
+    ConstitutionalGrader grader{scenario, Rule{3.0f}};
 
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
@@ -326,13 +327,15 @@ int main(int argc, char *argv[]) {
     //realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver>(scenario, grader);
 
-    spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
 
-    //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
 
     //spdlog::info(accuracy<MVDRSolver>(scenario, grader, 0.3));
     //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.3));
@@ -342,9 +345,9 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.4));
     //spdlog::info(accuracy<OctupoleImplicitMVDRSolver>(scenario, grader, 0.4));
 
-    //spdlog::info(accuracy<FMMSolver>(scenario, grader, 0.4));
-    //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.4));
-    //spdlog::info(accuracy<OctupoleFMMSolver>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<FMMSolver>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<OctupoleFMMSolver>(scenario, grader, 0.3));
 
     //spdlog::info(accuracy<ImplicitFMMSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleImplicitFMMSolver>(scenario, grader, 0.2));

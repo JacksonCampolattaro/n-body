@@ -49,9 +49,37 @@ namespace NBody::Physics {
         }
 
         MultipoleAcceleration<Order> translated(const glm::vec3 &offset) const {
-            // The quadrupole stays the same, but the local acceleration is adjusted based on the offset
             MultipoleAcceleration<Order> t{*this};
-            t._acceleration = at(offset);
+
+            if constexpr (Order >= 2) {
+                auto delta = Multipole<Order>::template tensor<2>() * offset;
+                t.vector() += delta;
+            }
+            if constexpr (Order >= 3) {
+                auto delta2 = Multipole<Order>::template tensor<3>() * offset;
+                auto delta = delta2 * offset;
+                t.template tensor<2>() += delta2;
+                t.vector() += delta / 2.0f;
+            }
+            if constexpr (Order >= 4) {
+                auto delta3 = Multipole<Order>::template tensor<4>() * offset;
+                auto delta2 = delta3 * offset;
+                auto delta = delta2 * offset;
+                t.template tensor<3>() += delta3;
+                t.template tensor<2>() += delta2 / 2.0f;
+                t.vector() += delta / 6.0f;
+            }
+            if constexpr (Order >= 5) {
+                auto delta4 = Multipole<Order>::template tensor<5>() * offset;
+                auto delta3 = delta4 * offset;
+                auto delta2 = delta3 * offset;
+                auto delta = delta2 * offset;
+                t.template tensor<4>() += delta4;
+                t.template tensor<3>() += delta3 / 2.0f;
+                t.template tensor<2>() += delta2 / 6.0f;
+                t.vector() += delta / 24.0f;
+            }
+
             return t;
         }
 

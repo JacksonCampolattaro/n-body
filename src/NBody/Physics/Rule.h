@@ -290,7 +290,7 @@ namespace NBody::Physics {
             glm::vec3 R = passivePosition - activePosition;
             float r = std::sqrt(glm::length2(R) + _epsilon);
 
-            passiveSummary.acceleration().vector() -= R * activeMass.mass() * _g / pow<3>(r);
+            passiveSummary.acceleration().vector() -= (R / pow<3>(r)) * activeMass.mass() * _g;
             if constexpr (PassiveOrder >= 2)
                 passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass() * _g;
             if constexpr (PassiveOrder >= 3)
@@ -370,7 +370,6 @@ namespace NBody::Physics {
                 passiveSummary.acceleration().template tensor<2>() += D<2>(R, r) * activeMass.mass() * _g;
             }
             if constexpr (PassiveOrder >= 3) {
-                // todo: these coefficients were determined experimentally, and are probably not quite right!
                 passiveSummary.acceleration().template tensor<3>() += D<3>(R, r) * activeMass.mass() * _g / 2.0f;
                 passiveSummary.acceleration().vector() +=
                         (D<3>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
@@ -378,10 +377,13 @@ namespace NBody::Physics {
             if constexpr (PassiveOrder >= 4) {
                 // todo: these coefficients were determined experimentally, and are probably not quite right!
                 passiveSummary.acceleration().template tensor<4>() += D<4>(R, r) * activeMass.mass() * _g / 6.0f;
-                passiveSummary.acceleration().template tensor<2>() +=
+                passiveSummary.acceleration().template tensor<2>() -=
                         (D<4>(R, r) * activeSummary.moment().template tensor<2>()) / 2.0f;
                 passiveSummary.acceleration().vector() +=
                         (D<4>(R, r) * activeSummary.moment().template tensor<3>()) / 6.0f;
+            }
+            if constexpr (PassiveOrder >= 5) {
+                // todo
             }
             // todo: higher orders
         }
