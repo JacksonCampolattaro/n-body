@@ -8,6 +8,7 @@
 #include "RMSGrader.h"
 #include "Generator.h"
 #include "bestTheta.h"
+#include "field.h"
 #include "gravitationalViewingSheet.h"
 
 #include <gtkmm.h>
@@ -59,170 +60,86 @@ std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations
     return (finishTime - startTime) / iterations;
 }
 
-template<typename CandidateSolver>
+template<typename... Solvers>
+void sweepN(const std::vector<std::size_t> &nValues, std::size_t iterations) {
+
+    // Open a CSV file and add the header
+    std::ofstream file{"benchmarks/sweep-n.csv"};
+    file << "n,solver-id,Solver,θ,Time (s)" << std::endl;
+
+    Rule rule{};
+
+    for (std::size_t n: nValues) {
+
+        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n);
+        ConstitutionalGrader grader(scenario, rule);
+
+        // For each solver being tested
+        ([&] {
+
+            // Set up the simulation
+            Simulation simulation;
+            from_json(scenario, simulation);
+            Solvers solver(simulation, rule);
+
+            // Find an appropriate value of theta
+            solver.theta() = searchTheta<Solvers>(scenario, grader, {0.1, 0.9});
+
+            // Time the simulation
+            auto time = timedRun(solver, iterations);
+            spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
+
+            // Write the results to CSV
+            file << fmt::format(
+                    "{},{},{},{},{}\n",
+                    n, solver.id(), solver.name(), solver.theta(), time.count()
+            );
+
+        }(), ...);
+    }
+}
+
+template<typename... Solvers>
 void sweepTheta(json scenario, const std::vector<float> &thetaValues) {
 
+    // Open a CSV file and add the header
+    std::ofstream file{"benchmarks/sweep-theta.csv"};
+    file << "n,solver-id,Solver,θ,Time (s),% Error (Constitutional)" << std::endl;
+
     Rule rule{};
 
-    ConstitutionalGrader grader{scenario, rule};
-
-    std::map<std::string, std::vector<float>> results{
-            {"theta", {}},
-            {"time",  {}},
-            {"error", {}}
-    };
-
-    spdlog::info("Performing tests for different values of theta");
-    boost::progress_display display(thetaValues.size());
     for (float theta: thetaValues) {
-
-        Simulation simulation;
-        from_json(scenario, simulation);
-
-        CandidateSolver solver{simulation, rule};
-        solver.theta() = theta;
-
-        results["theta"].emplace_back(theta);
-        results["time"].emplace_back(timedStep(solver).count());
-        results["error"].emplace_back(grader.error(simulation));
-
-        ++display;
-    }
-
-    // todo: there should be a way to get a solver's name statically
-    Simulation simulation;
-    CandidateSolver s{simulation, rule};
-
-    matplot::title(fmt::format(
-            "Error and Compute time of a {} solver for different values of θ ({} particles)",
-            s.name(), scenario["particles"].size()
-    ));
-    matplot::xlabel("θ");
-    matplot::plot(results["theta"], results["error"])->line_width(2.0f);
-    matplot::ylabel("Error (Constitutional)");
-    matplot::yticks({0.5});
-    matplot::hold(true);
-    matplot::plot(results["theta"], results["time"])->line_width(2.0f).use_y2(true);
-    matplot::y2label("Iteration Time (S)");
-    matplot::show();
-
-}
-
-template<typename CandidateSolver>
-void sweepN(const std::vector<std::size_t> &nValues, float theta, std::size_t i) {
-
-    Rule rule{};
-
-    std::map<std::string, std::vector<float>> results{
-            {"n",    {}},
-            {"time", {}},
-    };
-
-    for (std::size_t n: nValues) {
-
-        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 50);
-
-        Simulation simulation;
-        from_json(scenario, simulation);
-
-        CandidateSolver solver{simulation, rule};
-        solver.theta() = theta;
-
-        results["n"].emplace_back(n);
-        results["time"].emplace_back(timedRun(solver, i).count() / (float) i);
-    }
-
-    // todo: there should be a way to get a solver's name statically
-    Simulation simulation;
-    CandidateSolver s{simulation, rule};
-
-    matplot::title(fmt::format(
-            "Compute time of a {} solver for different simulation sizes (θ={})",
-            s.name(), theta
-    ));
-    matplot::xlabel("# of random particles (n)");
-    matplot::plot(results["n"], results["time"])->line_width(2.0f);
-    matplot::ylabel("Iteration Time (S)");
-    matplot::show();
-}
-
-
-void sweepN(const std::vector<std::size_t> &nValues, std::size_t i) {
-
-    Rule rule{};
-
-    std::map<std::string, std::vector<float>> results{
-            {"n",    {}},
-            {"time", {}},
-    };
-
-    for (std::size_t n: nValues) {
-
-        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n, 0);
 
         ConstitutionalGrader grader(scenario, rule);
 
-        Simulation barnesHutSimulation;
-        from_json(scenario, barnesHutSimulation);
-        Simulation reverseBarnesHutSimulation;
-        from_json(scenario, reverseBarnesHutSimulation);
-        Simulation linearBVHSimulation;
-        from_json(scenario, linearBVHSimulation);
-        Simulation mvdrSimulation;
-        from_json(scenario, mvdrSimulation);
-        Simulation quadrupoleMvdrSimulation;
-        from_json(scenario, quadrupoleMvdrSimulation);
-        Simulation fmmSimulation;
-        from_json(scenario, fmmSimulation);
+        // For each solver being tested
+        ([&] {
 
-        BarnesHutSolver barnesHutSolver{barnesHutSimulation, rule};
-        barnesHutSolver.theta() = 0.35312504;
-        //barnesHutSolver.theta() = searchTheta<BarnesHutSolver>(scenario, grader, {0.1, 0.5});
-        spdlog::info("{} theta = {}", barnesHutSolver.name(), barnesHutSolver.theta());
-//        QuadrupoleReverseBarnesHutSolver reverseBarnesHutSolver{reverseBarnesHutSimulation, rule};
-//        reverseBarnesHutSolver.theta() = 0.16250001;
-//        //reverseBarnesHutSolver.theta() = searchTheta<QuadrupoleReverseBarnesHutSolver>(scenario, grader, {0.1, 0.5});
-//        spdlog::info("{} theta = {}", reverseBarnesHutSolver.name(), reverseBarnesHutSolver.theta());
-//        LinearBVHSolver linearBVHSolver{linearBVHSimulation, rule};
-//        linearBVHSolver.theta() = 0.15625;
-//        //linearBVHSolver.theta() = searchTheta<LinearBVHSolver>(scenario, grader, {0.1, 0.5});
-//        spdlog::info("{} theta = {}", linearBVHSolver.name(), linearBVHSolver.theta());
-        ImplicitMVDRSolver mvdrSolver{mvdrSimulation, rule};
-        //mvdrSolver.theta() = 0.15625;
-        mvdrSolver.theta() = searchTheta<ImplicitMVDRSolver>(scenario, grader, {0.1, 0.9});
-        spdlog::info("{} theta = {}", mvdrSolver.name(), mvdrSolver.theta());
-        QuadrupoleImplicitMVDRSolver quadrupoleMvdrSolver{quadrupoleMvdrSimulation, rule};
-        //quadrupoleMvdrSolver.theta() = 0.17500001;
-        quadrupoleMvdrSolver.theta() = searchTheta<QuadrupoleImplicitMVDRSolver>(scenario, grader, {0.1, 0.9});
-        spdlog::info("{} theta = {}", quadrupoleMvdrSolver.name(), quadrupoleMvdrSolver.theta());
-        FMMSolver fmmSolver{fmmSimulation, rule};
-        fmmSolver.theta() = 0.16250001;
-        //fmmSolver.theta() = searchTheta<FMMSolver>(scenario, grader, {0.1, 0.5});
-        spdlog::info("{} theta = {}", fmmSolver.name(), fmmSolver.theta());
+            // Set up the simulation
+            Simulation simulation;
+            from_json(scenario, simulation);
+            Solvers solver(simulation, rule);
+            solver.theta() = theta;
 
-        results["n"].emplace_back(n);
-        results["barnes-hut-time"].emplace_back(timedRun(barnesHutSolver, i).count() / (float) i);
-//        results["reverse-barnes-hut-time"].emplace_back(timedRun(reverseBarnesHutSolver, i).count() / (float) i);
-//        results["linear-bvh-time"].emplace_back(timedRun(linearBVHSolver, i).count() / (float) i);
-        results["mvdr-time"].emplace_back(timedRun(mvdrSolver, i).count() / (float) i);
-        results["quadrupole-mvdr-time"].emplace_back(timedRun(quadrupoleMvdrSolver, i).count() / (float) i);
-        results["fmm-time"].emplace_back(timedRun(fmmSolver, i).count() / (float) i);
+            // Time the simulation
+            auto time = timedStep(solver);
+
+            // Measure error
+            auto error = grader.error(simulation);
+
+            spdlog::info(
+                    "{} (θ={}) --> {} s / iteration, {} % error",
+                    solver.name(), solver.theta(), time.count(), error
+            );
+
+            // Write the results to CSV
+            file << fmt::format(
+                    "{},{},{},{},{},{}\n",
+                    simulation.size(), solver.id(), solver.name(), solver.theta(), time.count(), error
+            );
+
+        }(), ...);
     }
-
-    matplot::title(fmt::format(
-            "Compute times of each solver for different simulation sizes"
-    ));
-    matplot::xlabel("# of random particles (n)");
-    matplot::ylabel("Iteration Time (S)");
-    matplot::hold(true);
-    matplot::plot(results["n"], results["barnes-hut-time"])->line_width(2.0f);
-//    matplot::plot(results["n"], results["reverse-barnes-hut-time"])->line_width(2.0f);
-//    matplot::plot(results["n"], results["linear-bvh-time"])->line_width(2.0f);
-    matplot::plot(results["n"], results["mvdr-time"])->line_width(2.0f);
-    matplot::plot(results["n"], results["quadrupole-mvdr-time"])->line_width(2.0f);
-    matplot::plot(results["n"], results["fmm-time"])->line_width(2.0f);
-    matplot::legend({"Barnes-Hut", "Reverse Barnes-Hut", "Linear-BVH", "MVDR", "Quadrupole MVDR", "FMM"});
-    matplot::show();
 }
 
 template<typename CandidateSolver>
@@ -281,7 +198,7 @@ int main(int argc, char *argv[]) {
 
     //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000, 0);
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
@@ -290,17 +207,6 @@ int main(int argc, char *argv[]) {
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
     //plotFieldApproximations(scenario);
-
-    std::vector<float> thetaValues{};
-    for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
-    //sweepTheta<FMMSolver>(scenario, thetaValues);
-    //sweepTheta<MVDRSolver>(scenario, thetaValues);
-    //sweepTheta<QuadrupoleMVDRSolver>(scenario, thetaValues);
-    //sweepTheta<BarnesHutSolver>(scenario, thetaValues);
-    //sweepTheta<QuadrupoleBarnesHutSolver>(scenario, thetaValues);
-    //sweepTheta<OctupoleBarnesHutSolver>(scenario, thetaValues);
-    //sweepTheta<LinearBVHSolver>(scenario, thetaValues);
-    //sweepTheta<ReverseBarnesHutSolver>(scenario, thetaValues);
 
 
     //realPerformance<BarnesHutSolver>(scenario, grader);
@@ -332,10 +238,10 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
 
-    spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
 
     //spdlog::info(accuracy<MVDRSolver>(scenario, grader, 0.3));
     //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.3));
@@ -355,17 +261,29 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.2));
 
     std::vector<std::size_t> nValues{};
-    for (int i = 10'000; i < 500'000; i *= 1.5) nValues.emplace_back(i);
-    //sweepN(nValues, 4);
-    //sweepN<MVDRSolver>(nValues, 0.8, 5);
+    for (int i = 1'000; i < 5'000; i *= 1.5) nValues.emplace_back(i);
+//    sweepN<
+//            MVDRSolver,
+//            ImplicitMVDRSolver,
+//            QuadrupoleMVDRSolver,
+//            QuadrupoleImplicitMVDRSolver,
+//            OctupoleMVDRSolver,
+//            OctupoleImplicitMVDRSolver
+//    >(nValues, 4);
 
+    std::vector<float> thetaValues{};
+    for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
+//    sweepTheta<
+//            FMMSolver,
+//            ImplicitFMMSolver
+//    >(scenario, thetaValues);
 
-    //json scenario = Generator::createScenario(&Generator::uniformRandomVolume, 100'000, 10);
+    sampleExactField(Generator::trio());
 
-//    Rule rule{};
-//    Simulation simulation;
-//    from_json(scenario, simulation);
-//    QuadrupoleImplicitFMMSolver solver{simulation, rule};
-//    solver.theta() = 0.2;
-//    spdlog::info("{} s", timedStep(solver).count());
+    //    Rule rule{};
+    //    Simulation simulation;
+    //    from_json(scenario, simulation);
+    //    QuadrupoleImplicitFMMSolver solver{simulation, rule};
+    //    solver.theta() = 0.2;
+    //    spdlog::info("{} s", timedStep(solver).count());
 }

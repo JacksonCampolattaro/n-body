@@ -4,7 +4,7 @@ find_package(spdlog REQUIRED)
 find_package(Matplot++ REQUIRED)
 
 add_executable(Benchmark
-        main.cpp Comparison.h Generator.h ConstitutionalGrader.h Grader.h bestTheta.h RMSGrader.h MeanGrader.h gravitationalViewingSheet.h)
+        main.cpp Comparison.h Generator.h ConstitutionalGrader.h Grader.h bestTheta.h RMSGrader.h MeanGrader.h gravitationalViewingSheet.h field.h)
 
 target_link_libraries(Benchmark PUBLIC
 

@@ -29,7 +29,7 @@ namespace NBody {
             from_json(_scenario, _referenceSimulation);
 
             // Run the simulation one step, to prepare the reference
-            spdlog::debug("Performing Naive step, for accuracy reference");
+            spdlog::info("Performing Naive step, for accuracy reference");
             NaiveSolver referenceSolver{_referenceSimulation, _rule};
             referenceSolver.step();
         }

@@ -134,9 +134,9 @@ namespace NBody::Generator {
     }
 
     static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
-                               std::size_t n, std::size_t iterations) {
+                               std::size_t n) {
         Simulation simulation;
-        bake(generator(simulation, n), iterations);
+        generator(simulation, n);
 
         json scenario;
         to_json(scenario, simulation);
