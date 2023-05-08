@@ -62,7 +62,7 @@ namespace NBody {
                     std::vector<std::reference_wrapper<const typename ActiveTree::Node>> activeNodes{
                             _activeTree.root()
                     };
-                    Descent::adaptiveDualTreeImplicitField(
+                    Descent::adaptiveDualTreeImplicitField<typename ActiveTree::Node>(
                             activeNodes, node.get(),
                             _descentCriterion, _rule,
                             _simulation.template view<const Position, const Mass>(),

@@ -23,7 +23,7 @@ namespace NBody::Descent {
             std::span<std::reference_wrapper<const ActiveNode>>,
             std::span<std::reference_wrapper<const ActiveNode>>
     > partitionByDescentCriterion(
-            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+            std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode, const DescentCriterion &descentCriterion
     ) {
 
@@ -59,7 +59,7 @@ namespace NBody::Descent {
 
     template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
     inline void adaptiveDualTreeImplicitField(
-            std::vector<std::reference_wrapper<const ActiveNode>> &activeNodes,
+            std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, const Physics::Rule &rule,
             const entt::basic_view<
@@ -99,22 +99,10 @@ namespace NBody::Descent {
                     localField
             );
 
-        //        // Leaf interactions decay to passive-tree
-        //        for (auto &activeNode: leafActiveNodes) {
-        //            std::vector<Entity> activeEntities{activeNode.get().contents().begin(), activeNode.get().contents().end()};
-        //            std::span<Entity> activeEntitiesView{activeEntities};
-        //            passiveTreeImplicitField(
-        //                    activeEntitiesView, activeContext,
-        //                    passiveNode, passiveContext,
-        //                    descentCriterion, rule,
-        //                    localField
-        //            );
-        //        }
-
         // If this is a leaf node
         if (passiveNode.isLeaf()) {
 
-            std::span<std::reference_wrapper<const ActiveNode>> _closeActiveNodes{
+            std::span<std::reference_wrapper<const ActiveNode>> closeActiveNodes{
                     farActiveNodes.end(),
                     activeNodes.end()
             };
@@ -123,8 +111,7 @@ namespace NBody::Descent {
             for (auto passiveEntity: passiveNode.contents()) {
 
                 // Switch to active-tree
-                for (auto &activeNode: _closeActiveNodes) {
-
+                for (auto &activeNode: closeActiveNodes) {
                     passiveContext.get<Acceleration>(passiveEntity) += activeTree(
                             activeNode.get(),
                             passiveContext.get<const Position>(passiveEntity),
@@ -146,8 +133,8 @@ namespace NBody::Descent {
             // Descend nearby nodes to create the active node list for the next depth
             std::vector<std::reference_wrapper<const ActiveNode>> deeperActiveNodes{};
             deeperActiveNodes.reserve(
-                    smallActiveNodes.size()
-                    + bigActiveNodes.size() * 2 // todo: this is different depending on the tree type!
+                    smallActiveNodes.size() +
+                    bigActiveNodes.size() * 2 // todo: this is different depending on the tree type!
             );
             deeperActiveNodes.insert(deeperActiveNodes.end(), smallActiveNodes.begin(), smallActiveNodes.end());
             for (auto &activeNode: bigActiveNodes) {
@@ -157,14 +144,15 @@ namespace NBody::Descent {
                 );
             }
 
-            // The local field -- including forces from far entities -- is passed down
-            for (auto &child: passiveNode.children())
-                adaptiveDualTreeImplicitField(
+            for (auto &child: passiveNode.children()) {
+                adaptiveDualTreeImplicitField<ActiveNode>(
                         deeperActiveNodes, child,
                         descentCriterion, rule,
                         activeContext, passiveContext,
+                        // The local field -- including forces from far entities -- is passed down
                         {localField.acceleration().translated(child.center() - passiveNode.center())}
                 );
+            }
         }
 
     }

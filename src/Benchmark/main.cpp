@@ -196,9 +196,9 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
@@ -235,12 +235,12 @@ int main(int argc, char *argv[]) {
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.11));
     //spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
 
     //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
     //spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.11));
     //spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
 
     //spdlog::info(accuracy<MVDRSolver>(scenario, grader, 0.3));
@@ -262,28 +262,29 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::size_t> nValues{};
     for (int i = 1'000; i < 5'000; i *= 1.5) nValues.emplace_back(i);
-//    sweepN<
-//            MVDRSolver,
-//            ImplicitMVDRSolver,
-//            QuadrupoleMVDRSolver,
-//            QuadrupoleImplicitMVDRSolver,
-//            OctupoleMVDRSolver,
-//            OctupoleImplicitMVDRSolver
-//    >(nValues, 4);
+    //    sweepN<
+    //            MVDRSolver,
+    //            ImplicitMVDRSolver,
+    //            QuadrupoleMVDRSolver,
+    //            QuadrupoleImplicitMVDRSolver,
+    //            OctupoleMVDRSolver,
+    //            OctupoleImplicitMVDRSolver
+    //    >(nValues, 4);
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
-//    sweepTheta<
-//            FMMSolver,
-//            ImplicitFMMSolver
-//    >(scenario, thetaValues);
+    //    sweepTheta<
+    //            FMMSolver,
+    //            ImplicitFMMSolver
+    //    >(scenario, thetaValues);
 
-    sampleExactField(Generator::trio());
+    //sampleExactField(Generator::trio());
 
-    //    Rule rule{};
-    //    Simulation simulation;
-    //    from_json(scenario, simulation);
-    //    QuadrupoleImplicitFMMSolver solver{simulation, rule};
-    //    solver.theta() = 0.2;
-    //    spdlog::info("{} s", timedStep(solver).count());
+    Rule rule = grader.rule();
+    Simulation simulation;
+    from_json(scenario, simulation);
+    QuadrupoleImplicitMVDRSolver solver{simulation, rule};
+    solver.theta() = 0.4;
+    spdlog::info("{} s", timedRun(solver, 1).count());
+    spdlog::info("{} % error", grader.error(simulation));
 }

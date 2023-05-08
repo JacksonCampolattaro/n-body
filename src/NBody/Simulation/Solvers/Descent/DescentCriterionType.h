@@ -54,6 +54,27 @@ namespace NBody::Descent {
         float &theta() { return _theta; }
     };
 
+    class DualThetaDescentCriterion {
+    protected:
+
+        float _fieldTheta;
+        float _momentTheta;
+
+    public:
+
+        explicit DualThetaDescentCriterion(float fieldTheta = 0.5f, float momentTheta = 0.5f) :
+                _fieldTheta(fieldTheta), _momentTheta(momentTheta) {}
+
+        [[nodiscard]] const float &fieldTheta() const { return _fieldTheta; }
+
+        float &fieldTheta() { return _fieldTheta; }
+
+        [[nodiscard]] const float &momentTheta() const { return _momentTheta; }
+
+        float &momentTheta() { return _momentTheta; }
+
+    };
+
 }
 
 #endif //N_BODY_DESCENTCRITERIONTYPE_H

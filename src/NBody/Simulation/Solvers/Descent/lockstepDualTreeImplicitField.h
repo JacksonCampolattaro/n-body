@@ -101,16 +101,15 @@ namespace NBody::Descent {
         // If this is a leaf node
         if (passiveNode.isLeaf()) {
 
-            std::span<std::reference_wrapper<const ActiveNode>> closeActiveNodes{
-                    farActiveNodes.end(),
-                    activeNodes.end()
-            };
+            // Treat leaf-leaf interactions
+            for (auto &activeNode: leafActiveNodes)
+                Descent::none(activeNode.get(), passiveNode, rule, activeContext, passiveContext);
 
             // Apply forces for each contained particle
             for (auto passiveEntity: passiveNode.contents()) {
 
                 // Switch to active-tree
-                for (auto &activeNode: closeActiveNodes) {
+                for (auto &activeNode: nonLeafActiveNodes) {
                     passiveContext.get<Acceleration>(passiveEntity) += activeTree(
                             activeNode.get(),
                             passiveContext.get<const Position>(passiveEntity),
@@ -145,7 +144,6 @@ namespace NBody::Descent {
                     // _Don't_ pass down the local field, otherwise it'll be counted twice!
             );
 
-
             // For non-leaf, non-leaf interactions, we'll descend the tree (recursive case)
 
             // Descend other active nodes to create the active node list for the next depth
@@ -158,7 +156,7 @@ namespace NBody::Descent {
                         activeNode.get().children().begin(), activeNode.get().children().end()
                 );
 
-            for (auto &child: passiveNode.children())
+            for (auto &child: passiveNode.children()) {
                 lockstepDualTreeImplicitField<ActiveNode>(
                         deeperActiveNodes, child,
                         descentCriterion, rule,
@@ -166,6 +164,7 @@ namespace NBody::Descent {
                         // The local field -- including forces from far entities -- is passed down
                         {localField.acceleration().translated(child.center() - passiveNode.center())}
                 );
+            }
         }
 
     }
