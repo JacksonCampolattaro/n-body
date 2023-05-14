@@ -44,16 +44,16 @@ namespace NBody {
 
         int &maxDepth() { return tree().maxDepth(); }
 
-        const int &maxDepth() const { return tree().maxDepth(); }
+        [[nodiscard]] const int &maxDepth() const { return tree().maxDepth(); }
 
         int &maxLeafSize() { return tree().maxLeafSize(); }
 
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+        [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
     using QuadrupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<2>;
     using OctupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<3>;
-    using HexadecapoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<4>;
+    using HexadecupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<4>;
 
 }
 

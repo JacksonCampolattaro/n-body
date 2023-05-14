@@ -15,9 +15,15 @@ namespace NBody::Descent {
         using ThetaDescentCriterion::ThetaDescentCriterion;
 
         template<typename TreeNode>
-        inline bool operator()(const TreeNode &node, const Position &point) const {
-            float distance = glm::distance((glm::vec3) node.center(), point);
-            return (2.0f * node.sideLength() / distance) < _theta;
+        inline bool operator()(const TreeNode &activeNode, const Position &point) const {
+            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
+            return (activeNode.sideLength() / distance) < _theta && distance > activeNode.sideLength();
+        }
+
+        template<typename TreeNode>
+        inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
+            float distance = glm::distance((glm::vec3) passiveNode.center(), point);
+            return (passiveNode.sideLength() / distance) < _theta;
         }
 
         template<typename ActiveTreeNode, typename PassiveTreeNode>
@@ -27,9 +33,16 @@ namespace NBody::Descent {
             float passiveSideLength = passiveNode.sideLength();
 
             // todo: maybe I should always use center? centerOfMass might be offset
-            float distance = glm::distance((glm::vec3) activeNode.center(), passiveNode.center());
+            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-            if ((2.0f * std::max(activeSideLength, passiveSideLength) / distance) < _theta)
+            // "Exclusion region" from GADGET-4
+            // todo: this math is kinda wrong
+            auto centerToCenter = activeNode.center() - passiveNode.center();
+            if (std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) <
+                std::max(activeSideLength, passiveSideLength))
+                return Recommendation::DescendBothNodes;
+
+            if ((std::max(activeSideLength, passiveSideLength) / distance) < _theta)
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

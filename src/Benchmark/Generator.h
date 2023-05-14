@@ -104,7 +104,7 @@ namespace NBody::Generator {
 
     static json realisticGalaxy() {
         Simulation s;
-        std::ifstream file{"LOW.bin"};
+        std::ifstream file{"../n-body-scenarios/benchmark/LOW.bin"};
         from_tipsy(file, s);
         json scenario;
         to_json(scenario, s);
@@ -134,9 +134,9 @@ namespace NBody::Generator {
     }
 
     static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
-                               std::size_t n, std::size_t iterations) {
+                               std::size_t n) {
         Simulation simulation;
-        bake(generator(simulation, n), iterations);
+        generator(simulation, n);
 
         json scenario;
         to_json(scenario, simulation);

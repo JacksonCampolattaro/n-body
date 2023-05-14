@@ -29,6 +29,10 @@ namespace NBody::Descent {
         return static_cast<Recommendation>(static_cast<int>(a) | static_cast<int>(b));
     }
 
+    inline Recommendation operator&(Recommendation a, Recommendation b) {
+        return static_cast<Recommendation>(static_cast<int>(a) & static_cast<int>(b));
+    }
+
     template<typename T>
     concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {
         { t(n, p) } -> std::convertible_to<bool>;
@@ -48,6 +52,27 @@ namespace NBody::Descent {
         [[nodiscard]] const float &theta() const { return _theta; }
 
         float &theta() { return _theta; }
+    };
+
+    class DualThetaDescentCriterion {
+    protected:
+
+        float _fieldTheta;
+        float _momentTheta;
+
+    public:
+
+        explicit DualThetaDescentCriterion(float fieldTheta = 0.5f, float momentTheta = 0.5f) :
+                _fieldTheta(fieldTheta), _momentTheta(momentTheta) {}
+
+        [[nodiscard]] const float &fieldTheta() const { return _fieldTheta; }
+
+        float &fieldTheta() { return _fieldTheta; }
+
+        [[nodiscard]] const float &momentTheta() const { return _momentTheta; }
+
+        float &momentTheta() { return _momentTheta; }
+
     };
 
 }

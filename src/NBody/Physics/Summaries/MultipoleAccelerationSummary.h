@@ -15,6 +15,10 @@ namespace NBody {
 
     template<std::size_t Order>
     class MultipoleAccelerationSummary {
+    public:
+
+        using Acceleration = MultipoleAcceleration<Order>;
+
     private:
 
         MultipoleAcceleration<Order> _acceleration{};
@@ -33,7 +37,8 @@ namespace NBody {
 
     public:
 
-        MultipoleAccelerationSummary() = default;
+        MultipoleAccelerationSummary(const MultipoleAcceleration<Order> &acceleration = {}) :
+                _acceleration(acceleration) {}
 
         void summarize(const std::span<Entity> &entities, const Context &context) {}
 
