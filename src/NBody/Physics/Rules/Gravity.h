@@ -2,8 +2,8 @@
 // Created by jackcamp on 4/12/22.
 //
 
-#ifndef N_BODY_RULE_H
-#define N_BODY_RULE_H
+#ifndef N_BODY_GRAVITY_H
+#define N_BODY_GRAVITY_H
 
 #include <glm/vec3.hpp>
 #include <glm/geometric.hpp>
@@ -11,18 +11,20 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Position.h"
-#include "Acceleration.h"
-#include "Force.h"
-#include "Mass.h"
-#include "SummaryType.h"
+#include "NBody/Physics/Position.h"
+#include "NBody/Physics/Acceleration.h"
+#include "NBody/Physics/Force.h"
+#include "NBody/Physics/Mass.h"
+#include "NBody/Physics/Summaries/SummaryType.h"
 
-#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
-#include <NBody/Physics/Summaries/MultipoleMassSummary.h>
-#include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
-#include <NBody/Physics/Summaries/CenterOfMassSummary.h>
-#include <NBody/Physics/Summaries/AccelerationSummary.h>
-#include <NBody/Physics/Summaries/MultipoleAccelerationSummary.h>
+#include "NBody/Physics/Summaries/CenterOfMassSummary.h"
+#include "NBody/Physics/Summaries/MultipoleMassSummary.h"
+#include "NBody/Physics/Summaries/MultipoleAccelerationSummary.h"
+#include "NBody/Physics/Summaries/CenterOfMassSummary.h"
+#include "NBody/Physics/Summaries/AccelerationSummary.h"
+#include "NBody/Physics/Summaries/MultipoleAccelerationSummary.h"
+
+#include <NBody/Physics/Rules/RuleType.h>
 
 namespace {
 
@@ -180,7 +182,7 @@ namespace {
 
 namespace NBody::Physics {
 
-    class Rule {
+    class Gravity : public RuleBase<Gravity> {
     private:
 
         float _g;
@@ -188,13 +190,15 @@ namespace NBody::Physics {
 
     public:
 
-        explicit Rule(const float &G = 1.0, const float &epsilon = 0.0001) : _g(G), _epsilon(epsilon) {};
+        using RuleBase<Gravity>::operator();
+
+        explicit Gravity(const float &G = 1.0, const float &epsilon = 0.0001) : _g(G), _epsilon(epsilon) {};
 
     public: // Particle-particle interaction
 
-        Acceleration operator()(const Position &activePosition,
-                                const Mass &activeMass,
-                                const Position &passivePosition) const {
+        [[nodiscard]] Acceleration particleParticle(const Position &activePosition,
+                                                    const Mass &activeMass,
+                                                    const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
 
@@ -206,34 +210,19 @@ namespace NBody::Physics {
 
     public: // Node-particle interaction
 
-        template<typename ActiveNode>
-        Acceleration operator()(const ActiveNode &activeNode,
-                                const Position &passivePosition) const {
-
-            // If the active node has a center of mass, prefer that over the overall center
-            Position activePosition;
-            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
-                activePosition = activeNode.summary().centerOfMass();
-            else
-                activePosition = activeNode.center();
-
-            return operator()(activePosition, activeNode.summary(),
-                              passivePosition);
-        }
-
-        Acceleration operator()(const Position &activePosition,
-                                const CenterOfMassSummary &activeSummary,
-                                const Position &passivePosition) const {
+        [[nodiscard]] Acceleration nodeParticle(const Position &activePosition,
+                                                const CenterOfMassSummary &activeSummary,
+                                                const Position &passivePosition) const {
 
             // If the active node isn't multipolar, we can just treat it like a single particle
-            return operator()(activePosition, activeSummary.totalMass(),
-                              passivePosition);
+            return particleParticle(activePosition, activeSummary.totalMass(),
+                                    passivePosition);
         }
 
         template<std::size_t Order>
-        Acceleration operator()(const Position &activePosition,
-                                const MultipoleMassSummary<Order> &activeSummary,
-                                const Position &passivePosition) const {
+        [[nodiscard]] Acceleration nodeParticle(const Position &activePosition,
+                                                const MultipoleMassSummary<Order> &activeSummary,
+                                                const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
 
@@ -255,28 +244,17 @@ namespace NBody::Physics {
 
     public: // Particle-node interaction
 
-        template<typename PassiveNode>
-        requires PassiveSummaryType<typename PassiveNode::Summary>
-        void operator()(
-                const Position &activePosition,
-                const Mass &activeMass,
-                PassiveNode &passiveNode
-        ) const {
-            return operator()(activePosition, activeMass,
-                              passiveNode.center(), passiveNode.summary());
-        }
-
-        void operator()(
+        void particleNode(
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {
-            passiveSummary.acceleration() += operator()(activePosition, activeMass, passivePosition);
+            passiveSummary.acceleration() += particleParticle(activePosition, activeMass, passivePosition);
         }
 
         template<std::size_t PassiveOrder>
-        void operator()(
+        void particleNode(
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
@@ -303,51 +281,30 @@ namespace NBody::Physics {
 
     public: // Node-node interaction
 
-        template<typename ActiveNode, typename PassiveNode>
-        void operator()(
-                const ActiveNode &activeNode,
-                PassiveNode &passiveNode
-        ) const {
-
-            // Self-interaction should never happen!
-            assert((void *) &activeNode != (void *) &passiveNode);
-
-            // If the active node has a center of mass, prefer that over the overall center
-            Position activePosition;
-            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
-                activePosition = activeNode.summary().centerOfMass();
-            else
-                activePosition = activeNode.center();
-
-            operator()(activePosition, activeNode.summary(),
-                       passiveNode.center(), passiveNode.summary());
-
-        }
-
-        void operator()(
+        void nodeNode(
                 const Position &activePosition,
                 const CenterOfMassSummary &activeSummary,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {
-            passiveSummary.acceleration() += operator()(activePosition, activeSummary.totalMass(),
-                                                        passivePosition);
+            passiveSummary.acceleration() += particleParticle(activePosition, activeSummary.totalMass(),
+                                                              passivePosition);
         }
 
         template<std::size_t Order>
-        void operator()(
+        void nodeNode(
                 const Position &activePosition,
                 const CenterOfMassSummary &activeSummary,
                 const Position &passivePosition,
                 MultipoleAccelerationSummary<Order> &passiveSummary
         ) const {
-            operator()(activePosition, activeSummary.totalMass(),
-                       passivePosition, passiveSummary);
+            particleNode(activePosition, activeSummary.totalMass(),
+                         passivePosition, passiveSummary);
         }
 
 
         template<std::size_t ActiveOrder, std::size_t PassiveOrder>
-        void operator()(
+        void nodeNode(
                 const Position &activePosition,
                 const MultipoleMassSummary<ActiveOrder> &activeSummary,
                 const Position &passivePosition,
@@ -390,13 +347,13 @@ namespace NBody::Physics {
 
 
         template<std::size_t ActiveOrder>
-        void operator()(
+        void nodeNode(
                 const Position &activePosition,
                 const MultipoleMassSummary<ActiveOrder> &activeSummary,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {
-            passiveSummary.acceleration() += operator()(activePosition, activeSummary, passivePosition);
+            passiveSummary.acceleration() += nodeParticle(activePosition, activeSummary, passivePosition);
         }
 
     public:
@@ -408,4 +365,4 @@ namespace NBody::Physics {
 
 }
 
-#endif //N_BODY_RULE_H
+#endif //N_BODY_GRAVITY_H

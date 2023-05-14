@@ -6,7 +6,7 @@
 #define N_BODY_NONE_H
 
 #include <NBody/Simulation/Solvers/Trees/NodeType.h>
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 namespace NBody::Descent {
 
@@ -14,7 +14,7 @@ namespace NBody::Descent {
     template<NodeType ActiveNode, NodeType PassiveNode>
     inline void none(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const Physics::Rule &rule,
+            const Physics::Gravity &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass

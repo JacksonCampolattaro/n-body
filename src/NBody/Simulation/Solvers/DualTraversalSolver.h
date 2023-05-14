@@ -24,7 +24,7 @@ namespace NBody {
 
     public:
 
-        DualTraversalSolver(Simulation &simulation, Physics::Rule &rule) :
+        DualTraversalSolver(Simulation &simulation, Physics::Gravity &rule) :
                 Solver(simulation, rule),
                 _tree(simulation) {}
 

@@ -14,7 +14,7 @@ namespace NBody::Descent {
     template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
     inline void balancedLockstepDualTree(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Rule &rule,
+            const DescentCriterion &descentCriterion, const Physics::Gravity &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass

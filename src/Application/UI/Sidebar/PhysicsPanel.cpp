@@ -6,7 +6,7 @@
 
 UI::PhysicsPanel::PhysicsPanel(Gtk::Box::BaseObjectType *cobject,
                                const Glib::RefPtr<Gtk::Builder> &builder,
-                               NBody::Physics::Rule &rule) :
+                               NBody::Physics::Gravity &rule) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/physics_panel.xml"),
         _rule(rule),
         _gravityEntry(getWidget<FloatEntry>("gravity-entry")) {

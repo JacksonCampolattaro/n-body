@@ -8,7 +8,7 @@
 #include <gtkmm/notebook.h>
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Rule &rule,
+                             NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Gravity &rule,
                              NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::ApplicationWindow>(cobject, builder),
         _simulation{simulation},

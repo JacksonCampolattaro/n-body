@@ -5,7 +5,7 @@
 #ifndef N_BODY_MULTIPOLEMASSSUMMARY_H
 #define N_BODY_MULTIPOLEMASSSUMMARY_H
 
-#include <NBody/Physics/SummaryType.h>
+#include "SummaryType.h"
 #include <NBody/Physics/MultipoleMoment.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 

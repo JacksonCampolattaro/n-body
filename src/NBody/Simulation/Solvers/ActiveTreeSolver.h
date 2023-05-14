@@ -22,7 +22,7 @@ namespace NBody {
 
     public:
 
-        ActiveTreeSolver(Simulation &simulation, Physics::Rule &rule) :
+        ActiveTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
                 Solver(simulation, rule),
                 _tree(simulation) {}
 

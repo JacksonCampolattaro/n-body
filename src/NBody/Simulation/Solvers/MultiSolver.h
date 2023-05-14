@@ -27,7 +27,7 @@ namespace NBody {
 
     public:
 
-        MultiSolver(Simulation &simulation, Physics::Rule &rule) :
+        MultiSolver(Simulation &simulation, Physics::Gravity &rule) :
                 NBody::Solver(simulation, rule) {
 
             // Add available solvers

@@ -15,7 +15,7 @@ namespace NBody::Descent {
             const ActiveNode &node,
             const Position &passivePosition,
             const DescentCriterion &descentCriterion,
-            const Physics::Rule &rule,
+            const Physics::Gravity &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass

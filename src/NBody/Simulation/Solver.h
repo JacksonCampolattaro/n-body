@@ -13,7 +13,7 @@
 #include <tbb/parallel_for_each.h>
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 #include <NBody/Simulation/TypedDispatcher.h>
 
 namespace NBody {
@@ -28,7 +28,7 @@ namespace NBody {
         inline static float _dt = 0.001;
 
         Simulation &_simulation;
-        Physics::Rule &_rule;
+        Physics::Gravity &_rule;
         std::size_t _maxThreadCount = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism);
 
         mutable sigc::signal<void()> _signal_finished;
@@ -43,7 +43,7 @@ namespace NBody {
     public:
 
 
-        Solver(Simulation &simulation, Physics::Rule &rule) :
+        Solver(Simulation &simulation, Physics::Gravity &rule) :
                 Glib::ObjectBase(typeid(NBody::Solver)),
                 Glib::Object(),
                 _simulation(simulation), _rule(rule) {
@@ -80,7 +80,7 @@ namespace NBody {
 
         Simulation &simulation() { return _simulation; }
 
-        Physics::Rule &rule() { return _rule; }
+        Physics::Gravity &rule() { return _rule; }
 
         std::size_t &maxThreadCount() { return _maxThreadCount; }
 

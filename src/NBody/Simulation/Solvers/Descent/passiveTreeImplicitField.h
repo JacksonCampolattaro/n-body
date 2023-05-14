@@ -23,7 +23,7 @@ namespace NBody::Descent {
                     const Position, Acceleration
             > &passiveContext,
             const DescentCriterion &descentCriterion,
-            const Physics::Rule &rule,
+            const Physics::Gravity &rule,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 

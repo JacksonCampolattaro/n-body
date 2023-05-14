@@ -12,7 +12,7 @@ namespace NBody {
     class RMSGrader : public Grader {
     public:
 
-        explicit RMSGrader(json scenario, Physics::Rule rule = Physics::Rule{}) :
+        explicit RMSGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 Grader(scenario, rule) {}
 
         float error(const Simulation &candidateSimulation) const override {

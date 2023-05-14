@@ -16,7 +16,7 @@ namespace NBody {
 
     public:
 
-        explicit ConstitutionalGrader(json scenario, Physics::Rule rule = Physics::Rule{}) :
+        explicit ConstitutionalGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 Grader(scenario, rule) {
 
             // Determine the average force, to be used in scoring

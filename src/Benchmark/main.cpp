@@ -18,7 +18,7 @@
 
 #include <boost/progress.hpp>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
@@ -67,7 +67,7 @@ void sweepN(const std::vector<std::size_t> &nValues, std::size_t iterations) {
     std::ofstream file{"benchmarks/sweep-n.csv"};
     file << "n,solver-id,Solver,θ,Time (s)" << std::endl;
 
-    Rule rule{};
+    Gravity rule{};
 
     for (std::size_t n: nValues) {
 
@@ -106,7 +106,7 @@ void sweepTheta(json scenario, const std::vector<float> &thetaValues) {
     std::ofstream file{"benchmarks/sweep-theta.csv"};
     file << "n,solver-id,Solver,θ,Time (s),% Error (Constitutional)" << std::endl;
 
-    Rule rule{};
+    Gravity rule{};
 
     for (float theta: thetaValues) {
 
@@ -146,7 +146,7 @@ template<typename CandidateSolver>
 float accuracy(json scenario, const Grader &grader, float theta = 0.5) {
 
     // Create a solver
-    Rule rule{grader.rule()};
+    Gravity rule{grader.rule()};
     Simulation simulation;
     from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
@@ -163,7 +163,7 @@ template<typename CandidateSolver>
 std::chrono::duration<float> performance(json scenario, int i, float theta = 0.5) {
 
     // Create a solver
-    Rule rule{};
+    Gravity rule{};
     Simulation simulation;
     from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
@@ -176,7 +176,7 @@ template<typename CandidateSolver>
 std::chrono::duration<float> realPerformance(json scenario, const Grader &grader, int iterations = 1) {
 
     // Create a solver
-    Rule rule = grader.rule();
+    Gravity rule = grader.rule();
     Simulation simulation;
     from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Rule{3.0f}};
+    ConstitutionalGrader grader{scenario, Gravity{3.0f}};
 
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
@@ -278,7 +278,7 @@ int main(int argc, char *argv[]) {
 
     //sampleExactField(Generator::trio());
 
-    //    Rule rule = grader.rule();
+    //    Gravity rule = grader.rule();
     //    Simulation simulation;
     //    from_json(scenario, simulation);
     //    QuadrupoleImplicitFMMSolver solver{simulation, rule};

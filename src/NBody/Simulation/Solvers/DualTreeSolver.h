@@ -26,7 +26,7 @@ namespace NBody {
 
     public:
 
-        DualTreeSolver(Simulation &simulation, Physics::Rule &rule) :
+        DualTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
                 Solver(simulation, rule),
                 _activeTree(simulation),
                 _passiveTree(simulation) {}

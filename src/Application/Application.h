@@ -8,14 +8,14 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/MultiSolver.h>
 #include <NBody/Simulation/Runners/MultiRunner.h>
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
     NBody::MultiSolver _solver;
-    NBody::Physics::Rule _rule{1.0};
+    NBody::Physics::Gravity _rule{1.0};
     NBody::SimulationFileManager _fileManager;
     NBody::MultiRunner _runner;
 

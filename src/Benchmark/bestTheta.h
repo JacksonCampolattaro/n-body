@@ -25,7 +25,7 @@ inline float searchTheta(json scenario, const Grader &grader,
     if (range.second - range.first < 0.005f)
         return range.first;
 
-    Rule rule = grader.rule();
+    Gravity rule = grader.rule();
     Simulation candidate;
     from_json(scenario, candidate);
 

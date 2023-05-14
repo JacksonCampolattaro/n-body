@@ -126,7 +126,7 @@ namespace NBody::Generator {
 
     static Simulation &bake(Simulation &simulation, std::size_t iterations) {
         spdlog::info("\"Baking\" the simulation for {} iterations", iterations);
-        Rule rule{};
+        Gravity rule{};
         BarnesHutSolver solver{simulation, rule};
         for (int i = 0; i < iterations; ++i) solver.step();
 

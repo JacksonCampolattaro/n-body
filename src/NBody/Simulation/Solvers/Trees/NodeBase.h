@@ -8,7 +8,7 @@
 #include <span>
 
 #include <NBody/Simulation/Simulation.h>
-#include "NBody/Physics/SummaryType.h"
+#include <NBody/Physics/Summaries/SummaryType.h>
 
 namespace NBody {
 
