@@ -11,10 +11,12 @@
 
 namespace NBody {
 
-    class ReverseBarnesHutSolver : public PassiveTreeSolver<PassiveOctree, Descent::SideLengthOverDistance> {
+    template<RuleType Rule = Gravity>
+    class ReverseBarnesHutSolver : public PassiveTreeSolver<PassiveOctree, Descent::SideLengthOverDistance, Rule> {
     public:
 
-        using PassiveTreeSolver::PassiveTreeSolver;
+        using PassiveTreeSolver<PassiveOctree, Descent::SideLengthOverDistance, Rule>::PassiveTreeSolver;
+        using PassiveTreeSolver<PassiveOctree, Descent::SideLengthOverDistance, Rule>::tree;
 
         std::string id() override { return "reverse-barnes-hut"; };
 
@@ -29,10 +31,12 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleReverseBarnesHutSolver : public PassiveTreeSolver<
             MultipolePassiveOctree<Order>,
-            Descent::SideLengthOverDistance> {
+            Descent::SideLengthOverDistance,
+            Rule
+    > {
     public:
 
         using MultipoleReverseBarnesHutSolver::PassiveTreeSolver::PassiveTreeSolver;
@@ -51,9 +55,14 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    using QuadrupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<2>;
-    using OctupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<3>;
-    using HexadecupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<4>;
+    template<RuleType Rule = Gravity>
+    using QuadrupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<3, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using HexadecupoleReverseBarnesHutSolver = MultipoleReverseBarnesHutSolver<4, Rule>;
 
 }
 

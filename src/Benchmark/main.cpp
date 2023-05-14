@@ -196,9 +196,9 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
+    //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
@@ -209,57 +209,57 @@ int main(int argc, char *argv[]) {
     //plotFieldApproximations(scenario);
 
 
-    //realPerformance<BarnesHutSolver>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver>(scenario, grader);
-    //realPerformance<OctupoleBarnesHutSolver>(scenario, grader);
-    //realPerformance<ReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<QuadrupoleReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<OctupoleReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<HexadecapoleReverseBarnesHutSolver>(scenario, grader);
-    //realPerformance<LinearBVHSolver>(scenario, grader);
-    //realPerformance<QuadrupoleLinearBVHSolver>(scenario, grader);
-    //realPerformance<OctupoleLinearBVHSolver>(scenario, grader);
-    //realPerformance<FMMSolver>(scenario, grader);
-    //realPerformance<QuadrupoleFMMSolver>(scenario, grader);
-    //realPerformance<OctupoleFMMSolver>(scenario, grader);
-    //realPerformance<ImplicitFMMSolver>(scenario, grader);
-    //realPerformance<QuadrupoleImplicitFMMSolver>(scenario, grader);
-    //realPerformance<OctupoleImplicitFMMSolver>(scenario, grader);
-    //realPerformance<MVDRSolver>(scenario, grader);
-    //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
-    //realPerformance<OctupoleMVDRSolver>(scenario, grader);
-    //realPerformance<ImplicitMVDRSolver>(scenario, grader);
-    realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
-    //realPerformance<OctupoleImplicitMVDRSolver>(scenario, grader);
+    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    realPerformance<FMMSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<MVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
 
-    //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver>(scenario, grader, 0.11));
-    //spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<ReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.11));
+    //spdlog::info(accuracy<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
 
-    //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.11));
-    //spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<HexadecupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.11));
+    //spdlog::info(accuracy<TriacontadyupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
 
-    //spdlog::info(accuracy<MVDRSolver>(scenario, grader, 0.3));
-    //spdlog::info(accuracy<QuadrupoleMVDRSolver>(scenario, grader, 0.3));
-    //spdlog::info(accuracy<OctupoleMVDRSolver>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<MVDRSolver<Gravity>>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<QuadrupoleMVDRSolver<Gravity>>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<OctupoleMVDRSolver<Gravity>>(scenario, grader, 0.3));
 
-    //spdlog::info(accuracy<ImplicitMVDRSolver>(scenario, grader, 0.4));
-    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver>(scenario, grader, 0.4));
-    //spdlog::info(accuracy<OctupoleImplicitMVDRSolver>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<ImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
 
-    //spdlog::info(accuracy<FMMSolver>(scenario, grader, 0.3));
-    //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.3));
-    //spdlog::info(performance<QuadrupoleFMMSolver>(scenario, 1, 0.3).count());
-    //spdlog::info(accuracy<OctupoleFMMSolver>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<FMMSolver<Gravity>>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<QuadrupoleFMMSolver<Gravity>>(scenario, grader, 0.3));
+    //spdlog::info(performance<QuadrupoleFMMSolver<Gravity>>(scenario, 1, 0.3).count());
+    //spdlog::info(accuracy<OctupoleFMMSolver<Gravity>>(scenario, grader, 0.3));
 
-    //spdlog::info(accuracy<ImplicitFMMSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<QuadrupoleImplicitFMMSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<OctupoleImplicitFMMSolver>(scenario, grader, 0.2));
-    //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<ImplicitFMMSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader, 0.2));
+    //spdlog::info(accuracy<QuadrupoleFMMSolver<Gravity>>(scenario, grader, 0.2));
 
     std::vector<std::size_t> nValues{};
     for (int i = 1'000; i < 100'000; i *= 1.5) nValues.emplace_back(i);

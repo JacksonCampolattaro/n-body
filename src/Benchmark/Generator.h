@@ -124,15 +124,6 @@ namespace NBody::Generator {
         return scenario;
     }
 
-    static Simulation &bake(Simulation &simulation, std::size_t iterations) {
-        spdlog::info("\"Baking\" the simulation for {} iterations", iterations);
-        Gravity rule{};
-        BarnesHutSolver solver{simulation, rule};
-        for (int i = 0; i < iterations; ++i) solver.step();
-
-        return simulation;
-    }
-
     static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
                                std::size_t n) {
         Simulation simulation;

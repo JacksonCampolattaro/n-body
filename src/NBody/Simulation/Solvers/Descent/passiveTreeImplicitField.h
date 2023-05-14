@@ -36,7 +36,7 @@ namespace NBody::Descent {
         auto middle = std::partition(
                 relevantActiveEntities.begin(), relevantActiveEntities.end(),
                 [&](const Entity &e) {
-                    return descentCriterion(passiveNode, activeContext.get<const Position>(e));
+                    return descentCriterion(activeContext.get<const Position>(e), passiveNode);
                 }
         );
         std::span<Entity> farActiveEntities{relevantActiveEntities.begin(), middle};

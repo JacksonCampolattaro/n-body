@@ -26,7 +26,7 @@ namespace NBody::Descent {
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
 
-        if (descentCriterion(passiveNode, activePosition)) {
+        if (descentCriterion(activePosition, passiveNode)) {
 
             // If an approximation is allowed, compute particle-node interaction
             rule(activePosition, activeMass, passiveNode);

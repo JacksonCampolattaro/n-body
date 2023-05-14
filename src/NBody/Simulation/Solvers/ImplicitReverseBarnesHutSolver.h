@@ -11,11 +11,16 @@
 
 namespace NBody {
 
-    class ImplicitReverseBarnesHutSolver
-            : public ImplicitPassiveTreeSolver<ImplicitPassiveOctree, Descent::SideLengthOverDistance> {
+    template<RuleType Rule = Gravity>
+    class ImplicitReverseBarnesHutSolver : public ImplicitPassiveTreeSolver<
+            ImplicitPassiveOctree,
+            Descent::SideLengthOverDistance,
+            Rule
+    > {
     public:
 
-        using ImplicitPassiveTreeSolver::ImplicitPassiveTreeSolver;
+        using ImplicitPassiveTreeSolver<ImplicitPassiveOctree, Descent::SideLengthOverDistance, Rule>::ImplicitPassiveTreeSolver;
+        using ImplicitPassiveTreeSolver<ImplicitPassiveOctree, Descent::SideLengthOverDistance, Rule>::tree;
 
         std::string id() override { return "implicit-reverse-barnes-hut"; };
 
@@ -30,10 +35,12 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleImplicitReverseBarnesHutSolver : public ImplicitPassiveTreeSolver<
             MultipoleImplicitPassiveOctree<Order>,
-            Descent::SideLengthOverDistance> {
+            Descent::SideLengthOverDistance,
+            Rule
+    > {
     public:
 
         using MultipoleImplicitReverseBarnesHutSolver::ImplicitPassiveTreeSolver::ImplicitPassiveTreeSolver;
@@ -56,10 +63,17 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    using QuadrupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<2>;
-    using OctupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<3>;
-    using HexadecupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<4>;
-    using TriacontadyupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<5>;
+    template<RuleType Rule = Gravity>
+    using QuadrupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<3, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using HexadecupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<4, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using TriacontadyupoleImplicitReverseBarnesHutSolver = MultipoleImplicitReverseBarnesHutSolver<5, Rule>;
 
 }
 

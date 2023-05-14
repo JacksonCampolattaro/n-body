@@ -14,15 +14,23 @@ namespace NBody::Descent {
 
         using ThetaDescentCriterion::ThetaDescentCriterion;
 
-        template<typename TreeNode>
-        inline bool operator()(const TreeNode &node, const Position &point) const {
+        template<NodeType TreeNode>
+        inline bool operator()(const TreeNode &activeNode, const Position &point) const {
 
-            return (node.boundingBox().diagonalLength() /
-                    glm::distance((glm::vec3) node.center(), point))
+            return (activeNode.boundingBox().diagonalLength() /
+                    glm::distance((glm::vec3) activeNode.center(), point))
                    < _theta;
         }
 
-        template<typename ActiveTreeNode, typename PassiveTreeNode>
+        template<NodeType TreeNode>
+        inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
+
+            return (passiveNode.boundingBox().diagonalLength() /
+                    glm::distance((glm::vec3) passiveNode.center(), point))
+                   < _theta;
+        }
+
+        template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
         inline Recommendation operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
 
             float activeDiagonal = activeNode.boundingBox().diagonalLength();
