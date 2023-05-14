@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
     //realPerformance<QuadrupoleMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleMVDRSolver>(scenario, grader);
     //realPerformance<ImplicitMVDRSolver>(scenario, grader);
-    //realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
+    realPerformance<QuadrupoleImplicitMVDRSolver>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver>(scenario, grader, 0.2));
@@ -253,6 +253,7 @@ int main(int argc, char *argv[]) {
 
     //spdlog::info(accuracy<FMMSolver>(scenario, grader, 0.3));
     //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.3));
+    //spdlog::info(performance<QuadrupoleFMMSolver>(scenario, 1, 0.3).count());
     //spdlog::info(accuracy<OctupoleFMMSolver>(scenario, grader, 0.3));
 
     //spdlog::info(accuracy<ImplicitFMMSolver>(scenario, grader, 0.2));
@@ -261,15 +262,12 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleFMMSolver>(scenario, grader, 0.2));
 
     std::vector<std::size_t> nValues{};
-    for (int i = 1'000; i < 5'000; i *= 1.5) nValues.emplace_back(i);
-    //    sweepN<
-    //            MVDRSolver,
-    //            ImplicitMVDRSolver,
-    //            QuadrupoleMVDRSolver,
-    //            QuadrupoleImplicitMVDRSolver,
-    //            OctupoleMVDRSolver,
-    //            OctupoleImplicitMVDRSolver
-    //    >(nValues, 4);
+    for (int i = 1'000; i < 100'000; i *= 1.5) nValues.emplace_back(i);
+//    sweepN<
+//            QuadrupoleBarnesHutSolver,
+//            QuadrupoleImplicitFMMSolver,
+//            QuadrupoleImplicitMVDRSolver
+//    >(nValues, 4);
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
@@ -280,11 +278,11 @@ int main(int argc, char *argv[]) {
 
     //sampleExactField(Generator::trio());
 
-    Rule rule = grader.rule();
-    Simulation simulation;
-    from_json(scenario, simulation);
-    QuadrupoleImplicitMVDRSolver solver{simulation, rule};
-    solver.theta() = 0.4;
-    spdlog::info("{} s", timedRun(solver, 1).count());
-    spdlog::info("{} % error", grader.error(simulation));
+    //    Rule rule = grader.rule();
+    //    Simulation simulation;
+    //    from_json(scenario, simulation);
+    //    QuadrupoleImplicitFMMSolver solver{simulation, rule};
+    //    solver.theta() = 0.3566;
+    //    spdlog::info("{} s", timedRun(solver, 10).count());
+    //    spdlog::info("{} % error", grader.error(simulation));
 }

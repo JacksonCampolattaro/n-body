@@ -28,7 +28,14 @@ namespace NBody::Descent {
             float activeDiagonal = activeNode.boundingBox().diagonalLength();
             float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
 
-            float distance = glm::distance((glm::vec3) activeNode.center(), passiveNode.center());
+            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+
+            // "Exclusion region" from GADGET-4
+            // todo: might be able to use something different for non-cubic nodes!
+            auto centerToCenter = activeNode.center() - passiveNode.center();
+            if (std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) <
+                activeNode.boundingBox().maxSideLength() + passiveNode.sideLength())
+                return Recommendation::DescendBothNodes;
 
             if (std::max(activeDiagonal, passiveDiagonal) / distance < _theta)
                 return Recommendation::Approximate;

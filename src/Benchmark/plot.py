@@ -13,9 +13,6 @@ def plot_field(filename):
     # Ignore Z for a 2d plot
     data.drop(columns=['z', 'fz'], inplace=True)
 
-    min_xy = data.idxmin()
-    max_xy = data.idxmax()
-
     # Convert to a 3d array, where the third axis contains [fx, fy]
     arr = data.set_index(['x', 'y']).to_xarray().to_array().transpose().to_numpy()
 
@@ -68,9 +65,9 @@ def main():
     custom_params = {"axes.spines.right": False, "axes.spines.top": False}
     sns.set_theme(style="ticks", rc=custom_params)
 
-    # plot_sweep_n('benchmarks/sweep-n.csv')
+    plot_sweep_n('benchmarks/sweep-n.csv')
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
-    plot_sweep_error('benchmarks/sweep-theta.csv')
+    # plot_sweep_error('benchmarks/sweep-theta.csv')
     # plot_field('benchmarks/exact-field.csv')
 
 
