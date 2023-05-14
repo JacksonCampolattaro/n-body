@@ -23,7 +23,7 @@ add_library(Simulation
         Solver.h
         Solvers/MultiSolver.h
         Solvers/MortonSort.h
-        Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
+        Solvers/NaiveSolver.h
         Solvers/BarnesHutSolver.h
         Solvers/Trees/NodeType.h
         Solvers/Trees/NodeBase.h
@@ -33,9 +33,9 @@ add_library(Simulation
         Solvers/Trees/LinearBVH.h
         Runner.h
         Runners/MultiRunner.h
-        Runners/OneStepRunner.cpp Runners/OneStepRunner.h
-        Runners/NStepsRunner.cpp Runners/NStepsRunner.h
-        Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
+        Runners/OneStepRunner.h
+        Runners/NStepsRunner.h
+        Runners/ContinuousRunner.h
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h

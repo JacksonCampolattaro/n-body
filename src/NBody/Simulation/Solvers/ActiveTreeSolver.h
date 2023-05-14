@@ -13,8 +13,8 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename TreeType, DescentCriterionType DescentCriterion>
-    class ActiveTreeSolver : public Solver {
+    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    class ActiveTreeSolver : public Solver<Rule> {
     private:
 
         TreeType _tree;
@@ -22,36 +22,36 @@ namespace NBody {
 
     public:
 
-        ActiveTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
-                Solver(simulation, rule),
+        ActiveTreeSolver(Simulation &simulation, Rule &rule) :
+                Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
         void updateAccelerations() override {
 
             {
                 // Construct an octree from the actor particles
-                _statusDispatcher.emit({"Building Tree"});
+                this->_statusDispatcher.emit({"Building Tree"});
                 _tree.refine();
             }
 
             {
-                _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<Acceleration>();
+                this->_statusDispatcher.emit({"Resetting accelerations"});
+                auto view = this->_simulation.template view<Acceleration>();
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
                 // Use the octree to estimate forces on each passive particle
-                _statusDispatcher.emit({"Computing Accelerations"});
-                auto view = _simulation.template view<const Position, Acceleration>();
+                this->_statusDispatcher.emit({"Computing Accelerations"});
+                auto view = this->_simulation.template view<const Position, Acceleration>();
                 tbb::parallel_for_each(view, [&](Entity e) {
                     const auto &targetPosition = view.template get<const Position>(e);
                     auto &acceleration = view.template get<Acceleration>(e);
 
                     acceleration = Descent::activeTree(
                             _tree.root(), targetPosition,
-                            _descentCriterion, _rule,
-                            simulation().template view<const Position, const Mass>()
+                            _descentCriterion, this->_rule,
+                            this->simulation().template view<const Position, const Mass>()
                     );
                 });
             }
@@ -59,11 +59,11 @@ namespace NBody {
 
         TreeType &tree() { return _tree; }
 
-        const TreeType &tree() const { return _tree; }
+        [[nodiscard]] const TreeType &tree() const { return _tree; }
 
         float &theta() { return _descentCriterion.theta(); }
 
-        const float &theta() const { return _descentCriterion.theta(); }
+        [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
     };
 

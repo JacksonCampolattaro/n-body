@@ -17,46 +17,47 @@
 
 namespace NBody {
 
-    class MultiSolver : public NBody::Solver {
+    template<RuleType Rule = Gravity>
+    class MultiSolver : public NBody::Solver<Rule> {
     private:
 
-        Glib::RefPtr<Gio::ListStore<NBody::Solver>> _solverList{Gio::ListStore<NBody::Solver>::create()};
+        Glib::RefPtr<Gio::ListStore<NBody::Solver<Rule>>> _solverList{Gio::ListStore<NBody::Solver<Rule>>::create()};
         Glib::RefPtr<Gtk::SingleSelection> _solverSelection{Gtk::SingleSelection::create(_solverList)};
 
         sigc::connection _currentStatusConnection;
 
     public:
 
-        MultiSolver(Simulation &simulation, Physics::Gravity &rule) :
-                NBody::Solver(simulation, rule) {
+        MultiSolver(Simulation &simulation, Rule &rule) :
+                NBody::Solver<Rule>(simulation, rule) {
 
             // Add available solvers
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::NaiveSolver(_simulation, _rule)
+                    new NBody::NaiveSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::BarnesHutSolver(_simulation, _rule)
+                    new NBody::BarnesHutSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleBarnesHutSolver(_simulation, _rule)
+                    new NBody::QuadrupoleBarnesHutSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::LinearBVHSolver(_simulation, _rule)
+                    new NBody::LinearBVHSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleLinearBVHSolver(_simulation, _rule))
+                    new NBody::QuadrupoleLinearBVHSolver(this->_simulation, this->_rule))
             );
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::MVDRSolver(_simulation, _rule)
+                    new NBody::MVDRSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleMVDRSolver(_simulation, _rule)
+                    new NBody::QuadrupoleMVDRSolver(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::OctreeDualTraversalSolver(_simulation, _rule))
+                    new NBody::OctreeDualTraversalSolver(this->_simulation, this->_rule))
             );
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::FMMSolver(_simulation, _rule)
+                    new NBody::FMMSolver(this->_simulation, this->_rule)
             ));
 
             // One solver must always be selected
@@ -71,7 +72,7 @@ namespace NBody {
 
         void select(guint index) {
             _solverSelection->select_item(index, true);
-            _currentStatusConnection = get().signal_status().connect(signal_status().make_slot());
+            _currentStatusConnection = get().signal_status().connect(this->signal_status().make_slot());
             spdlog::debug("Selected {} solver", get().name());
         }
 
@@ -85,12 +86,12 @@ namespace NBody {
             spdlog::error("Unrecognized solver id \"{}\"", id);
         }
 
-        NBody::Solver &get() {
-            return *std::dynamic_pointer_cast<NBody::Solver>(_solverSelection->get_selected_item());
+        Solver<Rule> &get() {
+            return *std::dynamic_pointer_cast<NBody::Solver<Rule>>(_solverSelection->get_selected_item());
         }
 
-        const NBody::Solver &get() const {
-            return *std::dynamic_pointer_cast<NBody::Solver>(_solverSelection->get_selected_item());
+        const Solver<Rule> &get() const {
+            return *std::dynamic_pointer_cast<NBody::Solver<Rule>>(_solverSelection->get_selected_item());
         }
 
         template<typename SolverImplementation>
@@ -104,7 +105,7 @@ namespace NBody {
             return (SolverImplementation &) get(); // todo: use an exception here
         }
 
-        Glib::RefPtr<Gio::ListStore<NBody::Solver>> &listModel() { return _solverList; }
+        Glib::RefPtr<Gio::ListStore<NBody::Solver<Rule>>> &listModel() { return _solverList; }
 
         Glib::RefPtr<Gtk::SingleSelection> &selectionModel() { return _solverSelection; }
     };

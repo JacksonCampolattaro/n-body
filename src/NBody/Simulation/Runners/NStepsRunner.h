@@ -9,7 +9,8 @@
 
 namespace NBody {
 
-    class NStepsRunner : public Runner {
+    template<RuleType Rule = Gravity>
+    class NStepsRunner : public Runner<Rule> {
     private:
 
         sigc::connection _idler;
@@ -19,7 +20,7 @@ namespace NBody {
 
     public:
 
-        explicit NStepsRunner(Solver &solver) : Runner(solver) {
+        explicit NStepsRunner(Solver<Rule> &solver) : Runner<Rule>(solver) {
             solver.signal_finished().connect([this]() {
                 _completedSteps++;
             });
@@ -29,9 +30,28 @@ namespace NBody {
 
         std::string name() override { return "Run N Steps"; };
 
-        void start(std::size_t n);
+        void start(std::size_t n) {
+            spdlog::debug("Running {} steps", n);
 
-        void stop();
+            _nSteps = n;
+            _completedSteps = 0;
+
+            _idler = Glib::signal_timeout().connect([this] {
+
+                if (_completedSteps < _nSteps)
+                    this->solver().slot_step()();
+                else
+                    stop();
+
+                return true;
+            }, 1);
+        }
+
+        void stop() {
+            _idler.disconnect();
+            _completedSteps = 0;
+            signal_done.emit();
+        }
 
         std::size_t completedSteps() { return _completedSteps; }
 

@@ -13,8 +13,8 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion>
-    class ImplicitDualTreeSolver : public Solver {
+    template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    class ImplicitDualTreeSolver : public Solver<Rule> {
     private:
 
         ActiveTree _activeTree;
@@ -25,38 +25,38 @@ namespace NBody {
     public:
 
         ImplicitDualTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
-                Solver(simulation, rule),
+                Solver<Rule>(simulation, rule),
                 _activeTree(simulation),
                 _passiveTree(simulation) {}
 
         float &theta() { return _descentCriterion.theta(); }
 
-        const float &theta() const { return _descentCriterion.theta(); }
+        [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
-        const ActiveTree &activeTree() const { return _activeTree; }
+        [[nodiscard]] const ActiveTree &activeTree() const { return _activeTree; }
 
         ActiveTree &activeTree() { return _activeTree; }
 
-        const PassiveTree &passiveTree() const { return _passiveTree; }
+        [[nodiscard]] const PassiveTree &passiveTree() const { return _passiveTree; }
 
         PassiveTree &passiveTree() { return _passiveTree; }
 
         void updateAccelerations() override {
 
-            _statusDispatcher.emit({"Building active tree"});
+            this->_statusDispatcher.emit({"Building active tree"});
             _activeTree.refine();
 
-            _statusDispatcher.emit({"Building passive tree"});
+            this->_statusDispatcher.emit({"Building passive tree"});
             _passiveTree.refine();
 
             {
-                _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.template view<Acceleration>();
+                this->_statusDispatcher.emit({"Resetting accelerations"});
+                auto view = this->_simulation.template view<Acceleration>();
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
-                _statusDispatcher.emit({"Computing accelerations"});
+                this->_statusDispatcher.emit({"Computing accelerations"});
                 auto startingNodes = _passiveTree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
                     std::vector<std::reference_wrapper<const typename ActiveTree::Node>> activeNodes{
@@ -64,9 +64,9 @@ namespace NBody {
                     };
                     Descent::adaptiveDualTreeImplicitField<typename ActiveTree::Node>(
                             activeNodes, node.get(),
-                            _descentCriterion, _rule,
-                            _simulation.template view<const Position, const Mass>(),
-                            _simulation.template view<const Position, Acceleration>()
+                            _descentCriterion, this->_rule,
+                            this->_simulation.template view<const Position, const Mass>(),
+                            this->_simulation.template view<const Position, Acceleration>()
                     );
                 });
             }

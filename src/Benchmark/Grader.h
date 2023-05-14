@@ -30,7 +30,7 @@ namespace NBody {
 
             // Run the simulation one step, to prepare the reference
             spdlog::info("Performing Naive step, for accuracy reference");
-            NaiveSolver referenceSolver{_referenceSimulation, _rule};
+            NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
             referenceSolver.step();
         }
 

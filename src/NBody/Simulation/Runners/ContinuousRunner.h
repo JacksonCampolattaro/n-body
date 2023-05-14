@@ -9,22 +9,35 @@
 
 namespace NBody {
 
-    class ContinuousRunner : public Runner {
+    template<RuleType Rule = Gravity>
+    class ContinuousRunner : public Runner<Rule> {
     private:
 
         sigc::connection _idler;
 
     public:
 
-        explicit ContinuousRunner(Solver &solver) : Runner(solver) {}
+        explicit ContinuousRunner(Solver<Rule> &solver) : Runner<Rule>(solver) {}
 
         std::string id() override { return "continuous"; };
 
         std::string name() override { return "Run Continuously"; };
 
-        void start();
+        void start() {
+            spdlog::debug("Running continuously");
 
-        void stop();
+            _idler = Glib::signal_timeout().connect([this] {
+
+                // todo: this shouldn't be a slot
+                this->solver().slot_step()();
+
+                return true;
+            }, 1);
+        }
+
+        void stop() {
+            _idler.disconnect();
+        }
     };
 
 }

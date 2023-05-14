@@ -13,8 +13,8 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename DualTree, DescentCriterionType DescentCriterion>
-    class ImplicitDualTraversalSolver : public Solver {
+    template<typename DualTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    class ImplicitDualTraversalSolver : public Solver<Rule> {
     private:
 
         DualTree _tree;
@@ -24,40 +24,40 @@ namespace NBody {
     public:
 
         ImplicitDualTraversalSolver(Simulation &simulation, Physics::Gravity &rule) :
-                Solver(simulation, rule),
+                Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
         float &theta() { return _descentCriterion.theta(); }
 
-        const float &theta() const { return _descentCriterion.theta(); }
+        [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
-        const DualTree &tree() const { return _tree; }
+        [[nodiscard]] const DualTree &tree() const { return _tree; }
 
         DualTree &tree() { return _tree; }
 
         void updateAccelerations() override {
 
             {
-                _statusDispatcher.emit({"Building dual tree"});
+                this->_statusDispatcher.emit({"Building dual tree"});
                 _tree.refine();
             }
 
             {
-                _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.template view<Acceleration>();
+                this->_statusDispatcher.emit({"Resetting accelerations"});
+                auto view = this->_simulation.template view<Acceleration>();
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
-                _statusDispatcher.emit({"Computing accelerations"});
+                this->_statusDispatcher.emit({"Computing accelerations"});
                 //auto startingNodes = _tree.depthBreak(8);
                 auto startingNodes = _tree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
                     Descent::balancedLockstepDualTreeImplicitField(
                             _tree.root(), passiveNode.get(),
-                            _descentCriterion, _rule,
-                            _simulation.template view<const Position, const Mass>(),
-                            _simulation.template view<const Position, Acceleration>()
+                            _descentCriterion, this->_rule,
+                            this->_simulation.template view<const Position, const Mass>(),
+                            this->_simulation.template view<const Position, Acceleration>()
                     );
                 });
             }

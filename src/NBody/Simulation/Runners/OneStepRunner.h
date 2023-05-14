@@ -9,16 +9,23 @@
 
 namespace NBody {
 
-    class OneStepRunner : public Runner{
+    template<RuleType Rule = Gravity>
+    class OneStepRunner : public Runner<Rule> {
     public:
 
-        explicit OneStepRunner(Solver &solver) : Runner(solver) {}
+        explicit OneStepRunner(Solver<Rule> &solver) : Runner<Rule>(solver) {}
 
         std::string id() override { return "one-step"; };
 
         std::string name() override { return "Run One Step"; };
 
-        void step();
+        void step() {
+
+            spdlog::debug("Running one step");
+
+            // todo: this shouldn't be a slot
+            this->solver().slot_step()();
+        }
 
     };
 
