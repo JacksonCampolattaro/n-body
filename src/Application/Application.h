@@ -14,7 +14,7 @@ class Application : public Gtk::Application {
 private:
 
     NBody::Simulation _simulation;
-    NBody::MultiSolver _solver;
+    NBody::MultiSolver<Gravity> _solver;
     NBody::Physics::Gravity _rule{1.0};
     NBody::SimulationFileManager _fileManager;
     NBody::MultiRunner _runner;

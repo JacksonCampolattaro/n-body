@@ -33,31 +33,31 @@ namespace NBody {
 
             // Add available solvers
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::NaiveSolver(this->_simulation, this->_rule)
+                    new NBody::NaiveSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::BarnesHutSolver(this->_simulation, this->_rule)
+                    new NBody::BarnesHutSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleBarnesHutSolver(this->_simulation, this->_rule)
+                    new NBody::QuadrupoleBarnesHutSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::LinearBVHSolver(this->_simulation, this->_rule)
+                    new NBody::LinearBVHSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleLinearBVHSolver(this->_simulation, this->_rule))
+                    new NBody::QuadrupoleLinearBVHSolver<Gravity>(this->_simulation, this->_rule))
             );
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::MVDRSolver(this->_simulation, this->_rule)
+                    new NBody::MVDRSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleMVDRSolver(this->_simulation, this->_rule)
+                    new NBody::QuadrupoleMVDRSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::OctreeDualTraversalSolver(this->_simulation, this->_rule))
+                    new NBody::OctreeDualTraversalSolver<Gravity>(this->_simulation, this->_rule))
             );
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::FMMSolver(this->_simulation, this->_rule)
+                    new NBody::FMMSolver<Gravity>(this->_simulation, this->_rule)
             ));
 
             // One solver must always be selected

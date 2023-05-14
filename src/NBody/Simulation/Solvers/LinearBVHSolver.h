@@ -12,10 +12,11 @@
 
 namespace NBody {
 
-    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance> {
+    template<RuleType Rule = Gravity>
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule> {
     public:
 
-        using ActiveTreeSolver::ActiveTreeSolver;
+        using ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule>::ActiveTreeSolver;
 
         std::string id() override { return "linear-bvh"; };
 
@@ -23,10 +24,11 @@ namespace NBody {
 
     };
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleLinearBVHSolver : public ActiveTreeSolver<
-            MultipoleActiveLinearBVH<Order>, // fixme: why doesn't this make a difference to performance?
-            Descent::DiagonalOverDistance
+            MultipoleActiveLinearBVH<Order>,
+            Descent::DiagonalOverDistance,
+            Rule
     > {
     public:
 
@@ -38,8 +40,11 @@ namespace NBody {
 
     };
 
-    using QuadrupoleLinearBVHSolver = MultipoleLinearBVHSolver<2>;
-    using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3>;
+    template<RuleType Rule = Gravity>
+    using QuadrupoleLinearBVHSolver = MultipoleLinearBVHSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3, Rule>;
 
 }
 

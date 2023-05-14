@@ -20,12 +20,14 @@ namespace NBody {
     class MultiRunner {
     private:
 
-        Glib::RefPtr<Gio::ListStore<NBody::Runner>> _runnerList{Gio::ListStore<NBody::Runner>::create()};
+        Glib::RefPtr<Gio::ListStore<NBody::Runner<Gravity>>> _runnerList{
+                Gio::ListStore<NBody::Runner<Gravity>>::create()
+        };
         Glib::RefPtr<Gtk::SingleSelection> _runnerSelection{Gtk::SingleSelection::create(_runnerList)};
 
     public:
 
-        MultiRunner(Solver &solver) {
+        MultiRunner(Solver<Gravity> &solver) {
 
             // Add available runners
             _runnerList->append(Glib::make_refptr_for_instance(new ContinuousRunner(solver)));
@@ -35,10 +37,10 @@ namespace NBody {
             // One solver must always be selected
             _runnerSelection->set_can_unselect(false);
 
-//            _runnerSelection->signal_selection_changed().connect([&](guint, guint){
-//                auto &r = *_runnerSelection->get_selected_item();
-//                spdlog::debug("Selected runner type \"{}\" ({})", typeid(r).name(), _runnerSelection->get_selected());
-//            });
+            //            _runnerSelection->signal_selection_changed().connect([&](guint, guint){
+            //                auto &r = *_runnerSelection->get_selected_item();
+            //                spdlog::debug("Selected runner type \"{}\" ({})", typeid(r).name(), _runnerSelection->get_selected());
+            //            });
         }
 
         void select(guint index) {
@@ -72,8 +74,8 @@ namespace NBody {
             return (R &) get(); // todo: use an exception here
         }
 
-        Runner &get() {
-            return *std::dynamic_pointer_cast<NBody::Runner>(_runnerSelection->get_selected_item());
+        Runner<Gravity> &get() {
+            return *std::dynamic_pointer_cast<NBody::Runner<Gravity>>(_runnerSelection->get_selected_item());
         }
 
         Glib::RefPtr<Gtk::SingleSelection> &selectionModel() { return _runnerSelection; }
@@ -81,7 +83,6 @@ namespace NBody {
     };
 
 }
-
 
 
 #endif //N_BODY_MULTIRUNNER_H

@@ -15,7 +15,7 @@ namespace UI {
     class BarnesHutSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::BarnesHutSolver &_solver;
+        NBody::BarnesHutSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;
@@ -23,14 +23,14 @@ namespace UI {
 
     public:
 
-        BarnesHutSolverSettings(NBody::BarnesHutSolver &solver);
+        BarnesHutSolverSettings(NBody::BarnesHutSolver<Gravity> &solver);
 
     };
 
     class QuadrupoleBarnesHutSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::QuadrupoleBarnesHutSolver &_solver;
+        NBody::QuadrupoleBarnesHutSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;
@@ -38,7 +38,7 @@ namespace UI {
 
     public:
 
-        QuadrupoleBarnesHutSolverSettings(NBody::QuadrupoleBarnesHutSolver &solver);
+        QuadrupoleBarnesHutSolverSettings(NBody::QuadrupoleBarnesHutSolver<Gravity> &solver);
 
     };
 

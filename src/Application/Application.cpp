@@ -110,8 +110,8 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
     if (options->contains("timestep")) {
         double timestep;
         options->lookup_value("timestep", timestep);
-        NBody::Solver::timeStep() = (float) timestep;
-        spdlog::debug("Time step set to {}", NBody::Solver::timeStep());
+        NBody::Solver<Gravity>::timeStep() = (float) timestep;
+        spdlog::debug("Time step set to {}", NBody::Solver<Gravity>::timeStep());
     }
 
     if (options->contains("gravity")) {
@@ -125,8 +125,8 @@ int Application::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &
         int iterations;
         options->lookup_value("iterations", iterations);
         spdlog::debug("Running {} iterations", iterations);
-        _runner.select<NBody::NStepsRunner>();
-        _runner.get<NBody::NStepsRunner>().start(iterations);
+        _runner.select<NBody::NStepsRunner<Gravity>>();
+        _runner.get<NBody::NStepsRunner<Gravity>>().start(iterations);
     }
 
     return Gtk::Application::on_handle_local_options(options);

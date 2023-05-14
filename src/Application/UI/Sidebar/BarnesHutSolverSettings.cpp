@@ -4,7 +4,7 @@
 
 #include "BarnesHutSolverSettings.h"
 
-UI::BarnesHutSolverSettings::BarnesHutSolverSettings(NBody::BarnesHutSolver &solver) :
+UI::BarnesHutSolverSettings::BarnesHutSolverSettings(NBody::BarnesHutSolver<Gravity> &solver) :
         BuilderWidget<Gtk::Box>("/ui/barnes_hut_solver_settings.xml"),
         _solver(solver),
         _thetaEntry(getWidget<FloatEntry>("theta-float-entry")),
@@ -36,7 +36,7 @@ UI::BarnesHutSolverSettings::BarnesHutSolverSettings(NBody::BarnesHutSolver &sol
 
 }
 
-UI::QuadrupoleBarnesHutSolverSettings::QuadrupoleBarnesHutSolverSettings(NBody::QuadrupoleBarnesHutSolver &solver) :
+UI::QuadrupoleBarnesHutSolverSettings::QuadrupoleBarnesHutSolverSettings(NBody::QuadrupoleBarnesHutSolver<Gravity> &solver) :
         BuilderWidget<Gtk::Box>("/ui/barnes_hut_solver_settings.xml"),
         _solver(solver),
         _thetaEntry(getWidget<FloatEntry>("theta-float-entry")),

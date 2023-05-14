@@ -15,26 +15,26 @@ namespace UI {
     class LinearBVHSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::LinearBVHSolver &_solver;
+        NBody::LinearBVHSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
 
     public:
 
-        LinearBVHSolverSettings(NBody::LinearBVHSolver &solver);
+        LinearBVHSolverSettings(NBody::LinearBVHSolver<Gravity> &solver);
 
     };
 
     class QuadrupoleLinearBVHSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::QuadrupoleLinearBVHSolver &_solver;
+        NBody::QuadrupoleLinearBVHSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
 
     public:
 
-        QuadrupoleLinearBVHSolverSettings(NBody::QuadrupoleLinearBVHSolver &solver);
+        QuadrupoleLinearBVHSolverSettings(NBody::QuadrupoleLinearBVHSolver<Gravity> &solver);
 
     };
 

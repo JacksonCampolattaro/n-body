@@ -15,13 +15,13 @@ namespace UI {
     class NaiveSolverSettings : public Gtk::Box {
     private:
 
-        NBody::NaiveSolver &_solver;
+        NBody::NaiveSolver<Gravity> &_solver;
 
         Glib::RefPtr<Gtk::Builder> _builder;
 
     public:
 
-        NaiveSolverSettings(NBody::NaiveSolver &solver);
+        NaiveSolverSettings(NBody::NaiveSolver<Gravity> &solver);
 
     };
 

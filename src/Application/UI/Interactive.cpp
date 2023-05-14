@@ -9,7 +9,7 @@
 
 UI::Interactive::Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
                              NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Gravity &rule,
-                             NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager) :
+                             NBody::MultiSolver<Gravity> &solver, NBody::SimulationFileManager &fileManager) :
         BuilderWidget<Gtk::ApplicationWindow>(cobject, builder),
         _simulation{simulation},
         _simulationRenderer{simulation},

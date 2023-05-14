@@ -4,7 +4,7 @@
 
 #include "ContinuousRunnerController.h"
 
-UI::ContinuousRunnerController::ContinuousRunnerController(NBody::ContinuousRunner &runner) :
+UI::ContinuousRunnerController::ContinuousRunnerController(NBody::ContinuousRunner<Gravity> &runner) :
         BuilderWidget<Gtk::Box>("/ui/continuous_runner_controller.xml"),
         _runner(runner),
         _runButton(getWidget<Gtk::ToggleButton>("run-button")) {

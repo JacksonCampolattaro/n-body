@@ -11,11 +11,12 @@
 
 namespace NBody {
 
-    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance> {
+    template<RuleType Rule = Gravity>
+    class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance, Rule> {
     public:
 
-        using ActiveTreeSolver::ActiveTreeSolver;
-        using ActiveTreeSolver::tree;
+        using ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance, Rule>::ActiveTreeSolver;
+        using ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance, Rule>::tree;
 
         std::string id() override { return "barnes-hut"; };
 
@@ -30,15 +31,16 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleBarnesHutSolver : public ActiveTreeSolver<
             MultipoleActiveOctree<Order>,
-            Descent::SideLengthOverDistance
+            Descent::SideLengthOverDistance,
+            Rule
     > {
     public:
 
-        using MultipoleBarnesHutSolver<Order>::ActiveTreeSolver::ActiveTreeSolver;
-        using MultipoleBarnesHutSolver<Order>::ActiveTreeSolver::tree;
+        using MultipoleBarnesHutSolver<Order, Rule>::ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleBarnesHutSolver<Order, Rule>::ActiveTreeSolver::tree;
 
         // todo: these should be free functions
         std::string id() override { return fmt::format("barnes-hut-{}p", std::pow(2, Order)); };
@@ -54,8 +56,11 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    using QuadrupoleBarnesHutSolver = MultipoleBarnesHutSolver<2>;
-    using OctupoleBarnesHutSolver = MultipoleBarnesHutSolver<3>;
+    template<RuleType Rule = Gravity>
+    using QuadrupoleBarnesHutSolver = MultipoleBarnesHutSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleBarnesHutSolver = MultipoleBarnesHutSolver<3, Rule>;
 
 }
 

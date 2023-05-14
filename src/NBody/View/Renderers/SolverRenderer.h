@@ -59,18 +59,18 @@ namespace NBody {
             if (!_enabled) return;
 
             const auto &solver = _solver.get();
-            if (typeid(solver) == typeid(NBody::BarnesHutSolver))
+            if (typeid(solver) == typeid(NBody::BarnesHutSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::BarnesHutSolver &>(solver));
-            else if (typeid(solver) == typeid(NBody::LinearBVHSolver))
+                     dynamic_cast<const NBody::BarnesHutSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::LinearBVHSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::LinearBVHSolver &>(solver));
-            else if (typeid(solver) == typeid(NBody::MVDRSolver))
+                     dynamic_cast<const NBody::LinearBVHSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::MVDRSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::MVDRSolver &>(solver));
-            else if (typeid(solver) == typeid(NBody::OctreeDualTraversalSolver))
+                     dynamic_cast<const NBody::MVDRSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctreeDualTraversalSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::OctreeDualTraversalSolver &>(solver));
+                     dynamic_cast<const NBody::OctreeDualTraversalSolver<Gravity> &>(solver));
         }
 
         sigc::signal<void()> &signal_changed() override { return _signal_changed; };
@@ -87,28 +87,28 @@ namespace NBody {
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const BarnesHutSolver &solver) {
+                  const BarnesHutSolver<Gravity> &solver) {
             draw(transformationMatrix, projectionMatrix, solver.tree().root(),
                  0xFFFFFFAA_rgbaf);
         }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const LinearBVHSolver &solver) {
+                  const LinearBVHSolver<Gravity> &solver) {
             draw(transformationMatrix, projectionMatrix, solver.tree().root(),
                  0xFFFFFFAA_rgbaf);
         }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const MVDRSolver &solver) {
+                  const MVDRSolver<Gravity> &solver) {
             draw(transformationMatrix, projectionMatrix, solver.activeTree().root(), 0xFF000055_rgbaf);
             draw(transformationMatrix, projectionMatrix, solver.passiveTree().root(), 0x0000FF55_rgbaf);
         }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const OctreeDualTraversalSolver &solver) {
+                  const OctreeDualTraversalSolver<Gravity> &solver) {
             draw(transformationMatrix, projectionMatrix, solver.tree().root(),
                  0xFFFFFFAA_rgbaf);
         }

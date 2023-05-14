@@ -18,14 +18,14 @@ namespace UI {
     class NStepsRunnerController : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::NStepsRunner &_runner;
+        NBody::NStepsRunner<Gravity> &_runner;
 
         Gtk::Entry &_stepCountEntry;
         Gtk::ToggleButton &_runButton;
 
     public:
 
-        explicit NStepsRunnerController(NBody::NStepsRunner &runner);
+        explicit NStepsRunnerController(NBody::NStepsRunner<Gravity> &runner);
 
     };
 

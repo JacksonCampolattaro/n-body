@@ -4,7 +4,7 @@
 
 #include "OneStepRunnerController.h"
 
-UI::OneStepRunnerController::OneStepRunnerController(NBody::OneStepRunner &runner) :
+UI::OneStepRunnerController::OneStepRunnerController(NBody::OneStepRunner<Gravity> &runner) :
         BuilderWidget<Gtk::Box>("/ui/one_step_runner_controller.xml"),
         _runner(runner),
         _stepButton(getWidget<Gtk::ToggleButton>("step-button")) {

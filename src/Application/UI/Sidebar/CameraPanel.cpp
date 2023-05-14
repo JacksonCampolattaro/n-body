@@ -11,7 +11,7 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
                              const Glib::RefPtr<Gtk::Builder> &builder,
                              NBody::ArcBallControllableCamera &camera,
                              NBody::MultiRenderer &renderer,
-                             NBody::SolverRenderer &solverRenderer,
+                             NBody::SolverRenderer<Gravity> &solverRenderer,
                              NBody::Recorder &recorder) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/camera_panel.xml"),
         _positionEntry(getWidget<CompactPositionEntry>("camera-position-entry")),

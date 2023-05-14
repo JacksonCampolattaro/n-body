@@ -17,13 +17,13 @@ namespace UI {
     class ContinuousRunnerController : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::ContinuousRunner &_runner;
+        NBody::ContinuousRunner<Gravity> &_runner;
 
         Gtk::ToggleButton &_runButton;
 
     public:
 
-        explicit ContinuousRunnerController(NBody::ContinuousRunner &runner);
+        explicit ContinuousRunnerController(NBody::ContinuousRunner<Gravity> &runner);
 
     };
 

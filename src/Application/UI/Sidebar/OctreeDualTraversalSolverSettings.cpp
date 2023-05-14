@@ -4,7 +4,7 @@
 
 #include "OctreeDualTraversalSolverSettings.h"
 
-UI::OctreeDualTraversalSolverSettings::OctreeDualTraversalSolverSettings(NBody::OctreeDualTraversalSolver &solver) :
+UI::OctreeDualTraversalSolverSettings::OctreeDualTraversalSolverSettings(NBody::OctreeDualTraversalSolver<Gravity> &solver) :
         BuilderWidget<Gtk::Box>("/ui/octree_dual_traversal_solver_settings.xml"),
         _solver(solver),
         _thetaEntry(getWidget<FloatEntry>("theta-float-entry")),
