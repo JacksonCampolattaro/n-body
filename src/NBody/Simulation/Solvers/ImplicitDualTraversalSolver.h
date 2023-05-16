@@ -23,7 +23,7 @@ namespace NBody {
 
     public:
 
-        ImplicitDualTraversalSolver(Simulation &simulation, Physics::Gravity &rule) :
+        ImplicitDualTraversalSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 

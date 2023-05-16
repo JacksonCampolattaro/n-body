@@ -23,8 +23,12 @@ namespace NBody {
 
     typedef std::array<char, 64> Status;
 
-    template<RuleType Rule = Gravity>
+    template<RuleType R = Gravity>
     class Solver : public Glib::Object {
+    public:
+
+        using Rule = R;
+
     protected:
 
         inline static float _dt = 0.001;
@@ -43,7 +47,6 @@ namespace NBody {
         Glib::Dispatcher _dispatcher;
 
     public:
-
 
         Solver(Simulation &simulation, Rule &rule) :
                 Glib::ObjectBase(typeid(NBody::Solver<Rule>)),

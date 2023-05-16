@@ -19,8 +19,8 @@ namespace NBody::Physics {
 
         [[nodiscard]] Acceleration operator()(const Position &activePosition,
                                               const Mass &activeMass,
-                                              const Position &passivePosition) const {
-            return static_cast<const Implementation *>(this)->particleParticle(activePosition, activeMass,
+                                              const Position &passivePosition) {
+            return static_cast<Implementation *>(this)->particleParticle(activePosition, activeMass,
                                                                                passivePosition);
         }
 
@@ -28,7 +28,7 @@ namespace NBody::Physics {
 
         template<typename ActiveNode>
         [[nodiscard]] Acceleration operator()(const ActiveNode &activeNode,
-                                              const Position &passivePosition) const {
+                                              const Position &passivePosition) {
 
             // If the active node has a center of mass, prefer that over the overall center
             Position activePosition;
@@ -43,8 +43,8 @@ namespace NBody::Physics {
         template<ActiveSummaryType ActiveSummary>
         [[nodiscard]] Acceleration operator()(const Position &activePosition,
                                               const ActiveSummary &activeSummary,
-                                              const Position &passivePosition) const {
-            return static_cast<const Implementation *>(this)->nodeParticle(activePosition, activeSummary,
+                                              const Position &passivePosition) {
+            return static_cast<Implementation *>(this)->nodeParticle(activePosition, activeSummary,
                                                                            passivePosition);
         }
 
@@ -56,7 +56,7 @@ namespace NBody::Physics {
                 const Position &activePosition,
                 const Mass &activeMass,
                 PassiveNode &passiveNode
-        ) const {
+        ) {
             operator()(activePosition, activeMass, passiveNode.center(), passiveNode.summary());
         }
 
@@ -66,8 +66,8 @@ namespace NBody::Physics {
                 const Mass &activeMass,
                 const Position &passivePosition,
                 PassiveSummary &passiveSummary
-        ) const {
-            static_cast<const Implementation *>(this)->particleNode(activePosition, activeMass,
+        ) {
+            static_cast<Implementation *>(this)->particleNode(activePosition, activeMass,
                                                                     passivePosition, passiveSummary);
         }
 
@@ -77,7 +77,7 @@ namespace NBody::Physics {
         void operator()(
                 const ActiveNode &activeNode,
                 PassiveNode &passiveNode
-        ) const {
+        ) {
 
             // Self-interaction should never happen!
             assert((void *) &activeNode != (void *) &passiveNode);
@@ -99,8 +99,8 @@ namespace NBody::Physics {
                 const ActiveSummary &activeSummary,
                 const Position &passivePosition,
                 PassiveSummary &passiveSummary
-        ) const {
-            static_cast<const Implementation *>(this)->nodeNode(activePosition, activeSummary,
+        ) {
+            static_cast<Implementation *>(this)->nodeNode(activePosition, activeSummary,
                                                                 passivePosition, passiveSummary);
         }
 

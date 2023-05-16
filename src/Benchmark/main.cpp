@@ -18,7 +18,8 @@
 
 #include <boost/progress.hpp>
 
-#include "NBody/Physics/Rules/Gravity.h"
+#include <NBody/Physics/Rules/Gravity.h>
+#include <NBody/Physics/Rules/SimpleTrackingRule.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
@@ -160,19 +161,6 @@ float accuracy(json scenario, const Grader &grader, float theta = 0.5) {
 }
 
 template<typename CandidateSolver>
-std::chrono::duration<float> performance(json scenario, int i, float theta = 0.5) {
-
-    // Create a solver
-    Gravity rule{};
-    Simulation simulation;
-    from_json(scenario, simulation);
-    CandidateSolver solver{simulation, rule};
-    solver.theta() = theta;
-
-    return timedRun(solver, i);
-}
-
-template<typename CandidateSolver>
 std::chrono::duration<float> realPerformance(json scenario, const Grader &grader, int iterations = 1) {
 
     // Create a solver
@@ -188,6 +176,22 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
     auto time = timedRun(solver, iterations);
     spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
     return time;
+}
+
+template<typename CandidateSolver>
+void approximationRatio(json scenario, const Grader &grader) {
+
+    SimpleTrackingRule<Gravity> rule{grader.rule()};
+    Simulation simulation;
+    from_json(scenario, simulation);
+    CandidateSolver solver{simulation, rule};
+    solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
+
+    auto time = timedStep(solver);
+    spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
+    std::cout << "Interaction counts: " << rule;
+    spdlog::info("Approximation ratio: {}",
+                 (float) rule.totalCount() / (float) (simulation.particleCount() * simulation.particleCount()));
 }
 
 int main(int argc, char *argv[]) {
@@ -209,29 +213,29 @@ int main(int argc, char *argv[]) {
     //plotFieldApproximations(scenario);
 
 
-    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
-    realPerformance<FMMSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<MVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //    realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //    realPerformance<FMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    //    realPerformance<MVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    //    realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
@@ -263,11 +267,11 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::size_t> nValues{};
     for (int i = 1'000; i < 100'000; i *= 1.5) nValues.emplace_back(i);
-//    sweepN<
-//            QuadrupoleBarnesHutSolver,
-//            QuadrupoleImplicitFMMSolver,
-//            QuadrupoleImplicitMVDRSolver
-//    >(nValues, 4);
+    //    sweepN<
+    //            QuadrupoleBarnesHutSolver,
+    //            QuadrupoleImplicitFMMSolver,
+    //            QuadrupoleImplicitMVDRSolver
+    //    >(nValues, 4);
 
     std::vector<float> thetaValues{};
     for (int i = 1; i < 10; i++) thetaValues.emplace_back((float) i / 10.0f);
@@ -277,6 +281,12 @@ int main(int argc, char *argv[]) {
     //    >(scenario, thetaValues);
 
     //sampleExactField(Generator::trio());
+
+    approximationRatio<QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    approximationRatio<QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //    approximationRatio<QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //    approximationRatio<QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //    approximationRatio<QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
 
     //    Gravity rule = grader.rule();
     //    Simulation simulation;

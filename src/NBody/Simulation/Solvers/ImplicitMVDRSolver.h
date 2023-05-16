@@ -47,8 +47,8 @@ namespace NBody {
     > {
     public:
 
-        using MultipoleImplicitMVDRSolver<Order>::ImplicitDualTreeSolver::ImplicitDualTreeSolver;
-        using MultipoleImplicitMVDRSolver<Order>::ImplicitDualTreeSolver::passiveTree;
+        using MultipoleImplicitMVDRSolver<Order, Rule>::ImplicitDualTreeSolver::ImplicitDualTreeSolver;
+        using MultipoleImplicitMVDRSolver<Order, Rule>::ImplicitDualTreeSolver::passiveTree;
 
         std::string id() override { return fmt::format("implicit-mvdr-{}p", std::pow(2, Order)); };
 

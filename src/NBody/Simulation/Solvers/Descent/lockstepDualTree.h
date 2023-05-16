@@ -13,10 +13,10 @@
 
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void lockstepDualTree(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Gravity &rule,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
@@ -37,21 +37,15 @@ namespace NBody::Descent {
             // node-node interaction
             rule(activeNode, passiveNode);
 
-        } else if (activeNode.isLeaf() && passiveNode.isLeaf()) {
-
-            // If both nodes are leaves & weren't far enough to summarize, then compute individual interactions
-            Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
-
         } else if (passiveNode.isLeaf()) {
 
             // If only the passive node was a leaf, continue single-tree descent
             for (auto &passiveParticle: passiveNode.contents()) {
-                passiveContext.get<Acceleration>(passiveParticle) +=
-                        Descent::activeTree(
-                                activeNode, passiveContext.get<const Position>(passiveParticle),
-                                descentCriterion, rule,
-                                activeContext
-                        );
+                passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
+                        activeNode, passiveContext.get<const Position>(passiveParticle),
+                        descentCriterion, rule,
+                        activeContext
+                );
             }
 
         } else if (activeNode.isLeaf()) {
@@ -66,6 +60,7 @@ namespace NBody::Descent {
                         passiveContext
                 );
             }
+
 
         } else {
 

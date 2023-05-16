@@ -75,6 +75,12 @@ namespace NBody::Descent {
 
     };
 
+    template<NodeType Node>
+    BoundingBox exclusionRegion(const Node &node) {
+        return {node.center() - node.boundingBox().maxSideLength(),
+                node.center() + node.boundingBox().maxSideLength()};
+    }
+
 }
 
 #endif //N_BODY_DESCENTCRITERIONTYPE_H

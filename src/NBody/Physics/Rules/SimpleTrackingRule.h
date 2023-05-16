@@ -24,15 +24,18 @@ namespace NBody::Physics {
     public:
 
         template<typename ...Args>
+        SimpleTrackingRule(Args &&... args) : _underlyingRule(std::forward<Args>(args)...) {}
+
+        template<typename ...Args>
         [[nodiscard]] Acceleration particleParticle(Args &&... args) {
             _particleParticleCount++;
             return _underlyingRule.particleParticle(std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
-        [[nodiscard]] Acceleration particleNode(Args &&... args) {
+        void particleNode(Args &&... args) {
             _particleNodeCount++;
-            return _underlyingRule.particleNode(std::forward<Args>(args)...);
+            _underlyingRule.particleNode(std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
@@ -42,11 +45,34 @@ namespace NBody::Physics {
         }
 
         template<typename ...Args>
-        [[nodiscard]] Acceleration nodeNode(Args &&... args) {
+        void nodeNode(Args &&... args) {
             _nodeNodeCount++;
-            return _underlyingRule.nodeNode(std::forward<Args>(args)...);
+            _underlyingRule.nodeNode(std::forward<Args>(args)...);
         }
 
+    public:
+
+        [[nodiscard]] std::size_t particleParticleCount() const { return _particleParticleCount; }
+
+        [[nodiscard]] std::size_t particleNodeCount() const { return _particleNodeCount; }
+
+        [[nodiscard]] std::size_t nodeParticleCount() const { return _nodeParticleCount; }
+
+        [[nodiscard]] std::size_t nodeNodeCount() const { return _nodeNodeCount; }
+
+        [[nodiscard]] std::size_t totalCount() const {
+            return _particleParticleCount + _particleNodeCount + _nodeParticleCount + _nodeNodeCount;
+        }
+
+    public:
+
+        friend std::ostream &operator<<(std::ostream &o, const SimpleTrackingRule<Rule> &rule) {
+            return o << fmt::format("pp={}, pn={}, np={}, nn={}\n",
+                                    rule._particleParticleCount,
+                                    rule._particleNodeCount,
+                                    rule._nodeParticleCount,
+                                    rule._nodeNodeCount);
+        }
 
     };
 

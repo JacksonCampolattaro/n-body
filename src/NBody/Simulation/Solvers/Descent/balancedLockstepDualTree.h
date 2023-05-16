@@ -11,10 +11,10 @@
 
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void balancedLockstepDualTree(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Gravity &rule,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
@@ -39,13 +39,11 @@ namespace NBody::Descent {
 
             if (activeNode.isLeaf()) {
 
-                for (auto &activeParticle: activeNode.contents())
-                    Descent::passiveTree(
-                            activeContext.template get<const Position>(activeParticle),
-                            activeContext.template get<const Mass>(activeParticle),
-                            passiveNode,
+                for (auto &passiveChild: passiveNode.children())
+                    Descent::balancedLockstepDualTree(
+                            activeNode, passiveChild,
                             descentCriterion, rule,
-                            passiveContext
+                            activeContext, passiveContext
                     );
 
             } else {

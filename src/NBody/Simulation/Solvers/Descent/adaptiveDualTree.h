@@ -13,10 +13,10 @@
 
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void adaptiveDualTree(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Gravity &rule,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
@@ -85,8 +85,15 @@ namespace NBody::Descent {
 
         } else if (recommendation == Recommendation::DescendBothNodes) {
 
-            if (activeNode.isLeaf() && passiveNode.isLeaf()) {
-                Descent::none(activeNode, passiveNode, rule, activeContext, passiveContext);
+            if (passiveNode.isLeaf()) {
+
+                for (auto &passiveParticle: passiveNode.contents())
+                    passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
+                            activeNode, passiveContext.get<const Position>(passiveParticle),
+                            descentCriterion, rule,
+                            activeContext
+                    );
+
             } else {
 
                 // If the passive node isn't a leaf, we'll descend all its children

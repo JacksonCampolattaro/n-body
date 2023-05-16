@@ -10,7 +10,7 @@
 
 namespace NBody::Descent {
 
-    template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void passiveTreeImplicitField(
             const std::span<Entity> &relevantActiveEntities,
             const entt::basic_view<
@@ -23,7 +23,7 @@ namespace NBody::Descent {
                     const Position, Acceleration
             > &passiveContext,
             const DescentCriterion &descentCriterion,
-            const Physics::Gravity &rule,
+            Rule &rule,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 

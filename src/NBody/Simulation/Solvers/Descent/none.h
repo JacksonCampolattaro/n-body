@@ -11,10 +11,10 @@
 namespace NBody::Descent {
 
     // todo: This is a terrible name, I need to find a more descriptive naming scheme,
-    template<NodeType ActiveNode, NodeType PassiveNode>
+    template<NodeType ActiveNode, NodeType PassiveNode, RuleType Rule = Gravity>
     inline void none(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const Physics::Gravity &rule,
+            Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass

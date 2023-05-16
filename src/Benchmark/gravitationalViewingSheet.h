@@ -113,7 +113,7 @@ void plotFieldErrorInRange(
         matplot::axes_handle &ax,
         const std::function<glm::vec3(double, double)> &approximateField,
         const Simulation &simulation,
-        const Gravity &rule,
+        Gravity &rule,
         const std::pair<float, float> &xRange,
         const std::pair<float, float> &yRange,
         double resolution = 0.05f

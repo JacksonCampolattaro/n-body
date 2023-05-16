@@ -10,13 +10,13 @@
 
 namespace NBody::Descent {
 
-    template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void passiveTree(
             const Position &activePosition,
             const Mass &activeMass,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion,
-            const Physics::Gravity &rule,
+            Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, Acceleration

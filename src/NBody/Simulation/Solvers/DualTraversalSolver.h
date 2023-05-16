@@ -24,13 +24,13 @@ namespace NBody {
 
     public:
 
-        DualTraversalSolver(Simulation &simulation, Physics::Gravity &rule) :
+        DualTraversalSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
         float &theta() { return _descentCriterion.theta(); }
 
-        const float &theta() const { return _descentCriterion.theta(); }
+        [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
         const DualTree &tree() const { return _tree; }
 
@@ -51,9 +51,7 @@ namespace NBody {
 
             {
                 this->_statusDispatcher.emit({"Computing accelerations"});
-                // This seems like it should perform better, but it actually does worse
-                //auto startingNodes = _tree.depthBreak(8);
-                auto startingNodes = _tree.loadBalancedBreak(256);
+                auto startingNodes = _tree.loadBalancedBreak(32);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
                     Descent::balancedLockstepDualTree(
                             _tree.root(), passiveNode.get(),

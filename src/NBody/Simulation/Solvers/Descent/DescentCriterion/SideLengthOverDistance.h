@@ -32,26 +32,29 @@ namespace NBody::Descent {
             float activeSideLength = activeNode.sideLength();
             float passiveSideLength = passiveNode.sideLength();
 
-            // todo: maybe I should always use center? centerOfMass might be offset
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-            // "Exclusion region" from GADGET-4
-            // todo: this math is kinda wrong
+
             auto centerToCenter = activeNode.center() - passiveNode.center();
-            if (std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) <
-                std::max(activeSideLength, passiveSideLength))
+
+            // "Exclusion region" from GADGET-4
+            if (std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) < activeSideLength)
                 return Recommendation::DescendBothNodes;
 
             if ((std::max(activeSideLength, passiveSideLength) / distance) < _theta)
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node
-            Recommendation shouldDescendPassive = (activeNode.sideLength() < passiveNode.sideLength() * 2.0f) ?
+            Recommendation shouldDescendPassive = (activeNode.sideLength() <= passiveNode.sideLength() * 2.0f) ?
                                                   Recommendation::DescendPassiveNode : Recommendation::DoNotDescend;
 
             // Descend the active node, as long as it's more than half the size of the passive node
-            Recommendation shouldDescendActive = (passiveNode.sideLength() < activeNode.sideLength() * 2.0f) ?
+            Recommendation shouldDescendActive = (passiveNode.sideLength() <= activeNode.sideLength() * 2.0f) ?
                                                  Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
+
+            if (shouldDescendActive == Recommendation::DoNotDescend &&
+                shouldDescendPassive == Recommendation::DoNotDescend)
+                spdlog::error("?");
 
             return shouldDescendPassive | shouldDescendActive;
 

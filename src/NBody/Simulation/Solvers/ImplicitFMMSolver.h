@@ -19,8 +19,8 @@ namespace NBody {
     > {
     public:
 
-        using MultipoleImplicitFMMSolver<Order>::ImplicitDualTraversalSolver::ImplicitDualTraversalSolver;
-        using MultipoleImplicitFMMSolver<Order>::ImplicitDualTraversalSolver::tree;
+        using MultipoleImplicitFMMSolver<Order, Rule>::ImplicitDualTraversalSolver::ImplicitDualTraversalSolver;
+        using MultipoleImplicitFMMSolver<Order, Rule>::ImplicitDualTraversalSolver::tree;
 
         std::string id() override {
             return fmt::format("implicit-fmm-{}p", std::pow(2, Order));
