@@ -10,6 +10,7 @@
 #include <NBody/Physics/Position.h>
 
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
+#include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 
 namespace NBody::Descent {
 
@@ -79,6 +80,19 @@ namespace NBody::Descent {
     BoundingBox exclusionRegion(const Node &node) {
         return {node.center() - node.boundingBox().maxSideLength(),
                 node.center() + node.boundingBox().maxSideLength()};
+    }
+
+    template<SummaryType S>
+    BoundingBox exclusionRegion(const LinearBVHNode<S> &node) {
+
+        auto nodeSideLengths = node.boundingBox().dimensions();
+        glm::vec3 exclusionRegionSideLengths{
+                nodeSideLengths.x + std::max(nodeSideLengths.y, nodeSideLengths.z),
+                nodeSideLengths.y + std::max(nodeSideLengths.x, nodeSideLengths.z),
+                nodeSideLengths.z + std::max(nodeSideLengths.x, nodeSideLengths.y)
+        };
+        return {node.center() - (exclusionRegionSideLengths / 2.0f),
+                node.center() + (exclusionRegionSideLengths / 2.0f)};
     }
 
 }

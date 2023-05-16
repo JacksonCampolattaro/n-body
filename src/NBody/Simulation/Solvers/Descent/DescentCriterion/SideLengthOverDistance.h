@@ -34,11 +34,7 @@ namespace NBody::Descent {
 
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-
-            auto centerToCenter = activeNode.center() - passiveNode.center();
-
-            // "Exclusion region" from GADGET-4
-            if (std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) < activeSideLength)
+            if (doIntersect(passiveNode.boundingBox(), exclusionRegion(activeNode)))
                 return Recommendation::DescendBothNodes;
 
             if ((std::max(activeSideLength, passiveSideLength) / distance) < _theta)

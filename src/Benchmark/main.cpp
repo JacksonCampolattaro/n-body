@@ -200,9 +200,9 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
@@ -284,7 +284,7 @@ int main(int argc, char *argv[]) {
 
     approximationRatio<QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
     approximationRatio<QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
-    //    approximationRatio<QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    approximationRatio<QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
     //    approximationRatio<QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
     //    approximationRatio<QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
 

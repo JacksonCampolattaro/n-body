@@ -94,6 +94,17 @@ namespace NBody::Descent {
                             activeContext
                     );
 
+            } else if (activeNode.isLeaf()) {
+
+                for (auto &activeParticle: activeNode.contents())
+                    Descent::passiveTree(
+                            activeContext.template get<const Position>(activeParticle),
+                            activeContext.template get<const Mass>(activeParticle),
+                            passiveNode,
+                            descentCriterion, rule,
+                            passiveContext
+                    );
+
             } else {
 
                 // If the passive node isn't a leaf, we'll descend all its children
