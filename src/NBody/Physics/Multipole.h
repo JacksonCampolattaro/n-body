@@ -7,6 +7,8 @@
 
 #include <NBody/Physics/SymmetricTensor3.h>
 
+#include <spdlog/spdlog.h>
+
 #include <tuple>
 #include <utility>
 

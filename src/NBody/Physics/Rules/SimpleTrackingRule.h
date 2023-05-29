@@ -16,10 +16,10 @@ namespace NBody::Physics {
 
         Rule _underlyingRule;
 
-        std::size_t _particleParticleCount = 0;
-        std::size_t _particleNodeCount = 0;
-        std::size_t _nodeParticleCount = 0;
-        std::size_t _nodeNodeCount = 0;
+        std::atomic<std::size_t> _particleParticleCount = 0;
+        std::atomic<std::size_t> _particleNodeCount = 0;
+        std::atomic<std::size_t> _nodeParticleCount = 0;
+        std::atomic<std::size_t> _nodeNodeCount = 0;
 
     public:
 

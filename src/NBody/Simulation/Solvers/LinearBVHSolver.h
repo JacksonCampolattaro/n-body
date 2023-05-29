@@ -32,7 +32,7 @@ namespace NBody {
     > {
     public:
 
-        using MultipoleLinearBVHSolver<Order>::ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleLinearBVHSolver<Order, Rule>::ActiveTreeSolver::ActiveTreeSolver;
 
         std::string id() override { return fmt::format("linear-bvh-{}p", std::pow(2, Order)); };
 

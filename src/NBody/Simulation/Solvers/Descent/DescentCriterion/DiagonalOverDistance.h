@@ -17,18 +17,15 @@ namespace NBody::Descent {
         template<NodeType TreeNode>
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
-            auto centerToCenter = activeNode.center() - point;
-            return (activeNode.boundingBox().diagonalLength() / distance) < _theta;
-            //            &&
-            //                    std::max({centerToCenter.x, centerToCenter.y, centerToCenter.z}) >
-            //                    activeNode.boundingBox().maxSideLength();
+            return (activeNode.boundingBox().diagonalLength() / distance) < _theta
+                   && !doIntersect(exclusionRegion(activeNode), point);
         }
 
         template<NodeType TreeNode>
         inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
-            // todo: this isn't currently being used
             float distance = glm::distance((glm::vec3) passiveNode.center(), point);
-            return (passiveNode.boundingBox().diagonalLength() / distance) < _theta;
+            return (passiveNode.boundingBox().diagonalLength() / distance) < _theta
+                   && !doIntersect(exclusionRegion(passiveNode), point);
         }
 
         template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
@@ -39,10 +36,8 @@ namespace NBody::Descent {
 
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-            if (doIntersect(passiveNode.boundingBox(), exclusionRegion(activeNode)))
-                return Recommendation::DescendBothNodes;
-
-            if (std::max(activeDiagonal, passiveDiagonal) / distance < _theta)
+            if ((activeDiagonal + passiveDiagonal) / distance < _theta &&
+                !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

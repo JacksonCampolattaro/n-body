@@ -9,7 +9,7 @@
 #include "Generator.h"
 #include "bestTheta.h"
 #include "field.h"
-#include "gravitationalViewingSheet.h"
+#include "fieldPlot.h"
 
 #include <gtkmm.h>
 #include <matplot/matplot.h>
@@ -20,6 +20,7 @@
 
 #include <NBody/Physics/Rules/Gravity.h>
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
+#include <NBody/Physics/Rules/AdvancedTrackingRule.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
@@ -194,6 +195,19 @@ void approximationRatio(json scenario, const Grader &grader) {
                  (float) rule.totalCount() / (float) (simulation.particleCount() * simulation.particleCount()));
 }
 
+template<typename CandidateSolver>
+void approximationTracking(json scenario, const Grader &grader) {
+
+    AdvancedTrackingRule<Gravity> rule{"benchmarks/approximation-tracking.csv", grader.rule()};
+    Simulation simulation;
+    from_json(scenario, simulation);
+    CandidateSolver solver{simulation, rule};
+    solver.theta() = 0.37;
+
+    auto time = timedStep(solver);
+    spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
+}
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
@@ -202,11 +216,11 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Gravity{3.0f}};
+    ConstitutionalGrader grader{scenario, Gravity{1.0f}};
 
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
@@ -214,28 +228,29 @@ int main(int argc, char *argv[]) {
 
 
     //    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
-    //    realPerformance<FMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
-    //    realPerformance<MVDRSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
-    //    realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //realPerformance<FMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<MVDRSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
+    //realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
@@ -255,7 +270,7 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
     //spdlog::info(accuracy<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
 
-    //spdlog::info(accuracy<FMMSolver<Gravity>>(scenario, grader, 0.3));
+    //spdlog::info(accuracy<FMMSolver<Gravity>>(scenario, grader, 0.33));
     //spdlog::info(accuracy<QuadrupoleFMMSolver<Gravity>>(scenario, grader, 0.3));
     //spdlog::info(performance<QuadrupoleFMMSolver<Gravity>>(scenario, 1, 0.3).count());
     //spdlog::info(accuracy<OctupoleFMMSolver<Gravity>>(scenario, grader, 0.3));
@@ -282,11 +297,14 @@ int main(int argc, char *argv[]) {
 
     //sampleExactField(Generator::trio());
 
-    approximationRatio<QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
-    approximationRatio<QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
-    approximationRatio<QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //approximationRatio<QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //approximationRatio<QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+    //approximationRatio<QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
     //    approximationRatio<QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
     //    approximationRatio<QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>>>(scenario, grader);
+
+    //approximationTracking<QuadrupoleBarnesHutSolver<AdvancedTrackingRule<Gravity>>>(scenario, grader);
+    //approximationTracking<QuadrupoleMVDRSolver<AdvancedTrackingRule<Gravity>>>(scenario, grader);
 
     //    Gravity rule = grader.rule();
     //    Simulation simulation;

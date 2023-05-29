@@ -62,6 +62,9 @@ namespace NBody {
     template<RuleType Rule = Gravity>
     using OctupoleBarnesHutSolver = MultipoleBarnesHutSolver<3, Rule>;
 
+    template<RuleType Rule = Gravity>
+    using HexadecupoleBarnesHutSolver = MultipoleBarnesHutSolver<4, Rule>;
+
 }
 
 

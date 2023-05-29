@@ -19,7 +19,7 @@ namespace NBody::Generator {
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};
-        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n)};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n / 10000)};
         std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
                                                                    std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};

@@ -21,7 +21,7 @@ namespace NBody::Physics {
                                               const Mass &activeMass,
                                               const Position &passivePosition) {
             return static_cast<Implementation *>(this)->particleParticle(activePosition, activeMass,
-                                                                               passivePosition);
+                                                                         passivePosition);
         }
 
     public: // Node-particle interaction
@@ -30,22 +30,21 @@ namespace NBody::Physics {
         [[nodiscard]] Acceleration operator()(const ActiveNode &activeNode,
                                               const Position &passivePosition) {
 
-            // If the active node has a center of mass, prefer that over the overall center
-            Position activePosition;
-            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
-                activePosition = activeNode.summary().centerOfMass();
-            else
-                activePosition = activeNode.center();
+            if constexpr (requires(Implementation &i) { i.nodeParticle(activeNode, passivePosition); }) {
+                return static_cast<Implementation *>(this)->nodeParticle(activeNode, passivePosition);
+            } else {
 
-            return operator()(activePosition, activeNode.summary(), passivePosition);
-        }
+                // If the active node has a center of mass, prefer that over the overall center
+                Position activePosition;
+                if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                    activePosition = activeNode.summary().centerOfMass();
+                else
+                    activePosition = activeNode.center();
 
-        template<ActiveSummaryType ActiveSummary>
-        [[nodiscard]] Acceleration operator()(const Position &activePosition,
-                                              const ActiveSummary &activeSummary,
-                                              const Position &passivePosition) {
-            return static_cast<Implementation *>(this)->nodeParticle(activePosition, activeSummary,
-                                                                           passivePosition);
+                return static_cast<Implementation *>(this)->nodeParticle(activePosition, activeNode.summary(),
+                                                                         passivePosition);
+            }
+
         }
 
     public: // Particle-node interaction
@@ -57,7 +56,13 @@ namespace NBody::Physics {
                 const Mass &activeMass,
                 PassiveNode &passiveNode
         ) {
-            operator()(activePosition, activeMass, passiveNode.center(), passiveNode.summary());
+            if constexpr (requires(Implementation &i) {
+                i.particleNode(activePosition, activeMass, passiveNode);
+            }) {
+                return static_cast<Implementation *>(this)->particleNode(activePosition, activeMass, passiveNode);
+            } else {
+                operator()(activePosition, activeMass, passiveNode.center(), passiveNode.summary());
+            }
         }
 
         template<PassiveSummaryType PassiveSummary>
@@ -68,7 +73,7 @@ namespace NBody::Physics {
                 PassiveSummary &passiveSummary
         ) {
             static_cast<Implementation *>(this)->particleNode(activePosition, activeMass,
-                                                                    passivePosition, passiveSummary);
+                                                              passivePosition, passiveSummary);
         }
 
     public: // Node-node interaction
@@ -82,15 +87,21 @@ namespace NBody::Physics {
             // Self-interaction should never happen!
             assert((void *) &activeNode != (void *) &passiveNode);
 
-            // If the active node has a center of mass, prefer that over the overall center
-            Position activePosition;
-            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
-                activePosition = activeNode.summary().centerOfMass();
-            else
-                activePosition = activeNode.center();
+            if constexpr (requires(Implementation &i) { i.nodeNode(activeNode, passiveNode); }) {
+                static_cast<Implementation *>(this)->nodeNode(activeNode, passiveNode);
+            } else {
 
-            operator()(activePosition, activeNode.summary(),
-                       passiveNode.center(), passiveNode.summary());
+                // If the active node has a center of mass, prefer that over the overall center
+                Position activePosition;
+                if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                    activePosition = activeNode.summary().centerOfMass();
+                else
+                    activePosition = activeNode.center();
+
+                operator()(activePosition, activeNode.summary(),
+                           passiveNode.center(), passiveNode.summary());
+
+            }
         }
 
         template<ActiveSummaryType ActiveSummary, PassiveSummaryType PassiveSummary>
@@ -101,7 +112,7 @@ namespace NBody::Physics {
                 PassiveSummary &passiveSummary
         ) {
             static_cast<Implementation *>(this)->nodeNode(activePosition, activeSummary,
-                                                                passivePosition, passiveSummary);
+                                                          passivePosition, passiveSummary);
         }
 
     };

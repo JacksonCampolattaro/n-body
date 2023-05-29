@@ -78,6 +78,13 @@ namespace NBody {
                                     childNode.summary().moment().template tensor<3>(),
                                     offset
                             );
+                            moment.template tensor<4>() += SymmetricTensor3<4>::sumOfOuterProducts(
+                                    SymmetricTensor3<3>::outerProduct(
+                                            childNode.summary().moment().template tensor<2>(),
+                                            offset
+                                    ),
+                                    offset
+                            );
                         }
                         if constexpr (Order >= 5) {
                             // todo

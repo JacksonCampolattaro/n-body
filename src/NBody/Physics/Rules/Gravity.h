@@ -210,6 +210,22 @@ namespace NBody::Physics {
 
     public: // Node-particle interaction
 
+        template<typename ActiveNode>
+        [[nodiscard]] Acceleration nodeParticle(const ActiveNode &activeNode,
+                                                const Position &passivePosition) {
+
+            // If the active node has a center of mass, prefer that over the overall center
+            Position activePosition;
+            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                activePosition = activeNode.summary().centerOfMass();
+            else
+                activePosition = activeNode.center();
+
+            return nodeParticle(activePosition, activeNode.summary(),
+                                passivePosition);
+
+        }
+
         [[nodiscard]] Acceleration nodeParticle(const Position &activePosition,
                                                 const CenterOfMassSummary &activeSummary,
                                                 const Position &passivePosition) const {
@@ -221,7 +237,7 @@ namespace NBody::Physics {
 
         template<std::size_t Order>
         [[nodiscard]] Acceleration nodeParticle(const Position &activePosition,
-                                                const MultipoleMassSummary<Order> &activeSummary,
+                                                const MultipoleMassSummary <Order> &activeSummary,
                                                 const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
@@ -244,6 +260,16 @@ namespace NBody::Physics {
 
     public: // Particle-node interaction
 
+        template<typename PassiveNode>
+        requires PassiveSummaryType<typename PassiveNode::Summary>
+        void particleNode(
+                const Position &activePosition,
+                const Mass &activeMass,
+                PassiveNode &passiveNode
+        ) {
+            particleNode(activePosition, activeMass, passiveNode.center(), passiveNode.summary());
+        }
+
         void particleNode(
                 const Position &activePosition,
                 const Mass &activeMass,
@@ -258,7 +284,7 @@ namespace NBody::Physics {
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
+                MultipoleAccelerationSummary <PassiveOrder> &passiveSummary
         ) const {
 
             if (activePosition == passivePosition) return;
@@ -281,6 +307,26 @@ namespace NBody::Physics {
 
     public: // Node-node interaction
 
+        template<typename ActiveNode, typename PassiveNode>
+        void nodeNode(
+                const ActiveNode &activeNode,
+                PassiveNode &passiveNode
+        ) {
+
+            // Self-interaction should never happen!
+            assert((void *) &activeNode != (void *) &passiveNode);
+
+            // If the active node has a center of mass, prefer that over the overall center
+            Position activePosition;
+            if constexpr (requires(const ActiveNode &n) { n.summary().centerOfMass(); })
+                activePosition = activeNode.summary().centerOfMass();
+            else
+                activePosition = activeNode.center();
+
+            nodeNode(activePosition, activeNode.summary(),
+                     passiveNode.center(), passiveNode.summary());
+        }
+
         void nodeNode(
                 const Position &activePosition,
                 const CenterOfMassSummary &activeSummary,
@@ -296,7 +342,7 @@ namespace NBody::Physics {
                 const Position &activePosition,
                 const CenterOfMassSummary &activeSummary,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary<Order> &passiveSummary
+                MultipoleAccelerationSummary <Order> &passiveSummary
         ) const {
             particleNode(activePosition, activeSummary.totalMass(),
                          passivePosition, passiveSummary);
@@ -306,9 +352,9 @@ namespace NBody::Physics {
         template<std::size_t ActiveOrder, std::size_t PassiveOrder>
         void nodeNode(
                 const Position &activePosition,
-                const MultipoleMassSummary<ActiveOrder> &activeSummary,
+                const MultipoleMassSummary <ActiveOrder> &activeSummary,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
+                MultipoleAccelerationSummary <PassiveOrder> &passiveSummary
         ) const {
 
             // todo: temporary constraint, for simplicity & consistency with GADGET-4
@@ -349,7 +395,7 @@ namespace NBody::Physics {
         template<std::size_t ActiveOrder>
         void nodeNode(
                 const Position &activePosition,
-                const MultipoleMassSummary<ActiveOrder> &activeSummary,
+                const MultipoleMassSummary <ActiveOrder> &activeSummary,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {

@@ -75,6 +75,10 @@ namespace NBody {
 
     template<SummaryType S>
     class LinearBVH : public Tree<LinearBVHNode<S>> {
+    private:
+
+        int _maxLeafSize = 4;
+
     public:
 
         using typename Tree<LinearBVHNode<S>>::Node;
@@ -108,13 +112,18 @@ namespace NBody {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   [&](const auto &n) {
                                       // Don't split if all entities in this node have the same morton code
-                                      return context.template get<const MortonCode>(n.contents().front()) !=
+                                      return n.contents().size() > _maxLeafSize &&
+                                             context.template get<const MortonCode>(n.contents().front()) !=
                                              context.template get<const MortonCode>(n.contents().back());
                                   },
                                   context);
             });
             summarizeTreeTop(toBeRefined, context);
         }
+
+        int &maxLeafSize() { return _maxLeafSize; }
+
+        [[nodiscard]] const int &maxLeafSize() const { return _maxLeafSize; }
 
     };
 

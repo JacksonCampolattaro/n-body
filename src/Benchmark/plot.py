@@ -54,9 +54,19 @@ def plot_sweep_theta(filename):
 
 def plot_sweep_error(filename):
     sweep_theta = pd.read_csv(filename)
-    print(sweep_theta.to_string())
+    print(sweep_theta)
 
     sns.lineplot(data=sweep_theta, x="% Error (Constitutional)", y="Time (s)", hue="Solver")
+    plt.show()
+
+
+def plot_interactions(filename):
+    interaction_list = pd.read_csv(filename)
+
+    node_node_interactions = interaction_list.loc[interaction_list['Type'] == "Node-Node"]
+    print(node_node_interactions)
+
+    sns.histplot(data=node_node_interactions, x="Passive Size", y="Active Size", bins=100)
     plt.show()
 
 
@@ -69,6 +79,7 @@ def main():
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
     # plot_sweep_error('benchmarks/sweep-theta.csv')
     # plot_field('benchmarks/exact-field.csv')
+    # plot_interactions('benchmarks/approximation-tracking.csv')
 
 
 if __name__ == "__main__":

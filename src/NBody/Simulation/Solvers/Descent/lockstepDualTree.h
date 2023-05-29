@@ -61,23 +61,12 @@ namespace NBody::Descent {
                 );
             }
 
-
         } else {
 
 
-            // If the passive node isn't a leaf, we'll descend all its children
-            std::span<PassiveNode> passiveNodesToDescend =
-                    passiveNode.isLeaf() ? std::span<PassiveNode>{&passiveNode, 1}
-                                         : passiveNode.children();
-
-            // If the active node isn't a leaf, we'll descend all its children
-            std::span<const ActiveNode> activeNodesToDescend =
-                    activeNode.isLeaf() ? std::span<const ActiveNode>{&activeNode, 1}
-                                        : activeNode.children();
-
-            // Treat every combination of force & field node
-            for (auto &childPassiveNode: passiveNodesToDescend) {
-                for (const auto &childActiveNode: activeNodesToDescend) {
+            // Treat every combination of force & field child
+            for (auto &childPassiveNode: passiveNode.children()) {
+                for (const auto &childActiveNode: activeNode.children()) {
                     Descent::lockstepDualTree(childActiveNode, childPassiveNode,
                                               descentCriterion, rule,
                                               activeContext, passiveContext);

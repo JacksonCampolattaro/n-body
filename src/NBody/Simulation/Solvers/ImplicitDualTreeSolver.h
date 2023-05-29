@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solver.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/adaptiveDualTreeImplicitField.h>
+#include <NBody/Simulation/Solvers/Descent/balancedLockstepDualTreeImplicitField.h>
 
 namespace NBody {
 

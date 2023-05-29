@@ -17,13 +17,14 @@ namespace NBody::Descent {
         template<NodeType TreeNode>
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
-            return (activeNode.sideLength() / distance) < _theta && distance > activeNode.sideLength();
+            return (activeNode.sideLength() / distance) < _theta && !exclusionRegion(activeNode).contains(point);
         }
 
         template<NodeType TreeNode>
         inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
             float distance = glm::distance((glm::vec3) passiveNode.center(), point);
-            return (passiveNode.sideLength() / distance) < _theta;
+            return (2 * passiveNode.sideLength() / distance) < _theta
+                   && !doIntersect(exclusionRegion(passiveNode), point);
         }
 
         template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
@@ -34,10 +35,11 @@ namespace NBody::Descent {
 
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-            if (doIntersect(passiveNode.boundingBox(), exclusionRegion(activeNode)))
-                return Recommendation::DescendBothNodes;
+            //            if (doIntersect(passiveNode.boundingBox(), exclusionRegion(activeNode)))
+            //                return Recommendation::DescendBothNodes;
 
-            if ((std::max(activeSideLength, passiveSideLength) / distance) < _theta)
+            if (((activeSideLength + passiveSideLength) / distance) < _theta
+                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node
@@ -47,10 +49,6 @@ namespace NBody::Descent {
             // Descend the active node, as long as it's more than half the size of the passive node
             Recommendation shouldDescendActive = (passiveNode.sideLength() <= activeNode.sideLength() * 2.0f) ?
                                                  Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
-
-            if (shouldDescendActive == Recommendation::DoNotDescend &&
-                shouldDescendPassive == Recommendation::DoNotDescend)
-                spdlog::error("?");
 
             return shouldDescendPassive | shouldDescendActive;
 
