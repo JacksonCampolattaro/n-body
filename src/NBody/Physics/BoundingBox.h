@@ -21,18 +21,19 @@ namespace NBody {
 
     public:
 
-        BoundingBox(
-                Position min = {
+        BoundingBox(const Position &min, const Position &max) : _min(min), _max(max) {}
+
+        BoundingBox() :
+                _min(
                         std::numeric_limits<float>::max(),
                         std::numeric_limits<float>::max(),
                         std::numeric_limits<float>::max()
-                },
-                Position max = {
+                ),
+                _max(
                         -std::numeric_limits<float>::max(),
                         -std::numeric_limits<float>::max(),
                         -std::numeric_limits<float>::max()
-                }
-        ) : _min(min), _max(max) {}
+                ) {}
 
         [[nodiscard]] const Position &min() const { return _min; }
 
@@ -65,6 +66,10 @@ namespace NBody {
                                       b.max().x, b.max().y, b.max().z);
         }
     };
+
+    [[nodiscard]] static bool doIntersect(const BoundingBox &b, const Position &p) {
+        return b.contains(p);
+    }
 
     [[nodiscard]] static bool doIntersect(const BoundingBox &b1, const BoundingBox &b2) {
         return glm::all(glm::greaterThanEqual(

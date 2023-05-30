@@ -16,9 +16,11 @@ namespace NBody::Descent {
 
         template<NodeType TreeNode>
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
-            return (activeNode.boundingBox().diagonalLength() / distance) < _theta
-                   && !doIntersect(exclusionRegion(activeNode), point);
+            float distance = std::min(
+                    glm::distance((glm::vec3) activeNode.center(), point),
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point)
+            );
+            return (activeNode.boundingBox().diagonalLength() / distance) < _theta;
         }
 
         template<NodeType TreeNode>
@@ -34,10 +36,14 @@ namespace NBody::Descent {
             float activeDiagonal = activeNode.boundingBox().diagonalLength();
             float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
 
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+            float distance = std::min(
+                    glm::distance((glm::vec3) activeNode.center(), passiveNode.center()),
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())
+            );
 
-            if ((activeDiagonal + passiveDiagonal) / distance < _theta &&
-                !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
+            if ((activeDiagonal + passiveDiagonal) / distance < _theta
+                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
+                    )
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

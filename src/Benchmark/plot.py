@@ -60,6 +60,13 @@ def plot_sweep_error(filename):
     plt.show()
 
 
+def plot_interaction_counts(filename):
+    interaction_counts = pd.read_csv(filename)
+
+    # sns.histplot(data=interaction_counts, x="Passive Size", y="Active Size", bins=100)
+    # plt.show()
+
+
 def plot_interactions(filename):
     interaction_list = pd.read_csv(filename)
 
@@ -75,11 +82,12 @@ def main():
     custom_params = {"axes.spines.right": False, "axes.spines.top": False}
     sns.set_theme(style="ticks", rc=custom_params)
 
-    plot_sweep_n('benchmarks/sweep-n.csv')
+    # plot_sweep_n('benchmarks/sweep-n.csv')
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
     # plot_sweep_error('benchmarks/sweep-theta.csv')
     # plot_field('benchmarks/exact-field.csv')
     # plot_interactions('benchmarks/approximation-tracking.csv')
+    plot_interaction_counts("benchmarks/interaction-counts/linear-bvh-exclusion-regions.csv")
 
 
 if __name__ == "__main__":

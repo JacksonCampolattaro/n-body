@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/MaxSideLengthOverDistance.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h>
 
 namespace NBody {
