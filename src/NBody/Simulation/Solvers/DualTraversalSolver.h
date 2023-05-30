@@ -51,7 +51,7 @@ namespace NBody {
 
             {
                 this->_statusDispatcher.emit({"Computing accelerations"});
-                auto startingNodes = _tree.loadBalancedBreak(32);
+                auto startingNodes = _tree.loadBalancedBreak(64);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename DualTree::Node> passiveNode) {
                     Descent::balancedLockstepDualTree(
                             _tree.root(), passiveNode.get(),

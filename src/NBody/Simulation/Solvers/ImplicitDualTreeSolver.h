@@ -16,7 +16,7 @@ namespace NBody {
 
     template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     class ImplicitDualTreeSolver : public Solver<Rule> {
-    private:
+    protected:
 
         ActiveTree _activeTree;
         PassiveTree _passiveTree;
@@ -60,11 +60,8 @@ namespace NBody {
                 this->_statusDispatcher.emit({"Computing accelerations"});
                 auto startingNodes = _passiveTree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
-                    std::vector<std::reference_wrapper<const typename ActiveTree::Node>> activeNodes{
-                            _activeTree.root()
-                    };
-                    Descent::adaptiveDualTreeImplicitField<typename ActiveTree::Node>(
-                            activeNodes, node.get(),
+                    Descent::balancedLockstepDualTreeImplicitField<typename ActiveTree::Node>(
+                            _activeTree.root(), node.get(),
                             _descentCriterion, this->_rule,
                             this->_simulation.template view<const Position, const Mass>(),
                             this->_simulation.template view<const Position, Acceleration>()

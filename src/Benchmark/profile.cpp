@@ -29,16 +29,16 @@ int main(int argc, char *argv[]) {
 
     std::size_t iterations = 1;
 
-    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
 
     Simulation simulation;
     from_json(scenario, simulation);
     Gravity rule{};
 
-    QuadrupoleMVDRSolver<Gravity> solver{simulation, rule};
-    solver.theta() = 0.8;
+    QuadrupoleImplicitMVDRSolver<Gravity> solver{simulation, rule};
+    solver.theta() = 0.6;
 
     spdlog::info("Running {} for {} iterations",
                  solver.name(), iterations);

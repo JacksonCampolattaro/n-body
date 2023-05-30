@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 50'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'500);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
@@ -228,16 +228,16 @@ int main(int argc, char *argv[]) {
 
 
     //    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
     //realPerformance<FMMSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
@@ -267,7 +267,7 @@ int main(int argc, char *argv[]) {
     //spdlog::info(accuracy<OctupoleMVDRSolver<Gravity>>(scenario, grader, 0.3));
 
     //spdlog::info(accuracy<ImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
-    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
+    //spdlog::info(accuracy<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.5));
     //spdlog::info(accuracy<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader, 0.4));
 
     //spdlog::info(accuracy<FMMSolver<Gravity>>(scenario, grader, 0.33));

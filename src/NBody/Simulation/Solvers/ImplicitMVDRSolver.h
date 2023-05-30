@@ -24,6 +24,7 @@ namespace NBody {
 
         using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::ImplicitDualTreeSolver;
         using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::passiveTree;
+        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::activeTree;
 
         std::string id() override { return "implicit-mvdr"; };
 

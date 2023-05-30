@@ -17,7 +17,7 @@ namespace NBody {
 
     template<typename ActiveTree, typename PassiveTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     class DualTreeSolver : public Solver<Rule> {
-    private:
+    protected:
 
         ActiveTree _activeTree;
         PassiveTree _passiveTree;

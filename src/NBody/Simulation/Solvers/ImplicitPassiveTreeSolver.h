@@ -51,10 +51,11 @@ namespace NBody {
                     std::vector<Entity> activeEntities{view.begin(), view.end()};
                     std::span<Entity> activeEntitiesView{activeEntities};
                     Descent::passiveTreeImplicitField(
-                            activeEntitiesView, view,
-                            node.get(), this->_simulation.template view<const Position, Acceleration>(),
-                            _descentCriterion, this->_rule
-                    );
+                            activeEntitiesView,
+                            node.get(),
+                            _descentCriterion, this->_rule,
+                            view,
+                            this->_simulation.template view<const Position, Acceleration>());
                 });
             }
         }

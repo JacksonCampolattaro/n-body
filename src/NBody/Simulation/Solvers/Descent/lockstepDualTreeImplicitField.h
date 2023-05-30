@@ -138,9 +138,10 @@ namespace NBody::Descent {
                     activeEntititesInLeaves.begin(), activeEntititesInLeaves.end()
             };
             passiveTreeImplicitField(
-                    activeEntititesInLeavesSpan, activeContext,
-                    passiveNode, passiveContext,
-                    descentCriterion, rule
+                    activeEntititesInLeavesSpan,
+                    passiveNode,
+                    descentCriterion, rule,
+                    activeContext, passiveContext
                     // _Don't_ pass down the local field, otherwise it'll be counted twice!
             );
 

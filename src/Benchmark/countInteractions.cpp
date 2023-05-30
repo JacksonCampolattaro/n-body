@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 100'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 40'000);
 
     Simulation simulation;
     from_json(scenario, simulation);
@@ -40,13 +40,13 @@ int main(int argc, char *argv[]) {
     //QuadrupoleLinearBVHSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
 
     //QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
-    //QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
 
-    QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    //QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
     //QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
 
     spdlog::info("Running {} for 1 iteration", solver.name());
-    solver.theta() = 0.79;
+    solver.theta() = 0.35;
     solver.step();
 
     std::cout << rule
