@@ -87,6 +87,9 @@ namespace NBody::Descent {
 
         auto nodeSideLengths = node.boundingBox().dimensions();
         glm::vec3 exclusionRegionSideLengths{
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z
                 //                std::max(nodeSideLengths.y, nodeSideLengths.z),
                 //                std::max(nodeSideLengths.x, nodeSideLengths.z),
                 //                std::max(nodeSideLengths.x, nodeSideLengths.y)

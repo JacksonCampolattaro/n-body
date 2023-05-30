@@ -42,8 +42,7 @@ namespace NBody::Descent {
             );
 
             if ((activeDiagonal + passiveDiagonal) / distance < _theta
-                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
-                    )
+                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

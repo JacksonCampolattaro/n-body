@@ -33,6 +33,7 @@
 #include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/FMMSolver.h>
 #include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitLinearBVHFMMSolver.h>
 
 using namespace NBody;
 
@@ -227,30 +228,39 @@ int main(int argc, char *argv[]) {
     //plotFieldApproximations(scenario);
 
 
-    //    realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
+
+    //realPerformance<ReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+
     //realPerformance<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
-    //    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
+
     //realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
+
     //realPerformance<FMMSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
+
     //realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+
     //realPerformance<MVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
+
     //realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+
+    //realPerformance<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
     //spdlog::info(accuracy<QuadrupoleReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));
