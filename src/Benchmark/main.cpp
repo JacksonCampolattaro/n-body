@@ -237,7 +237,7 @@ int main(int argc, char *argv[]) {
     //    realPerformance<OctupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //    realPerformance<HexadecupoleReverseBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<LinearBVHSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleLinearBVHSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
     //realPerformance<FMMSolver<Gravity>>(scenario, grader);
     //realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
     //realPerformance<QuadrupoleMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<ImplicitMVDRSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleImplicitMVDRSolver<Gravity>>(scenario, grader);
 
     //spdlog::info(accuracy<ReverseBarnesHutSolver<Gravity>>(scenario, grader, 0.2));

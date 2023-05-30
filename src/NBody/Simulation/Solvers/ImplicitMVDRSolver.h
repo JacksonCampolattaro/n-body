@@ -9,6 +9,7 @@
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverSeparation.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DualThetaDiagonalOverDistance.h>
 
 namespace NBody {

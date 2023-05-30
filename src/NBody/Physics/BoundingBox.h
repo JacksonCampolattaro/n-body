@@ -77,6 +77,18 @@ namespace NBody {
                 glm::max((glm::vec3) b1.min(), b2.min())
         ));
     }
+
+    [[nodiscard]] static float separation(const BoundingBox &b1, const BoundingBox &b2) {
+        auto u = glm::max((glm::vec3) b1.min() - b2.max(), 0.0f);
+        auto v = glm::max((glm::vec3) b2.min() - b1.max(), 0.0f);
+        return (float) std::sqrt(std::pow(glm::length(u), 2) + std::pow(glm::length(v), 2));
+    }
+
+    [[nodiscard]] static float separation(const BoundingBox &b, const Position &p) {
+        auto u = glm::max((glm::vec3) b.min() - p, 0.0f);
+        auto v = glm::max((glm::vec3) p - b.max(), 0.0f);
+        return (float) std::sqrt(std::pow(glm::length(u), 2) + std::pow(glm::length(v), 2));
+    }
 }
 
 #endif //N_BODY_BOUNDINGBOX_H
