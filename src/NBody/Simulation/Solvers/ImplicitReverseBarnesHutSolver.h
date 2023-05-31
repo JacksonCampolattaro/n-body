@@ -11,7 +11,7 @@
 
 namespace NBody {
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     class ImplicitReverseBarnesHutSolver : public ImplicitPassiveTreeSolver<
             ImplicitPassiveOctree,
             Descent::SideLengthOverDistance,
@@ -35,7 +35,7 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<std::size_t Order, RuleType Rule = Gravity>
+    template<std::size_t Order, RuleType Rule>
     class MultipoleImplicitReverseBarnesHutSolver : public ImplicitPassiveTreeSolver<
             MultipoleImplicitPassiveOctree<Order>,
             Descent::SideLengthOverDistance,

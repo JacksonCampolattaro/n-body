@@ -85,9 +85,8 @@ def plot_interaction_counts(filename):
     }
 
     ax = df.plot(kind='bar', stacked=True,
-                                 #rot=45, ha='right',
-                                 figsize=(text_width / 2, 3),
-                                 x=x_label, color=colormap)
+                 figsize=(text_width / 2, 3),
+                 x=x_label, color=colormap)
     ax.set(xlabel=x_label, ylabel='Interactions (\% of Naive)')
     ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
 
@@ -103,11 +102,35 @@ def plot_times(filename):
     print(df)
 
     ax = df.plot(kind='bar', legend=False,
-                 #rot=45, ha='right',
                  figsize=(text_width / 2, 3),
                  x=x_label, color='gray')
     ax.set(xlabel=x_label, ylabel='Time (S / Iteration)')
     ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
+
+
+def plot_times_vs_n(filename):
+    df = pd.read_csv(filename)
+    x_label = df.columns[0]
+    df = df[[x_label, 'N', 'Time']]
+    print(df)
+
+    # todo: this should be globally defined, and standardized across plots
+    brewer_colors = sns.color_palette("Set1", 5)
+    colormap = {
+        'RBH': brewer_colors[0],
+        'BH': brewer_colors[1],
+        'LBVH': brewer_colors[4],
+        'MVDR': brewer_colors[3],
+        'FMM': brewer_colors[2]
+    }
+
+    df = df.drop(df[df['Solver'] == 'RBH'].index)
+
+    ax = sns.lineplot(data=df, x="N", y="Time", hue="Solver", palette=colormap)
+    ax.set(ylabel='Time (S / Iteration)')
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
@@ -140,8 +163,10 @@ def main():
     # plot_field('benchmarks/exact-field.csv')
     # plot_interactions('benchmarks/approximation-tracking.csv')
 
-    plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
-    plot_times("benchmarks/linear-bvh-descent-criterion.csv")
+    # plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
+    # plot_times("benchmarks/linear-bvh-descent-criterion.csv")
+
+    plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
 
 
 if __name__ == "__main__":

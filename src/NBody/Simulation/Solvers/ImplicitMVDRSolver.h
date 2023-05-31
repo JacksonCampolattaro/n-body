@@ -18,33 +18,25 @@ namespace NBody {
     class ImplicitMVDRSolver : public ImplicitDualTreeSolver<
             ActiveLinearBVH,
             QuadrupoleImplicitPassiveOctree,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:
 
-        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::ImplicitDualTreeSolver;
-        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::passiveTree;
-        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverDistance, Rule>::activeTree;
+        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverCenterDistance, Rule>::ImplicitDualTreeSolver;
+        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverCenterDistance, Rule>::passiveTree;
+        using ImplicitDualTreeSolver<ActiveLinearBVH, QuadrupoleImplicitPassiveOctree, Descent::DiagonalOverCenterDistance, Rule>::activeTree;
 
         std::string id() override { return "implicit-mvdr"; };
 
         std::string name() override { return "Implicit Mark van de Ruit"; };
-
-        int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
-
-        [[nodiscard]] const int &passiveTreeMaxDepth() const { return passiveTree().maxDepth(); }
-
-        int &passiveTreeMaxLeafSize() { return passiveTree().maxLeafSize(); }
-
-        [[nodiscard]] const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
     };
 
     template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleImplicitMVDRSolver : public ImplicitDualTreeSolver<
             MultipoleActiveLinearBVH<Order>,
             MultipoleImplicitPassiveOctree<Order + 1>,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:
@@ -55,14 +47,6 @@ namespace NBody {
         std::string id() override { return fmt::format("implicit-mvdr-{}p", std::pow(2, Order)); };
 
         std::string name() override { return fmt::format("Implicit Mark van de Ruit ({})", Multipole<Order>::name()); };
-
-        int &passiveTreeMaxDepth() { return passiveTree().maxDepth(); }
-
-        [[nodiscard]] const int &passiveTreeMaxDepth() const { return passiveTree().maxDepth(); }
-
-        int &passiveTreeMaxLeafSize() { return passiveTree().maxLeafSize(); }
-
-        [[nodiscard]] const int &passiveTreeMaxLeafSize() const { return passiveTree().maxLeafSize(); }
     };
 
     template<RuleType Rule = Gravity>

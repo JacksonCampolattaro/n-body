@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 
 
     //realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
 
@@ -220,7 +220,7 @@ int main(int argc, char *argv[]) {
     //realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
 
     //realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
 
     //realPerformance<MVDRSolver<Gravity>>(scenario, grader);

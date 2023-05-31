@@ -15,7 +15,7 @@
 namespace NBody::Generator {
 
     static Simulation &uniformRandomVolume(Simulation &simulation, std::size_t n) {
-        spdlog::info("Generating a random scenario with {} particles", n);
+        spdlog::debug("Generating a random scenario with {} particles", n);
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};

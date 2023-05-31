@@ -34,3 +34,11 @@ target_link_libraries(experiment_CompareLinearBVHDescentCriterion PUBLIC
         NBody::View
         spdlog::spdlog
         )
+
+add_executable(experiment_CompareAllSolversOnRandomData
+        Experiments/compareSolversOnRandomData.cpp)
+target_link_libraries(experiment_CompareAllSolversOnRandomData PUBLIC
+        NBody::Simulation
+        NBody::View
+        spdlog::spdlog
+        )

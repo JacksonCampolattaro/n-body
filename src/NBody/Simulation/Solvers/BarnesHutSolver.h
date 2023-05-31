@@ -11,7 +11,7 @@
 
 namespace NBody {
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     class BarnesHutSolver : public ActiveTreeSolver<ActiveOctree, Descent::SideLengthOverDistance, Rule> {
     public:
 
@@ -31,7 +31,7 @@ namespace NBody {
         const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<std::size_t Order, RuleType Rule = Gravity>
+    template<std::size_t Order, RuleType Rule>
     class MultipoleBarnesHutSolver : public ActiveTreeSolver<
             MultipoleActiveOctree<Order>,
             Descent::SideLengthOverDistance,
@@ -56,13 +56,13 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using QuadrupoleBarnesHutSolver = MultipoleBarnesHutSolver<2, Rule>;
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using OctupoleBarnesHutSolver = MultipoleBarnesHutSolver<3, Rule>;
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using HexadecupoleBarnesHutSolver = MultipoleBarnesHutSolver<4, Rule>;
 
 }

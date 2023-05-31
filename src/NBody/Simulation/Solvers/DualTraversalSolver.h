@@ -28,6 +28,10 @@ namespace NBody {
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
+
         float &theta() { return _descentCriterion.theta(); }
 
         [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }

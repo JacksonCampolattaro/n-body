@@ -186,18 +186,28 @@ namespace NBody {
         struct ReplaceRuleHelper {
         };
 
-        template<typename NewRule, template<typename, typename> typename S, typename T, typename OldRule>
-        struct ReplaceRuleHelper<NewRule, S<T, OldRule>> {
-            using type = S<T, NewRule>;
+        template<typename NewRule, template<typename> typename S, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<OldRule>> {
+            using type = S<NewRule>;
         };
 
-        template<typename NewRule, template<typename, typename, typename> typename S, typename T, typename D, typename OldRule>
-        struct ReplaceRuleHelper<NewRule, S<T, D, OldRule>> {
-            using type = S<T, D, NewRule>;
+        template<typename NewRule, template<auto, typename> typename S, auto A, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, OldRule>> {
+            using type = S<A, NewRule>;
+        };
+
+        template<typename NewRule, template<typename, typename, typename> typename S, typename A, typename B, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, B, OldRule>> {
+            using type = S<A, B, NewRule>;
+        };
+
+        template<typename NewRule, template<typename, typename, typename, typename> typename S, typename A, typename B, typename C, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, B, C, OldRule>> {
+            using type = S<A, B, C, NewRule>;
         };
 
         // todo: it would be nice if this worked!
-        //template<typename NewRule, template<typename..., typename> typename S, typename ...T, typename OldRule>
+        //template<typename NewRule, template<auto..., typename> typename S, auto ...T, typename OldRule>
         //struct ReplaceRuleHelper<NewRule, S<T..., OldRule>> {
         //    using type = S<T..., NewRule>;
         //};

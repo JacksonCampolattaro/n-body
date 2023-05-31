@@ -27,6 +27,18 @@ namespace NBody {
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
+
+        TreeType &tree() { return _tree; }
+
+        const TreeType &tree() const { return _tree; }
+
+        float &theta() { return _descentCriterion.theta(); }
+
+        const float &theta() const { return _descentCriterion.theta(); }
+
         void updateAccelerations() override {
 
             {
@@ -65,14 +77,6 @@ namespace NBody {
                 Descent::collapseAccelerations(_tree.root(), view);
             }
         }
-
-        TreeType &tree() { return _tree; }
-
-        const TreeType &tree() const { return _tree; }
-
-        float &theta() { return _descentCriterion.theta(); }
-
-        const float &theta() const { return _descentCriterion.theta(); }
 
     };
 
