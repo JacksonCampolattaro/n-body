@@ -11,13 +11,16 @@
 
 namespace NBody {
 
+    template<RuleType Rule = Gravity>
     class OctreeDualTraversalSolver : public DualTraversalSolver<
             DualOctree,
-            Descent::SideLengthOverDistance
+            Descent::SideLengthOverDistance,
+            Rule
     > {
     public:
 
-        using DualTraversalSolver::DualTraversalSolver;
+        using DualTraversalSolver<DualOctree, Descent::SideLengthOverDistance, Rule>::DualTraversalSolver;
+        using DualTraversalSolver<DualOctree, Descent::SideLengthOverDistance, Rule>::tree;
 
         std::string id() override { return "octree-dual-traversal"; };
 
@@ -25,11 +28,11 @@ namespace NBody {
 
         int &maxDepth() { return tree().maxDepth(); }
 
-        const int &maxDepth() const { return tree().maxDepth(); }
+        [[nodiscard]] const int &maxDepth() const { return tree().maxDepth(); }
 
         int &maxLeafSize() { return tree().maxLeafSize(); }
 
-        const int &maxLeafSize() const { return tree().maxLeafSize(); }
+        [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
 }

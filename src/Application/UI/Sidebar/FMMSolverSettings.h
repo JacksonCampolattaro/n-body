@@ -15,7 +15,7 @@ namespace UI {
     class FMMSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::FMMSolver &_solver;
+        NBody::FMMSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;
@@ -23,7 +23,7 @@ namespace UI {
 
     public:
 
-        FMMSolverSettings(NBody::FMMSolver &solver);
+        FMMSolverSettings(NBody::FMMSolver<Gravity> &solver);
 
     };
 

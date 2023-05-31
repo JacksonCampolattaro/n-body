@@ -19,7 +19,7 @@ namespace NBody::Generator {
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};
-        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n)};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n / 10000)};
         std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
                                                                    std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};
@@ -122,15 +122,6 @@ namespace NBody::Generator {
         json scenario;
         to_json(scenario, s);
         return scenario;
-    }
-
-    static Simulation &bake(Simulation &simulation, std::size_t iterations) {
-        spdlog::info("\"Baking\" the simulation for {} iterations", iterations);
-        Rule rule{};
-        BarnesHutSolver solver{simulation, rule};
-        for (int i = 0; i < iterations; ++i) solver.step();
-
-        return simulation;
     }
 
     static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,

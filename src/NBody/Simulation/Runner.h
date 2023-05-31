@@ -9,24 +9,25 @@
 
 namespace NBody {
 
+    template<RuleType Rule = Gravity>
     class Runner : public Glib::Object {
     protected:
 
-        Solver &_solver;
+        Solver<Rule> &_solver;
 
     public:
 
-        explicit Runner(Solver &solver) :
-                Glib::ObjectBase(typeid(NBody::Runner)), Glib::Object(),
+        explicit Runner(Solver<Rule> &solver) :
+                Glib::ObjectBase(typeid(NBody::Runner<Rule>)), Glib::Object(),
                 _solver(solver) {}
 
         virtual std::string id() = 0;
 
         virtual std::string name() = 0;
 
-        Solver &solver() { return _solver; }
+        Solver<Rule> &solver() { return _solver; }
 
-        const Solver &solver() const { return _solver; }
+        const Solver<Rule> &solver() const { return _solver; }
 
     };
 

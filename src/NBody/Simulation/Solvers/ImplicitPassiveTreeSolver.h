@@ -14,8 +14,8 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename TreeType, DescentCriterionType DescentCriterion>
-    class ImplicitPassiveTreeSolver : public Solver {
+    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    class ImplicitPassiveTreeSolver : public Solver<Rule> {
     private:
 
         TreeType _tree;
@@ -23,38 +23,39 @@ namespace NBody {
 
     public:
 
-        ImplicitPassiveTreeSolver(Simulation &simulation, Physics::Rule &rule) :
-                Solver(simulation, rule),
+        ImplicitPassiveTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
+                Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
         void updateAccelerations() override {
 
             {
                 // Construct an octree from the actor particles
-                _statusDispatcher.emit({"Building Tree"});
+                this->_statusDispatcher.emit({"Building Tree"});
                 _tree.refine();
             }
 
             {
-                _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<Acceleration>();
+                this->_statusDispatcher.emit({"Resetting accelerations"});
+                auto view = this->_simulation.template view<Acceleration>();
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
                 // Use the octree to estimate forces on each passive particle
-                _statusDispatcher.emit({"Computing Accelerations"});
+                this->_statusDispatcher.emit({"Computing Accelerations"});
 
                 auto startingNodes = _tree.loadBalancedBreak(256);
-                auto view = _simulation.template view<const Position, const Mass>();
+                auto view = this->_simulation.template view<const Position, const Mass>();
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename TreeType::Node> node) {
                     std::vector<Entity> activeEntities{view.begin(), view.end()};
                     std::span<Entity> activeEntitiesView{activeEntities};
                     Descent::passiveTreeImplicitField(
-                            activeEntitiesView, view,
-                            node.get(), _simulation.template view<const Position, Acceleration>(),
-                            _descentCriterion, _rule
-                    );
+                            activeEntitiesView,
+                            node.get(),
+                            _descentCriterion, this->_rule,
+                            view,
+                            this->_simulation.template view<const Position, Acceleration>());
                 });
             }
         }

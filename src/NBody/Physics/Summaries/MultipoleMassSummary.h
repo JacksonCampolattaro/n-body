@@ -5,7 +5,7 @@
 #ifndef N_BODY_MULTIPOLEMASSSUMMARY_H
 #define N_BODY_MULTIPOLEMASSSUMMARY_H
 
-#include <NBody/Physics/SummaryType.h>
+#include "SummaryType.h"
 #include <NBody/Physics/MultipoleMoment.h>
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 
@@ -76,6 +76,13 @@ namespace NBody {
                             // todo: is this correct?
                             moment.template tensor<4>() += SymmetricTensor3<4>::sumOfOuterProducts(
                                     childNode.summary().moment().template tensor<3>(),
+                                    offset
+                            );
+                            moment.template tensor<4>() += SymmetricTensor3<4>::sumOfOuterProducts(
+                                    SymmetricTensor3<3>::outerProduct(
+                                            childNode.summary().moment().template tensor<2>(),
+                                            offset
+                                    ),
                                     offset
                             );
                         }

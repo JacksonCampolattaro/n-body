@@ -11,7 +11,7 @@
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 void sampleExactField(
         const json &scenario,
@@ -23,7 +23,7 @@ void sampleExactField(
     std::ofstream file{"benchmarks/exact-field.csv"};
     file << "x,y,z,fx,fy,fz" << std::endl;
 
-    Rule rule{};
+    Gravity rule{};
     Simulation simulation;
     from_json(scenario, simulation);
 

@@ -14,8 +14,8 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename TreeType, DescentCriterionType DescentCriterion>
-    class PassiveTreeSolver : public Solver {
+    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    class PassiveTreeSolver : public Solver<Rule> {
     private:
 
         TreeType _tree;
@@ -23,36 +23,36 @@ namespace NBody {
 
     public:
 
-        PassiveTreeSolver(Simulation &simulation, Physics::Rule &rule) :
-                Solver(simulation, rule),
+        PassiveTreeSolver(Simulation &simulation, Physics::Gravity &rule) :
+                Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
         void updateAccelerations() override {
 
             {
                 // Construct an octree from the actor particles
-                _statusDispatcher.emit({"Building Tree"});
+                this->_statusDispatcher.emit({"Building Tree"});
                 _tree.refine();
             }
 
             {
-                _statusDispatcher.emit({"Resetting accelerations"});
-                auto view = _simulation.view<Acceleration>();
+                this->_statusDispatcher.emit({"Resetting accelerations"});
+                auto view = this->_simulation.template view<Acceleration>();
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
             {
                 // Use the octree to estimate forces on each passive particle
-                _statusDispatcher.emit({"Computing Accelerations"});
+                this->_statusDispatcher.emit({"Computing Accelerations"});
 
                 auto startingNodes = _tree.loadBalancedBreak(256);
-                auto view = _simulation.template view<const Position, const Mass>();
+                auto view = this->_simulation.template view<const Position, const Mass>();
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename TreeType::Node> node) {
                     view.each([&](const Position &p, const Mass &m) {
                         Descent::passiveTree(
                                 p, m, node.get(),
-                                _descentCriterion, _rule,
-                                _simulation.template view<const Position, Acceleration>()
+                                _descentCriterion, this->_rule,
+                                this->_simulation.template view<const Position, Acceleration>()
                         );
 
                     });
@@ -60,8 +60,8 @@ namespace NBody {
             }
 
             {
-                _statusDispatcher.emit({"Collapsing accelerations"});
-                auto view = _simulation.template view<const Position, Acceleration>();
+                this->_statusDispatcher.emit({"Collapsing accelerations"});
+                auto view = this->_simulation.template view<const Position, Acceleration>();
                 Descent::collapseAccelerations(_tree.root(), view);
             }
         }

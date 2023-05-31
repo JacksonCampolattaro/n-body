@@ -5,7 +5,7 @@
 #ifndef N_BODY_ACCELERATIONSUMMARY_H
 #define N_BODY_ACCELERATIONSUMMARY_H
 
-#include "NBody/Physics/SummaryType.h"
+#include "SummaryType.h"
 
 namespace NBody {
 

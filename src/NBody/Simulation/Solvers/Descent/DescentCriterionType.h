@@ -10,6 +10,7 @@
 #include <NBody/Physics/Position.h>
 
 #include <NBody/Simulation/Solvers/Trees/Octree.h>
+#include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 
 namespace NBody::Descent {
 
@@ -74,6 +75,34 @@ namespace NBody::Descent {
         float &momentTheta() { return _momentTheta; }
 
     };
+
+    template<SummaryType S>
+    BoundingBox exclusionRegion(const OctreeNode<S> &node) {
+        return {node.center() - node.sideLength(),
+                node.center() + node.sideLength()};
+    }
+
+    template<SummaryType S>
+    BoundingBox exclusionRegion(const LinearBVHNode<S> &node) {
+
+        auto nodeSideLengths = node.boundingBox().dimensions();
+        glm::vec3 exclusionRegionSideLengths{
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.y + nodeSideLengths.z
+                //                std::max(nodeSideLengths.y, nodeSideLengths.z),
+                //                std::max(nodeSideLengths.x, nodeSideLengths.z),
+                //                std::max(nodeSideLengths.x, nodeSideLengths.y)
+                //                nodeSideLengths.y + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.z,
+                //                nodeSideLengths.x + nodeSideLengths.y
+                nodeSideLengths.x + std::max(nodeSideLengths.y, nodeSideLengths.z),
+                nodeSideLengths.y + std::max(nodeSideLengths.x, nodeSideLengths.z),
+                nodeSideLengths.z + std::max(nodeSideLengths.x, nodeSideLengths.y)
+        };
+        return BoundingBox{node.center() - (exclusionRegionSideLengths / 2.0f),
+                           node.center() + (exclusionRegionSideLengths / 2.0f)};
+    }
 
 }
 

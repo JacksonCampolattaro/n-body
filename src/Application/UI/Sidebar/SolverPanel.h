@@ -33,7 +33,7 @@ namespace UI {
     class SolverPanel : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::MultiSolver &_multiSolver;
+        NBody::MultiSolver<Gravity> &_multiSolver;
         Gtk::SpinButton &_maxThreadCountEntry;
         PositiveFloatEntry &_timeStepEntry;
 
@@ -44,7 +44,7 @@ namespace UI {
 
         SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::MultiSolver &multiSolver);
+                    NBody::MultiSolver<Gravity> &multiSolver);
 
     };
 

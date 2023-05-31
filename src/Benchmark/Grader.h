@@ -17,12 +17,12 @@ namespace NBody {
     protected:
 
         json _scenario;
-        Physics::Rule _rule{};
+        Physics::Gravity _rule{};
         Simulation _referenceSimulation{};
 
     public:
 
-        explicit Grader(json scenario, Physics::Rule rule = Physics::Rule{}) :
+        explicit Grader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 _scenario(scenario), _rule(rule) {
 
             // Load the scenario
@@ -30,15 +30,15 @@ namespace NBody {
 
             // Run the simulation one step, to prepare the reference
             spdlog::info("Performing Naive step, for accuracy reference");
-            NaiveSolver referenceSolver{_referenceSimulation, _rule};
+            NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
             referenceSolver.step();
         }
 
         const json &scenario() const { return _scenario; }
 
-        Physics::Rule &rule() { return _rule; }
+        Physics::Gravity &rule() { return _rule; }
 
-        const Physics::Rule &rule() const { return _rule; }
+        const Physics::Gravity &rule() const { return _rule; }
 
         virtual float error(const Simulation &candidateSimulation) const = 0;
 

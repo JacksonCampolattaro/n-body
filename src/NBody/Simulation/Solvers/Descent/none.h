@@ -6,15 +6,15 @@
 #define N_BODY_NONE_H
 
 #include <NBody/Simulation/Solvers/Trees/NodeType.h>
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 namespace NBody::Descent {
 
     // todo: This is a terrible name, I need to find a more descriptive naming scheme,
-    template<NodeType ActiveNode, NodeType PassiveNode>
+    template<NodeType ActiveNode, NodeType PassiveNode, RuleType Rule = Gravity>
     inline void none(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const Physics::Rule &rule,
+            Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass

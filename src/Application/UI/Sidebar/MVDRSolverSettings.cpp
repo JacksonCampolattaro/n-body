@@ -4,7 +4,7 @@
 
 #include "MVDRSolverSettings.h"
 
-UI::MVDRSolverSettings::MVDRSolverSettings(NBody::MVDRSolver &solver) :
+UI::MVDRSolverSettings::MVDRSolverSettings(NBody::MVDRSolver<Gravity> &solver) :
         BuilderWidget<Gtk::Box>("/ui/mvdr_solver_settings.xml"),
         _solver(solver),
         _thetaEntry(getWidget<FloatEntry>("theta-float-entry")),
@@ -35,7 +35,7 @@ UI::MVDRSolverSettings::MVDRSolverSettings(NBody::MVDRSolver &solver) :
     });
 }
 
-UI::QuadrupoleMVDRSolverSettings::QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver &solver) :
+UI::QuadrupoleMVDRSolverSettings::QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver<Gravity> &solver) :
         BuilderWidget<Gtk::Box>("/ui/mvdr_solver_settings.xml"),
         _solver(solver),
         _thetaEntry(getWidget<FloatEntry>("theta-float-entry")),

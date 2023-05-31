@@ -10,13 +10,13 @@
 
 namespace NBody::Descent {
 
-    template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void passiveTree(
             const Position &activePosition,
             const Mass &activeMass,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion,
-            const Physics::Rule &rule,
+            Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, Acceleration
@@ -26,7 +26,7 @@ namespace NBody::Descent {
         // Empty nodes can be ignored
         if (passiveNode.contents().empty()) return;
 
-        if (descentCriterion(passiveNode, activePosition)) {
+        if (descentCriterion(activePosition, passiveNode)) {
 
             // If an approximation is allowed, compute particle-node interaction
             rule(activePosition, activeMass, passiveNode);

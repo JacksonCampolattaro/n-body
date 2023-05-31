@@ -21,18 +21,19 @@ namespace NBody {
 
     public:
 
-        BoundingBox(
-                Position min = {
+        BoundingBox(const Position &min, const Position &max) : _min(min), _max(max) {}
+
+        BoundingBox() :
+                _min(
                         std::numeric_limits<float>::max(),
                         std::numeric_limits<float>::max(),
                         std::numeric_limits<float>::max()
-                },
-                Position max = {
+                ),
+                _max(
                         -std::numeric_limits<float>::max(),
                         -std::numeric_limits<float>::max(),
                         -std::numeric_limits<float>::max()
-                }
-        ) : _min(min), _max(max) {}
+                ) {}
 
         [[nodiscard]] const Position &min() const { return _min; }
 
@@ -66,11 +67,27 @@ namespace NBody {
         }
     };
 
+    [[nodiscard]] static bool doIntersect(const BoundingBox &b, const Position &p) {
+        return b.contains(p);
+    }
+
     [[nodiscard]] static bool doIntersect(const BoundingBox &b1, const BoundingBox &b2) {
         return glm::all(glm::greaterThanEqual(
                 glm::min((glm::vec3) b1.max(), b2.max()),
                 glm::max((glm::vec3) b1.min(), b2.min())
         ));
+    }
+
+    [[nodiscard]] static float separation(const BoundingBox &b1, const BoundingBox &b2) {
+        auto u = glm::max((glm::vec3) b1.min() - b2.max(), 0.0f);
+        auto v = glm::max((glm::vec3) b2.min() - b1.max(), 0.0f);
+        return (float) std::sqrt(std::pow(glm::length(u), 2) + std::pow(glm::length(v), 2));
+    }
+
+    [[nodiscard]] static float separation(const BoundingBox &b, const Position &p) {
+        auto u = glm::max((glm::vec3) b.min() - p, 0.0f);
+        auto v = glm::max((glm::vec3) p - b.max(), 0.0f);
+        return (float) std::sqrt(std::pow(glm::length(u), 2) + std::pow(glm::length(v), 2));
     }
 }
 

@@ -48,7 +48,7 @@ namespace UI {
                     const Glib::RefPtr<Gtk::Builder> &builder,
                     NBody::ArcBallControllableCamera &camera,
                     NBody::MultiRenderer &renderer,
-                    NBody::SolverRenderer &solverRenderer,
+                    NBody::SolverRenderer<Gravity> &solverRenderer,
                     NBody::Recorder &recorder);
 
     };

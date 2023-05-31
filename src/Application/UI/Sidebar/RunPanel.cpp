@@ -20,7 +20,7 @@ static std::string validate(const std::string &in) {
 
 UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
                        const Glib::RefPtr<Gtk::Builder> &builder,
-                       NBody::Solver &solver, NBody::MultiRunner &runner) :
+                       NBody::Solver<Gravity> &solver, NBody::MultiRunner &runner) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/run_panel.xml"),
         _solver(solver),
         _multiRunner(runner),
@@ -36,20 +36,20 @@ UI::RunPanel::RunPanel(Gtk::Box::BaseObjectType *cobject,
 
     _runnerDropdown.set_expression(Gtk::ClosureExpression<Glib::ustring>::create(
             [&](const Glib::RefPtr<Glib::ObjectBase> &item) {
-                return std::dynamic_pointer_cast<NBody::Runner>(item)->name();
+                return std::dynamic_pointer_cast<NBody::Runner<Gravity>>(item)->name();
             }
     ));
     _runnerDropdown.set_model(_multiRunner.selectionModel());
 
     _runnerStack.set_expression(Gtk::ClosureExpression<Gtk::Widget *>::create(
             [&](const Glib::RefPtr<Glib::ObjectBase> &item) -> Gtk::Widget * {
-                auto runner = std::dynamic_pointer_cast<NBody::Runner>(item);
+                auto runner = std::dynamic_pointer_cast<NBody::Runner<Gravity>>(item);
                 if (runner->id() == "continuous")
-                    return new ContinuousRunnerController((NBody::ContinuousRunner &) *runner);
+                    return new ContinuousRunnerController((NBody::ContinuousRunner<Gravity> &) *runner);
                 if (runner->id() == "one-step")
-                    return new OneStepRunnerController((NBody::OneStepRunner &) *runner);
+                    return new OneStepRunnerController((NBody::OneStepRunner<Gravity> &) *runner);
                 if (runner->id() == "n-steps")
-                    return new NStepsRunnerController((NBody::NStepsRunner &) *runner);
+                    return new NStepsRunnerController((NBody::NStepsRunner<Gravity> &) *runner);
                 else return new Gtk::Label{"Unrecognized Runner"};
             }
     ));

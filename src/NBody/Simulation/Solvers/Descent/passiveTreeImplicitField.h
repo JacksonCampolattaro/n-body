@@ -10,20 +10,18 @@
 
 namespace NBody::Descent {
 
-    template<NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void passiveTreeImplicitField(
-            const std::span<Entity> &relevantActiveEntities,
+            const std::span<Entity> &relevantActiveEntities, PassiveNode &passiveNode,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
             > &activeContext,
-            PassiveNode &passiveNode,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, Acceleration
             > &passiveContext,
-            const DescentCriterion &descentCriterion,
-            const Physics::Rule &rule,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 
@@ -36,7 +34,7 @@ namespace NBody::Descent {
         auto middle = std::partition(
                 relevantActiveEntities.begin(), relevantActiveEntities.end(),
                 [&](const Entity &e) {
-                    return descentCriterion(passiveNode, activeContext.get<const Position>(e));
+                    return descentCriterion(activeContext.get<const Position>(e), passiveNode);
                 }
         );
         std::span<Entity> farActiveEntities{relevantActiveEntities.begin(), middle};
@@ -75,9 +73,10 @@ namespace NBody::Descent {
             // The local field -- including forces from far entities -- is passed down
             for (auto &child: passiveNode.children())
                 Descent::passiveTreeImplicitField(
-                        closeActiveEntities, activeContext,
-                        child, passiveContext,
+                        closeActiveEntities,
+                        child,
                         descentCriterion, rule,
+                        activeContext, passiveContext,
                         {localField.acceleration().translated(child.center() - passiveNode.center())}
                 );
         }

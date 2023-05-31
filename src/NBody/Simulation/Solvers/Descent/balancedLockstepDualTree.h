@@ -9,12 +9,14 @@
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 #include <NBody/Simulation/Solvers/Descent/lockstepDualTree.h>
 
+#include <queue>
+
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void balancedLockstepDualTree(
-            const ActiveNode &activeNode, PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Rule &rule,
+            const ActiveNode &activeRoot, PassiveNode &passiveNode,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
@@ -25,67 +27,33 @@ namespace NBody::Descent {
             > &passiveContext
     ) {
 
-        // If either node is empty, we have no need to calculate forces between them
-        if (activeNode.contents().empty() || passiveNode.contents().empty()) return;
 
-        Recommendation recommendation = descentCriterion(activeNode, passiveNode);
+        std::queue<std::reference_wrapper<const ActiveNode>> activeNodesQueue{{activeRoot}};
+        std::vector<std::reference_wrapper<const ActiveNode>> equalSizeActiveNodes{};
 
-        if (recommendation == Recommendation::Approximate) {
+        while (!activeNodesQueue.empty()) {
+            auto &activeNode = activeNodesQueue.front().get();
 
-            // node-node interaction
-            rule(activeNode, passiveNode);
+            Recommendation recommendation = descentCriterion(activeNode, passiveNode);
+            activeNodesQueue.pop();
 
-        } else if (recommendation == Recommendation::DescendActiveNode) {
-
-            if (activeNode.isLeaf()) {
-
-                for (auto &activeParticle: activeNode.contents())
-                    Descent::passiveTree(
-                            activeContext.template get<const Position>(activeParticle),
-                            activeContext.template get<const Mass>(activeParticle),
-                            passiveNode,
-                            descentCriterion, rule,
-                            passiveContext
-                    );
-
+            if (recommendation == Recommendation::Approximate) {
+                rule(activeNode, passiveNode);
+            } else if (recommendation != Recommendation::DescendActiveNode || activeNode.isLeaf()) {
+                equalSizeActiveNodes.emplace_back(activeNode);
             } else {
-
-                for (auto &activeChild: activeNode.children())
-                    Descent::balancedLockstepDualTree(
-                            activeChild, passiveNode,
-                            descentCriterion, rule,
-                            activeContext, passiveContext
-                    );
-
+                for (auto &child: activeNode.children())
+                    activeNodesQueue.push(child);
             }
-
-        } else if (recommendation == Recommendation::DescendPassiveNode) {
-
-            if (passiveNode.isLeaf()) {
-
-                for (auto &passiveParticle: passiveNode.contents())
-                    passiveContext.get<Acceleration>(passiveParticle) += Descent::activeTree(
-                            activeNode, passiveContext.get<const Position>(passiveParticle),
-                            descentCriterion, rule,
-                            activeContext
-                    );
-
-            } else {
-
-                for (auto &passiveChild: passiveNode.children())
-                    Descent::balancedLockstepDualTree(
-                            activeNode, passiveChild,
-                            descentCriterion, rule,
-                            activeContext, passiveContext
-                    );
-
-            }
-
-        } else if (recommendation == Recommendation::DescendBothNodes) {
-
-            // Once the node sizes are close enough, switch to lockstep
-            lockstepDualTree(activeNode, passiveNode, descentCriterion, rule, activeContext, passiveContext);
         }
+
+        for (auto &activeNode: equalSizeActiveNodes)
+            lockstepDualTree<ActiveNode>(
+                    activeNode, passiveNode,
+                    descentCriterion, rule,
+                    activeContext, passiveContext
+            );
+
     }
 
 }

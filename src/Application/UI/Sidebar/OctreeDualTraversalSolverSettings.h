@@ -15,7 +15,7 @@ namespace UI {
     class OctreeDualTraversalSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::OctreeDualTraversalSolver &_solver;
+        NBody::OctreeDualTraversalSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxDepthEntry;
@@ -23,7 +23,7 @@ namespace UI {
 
     public:
 
-        OctreeDualTraversalSolverSettings(NBody::OctreeDualTraversalSolver &solver);
+        OctreeDualTraversalSolverSettings(NBody::OctreeDualTraversalSolver<Gravity> &solver);
 
     };
 

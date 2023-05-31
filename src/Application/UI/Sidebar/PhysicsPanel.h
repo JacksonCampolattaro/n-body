@@ -6,19 +6,19 @@
 #define N_BODY_PHYSICSPANEL_H
 
 #include <NBody/Simulation/Simulation.h>
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/FloatEntry.h"
 
 namespace UI {
 
-    using NBody::Physics::Rule;
+    using NBody::Physics::Gravity;
 
     class PhysicsPanel : public BuilderWidget<Gtk::Box> {
     private:
 
-        Rule &_rule;
+        Gravity &_rule;
 
         FloatEntry &_gravityEntry;
 
@@ -26,7 +26,7 @@ namespace UI {
 
         PhysicsPanel(Gtk::Box::BaseObjectType *cobject,
                      const Glib::RefPtr<Gtk::Builder> &builder,
-                     Rule &rule);
+                     Gravity &rule);
 
     };
 

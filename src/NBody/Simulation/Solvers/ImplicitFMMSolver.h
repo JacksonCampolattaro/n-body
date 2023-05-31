@@ -11,15 +11,16 @@
 
 namespace NBody {
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleImplicitFMMSolver : public ImplicitDualTraversalSolver<
             MultipoleImplicitDualOctree<Order>,
-            Descent::SideLengthOverDistance
+            Descent::SideLengthOverDistance,
+            Rule
     > {
     public:
 
-        using MultipoleImplicitFMMSolver<Order>::ImplicitDualTraversalSolver::ImplicitDualTraversalSolver;
-        using MultipoleImplicitFMMSolver<Order>::ImplicitDualTraversalSolver::tree;
+        using MultipoleImplicitFMMSolver<Order, Rule>::ImplicitDualTraversalSolver::ImplicitDualTraversalSolver;
+        using MultipoleImplicitFMMSolver<Order, Rule>::ImplicitDualTraversalSolver::tree;
 
         std::string id() override {
             return fmt::format("implicit-fmm-{}p", std::pow(2, Order));
@@ -38,9 +39,14 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    using ImplicitFMMSolver = MultipoleImplicitFMMSolver<1>;
-    using QuadrupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<2>;
-    using OctupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<3>;
+    template<RuleType Rule = Gravity>
+    using ImplicitFMMSolver = MultipoleImplicitFMMSolver<1, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using QuadrupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<3, Rule>;
 }
 
 #endif //N_BODY_IMPLICITFMMSOLVER_H

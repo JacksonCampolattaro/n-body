@@ -8,14 +8,17 @@
 #include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverSeparation.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/MaxSideLengthOverDistance.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h>
 
 namespace NBody {
 
-    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance> {
+    template<RuleType Rule = Gravity>
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule> {
     public:
 
-        using ActiveTreeSolver::ActiveTreeSolver;
+        using ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule>::ActiveTreeSolver;
 
         std::string id() override { return "linear-bvh"; };
 
@@ -23,14 +26,15 @@ namespace NBody {
 
     };
 
-    template<std::size_t Order>
+    template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleLinearBVHSolver : public ActiveTreeSolver<
-            MultipoleActiveLinearBVH<Order>, // fixme: why doesn't this make a difference to performance?
-            Descent::DiagonalOverDistance
+            MultipoleActiveLinearBVH<Order>,
+            Descent::DiagonalOverDistance,
+            Rule
     > {
     public:
 
-        using MultipoleLinearBVHSolver<Order>::ActiveTreeSolver::ActiveTreeSolver;
+        using MultipoleLinearBVHSolver<Order, Rule>::ActiveTreeSolver::ActiveTreeSolver;
 
         std::string id() override { return fmt::format("linear-bvh-{}p", std::pow(2, Order)); };
 
@@ -38,8 +42,11 @@ namespace NBody {
 
     };
 
-    using QuadrupoleLinearBVHSolver = MultipoleLinearBVHSolver<2>;
-    using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3>;
+    template<RuleType Rule = Gravity>
+    using QuadrupoleLinearBVHSolver = MultipoleLinearBVHSolver<2, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3, Rule>;
 
 }
 

@@ -13,7 +13,7 @@ static std::string validate(const std::string &in) {
 }
 
 
-UI::NStepsRunnerController::NStepsRunnerController(NBody::NStepsRunner &runner) :
+UI::NStepsRunnerController::NStepsRunnerController(NBody::NStepsRunner<Gravity> &runner) :
         BuilderWidget<Gtk::Box>("/ui/n_steps_runner_controller.xml"),
         _runner(runner),
         _stepCountEntry(getWidget<Gtk::Entry>("step-count-entry")),

@@ -8,10 +8,10 @@
 #include <concepts>
 #include <span>
 
-#include <NBody/Simulation/Simulation.h> // fixme: this shouldn't be included here!
+#include "NBody/Simulation/Simulation.h" // fixme: this shouldn't be included here!
 
-#include <NBody/Physics/Acceleration.h>
-#include <NBody/Physics/MultipoleAcceleration.h>
+#include "NBody/Physics/Acceleration.h"
+#include "NBody/Physics/MultipoleAcceleration.h"
 
 namespace NBody {
 

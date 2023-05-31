@@ -2,8 +2,8 @@
 // Created by Jackson Campolattaro on 4/8/23.
 //
 
-#ifndef N_BODY_GRAVITATIONALVIEWINGSHEET_H
-#define N_BODY_GRAVITATIONALVIEWINGSHEET_H
+#ifndef N_BODY_FIELDPLOT_H
+#define N_BODY_FIELDPLOT_H
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
@@ -11,7 +11,7 @@
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 #include <matplot/matplot.h>
 
 using namespace NBody;
@@ -113,7 +113,7 @@ void plotFieldErrorInRange(
         matplot::axes_handle &ax,
         const std::function<glm::vec3(double, double)> &approximateField,
         const Simulation &simulation,
-        const Rule &rule,
+        Gravity &rule,
         const std::pair<float, float> &xRange,
         const std::pair<float, float> &yRange,
         double resolution = 0.05f
@@ -194,7 +194,7 @@ void plotFunctionWithZoom(
     f->show();
 }
 
-void plotExactField(json scenario, Rule rule = Rule{1.0f},
+void plotExactField(json scenario, Gravity rule = Gravity{1.0f},
                     std::pair<float, float> xRange = {-10.0, 110.0},
                     std::pair<float, float> yRange = {-10.0, 110.0},
                     std::pair<float, float> xZoomRange = {1.0, 2.0},
@@ -222,7 +222,7 @@ void plotExactField(json scenario, Rule rule = Rule{1.0f},
 
 }
 
-void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
+void plotFieldApproximations(json scenario, Gravity rule = Gravity{1.0f},
                              std::pair<float, float> xRange = {1.0f, 1.5f},
                              std::pair<float, float> yRange = {0.0, 0.5f},
                              double resolution = 0.01
@@ -319,7 +319,7 @@ void plotFieldApproximations(json scenario, Rule rule = Rule{1.0f},
 
 }
 
-void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
+void plotMomentApproximations(json scenario, Gravity rule = Gravity{1.0f},
                               std::pair<float, float> xRange = {-10.0f, 10.0f},
                               std::pair<float, float> yRange = {-10.0, 10.0f},
                               double resolution = 0.25
@@ -344,16 +344,16 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
     hexadecupoleMassSummary.summarize(actors, actorsView);
 
     auto centerOfMassApproximateFunction = [&](double x, double y) {
-        return rule(centerOfMassSummary.centerOfMass(), centerOfMassSummary, {x, y, 0.0f});
+        return rule.nodeParticle(centerOfMassSummary.centerOfMass(), centerOfMassSummary, {x, y, 0.0f});
     };
     auto quadrupoleApproximateFunction = [&](double x, double y) {
-        return rule(quadrupoleMassSummary.centerOfMass(), quadrupoleMassSummary, {x, y, 0.0f});
+        return rule.nodeParticle(quadrupoleMassSummary.centerOfMass(), quadrupoleMassSummary, {x, y, 0.0f});
     };
     auto octupoleApproximateFunction = [&](double x, double y) {
-        return rule(octupoleMassSummary.centerOfMass(), octupoleMassSummary, {x, y, 0.0f});
+        return rule.nodeParticle(octupoleMassSummary.centerOfMass(), octupoleMassSummary, {x, y, 0.0f});
     };
     auto hexadecupoleApproximateFunction = [&](double x, double y) {
-        return rule(hexadecupoleMassSummary.centerOfMass(), hexadecupoleMassSummary, {x, y, 0.0f});
+        return rule.nodeParticle(hexadecupoleMassSummary.centerOfMass(), hexadecupoleMassSummary, {x, y, 0.0f});
     };
 
     auto centerOfMassComponentFunction = [&](double x, double y) {
@@ -418,7 +418,7 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
 // todo: this is awful
 //template<class PassiveSummary, class ActiveSummary>
 //glm::vec3 dualApproximate(double x, double y,
-//                          const Rule &rule, const Position &samplePosition,
+//                          const Gravity &rule, const Position &samplePosition,
 //                          const ActiveSummary &activeSummary) {
 //    PassiveSummary accelerationSummary{};
 //    rule(activeSummary.centerOfMass(), activeSummary, {x, y, 0.0f}, accelerationSummary);
@@ -426,7 +426,7 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
 //}
 
 // todo: and this is even worse
-//void plotDualApproximations(json scenario, Rule rule = Rule{1.0f},
+//void plotDualApproximations(json scenario, Gravity rule = Gravity{1.0f},
 //                            std::pair<float, float> xRange = {-10.0f, 10.0f},
 //                            std::pair<float, float> yRange = {-10.0, 10.0f},
 //                            double resolution = 0.25
@@ -514,4 +514,4 @@ void plotMomentApproximations(json scenario, Rule rule = Rule{1.0f},
 //
 //}
 
-#endif //N_BODY_GRAVITATIONALVIEWINGSHEET_H
+#endif //N_BODY_FIELDPLOT_H

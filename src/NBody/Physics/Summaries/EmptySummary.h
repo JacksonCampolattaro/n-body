@@ -5,7 +5,7 @@
 #ifndef N_BODY_EMPTYSUMMARY_H
 #define N_BODY_EMPTYSUMMARY_H
 
-#include "NBody/Physics/SummaryType.h"
+#include "SummaryType.h"
 
 namespace NBody {
 

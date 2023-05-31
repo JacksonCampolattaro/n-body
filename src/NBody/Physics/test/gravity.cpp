@@ -6,7 +6,7 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 
 using namespace NBody::Physics;
 
@@ -17,7 +17,7 @@ TEST_CASE("Particle-particle acceleration should be accurate", "[Gravity]") {
 
     Position pB{2, 0, 0};
 
-    Rule G{2.0};
+    Gravity G{2.0};
 
     Acceleration a = G(pA, mA, pB);
 
@@ -32,7 +32,7 @@ TEST_CASE("Quadrupole acceleration should be accurate at the evaluation point", 
 
     Position pP{2, 0, 0};
 
-    Rule G{2.0};
+    Gravity G{2.0};
 
     auto vectorAcceleration = G(pA, mA, pP);
     NBody::QuadrupoleAccelerationSummary quadrupoleAccelerationSummary{};
@@ -49,7 +49,7 @@ TEST_CASE("Quadrupole acceleration should account for small offsets from the eva
 
     Position pP{2, 0, 0};
 
-    Rule G{};
+    Gravity G{};
 
     auto monopoleAcceleration = G(pA, mA, pP);
     NBody::QuadrupoleAccelerationSummary quadrupoleAccelerationSummary{};
@@ -91,7 +91,7 @@ TEST_CASE("Re-centering a quadrupole should be reversible", "[Gravity]") {
     Position pA{0, 0, 0};
     Mass mA{2.0};
     Position pP{2, 0, 0};
-    Rule G{2.0};
+    Gravity G{2.0};
 
     NBody::QuadrupoleAccelerationSummary quadrupoleAccelerationSummary{};
     G(pA, mA, pP, quadrupoleAccelerationSummary);
@@ -118,7 +118,7 @@ TEST_CASE("Re-centering a quadrupole should be reversible", "[Gravity]") {
 
 TEST_CASE("Quadrupole should be a good approximation in a real scenario", "[Gravity]") {
 
-    Rule G{1.0};
+    Gravity G{1.0};
 
     std::vector<std::pair<Position, Mass>> activePositionsAndMasses{
             {{12.237058, 7.9972196, 2.7898774}, {0.0570347}},

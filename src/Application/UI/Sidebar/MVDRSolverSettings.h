@@ -5,7 +5,7 @@
 #ifndef N_BODY_MVDRSOLVERSETTINGS_H
 #define N_BODY_MVDRSOLVERSETTINGS_H
 
-#include "NBody/Physics/SummaryType.h"
+#include "NBody/Physics/Summaries/SummaryType.h"
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
@@ -16,7 +16,7 @@ namespace UI {
     class MVDRSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::MVDRSolver &_solver;
+        NBody::MVDRSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxPassiveTreeDepthEntry;
@@ -24,14 +24,14 @@ namespace UI {
 
     public:
 
-        explicit MVDRSolverSettings(NBody::MVDRSolver &solver);
+        explicit MVDRSolverSettings(NBody::MVDRSolver<Gravity> &solver);
 
     };
 
     class QuadrupoleMVDRSolverSettings : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::QuadrupoleMVDRSolver &_solver;
+        NBody::QuadrupoleMVDRSolver<Gravity> &_solver;
 
         FloatEntry &_thetaEntry;
         Gtk::SpinButton &_maxPassiveTreeDepthEntry;
@@ -39,7 +39,7 @@ namespace UI {
 
     public:
 
-        explicit QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver &solver);
+        explicit QuadrupoleMVDRSolverSettings(NBody::QuadrupoleMVDRSolver<Gravity> &solver);
 
     };
 

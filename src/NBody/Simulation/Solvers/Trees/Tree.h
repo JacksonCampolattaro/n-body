@@ -10,7 +10,7 @@
 #include <span>
 #include <numeric>
 
-#include <NBody/Physics/Rule.h>
+#include "NBody/Physics/Rules/Gravity.h"
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/Trees/NodeType.h>
 

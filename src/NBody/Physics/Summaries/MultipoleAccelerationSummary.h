@@ -5,7 +5,7 @@
 #ifndef N_BODY_MULTIPOLEACCELERATIONSUMMARY_H
 #define N_BODY_MULTIPOLEACCELERATIONSUMMARY_H
 
-#include <NBody/Physics/SummaryType.h>
+#include "SummaryType.h"
 #include <NBody/Physics/Summaries/AccelerationSummary.h>
 #include <NBody/Physics/MultipoleAcceleration.h>
 

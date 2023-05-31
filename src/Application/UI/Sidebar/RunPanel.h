@@ -32,7 +32,7 @@ namespace UI {
     class RunPanel : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::Solver &_solver;
+        NBody::Solver<Gravity> &_solver;
         sigc::connection _idler;
 
         NBody::MultiRunner _multiRunner;
@@ -58,7 +58,7 @@ namespace UI {
 
         RunPanel(Gtk::Box::BaseObjectType *cobject,
                  const Glib::RefPtr<Gtk::Builder> &builder,
-                 NBody::Solver &solver, NBody::MultiRunner &runner);
+                 NBody::Solver<Gravity> &solver, NBody::MultiRunner &runner);
 
     };
 

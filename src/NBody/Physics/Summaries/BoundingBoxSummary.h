@@ -5,7 +5,7 @@
 #ifndef N_BODY_BOUNDINGBOXSUMMARY_H
 #define N_BODY_BOUNDINGBOXSUMMARY_H
 
-#include "NBody/Physics/SummaryType.h"
+#include "SummaryType.h"
 
 namespace NBody {
 

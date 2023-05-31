@@ -12,7 +12,7 @@ namespace NBody {
     class MeanGrader : public Grader {
     public:
 
-        explicit MeanGrader(json scenario, Physics::Rule rule = Physics::Rule{}) :
+        explicit MeanGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 Grader(scenario, rule) {}
 
         float error(const Simulation &candidateSimulation) const override {

@@ -16,13 +16,13 @@ namespace UI {
 class OneStepRunnerController : public BuilderWidget<Gtk::Box> {
     private:
 
-        NBody::OneStepRunner &_runner;
+        NBody::OneStepRunner<Gravity> &_runner;
 
         Gtk::ToggleButton &_stepButton;
 
     public:
 
-        explicit OneStepRunnerController(NBody::OneStepRunner &runner);
+        explicit OneStepRunnerController(NBody::OneStepRunner<Gravity> &runner);
 
     };
 

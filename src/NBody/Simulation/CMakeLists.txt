@@ -23,7 +23,7 @@ add_library(Simulation
         Solver.h
         Solvers/MultiSolver.h
         Solvers/MortonSort.h
-        Solvers/NaiveSolver.h Solvers/NaiveSolver.cpp
+        Solvers/NaiveSolver.h
         Solvers/BarnesHutSolver.h
         Solvers/Trees/NodeType.h
         Solvers/Trees/NodeBase.h
@@ -33,15 +33,15 @@ add_library(Simulation
         Solvers/Trees/LinearBVH.h
         Runner.h
         Runners/MultiRunner.h
-        Runners/OneStepRunner.cpp Runners/OneStepRunner.h
-        Runners/NStepsRunner.cpp Runners/NStepsRunner.h
-        Runners/ContinuousRunner.cpp Runners/ContinuousRunner.h
+        Runners/OneStepRunner.h
+        Runners/NStepsRunner.h
+        Runners/ContinuousRunner.h
         Solvers/LinearBVHSolver.h
         Solvers/DualTreeSolver.h
         Solvers/DualTraversalSolver.h Solvers/MVDRSolver.h
         Solvers/ActiveTreeSolver.h Solvers/OctreeDualTraversalSolver.h
         Solvers/FMMSolver.h Solvers/Descent/activeTree.h
-        Solvers/Descent/balancedLockstepDualTree.h Solvers/Descent/lockstepDualTree.h Solvers/Descent/collapseAccelerations.h Solvers/Descent/DescentCriterion/SideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverDistance.h Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h Solvers/Descent/passiveTree.h Solvers/Descent/adaptiveDualTree.h Solvers/Descent/none.h Solvers/PassiveTreeSolver.h Solvers/ReverseBarnesHutSolver.h Solvers/Descent/adaptiveDualTreeImplicitField.h Solvers/Descent/passiveTreeImplicitField.h Solvers/ImplicitReverseBarnesHutSolver.h Solvers/ImplicitPassiveTreeSolver.h Solvers/ImplicitMVDRSolver.h Solvers/ImplicitDualTreeSolver.h Solvers/Descent/lockstepDualTreeImplicitField.h Solvers/Descent/balancedLockstepDualTreeImplicitField.h Solvers/ImplicitFMMSolver.h Solvers/ImplicitDualTraversalSolver.h Solvers/Descent/DescentCriterion/DualThetaDiagonalOverDistance.h)
+        Solvers/Descent/balancedLockstepDualTree.h Solvers/Descent/lockstepDualTree.h Solvers/Descent/collapseAccelerations.h Solvers/Descent/DescentCriterion/SideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverDistance.h Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h Solvers/Descent/passiveTree.h Solvers/Descent/adaptiveDualTree.h Solvers/Descent/none.h Solvers/PassiveTreeSolver.h Solvers/ReverseBarnesHutSolver.h Solvers/Descent/adaptiveDualTreeImplicitField.h Solvers/Descent/passiveTreeImplicitField.h Solvers/ImplicitReverseBarnesHutSolver.h Solvers/ImplicitPassiveTreeSolver.h Solvers/ImplicitMVDRSolver.h Solvers/ImplicitDualTreeSolver.h Solvers/Descent/lockstepDualTreeImplicitField.h Solvers/Descent/balancedLockstepDualTreeImplicitField.h Solvers/ImplicitFMMSolver.h Solvers/ImplicitDualTraversalSolver.h Solvers/Descent/DescentCriterion/DualThetaDiagonalOverDistance.h Solvers/Descent/DescentCriterion/MaxSideLengthOverDistance.h Solvers/Descent/DescentCriterion/DiagonalOverSeparation.h Solvers/ImplicitLinearBVHFMMSolver.h)
 
 target_include_directories(Simulation PUBLIC
         ${CMAKE_SOURCE_DIR}/src)

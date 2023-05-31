@@ -38,22 +38,40 @@ namespace NBody {
         Color4 color;
     };
 
+    template<RuleType Rule = Gravity>
     class SolverRenderer : public Renderer {
     protected:
 
-        const MultiSolver &_solver;
+        const MultiSolver<Rule> &_solver;
         bool _enabled = false;
 
         mutable sigc::signal<void()> _signal_changed;
 
     public:
 
-        SolverRenderer(const MultiSolver &solver) :
+        SolverRenderer(const MultiSolver<Rule> &solver) :
                 Renderer(),
                 _solver(solver) {}
 
         void draw(const Matrix4 &transformationMatrix,
-                  const Matrix4 &projectionMatrix) override;
+                  const Matrix4 &projectionMatrix) override {
+
+            if (!_enabled) return;
+
+            const auto &solver = _solver.get();
+            if (typeid(solver) == typeid(NBody::BarnesHutSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::BarnesHutSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::LinearBVHSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::LinearBVHSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::MVDRSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::MVDRSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctreeDualTraversalSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::OctreeDualTraversalSolver<Gravity> &>(solver));
+        }
 
         sigc::signal<void()> &signal_changed() override { return _signal_changed; };
 
@@ -65,22 +83,35 @@ namespace NBody {
         const bool &enabled() const { return _enabled; }
 
     private:
+        // todo: these should all be generic, with support for any ActiveTree, DualTree, etc.
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const BarnesHutSolver &solver);
+                  const BarnesHutSolver<Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+                 0xFFFFFFAA_rgbaf);
+        }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const LinearBVHSolver &solver);
+                  const LinearBVHSolver<Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+                 0xFFFFFFAA_rgbaf);
+        }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const MVDRSolver &solver);
+                  const MVDRSolver<Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.activeTree().root(), 0xFF000055_rgbaf);
+            draw(transformationMatrix, projectionMatrix, solver.passiveTree().root(), 0x0000FF55_rgbaf);
+        }
 
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const OctreeDualTraversalSolver &solver);
+                  const OctreeDualTraversalSolver<Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
+                 0xFFFFFFAA_rgbaf);
+        }
 
         template<typename TreeNode>
         void draw(const Matrix4 &transformationMatrix,

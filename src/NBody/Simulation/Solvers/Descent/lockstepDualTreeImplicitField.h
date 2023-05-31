@@ -56,11 +56,11 @@ namespace NBody::Descent {
         };
     }
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
     inline void lockstepDualTreeImplicitField(
             std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode,
-            const DescentCriterion &descentCriterion, const Physics::Rule &rule,
+            const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
                     entt::entity, entt::exclude_t<>,
                     const Position, const Mass
@@ -138,9 +138,10 @@ namespace NBody::Descent {
                     activeEntititesInLeaves.begin(), activeEntititesInLeaves.end()
             };
             passiveTreeImplicitField(
-                    activeEntititesInLeavesSpan, activeContext,
-                    passiveNode, passiveContext,
-                    descentCriterion, rule
+                    activeEntititesInLeavesSpan,
+                    passiveNode,
+                    descentCriterion, rule,
+                    activeContext, passiveContext
                     // _Don't_ pass down the local field, otherwise it'll be counted twice!
             );
 

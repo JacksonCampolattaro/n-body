@@ -8,7 +8,7 @@
 
 UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                              const Glib::RefPtr<Gtk::Builder> &builder,
-                             NBody::MultiSolver &multiSolver) :
+                             NBody::MultiSolver<Gravity> &multiSolver) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/solver_panel.xml"),
         _multiSolver(multiSolver),
         _solverDropdown(getWidget<DropDownView>("solver-dropdown")),
@@ -16,9 +16,9 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
         _maxThreadCountEntry(getWidget<Gtk::SpinButton>("thread-count-int-entry")),
         _timeStepEntry(getWidget<PositiveFloatEntry>("time-step-float-entry")) {
 
-    _timeStepEntry.setValue(NBody::Solver::timeStep());
+    _timeStepEntry.setValue(NBody::Solver<Gravity>::timeStep());
     _timeStepEntry.signal_changed.connect([&](float t) {
-        NBody::Solver::timeStep() = t;
+        NBody::Solver<Gravity>::timeStep() = t;
     });
 
     _maxThreadCountEntry.set_range(1, std::numeric_limits<float>::max());
@@ -30,32 +30,32 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
 
     _solverDropdown.set_expression(Gtk::ClosureExpression<Glib::ustring>::create(
             [&](const Glib::RefPtr<Glib::ObjectBase> &item) {
-                return std::dynamic_pointer_cast<NBody::Solver>(item)->name();
+                return std::dynamic_pointer_cast<NBody::Solver<Gravity>>(item)->name();
             }
     ));
     _solverDropdown.set_model(_multiSolver.selectionModel());
 
     _solverStack.set_expression(Gtk::ClosureExpression<Gtk::Widget *>::create(
             [&](const Glib::RefPtr<Glib::ObjectBase> &item) -> Gtk::Widget * {
-                auto solver = std::dynamic_pointer_cast<NBody::Solver>(item);
+                auto solver = std::dynamic_pointer_cast<NBody::Solver<Gravity>>(item);
                 if (solver->id() == "naive")
-                    return new NaiveSolverSettings((NBody::NaiveSolver &) *solver);
+                    return new NaiveSolverSettings((NBody::NaiveSolver<Gravity> &) *solver);
                 if (solver->id() == "barnes-hut")
-                    return new BarnesHutSolverSettings((NBody::BarnesHutSolver &) *solver);
+                    return new BarnesHutSolverSettings((NBody::BarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "barnes-hut-4p")
-                    return new QuadrupoleBarnesHutSolverSettings((NBody::QuadrupoleBarnesHutSolver &) *solver);
+                    return new QuadrupoleBarnesHutSolverSettings((NBody::QuadrupoleBarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh")
-                    return new LinearBVHSolverSettings((NBody::LinearBVHSolver &) *solver);
+                    return new LinearBVHSolverSettings((NBody::LinearBVHSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh-4p")
-                    return new QuadrupoleLinearBVHSolverSettings((NBody::QuadrupoleLinearBVHSolver &) *solver);
+                    return new QuadrupoleLinearBVHSolverSettings((NBody::QuadrupoleLinearBVHSolver<Gravity> &) *solver);
                 if (solver->id() == "mvdr")
-                    return new MVDRSolverSettings((NBody::MVDRSolver &) *solver);
+                    return new MVDRSolverSettings((NBody::MVDRSolver<Gravity> &) *solver);
                 if (solver->id() == "mvdr-4p")
-                    return new QuadrupoleMVDRSolverSettings((NBody::QuadrupoleMVDRSolver &) *solver);
+                    return new QuadrupoleMVDRSolverSettings((NBody::QuadrupoleMVDRSolver<Gravity> &) *solver);
                 if (solver->id() == "octree-dual-traversal")
-                    return new OctreeDualTraversalSolverSettings((NBody::OctreeDualTraversalSolver &) *solver);
+                    return new OctreeDualTraversalSolverSettings((NBody::OctreeDualTraversalSolver<Gravity> &) *solver);
                 if (solver->id() == "fmm-4p")
-                    return new FMMSolverSettings((NBody::FMMSolver &) *solver);
+                    return new FMMSolverSettings((NBody::FMMSolver<Gravity> &) *solver);
                 return new Gtk::Label{"Unrecognized Solver"};
             }
     ));

@@ -29,7 +29,7 @@ namespace UI {
         NBody::ArcBallControllableCamera _camera;
 
         NBody::MultiRenderer _simulationRenderer;
-        NBody::SolverRenderer _solverRenderer;
+        NBody::SolverRenderer<Gravity> _solverRenderer;
 
         NBody::Recorder _recorder;
 
@@ -48,8 +48,8 @@ namespace UI {
     public:
 
         Interactive(Gtk::ApplicationWindow::BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder,
-                    NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Rule &rule,
-                    NBody::MultiSolver &solver, NBody::SimulationFileManager &fileManager);
+                    NBody::Simulation &simulation, NBody::MultiRunner &runner, NBody::Physics::Gravity &rule,
+                    NBody::MultiSolver<Gravity> &solver, NBody::SimulationFileManager &fileManager);
     };
 
 }
