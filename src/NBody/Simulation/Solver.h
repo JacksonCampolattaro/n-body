@@ -79,9 +79,9 @@ namespace NBody {
             _thread.reset();
         }
 
-        virtual std::string id() = 0;
+        virtual std::string id() { return "unnamed-solver"; }
 
-        virtual std::string name() = 0;
+        virtual std::string name() { return "unnamed-solver"; }
 
         Simulation &simulation() { return _simulation; }
 
@@ -178,6 +178,33 @@ namespace NBody {
             });
         }
     };
+
+
+    namespace {
+
+        template<typename, typename>
+        struct ReplaceRuleHelper {
+        };
+
+        template<typename NewRule, template<typename, typename> typename S, typename T, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<T, OldRule>> {
+            using type = S<T, NewRule>;
+        };
+
+        template<typename NewRule, template<typename, typename, typename> typename S, typename T, typename D, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<T, D, OldRule>> {
+            using type = S<T, D, NewRule>;
+        };
+
+        // todo: it would be nice if this worked!
+        //template<typename NewRule, template<typename..., typename> typename S, typename ...T, typename OldRule>
+        //struct ReplaceRuleHelper<NewRule, S<T..., OldRule>> {
+        //    using type = S<T..., NewRule>;
+        //};
+    }
+
+    template<typename S, typename NewRule>
+    using ReplaceRule = typename ReplaceRuleHelper<NewRule, S>::type;
 
 }
 

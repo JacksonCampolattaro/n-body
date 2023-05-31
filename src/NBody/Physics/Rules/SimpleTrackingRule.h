@@ -10,7 +10,7 @@
 
 namespace NBody::Physics {
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     class SimpleTrackingRule : public RuleBase<SimpleTrackingRule<Rule>> {
     private:
 
@@ -52,6 +52,8 @@ namespace NBody::Physics {
 
     public:
 
+        const Rule &underlyingRule() { return _underlyingRule; }
+
         [[nodiscard]] std::size_t particleParticleCount() const { return _particleParticleCount; }
 
         [[nodiscard]] std::size_t particleNodeCount() const { return _particleNodeCount; }
@@ -64,14 +66,20 @@ namespace NBody::Physics {
             return _particleParticleCount + _particleNodeCount + _nodeParticleCount + _nodeNodeCount;
         }
 
+        [[nodiscard]] std::string toString() const {
+            return fmt::format(
+                    "pp:{}, pn:{}, np:{}, nn:{}",
+                    particleParticleCount(),
+                    particleNodeCount(),
+                    nodeParticleCount(),
+                    nodeNodeCount()
+            );
+        }
+
     public:
 
         friend std::ostream &operator<<(std::ostream &o, const SimpleTrackingRule<Rule> &rule) {
-            return o << fmt::format("pp={}, pn={}, np={}, nn={}\n",
-                                    rule._particleParticleCount,
-                                    rule._particleNodeCount,
-                                    rule._nodeParticleCount,
-                                    rule._nodeNodeCount);
+            return o << rule.toString();
         }
 
     };

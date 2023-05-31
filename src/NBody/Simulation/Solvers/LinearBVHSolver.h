@@ -8,6 +8,7 @@
 #include <NBody/Simulation/Solvers/ActiveTreeSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverCenterDistance.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverSeparation.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/MaxSideLengthOverDistance.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/ProjectedDiagonalOverDistance.h>
@@ -15,10 +16,10 @@
 namespace NBody {
 
     template<RuleType Rule = Gravity>
-    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule> {
+    class LinearBVHSolver : public ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverCenterDistance, Rule> {
     public:
 
-        using ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverDistance, Rule>::ActiveTreeSolver;
+        using ActiveTreeSolver<ActiveLinearBVH, Descent::DiagonalOverCenterDistance, Rule>::ActiveTreeSolver;
 
         std::string id() override { return "linear-bvh"; };
 
@@ -29,7 +30,7 @@ namespace NBody {
     template<std::size_t Order, RuleType Rule = Gravity>
     class MultipoleLinearBVHSolver : public ActiveTreeSolver<
             MultipoleActiveLinearBVH<Order>,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:

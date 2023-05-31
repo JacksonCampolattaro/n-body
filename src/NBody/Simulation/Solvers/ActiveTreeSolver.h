@@ -13,7 +13,7 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule>
     class ActiveTreeSolver : public Solver<Rule> {
     private:
 
@@ -25,6 +25,10 @@ namespace NBody {
         ActiveTreeSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
+
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
 
         void updateAccelerations() override {
 
@@ -66,6 +70,8 @@ namespace NBody {
         [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
     };
+
+    //template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule, RuleType NewRule>
 
 }
 

@@ -2,21 +2,24 @@
 // Created by Jackson Campolattaro on 2/19/23.
 //
 
-#ifndef N_BODY_DIAGONALOVERDISTANCE_H
-#define N_BODY_DIAGONALOVERDISTANCE_H
+#ifndef N_BODY_DIAGONALOVERCENTERDISTANCE_H
+#define N_BODY_DIAGONALOVERCENTERDISTANCE_H
 
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
 
 namespace NBody::Descent {
 
-    class DiagonalOverDistance : public ThetaDescentCriterion {
+    class DiagonalOverCenterDistance : public ThetaDescentCriterion {
     public:
 
         using ThetaDescentCriterion::ThetaDescentCriterion;
 
         template<NodeType TreeNode>
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
+            float distance = std::min(
+                    glm::distance((glm::vec3) activeNode.center(), point),
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point)
+            );
             return (activeNode.boundingBox().diagonalLength() / distance) < _theta;
         }
 
@@ -33,7 +36,11 @@ namespace NBody::Descent {
             float activeDiagonal = activeNode.boundingBox().diagonalLength();
             float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
 
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+            float distance = std::min(
+                    glm::distance((glm::vec3) activeNode.center(), passiveNode.center()),
+                    glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())
+            );
+
             if ((activeDiagonal + passiveDiagonal) / distance < _theta
                 && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
                 return Recommendation::Approximate;
@@ -54,4 +61,4 @@ namespace NBody::Descent {
 
 }
 
-#endif //N_BODY_DIAGONALOVERDISTANCE_H
+#endif //N_BODY_DIAGONALOVERCENTERDISTANCE_H

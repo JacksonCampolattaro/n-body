@@ -1,10 +1,15 @@
 import math
+import os.path
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import colorsys
+from matplotlib import rcParams
+
+# Text-width in inches, to make sure everything fits in the latex document
+text_width = 5
 
 
 def plot_field(filename):
@@ -61,10 +66,51 @@ def plot_sweep_error(filename):
 
 
 def plot_interaction_counts(filename):
-    interaction_counts = pd.read_csv(filename)
+    df = pd.read_csv(filename)
+    x_label = df.columns[0]
+    particle_count = df['N'][0]
+    print(particle_count)
+    df = df[
+        [x_label, 'Particle-Particle', 'Particle-Node', 'Node-Particle', 'Node-Node']
+    ]
+    df = df.loc[:, (df != 0).any(axis=0)]
+    df.loc[:, df.columns != x_label] = \
+        100 * df.loc[:, df.columns != x_label] / (particle_count * particle_count)
+    print(df)
+    colormap = {
+        'Particle-Particle': 'gray',
+        'Particle-Node': 'cadetblue',
+        'Node-Particle': 'lightseagreen',
+        'Node-Node': 'aquamarine'
+    }
 
-    # sns.histplot(data=interaction_counts, x="Passive Size", y="Active Size", bins=100)
-    # plt.show()
+    ax = df.plot(kind='bar', stacked=True,
+                                 #rot=45, ha='right',
+                                 figsize=(text_width / 2, 3),
+                                 x=x_label, color=colormap)
+    ax.set(xlabel=x_label, ylabel='Interactions (\% of Naive)')
+    ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
+
+    plt.tight_layout()
+    plt.legend(loc='lower left')
+    plt.savefig(os.path.splitext(filename)[0] + "_vs_interactions.pdf")
+
+
+def plot_times(filename):
+    df = pd.read_csv(filename)
+    x_label = df.columns[0]
+    df = df[[x_label, 'Time']]
+    print(df)
+
+    ax = df.plot(kind='bar', legend=False,
+                 #rot=45, ha='right',
+                 figsize=(text_width / 2, 3),
+                 x=x_label, color='gray')
+    ax.set(xlabel=x_label, ylabel='Time (S / Iteration)')
+    ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
 
 
 def plot_interactions(filename):
@@ -74,7 +120,6 @@ def plot_interactions(filename):
     print(node_node_interactions)
 
     sns.histplot(data=node_node_interactions, x="Passive Size", y="Active Size", bins=100)
-    plt.show()
 
 
 def main():
@@ -82,12 +127,21 @@ def main():
     custom_params = {"axes.spines.right": False, "axes.spines.top": False}
     sns.set_theme(style="ticks", rc=custom_params)
 
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='times', size=11)
+    plt.rc('axes', labelsize=11)
+    plt.rc('xtick', labelsize=9)
+    plt.rc('ytick', labelsize=9)
+    plt.rc('legend', fontsize=9)
+
     # plot_sweep_n('benchmarks/sweep-n.csv')
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
     # plot_sweep_error('benchmarks/sweep-theta.csv')
     # plot_field('benchmarks/exact-field.csv')
     # plot_interactions('benchmarks/approximation-tracking.csv')
-    plot_interaction_counts("benchmarks/interaction-counts/linear-bvh-exclusion-regions.csv")
+
+    plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
+    plot_times("benchmarks/linear-bvh-descent-criterion.csv")
 
 
 if __name__ == "__main__":

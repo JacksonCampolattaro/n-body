@@ -10,13 +10,10 @@
 #include "bestTheta.h"
 #include "field.h"
 #include "fieldPlot.h"
+#include "benchmark.h"
 
 #include <gtkmm.h>
 #include <matplot/matplot.h>
-
-#include <spdlog/spdlog.h>
-
-#include <boost/progress.hpp>
 
 #include <NBody/Physics/Rules/Gravity.h>
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
@@ -36,32 +33,6 @@
 #include <NBody/Simulation/Solvers/ImplicitLinearBVHFMMSolver.h>
 
 using namespace NBody;
-
-template<typename SolverType>
-std::chrono::duration<float> timedStep(SolverType &solver) {
-    auto startTime = std::chrono::steady_clock::now();
-    solver.step();
-    auto finishTime = std::chrono::steady_clock::now();
-    return (finishTime - startTime);
-}
-
-template<typename SolverType>
-std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations) {
-
-    // Don't bother with a progress bar if it's only one step
-    if (iterations == 1) return timedStep(solver);
-
-    spdlog::info("Running solver \"{}\" for {} iteration(s)", solver.name(), iterations);
-    boost::progress_display display(iterations);
-    auto startTime = std::chrono::steady_clock::now();
-    for (int i = 0; i < iterations; ++i) {
-        solver.step();
-        ++display;
-    }
-    auto finishTime = std::chrono::steady_clock::now();
-    std::cout << std::endl;
-    return (finishTime - startTime) / iterations;
-}
 
 template<typename... Solvers>
 void sweepN(const std::vector<std::size_t> &nValues, std::size_t iterations) {
