@@ -2,12 +2,10 @@
 // Created by Jackson Campolattaro on 1/8/23.
 //
 
-#include "Comparison.h"
-#include "ConstitutionalGrader.h"
-#include "MeanGrader.h"
-#include "RMSGrader.h"
+#include "Benchmark/Graders/ConstitutionalGrader.h"
+#include "Benchmark/Graders/MeanGrader.h"
+#include "Benchmark/Graders/RMSGrader.h"
 #include "Generator.h"
-#include "bestTheta.h"
 #include "field.h"
 #include "fieldPlot.h"
 #include "benchmark.h"
@@ -117,7 +115,7 @@ void sweepTheta(json scenario, const std::vector<float> &thetaValues) {
 }
 
 template<typename CandidateSolver>
-float accuracy(json scenario, const Grader &grader, float theta = 0.5) {
+float accuracy(json scenario, const NaiveReferenceGrader &grader, float theta = 0.5) {
 
     // Create a solver
     Gravity rule{grader.rule()};
@@ -143,7 +141,7 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
     CandidateSolver solver{simulation, rule};
 
     // Select a value of theta that can produce the necessary accuracy
-    solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
+    solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
 
     // Time the solver
     auto time = timedRun(solver, iterations);
@@ -152,7 +150,7 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
 }
 
 template<typename CandidateSolver>
-void approximationRatio(json scenario, const Grader &grader) {
+void approximationRatio(json scenario, const NaiveReferenceGrader &grader) {
 
     SimpleTrackingRule<Gravity> rule{grader.rule()};
     Simulation simulation;
@@ -168,7 +166,7 @@ void approximationRatio(json scenario, const Grader &grader) {
 }
 
 template<typename CandidateSolver>
-void approximationTracking(json scenario, const Grader &grader) {
+void approximationTracking(json scenario, const NaiveReferenceGrader &grader) {
 
     AdvancedTrackingRule<Gravity> rule{"benchmarks/approximation-tracking.csv", grader.rule()};
     Simulation simulation;

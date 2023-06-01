@@ -9,15 +9,18 @@
 
 namespace NBody {
 
-    class RMSGrader : public Grader {
+    class RMSGrader : public NaiveReferenceGrader {
     public:
 
-        explicit RMSGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
-                Grader(scenario, rule) {}
+        using NaiveReferenceGrader::NaiveReferenceGrader;
 
         float error(const Simulation &candidateSimulation) const override {
             return std::sqrt(maximumError(candidateSimulation)) * 100.0f;
         }
+
+        bool acceptable(const Simulation &candidateSimulation) const override {
+            return error(candidateSimulation) < 0.5;
+        };
 
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
             assert(a == b);
@@ -27,7 +30,7 @@ namespace NBody {
             auto forceB = B.get<Physics::Acceleration>(b) * B.get<Physics::Mass>(b).mass();
             float differenceInForces = glm::distance(forceA, forceB);
 
-            if (glm::any(glm::isinf((glm::vec3)forceB) || glm::isnan((glm::vec3)forceB)))
+            if (glm::any(glm::isinf((glm::vec3) forceB) || glm::isnan((glm::vec3) forceB)))
                 return std::numeric_limits<float>::infinity();
 
             return std::pow(differenceInForces / glm::length(forceA), 2.0f);

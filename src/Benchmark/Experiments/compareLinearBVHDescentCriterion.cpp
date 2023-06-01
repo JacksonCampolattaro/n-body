@@ -16,18 +16,15 @@
 #include "../benchmark.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::debug);
     Glib::init();
 
     std::ofstream out{"benchmarks/linear-bvh-descent-criterion.csv"};
-    out<< "Descent Criterion,N,Theta,Time,"
-          "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
-          "Approximation Ratio\n";
+    out << "Descent Criterion,N,Theta,Time,"
+           "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
+           "Approximation Ratio\n";
 
-    json scenario = Generator::realisticGalaxy();
-    Gravity rule{};
-
-    ConstitutionalGrader grader{scenario, rule};
+    ConstitutionalGrader grader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
 
     runTest<
             ActiveTreeSolver<

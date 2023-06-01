@@ -47,7 +47,7 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
 
     spdlog::info("Finding an appropriate value of Theta for the solver");
     CandidateSolver solver{simulation, rule};
-    solver.descentCriterion().theta() = searchTheta<CandidateSolver>(grader);
+    solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
     spdlog::info("Theta = {}", solver.descentCriterion().theta());
 
     spdlog::info("Timing the solver over {} iterations", iterations);
@@ -80,5 +80,32 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
     spdlog::info("Done");
 }
 
+template<class CandidateSolver>
+void runShortTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 10) {
+
+    spdlog::info("Running a battery of tests on solver with label \"{}\"", label);
+
+    Simulation simulation;
+    from_json(grader.scenario(), simulation);
+    Gravity rule = grader.rule();
+
+    spdlog::info("Finding an appropriate value of Theta for the solver");
+    CandidateSolver solver{simulation, rule};
+    solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
+    spdlog::info("Theta = {}", solver.descentCriterion().theta());
+
+    spdlog::info("Timing the solver over {} iterations", iterations);
+    for (int i = 0; i < iterations; ++i) {
+        auto time = timedStep(solver);
+        out << label << ","
+            << simulation.particleCount() << ","
+            << solver.descentCriterion().theta() << ","
+            << i << ","
+            << time.count() << "\n";
+        spdlog::info("{}s", time.count());
+    }
+
+    spdlog::info("Done");
+}
 
 #endif //N_BODY_BENCHMARK_H

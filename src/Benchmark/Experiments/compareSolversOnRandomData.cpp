@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
-    std::size_t nMax = 80'000;
+    std::size_t nMax = 200'000;
 
     for (std::size_t n = 1'000; n < nMax; n = n * 1.5) {
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
         ConstitutionalGrader grader{scenario, rule};
 
         runTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
-        runTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out);
+        //runTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out);
         runTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH", grader, out);
         runTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM", grader, out);
         runTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);

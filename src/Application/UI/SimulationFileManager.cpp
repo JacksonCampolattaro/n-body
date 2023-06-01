@@ -26,15 +26,9 @@ NBody::SimulationFileManager::SimulationFileManager(NBody::Simulation &simulatio
             sigc::mem_fun(*this, &NBody::SimulationFileManager::saveToPath));
 }
 
-void NBody::SimulationFileManager::
-
-import
-
-() {
-_importerDialog.
-
-show();
-
+// My linter wants to break this, for some reason?
+void NBody::SimulationFileManager::import() {
+    _importerDialog.show();
 }
 
 void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> &file) {

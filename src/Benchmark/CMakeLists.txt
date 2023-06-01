@@ -4,7 +4,7 @@ find_package(spdlog REQUIRED)
 find_package(Matplot++ REQUIRED)
 
 add_executable(Benchmark
-        main.cpp Comparison.h Generator.h ConstitutionalGrader.h Grader.h bestTheta.h RMSGrader.h MeanGrader.h fieldPlot.h field.h)
+        main.cpp Generator.h Graders/ConstitutionalGrader.h Graders/Grader.h bestTheta.h Graders/RMSGrader.h Graders/MeanGrader.h fieldPlot.h field.h)
 target_link_libraries(Benchmark PUBLIC
         NBody::Simulation
         NBody::View
@@ -27,6 +27,9 @@ target_link_libraries(CountInteractions PUBLIC
         spdlog::spdlog
         )
 
+
+### Experiments
+
 add_executable(experiment_CompareLinearBVHDescentCriterion
         Experiments/compareLinearBVHDescentCriterion.cpp)
 target_link_libraries(experiment_CompareLinearBVHDescentCriterion PUBLIC
@@ -35,9 +38,17 @@ target_link_libraries(experiment_CompareLinearBVHDescentCriterion PUBLIC
         spdlog::spdlog
         )
 
-add_executable(experiment_CompareAllSolversOnRandomData
+add_executable(experiment_CompareSolversOnRandomData
         Experiments/compareSolversOnRandomData.cpp)
-target_link_libraries(experiment_CompareAllSolversOnRandomData PUBLIC
+target_link_libraries(experiment_CompareSolversOnRandomData PUBLIC
+        NBody::Simulation
+        NBody::View
+        spdlog::spdlog
+        )
+
+add_executable(experiment_CompareSolversOnAGORAData
+        Experiments/compareSolversOnAGORAData.cpp)
+target_link_libraries(experiment_CompareSolversOnAGORAData PUBLIC
         NBody::Simulation
         NBody::View
         spdlog::spdlog

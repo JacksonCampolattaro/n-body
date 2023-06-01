@@ -153,6 +153,7 @@ NBody::BoundingBox NBody::Simulation::passiveBoundingBox() const {
 void NBody::to_json(json &j, const NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
+    j["particles"] = json::array();
     s.each([&](const auto &entity) {
         json e;
 
@@ -174,7 +175,9 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Graphics::Sphere>(entity))
             e["sphere"] = s.get<NBody::Graphics::Sphere>(entity);
 
-        j["particles"].push_back(e);
+        // Always add to the front, because ENTT iteration is reversed
+        // todo: check if this harms performance
+        j["particles"].insert(j["particles"].begin(), e);
     });
 
     spdlog::debug("Serialized {} particles", j["particles"].size());
@@ -200,8 +203,9 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
 
-        if (!p.contains("passive") || p["passive"].get<bool>() // todo: remove
-            || p.contains("acceleration"))
+        if (p.contains("acceleration"))
+            particle.emplace<NBody::Physics::Acceleration>(p["acceleration"].get<NBody::Physics::Acceleration>());
+        else if (!p.contains("passive") || p["passive"].get<bool>())
             particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
 
         if (p.contains("color"))

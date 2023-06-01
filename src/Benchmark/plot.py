@@ -11,6 +11,22 @@ from matplotlib import rcParams
 # Text-width in inches, to make sure everything fits in the latex document
 text_width = 5
 
+# Standard colors, to be used in all plots
+brewer_colors = sns.color_palette("Set1", 5)
+solver_colors = {
+    'RBH': brewer_colors[0],
+    'BH': brewer_colors[1],
+    'LBVH': brewer_colors[4],
+    'MVDR': brewer_colors[3],
+    'FMM': brewer_colors[2],
+}
+interaction_colors = {
+    'Particle-Particle': 'gray',
+    'Particle-Node': 'cadetblue',
+    'Node-Particle': 'lightseagreen',
+    'Node-Node': 'aquamarine'
+}
+
 
 def plot_field(filename):
     data = pd.read_csv(filename)
@@ -77,16 +93,10 @@ def plot_interaction_counts(filename):
     df.loc[:, df.columns != x_label] = \
         100 * df.loc[:, df.columns != x_label] / (particle_count * particle_count)
     print(df)
-    colormap = {
-        'Particle-Particle': 'gray',
-        'Particle-Node': 'cadetblue',
-        'Node-Particle': 'lightseagreen',
-        'Node-Node': 'aquamarine'
-    }
 
     ax = df.plot(kind='bar', stacked=True,
                  figsize=(text_width / 2, 3),
-                 x=x_label, color=colormap)
+                 x=x_label, color=interaction_colors)
     ax.set(xlabel=x_label, ylabel='Interactions (\% of Naive)')
     ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
 
@@ -117,23 +127,44 @@ def plot_times_vs_n(filename):
     df = df[[x_label, 'N', 'Time']]
     print(df)
 
-    # todo: this should be globally defined, and standardized across plots
-    brewer_colors = sns.color_palette("Set1", 5)
-    colormap = {
-        'RBH': brewer_colors[0],
-        'BH': brewer_colors[1],
-        'LBVH': brewer_colors[4],
-        'MVDR': brewer_colors[3],
-        'FMM': brewer_colors[2]
-    }
-
     df = df.drop(df[df['Solver'] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Time", hue="Solver", palette=colormap)
+    ax = sns.lineplot(data=df, x="N", y="Time", hue="Solver", palette=solver_colors)
     ax.set(ylabel='Time (S / Iteration)')
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
+
+
+def plot_theta_vs_n(filename):
+    df = pd.read_csv(filename)
+    x_label = df.columns[0]
+    df = df[[x_label, 'N', 'Theta']]
+    print(df)
+
+    df = df.drop(df[df['Solver'] == 'RBH'].index)
+
+    ax = sns.lineplot(data=df, x="N", y="Theta", hue="Solver", palette=solver_colors)
+    ax.set(ylabel='Theta (for 0.5\% Constitutional Error)')
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_vs_theta.pdf")
+
+
+def plot_interaction_counts_vs_n(filename):
+    df = pd.read_csv(filename)
+    x_label = df.columns[0]
+    df['Total Interactions'] = df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
+    df = df[[x_label, 'N', 'Total Interactions']]
+    print(df)
+
+    df = df.drop(df[df['Solver'] == 'RBH'].index)
+
+    ax = sns.lineplot(data=df, x="N", y="Total Interactions", hue="Solver", palette=solver_colors)
+    ax.set(ylabel='Interaction Count')
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_vs_interaction-count.pdf")
 
 
 def plot_interactions(filename):
@@ -166,7 +197,9 @@ def main():
     # plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
     # plot_times("benchmarks/linear-bvh-descent-criterion.csv")
 
-    plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
+    plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
 
 if __name__ == "__main__":
