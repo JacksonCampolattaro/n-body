@@ -18,7 +18,7 @@ namespace NBody::Descent {
             const DescentCriterion &descentCriterion,
             Rule &rule,
             const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
+                    Entity, entt::exclude_t<>,
                     const Position, Acceleration
             > &context
     ) {

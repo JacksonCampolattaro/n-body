@@ -186,10 +186,11 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 void NBody::from_json(const json &j, NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
-    auto entities = std::vector<Simulation::entity_type>{j["particles"].size()};
+    auto entities = std::vector<Entity>(j["particles"].size());
     s.create(entities.begin(), entities.end());
 
     for (int i = 0; i < entities.size(); ++i) {
+        assert(entities[i] != entt::null);
 
         auto p = j["particles"][i];
         Simulation::Particle particle = {s, entities[i]};
@@ -222,7 +223,7 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
     s.signal_particles_added.emit(entities);
     s.signal_changed.emit();
 
-    spdlog::debug("Read {} particles", j["particles"].size());
+    spdlog::debug("Read {} particles", s.particleCount());
 }
 
 template<typename T>
