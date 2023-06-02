@@ -13,7 +13,8 @@ NBody::Simulation::Particle NBody::Simulation::newParticle() {
     // Create a new empty particle
     Particle particle = {*this, create()};
     particle.setPosition({0, 0, 0})
-            .setVelocity({0, 0, 0});
+            .setVelocity({0, 0, 0})
+            .setAcceleration({0, 0, 0});
 
     signal_particles_added.emit({particle.entity()});
     return particle;
@@ -61,7 +62,7 @@ void NBody::Simulation::load(Gio::File &source) {
     inputFile >> (*this);
 }
 
-std::vector<NBody::Entity> NBody::Simulation::validEntities() {
+std::vector<NBody::Entity> NBody::Simulation::validEntities() const {
     std::vector<NBody::Entity> alive;
     each([&](auto e) {
         alive.emplace_back(e);

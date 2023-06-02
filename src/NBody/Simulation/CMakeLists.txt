@@ -63,4 +63,4 @@ target_link_libraries(Simulation PUBLIC
 
 add_library(NBody::Simulation ALIAS Simulation)
 
-#add_subdirectory(test)
+add_subdirectory(test)

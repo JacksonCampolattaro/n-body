@@ -39,9 +39,11 @@ namespace NBody::Graphics {
 
         friend void from_json(const json &j, Sphere &s);
 
+        friend auto operator<=>(const Sphere &lhs, const Sphere &rhs) = default;
+
     public:
 
-        struct InstanceData  {
+        struct InstanceData {
             Matrix4 transformationMatrix;
             Matrix3x3 normalMatrix;
             Color color;

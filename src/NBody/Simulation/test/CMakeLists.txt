@@ -1,11 +1,9 @@
 
-find_package(Catch2 REQUIRED)
+find_package(Catch2 3.1.0 REQUIRED)
 
-add_executable(test_Simulation main.cpp
+add_executable(test_Simulation
         simulation.cpp)
 
 target_link_libraries(test_Simulation PRIVATE
-        NBody::Simulation
-        Catch2::Catch2)
-
-add_test(NAME TestSimulation COMMAND test_Simulation)
+        Catch2::Catch2WithMain
+        NBody::Simulation)

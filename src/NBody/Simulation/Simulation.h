@@ -29,6 +29,7 @@
 #include <giomm/listmodel.h>
 #include <glibmm/dispatcher.h>
 #include <giomm/file.h>
+#include <glibmm/init.h>
 
 #include "NBody/Physics/BoundingBox.h"
 
@@ -70,13 +71,37 @@ namespace NBody {
 
     public:
 
-        Simulation() : entt::basic_registry<Entity>() {}
+        Simulation() : entt::basic_registry<Entity>() {
+            // Necessary for signals, should be idempotent
+            Glib::init();
+        }
+
+        Simulation(const Simulation &other) : entt::basic_registry<Entity>() { operator=(other); }
+
+        Simulation &operator=(const Simulation &other) {
+
+            // Clear all entites
+            each([&](auto e) {
+                destroy(e);
+            });
+
+            // Add all entities from the other simulation, giving new ones the same ID
+            other.each([&](auto e) {
+                auto eCopy = create(e);
+                invokeForEachType([&]<typename T>() {
+                    if (other.all_of<T>(e))
+                        emplace<T>(eCopy, other.get<const T>(e));
+                });
+            });
+
+            return *this;
+        }
 
         void save(Gio::File &destination) const;
 
         void load(Gio::File &source);
 
-        std::vector<NBody::Entity> validEntities();
+        std::vector<NBody::Entity> validEntities() const;
 
         void removeParticle(NBody::Entity e);
 
@@ -108,6 +133,20 @@ namespace NBody {
 
     public:
 
+        template<typename Lambda>
+        static void invokeForEachType(Lambda &&lambda) {
+
+            lambda.template operator()<Physics::Position>();
+            lambda.template operator()<Physics::Velocity>();
+            lambda.template operator()<Physics::Acceleration>();
+            lambda.template operator()<Physics::Mass>();
+
+            lambda.template operator()<Graphics::Color>();
+            lambda.template operator()<Graphics::Sphere>();
+        }
+
+    public:
+
         friend void to_json(json &j, const Simulation &s);
 
         friend void from_json(const json &j, Simulation &s);
@@ -127,6 +166,34 @@ namespace NBody {
             from_json(j, s);
             return in;
         }
+
+        friend inline bool operator==(const Simulation &lhs, const Simulation &rhs) {
+            bool equal = true;
+
+            // The two simulations must have the same number of each component
+            invokeForEachType([&]<typename T>() {
+                if (lhs.size<T>() != rhs.size<T>()) equal = false;
+            });
+            if (!equal) return false;
+
+            // The two simulations must have the same entity IDs & the same values for each ID
+            lhs.each([&](auto e) {
+                if (!rhs.valid(e))
+                    equal = false;
+                else
+                    invokeForEachType([&]<typename T>() {
+
+                        if (lhs.all_of<T>(e) != rhs.all_of<T>(e))
+                            equal = false;
+                        else if (lhs.all_of<T>(e) && lhs.get<const T>(e) != rhs.get<const T>(e))
+                            equal = false;
+
+                    });
+            });
+            return equal;
+        }
+
+        friend inline bool operator!=(const Simulation &lhs, const Simulation &rhs) { return !(lhs == rhs); }
     };
 
     void to_json(json &j, const Simulation &s);
