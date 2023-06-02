@@ -184,13 +184,13 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::trio();
+    //json scenario = Generator::realisticGalaxy();
+    json scenario = Generator::trio();
     //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'500);
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Gravity{1.0f}};
+    //ConstitutionalGrader grader{scenario, Gravity{1.0f}};
 
     //plotExactField(scenario);
     //plotMomentApproximations(scenario);
@@ -198,7 +198,7 @@ int main(int argc, char *argv[]) {
 
 
     //realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
 
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
     //realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
 
     //realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);
-    realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
+    //realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleImplicitFMMSolver<Gravity>>(scenario, grader);
 
     //realPerformance<MVDRSolver<Gravity>>(scenario, grader);

@@ -136,6 +136,7 @@ def plot_times_vs_n(filename):
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
+    plt.cla()
 
 
 def plot_theta_vs_n(filename):
@@ -151,6 +152,7 @@ def plot_theta_vs_n(filename):
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_theta.pdf")
+    plt.cla()
 
 
 def plot_interaction_counts_vs_n(filename):
@@ -167,6 +169,7 @@ def plot_interaction_counts_vs_n(filename):
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_interaction-count.pdf")
+    plt.cla()
 
 
 def plot_interactions(filename):
@@ -203,7 +206,7 @@ def main():
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
-    # plot_times_vs_n("benchmarks/tree-construction-agora-data.csv")
+    plot_times_vs_n("benchmarks/tree-construction-agora-data.csv")
     plot_times_vs_n("benchmarks/tree-construction-random-data.csv")
 
 

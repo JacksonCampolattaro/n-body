@@ -8,11 +8,53 @@
 #include <random>
 
 #include <spdlog/spdlog.h>
+#include <glm/gtc/noise.hpp>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 
 namespace NBody::Generator {
+
+    static Simulation perlinNoiseRandomVolume(std::size_t n) {
+        spdlog::debug("Generating a perlin-noise scenario with {} particles", n);
+
+        std::uint32_t seed = 42;
+        std::mt19937 generator{seed};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n)};
+        std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
+                                                                   std::cbrt((float) n) / 10};
+        std::exponential_distribution<float> massDistribution{1.0f};
+        std::uniform_real_distribution<float> colorDistribution{0.3f, 0.9f};
+
+        Simulation simulation;
+
+        while (simulation.particleCount() < n) {
+
+            glm::vec3 position{positionDistribution(generator),
+                               positionDistribution(generator),
+                               positionDistribution(generator)};
+
+            auto perlin = glm::perlin(position / 256.0f) + glm::perlin(position);
+            if (perlin > 0.5) {
+
+                auto particle = simulation.newParticle()
+                        .setPosition(position)
+                        .setVelocity({velocityDistribution(generator),
+                                      velocityDistribution(generator),
+                                      velocityDistribution(generator)})
+                        .setMass(massDistribution(generator) * (perlin - 0.5f) * 4.0f);
+
+                particle
+                        .setSphere({std::cbrt(particle.get<Physics::Mass>().mass())})
+                        .setColor({colorDistribution(generator),
+                                   colorDistribution(generator),
+                                   colorDistribution(generator)});
+            }
+
+        }
+
+        return simulation;
+    }
 
     static Simulation &uniformRandomVolume(Simulation &simulation, std::size_t n) {
         spdlog::debug("Generating a random scenario with {} particles", n);

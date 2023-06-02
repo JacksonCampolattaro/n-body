@@ -49,7 +49,7 @@ namespace NBody::Descent {
     }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
-                                              entt::entity, entt::exclude_t<>,
+                                              Entity, entt::exclude_t<>,
                                               const Position,
                                               Acceleration
                                       > &context,
@@ -93,7 +93,7 @@ namespace NBody::Descent {
     }
     inline void collapseAccelerations(PassiveNode &node,
                                       const entt::basic_view<
-                                              entt::entity, entt::exclude_t<>,
+                                              Entity, entt::exclude_t<>,
                                               const Position,
                                               Acceleration
                                       > &context) {
