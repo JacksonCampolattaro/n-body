@@ -13,7 +13,7 @@ text_width = 5
 
 # Standard colors, to be used in all plots
 brewer_colors = sns.color_palette("Set1", 5)
-solver_colors = {
+color_map = {
     'RBH': brewer_colors[0],
     'BH': brewer_colors[1],
     'LBVH': brewer_colors[4],
@@ -22,8 +22,7 @@ solver_colors = {
 
     'Octree': 'blue',
     'Linear BVH': 'red',
-}
-interaction_colors = {
+
     'Particle-Particle': 'gray',
     'Particle-Node': 'cadetblue',
     'Node-Particle': 'lightseagreen',
@@ -99,7 +98,7 @@ def plot_interaction_counts(filename):
 
     ax = df.plot(kind='bar', stacked=True,
                  figsize=(text_width / 2, 3),
-                 x=x_label, color=interaction_colors)
+                 x=x_label, color=color_map)
     ax.set(xlabel=x_label, ylabel='Interactions (\% of Naive)')
     ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
 
@@ -132,7 +131,7 @@ def plot_times_vs_n(filename):
 
     df = df.drop(df[df[x_label] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Time", hue=x_label, palette=solver_colors)
+    ax = sns.lineplot(data=df, x="N", y="Time", hue=x_label, palette=color_map)
     ax.set(ylabel='Time (S / Iteration)')
 
     plt.tight_layout()
@@ -147,7 +146,7 @@ def plot_theta_vs_n(filename):
 
     df = df.drop(df[df['Solver'] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Theta", hue="Solver", palette=solver_colors)
+    ax = sns.lineplot(data=df, x="N", y="Theta", hue="Solver", palette=color_map)
     ax.set(ylabel='Theta (for 0.5\% Constitutional Error)')
 
     plt.tight_layout()
@@ -163,7 +162,7 @@ def plot_interaction_counts_vs_n(filename):
 
     df = df.drop(df[df['Solver'] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Total Interactions", hue="Solver", palette=solver_colors)
+    ax = sns.lineplot(data=df, x="N", y="Total Interactions", hue="Solver", palette=color_map)
     ax.set(ylabel='Interaction Count')
 
     plt.tight_layout()
@@ -204,7 +203,8 @@ def main():
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
-    plot_times_vs_n("benchmarks/tree-construction.csv")
+    # plot_times_vs_n("benchmarks/tree-construction-agora-data.csv")
+    plot_times_vs_n("benchmarks/tree-construction-random-data.csv")
 
 
 if __name__ == "__main__":

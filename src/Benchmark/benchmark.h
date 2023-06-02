@@ -10,6 +10,8 @@
 
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 
+#include "Graders/Grader.h"
+
 std::chrono::duration<float> timedInvoke(const std::function<void()>& function) {
     auto startTime = std::chrono::steady_clock::now();
     function();
@@ -113,6 +115,18 @@ void runShortTest(const std::string &label, const Grader &grader, std::ofstream 
     }
 
     spdlog::info("Done");
+}
+
+template<typename TreeType>
+void testTreeConstruction(const std::string &label, Simulation &simulation, std::ofstream &out) {
+    TreeType tree{simulation};
+
+    auto time = timedInvoke([&]() { tree.build(); });
+
+    out << label << ","
+        << simulation.particleCount() << ","
+        << tree.maxLeafSize() << ","
+        << time.count() << "\n";
 }
 
 #endif //N_BODY_BENCHMARK_H

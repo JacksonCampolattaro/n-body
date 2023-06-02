@@ -5,32 +5,13 @@
 #include <gtkmm.h>
 #include <spdlog/spdlog.h>
 
-#include <NBody/Physics/Rules/Gravity.h>
-#include <NBody/Physics/Rules/SimpleTrackingRule.h>
-
 #include <NBody/Simulation/Simulation.h>
 
-#include <NBody/Simulation/Solvers/BarnesHutSolver.h>
-#include <NBody/Simulation/Solvers/ImplicitReverseBarnesHutSolver.h>
-#include <NBody/Simulation/Solvers/LinearBVHSolver.h>
-#include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
-#include <NBody/Simulation/Solvers/ImplicitMVDRSolver.h>
+#include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
+#include <NBody/Simulation/Solvers/Trees/Octree.h>
 
 #include "../Generator.h"
-#include "../bestTheta.h"
 #include "../benchmark.h"
-
-template<typename TreeType>
-void testTreeConstruction(const std::string &label, Simulation &simulation, std::ofstream &out) {
-    TreeType tree{simulation};
-
-    auto time = timedInvoke([&]() { tree.build(); });
-
-    out << label << ","
-        << simulation.particleCount() << ","
-        << tree.maxLeafSize() << ","
-        << time.count() << "\n";
-}
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
@@ -38,7 +19,7 @@ int main(int argc, char *argv[]) {
 
     std::size_t repetitions = 10;
 
-    std::ofstream out{"benchmarks/tree-construction.csv"};
+    std::ofstream out{"benchmarks/tree-construction-agora-data.csv"};
     out << "Tree,N,Max Leaf Size,Time\n";
 
     for (const std::string &dataset: {"LOW", "MED", "HI"}) {
