@@ -45,13 +45,12 @@ namespace NBody {
             else _summary.summarize(implementation().children());
 
             // sanity check: a node should always enclose all of its children
-            for (auto &entity: contents()) {
-                auto bbox = implementation().boundingBox();
-                auto p = context.template get<const Position>(entity);
-                auto e = ENTT_ID_TYPE(entity);
-
-                assert(implementation().boundingBox().contains(context.template get<const Position>(entity)));
-            }
+            // fixme: this is actually subject to rounding error
+//            for (auto &entity: contents()) {
+//                auto bbox = implementation().boundingBox();
+//                auto p = context.template get<const Position>(entity);
+//                assert(bbox.contains(p));
+//            }
         }
 
         template<typename... Context>

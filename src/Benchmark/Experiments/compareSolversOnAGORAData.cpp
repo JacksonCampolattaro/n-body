@@ -26,25 +26,11 @@ int main(int argc, char *argv[]) {
     std::ofstream out{"benchmarks/all-solvers-agora-data.csv"};
     out << "Solver,N,Theta,Iteration,Time\n";
 
-    ConstitutionalGrader medGrader{std::filesystem::path{"../n-body-scenarios/benchmark/MED.bin"}};
-    ConstitutionalGrader hiGrader{std::filesystem::path{"../n-body-scenarios/benchmark/HI.bin"}};
-
     for (const std::string &dataset: {"LOW", "MED", "HI"}) {
 
         ConstitutionalGrader grader{std::filesystem::path{
                 fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)
         }};
-
-        //        spdlog::info("Loading AGORA {} dataset", dataset);
-        //        Simulation s;
-        //        std::ifstream file{fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)};
-        //        from_tipsy(file, s);
-        //        json scenario;
-        //        to_json(scenario, s);
-        //
-        //        Gravity rule{};
-        //
-        //        ConstitutionalGrader grader{scenario, rule};
 
         runShortTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
         //runShortTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out);

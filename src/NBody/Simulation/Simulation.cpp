@@ -301,10 +301,11 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
     in.seekg(36 * nd, std::ios::cur);
 
     // Read stars
-    auto entities = std::vector<Simulation::entity_type>{ns};
+    auto entities = std::vector<Simulation::entity_type>(ns);
     s.create(entities.begin(), entities.end());
     for (int i = 0; i < entities.size(); ++i) {
         if (!in.good()) spdlog::error("Encountered an issue while reading the file");
+        if(entities[i] == entt::null) spdlog::error("Attempted to load more than the maximum number of particles.");
 
         float mass, x, y, z, vx, vy, vz, metals, tform, eps, phi;
         in.read(reinterpret_cast<char *>(&mass), sizeof(mass));
@@ -351,7 +352,6 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
         // Notify any watchers that this particle has new data
         if (particle.all_of<sigc::signal<void()>>())
             particle.get<sigc::signal<void()>>().emit();
-
 
     }
 

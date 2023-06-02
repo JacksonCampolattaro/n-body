@@ -18,7 +18,8 @@ namespace NBody {
         using Acceleration = typename ImpliedSummary::Acceleration;
 
         using Context = entt::basic_view<
-                entt::entity, entt::exclude_t<>,
+                Entity,
+                entt::exclude_t<>,
                 const Physics::Position,
                 const Physics::Acceleration
         >;

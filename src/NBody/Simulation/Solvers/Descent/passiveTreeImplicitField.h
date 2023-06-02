@@ -15,11 +15,11 @@ namespace NBody::Descent {
             const std::span<Entity> &relevantActiveEntities, PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
             const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
+                    Entity, entt::exclude_t<>,
                     const Position, const Mass
             > &activeContext,
             const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
+                    Entity, entt::exclude_t<>,
                     const Position, Acceleration
             > &passiveContext,
             typename PassiveNode::Summary::ImpliedSummary localField = {}

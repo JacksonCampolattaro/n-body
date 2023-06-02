@@ -10,6 +10,13 @@
 
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 
+std::chrono::duration<float> timedInvoke(const std::function<void()>& function) {
+    auto startTime = std::chrono::steady_clock::now();
+    function();
+    auto finishTime = std::chrono::steady_clock::now();
+    return (finishTime - startTime);
+}
+
 template<typename CandidateSolver>
 std::chrono::duration<float> timedStep(CandidateSolver &solver) {
     auto startTime = std::chrono::steady_clock::now();

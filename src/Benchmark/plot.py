@@ -19,6 +19,9 @@ solver_colors = {
     'LBVH': brewer_colors[4],
     'MVDR': brewer_colors[3],
     'FMM': brewer_colors[2],
+
+    'Octree': 'blue',
+    'Linear BVH': 'red',
 }
 interaction_colors = {
     'Particle-Particle': 'gray',
@@ -127,9 +130,9 @@ def plot_times_vs_n(filename):
     df = df[[x_label, 'N', 'Time']]
     print(df)
 
-    df = df.drop(df[df['Solver'] == 'RBH'].index)
+    df = df.drop(df[df[x_label] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Time", hue="Solver", palette=solver_colors)
+    ax = sns.lineplot(data=df, x="N", y="Time", hue=x_label, palette=solver_colors)
     ax.set(ylabel='Time (S / Iteration)')
 
     plt.tight_layout()
@@ -199,7 +202,9 @@ def main():
 
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
-    plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
+    # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
+
+    plot_times_vs_n("benchmarks/tree-construction.csv")
 
 
 if __name__ == "__main__":

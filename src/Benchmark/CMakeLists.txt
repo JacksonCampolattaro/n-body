@@ -53,3 +53,11 @@ target_link_libraries(experiment_CompareSolversOnAGORAData PUBLIC
         NBody::View
         spdlog::spdlog
         )
+
+add_executable(experiment_CompareTreeConstruction
+        Experiments/compareTreeConstruction.cpp)
+target_link_libraries(experiment_CompareTreeConstruction PUBLIC
+        NBody::Simulation
+        NBody::View
+        spdlog::spdlog
+        )

@@ -20,8 +20,8 @@ namespace NBody {
     public:
 
         using Context = entt::basic_group<
-                entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
+                Entity,
+                entt::exclude_t<>, entt::get_t<>,
                 const Position,
                 const Mass
         >;

@@ -50,7 +50,7 @@ namespace NBody {
         });
     }
 
-    static void mortonSort(const entt::basic_view<entt::entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
+    static void mortonSort(const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
                            std::vector<Entity> &indices) {
 
         boost::sort::spreadsort::integer_sort(indices.begin(), indices.end(),
