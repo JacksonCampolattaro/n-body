@@ -15,8 +15,8 @@
 #include <nlohmann/json.hpp>
 
 #include <entt/entity/registry.hpp>
-#include <entt/entity/handle.hpp>
 #include <entt/entity/group.hpp>
+#include <entt/entity/handle.hpp>
 
 #include <glibmm/interface.h>
 
@@ -45,14 +45,14 @@ namespace NBody {
     class Simulation : public entt::basic_registry<Entity> {
     public:
 
-        class Particle : public entt::basic_handle<Entity>, public Glib::Object {
+        class Particle : public entt::basic_handle<Simulation>, public Glib::Object {
         public:
 
-            Particle(const Particle &other) : entt::basic_handle<Entity>(other),
+            Particle(const Particle &other) : entt::basic_handle<Simulation>(other),
                                               Glib::ObjectBase(typeid(Particle)),
                                               Glib::Object() {}
 
-            Particle(Simulation &ref, Entity value) : entt::basic_handle<Entity>(ref, value) {}
+            Particle(Simulation &ref, Entity value) : entt::basic_handle<Simulation>(ref, value) {}
 
             Particle &setPosition(const Physics::Position &position);
 
@@ -85,7 +85,7 @@ namespace NBody {
             invokeForEachType([&]<typename T>() {
                 // todo: this might break for tag types
                 auto view = other.view<T>();
-                insert<T>(view.data(), view.data() + view.size());
+                insert<T>(view.begin(), view.end(), view.storage().begin());
             });
         }
 
@@ -169,7 +169,7 @@ namespace NBody {
 
             // The two simulations must have the same number of each component
             invokeForEachType([&]<typename T>() {
-                if (lhs.size<T>() != rhs.size<T>()) equal = false;
+                if (lhs.storage<T>().size() != rhs.storage<T>().size()) equal = false;
             });
             if (!equal) return false;
 
@@ -192,6 +192,10 @@ namespace NBody {
 
         friend inline bool operator!=(const Simulation &lhs, const Simulation &rhs) { return !(lhs == rhs); }
     };
+
+    // todo: these should be declared elsewhere
+    using ActiveView = decltype(std::declval<Simulation>().view<const Position, const Physics::Mass>());
+    using PassiveView = decltype(std::declval<Simulation>().view<const Position, Physics::Acceleration>());
 
     void to_json(json &j, const Simulation &s);
 

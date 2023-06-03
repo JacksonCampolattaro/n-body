@@ -16,7 +16,6 @@ namespace NBody {
     class MultipoleDualSummary : public MultipoleMassSummary<Order>, public MultipoleAccelerationSummary<Order+1> {
     public:
 
-        using typename MultipoleMassSummary<Order>::Context;
         using MultipoleMassSummary<Order>::context;
 
         using MultipoleMassSummary<Order>::MultipoleMassSummary;
@@ -35,7 +34,6 @@ namespace NBody {
     class MultipoleDualSummary<1> : public CenterOfMassSummary, public MultipoleAccelerationSummary<2> {
     public:
 
-        using typename CenterOfMassSummary::Context;
         using CenterOfMassSummary::context;
 
         using CenterOfMassSummary::CenterOfMassSummary;

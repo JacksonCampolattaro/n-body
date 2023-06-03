@@ -52,23 +52,26 @@ namespace NBody {
         });
     }
 
-    static void mortonSort(const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
-                           std::span<Entity> indices) {
+    template<typename MortonCodeView>
+    static void mortonSort(const MortonCodeView &mortonCodes, std::span<Entity> indices) {
 
         boost::sort::spreadsort::integer_sort(indices.begin(), indices.end(),
                                               [&](Entity i, unsigned offset) {
                                                   assert(mortonCodes.contains(i));
-                                                  return mortonCodes.get<const MortonCode>(i) >> offset;
+                                                  return mortonCodes.template get<const MortonCode>(i) >> offset;
                                               },
                                               [&](Entity a, Entity b) {
-                                                  return mortonCodes.get<const MortonCode>(a) <
-                                                         mortonCodes.get<const MortonCode>(b);
+                                                  return mortonCodes.template get<const MortonCode>(a) <
+                                                         mortonCodes.template get<const MortonCode>(b);
                                               }
         );
     }
 
-    static void parallelMortonSort(const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
-                                   std::span<Entity> indices, std::size_t threads = 12) {
+    template<typename MortonCodeView>
+    static void parallelMortonSort(
+            const MortonCodeView &mortonCodes,
+            std::span<Entity> indices, std::size_t threads = 12
+    ) {
 
         std::vector<std::span<Entity>> queue;
         auto comparator = [&](auto &a, auto &b) {
@@ -90,15 +93,15 @@ namespace NBody {
             for (int i = 1; i < range.size(); ++i) {
                 msb = std::max(
                         msb,
-                        fls(mortonCodes.get<const MortonCode>(range[i - 1]) ^
-                            mortonCodes.get<const MortonCode>(range[i])) - 1
+                        fls(mortonCodes.template get<const MortonCode>(range[i - 1]) ^
+                            mortonCodes.template get<const MortonCode>(range[i])) - 1
                 );
             }
 
             // Partition the range based on that bit
             MortonCode boundary = (1 << msb);
             auto middle = std::partition(range.begin(), range.end(), [&](auto e) -> bool {
-                return (mortonCodes.get<const MortonCode>(e) & boundary) == 0;
+                return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });
 
             queue.emplace_back(range.begin(), middle);
@@ -114,9 +117,11 @@ namespace NBody {
         });
     }
 
+    template<typename MortonCodeView>
     static void recursiveParallelMortonSort(
-            const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
-            std::span<Entity> indices, std::size_t threads = 12) {
+            const MortonCodeView &mortonCodes,
+            std::span<Entity> indices, std::size_t threads = 12
+    ) {
 
         if (threads > 1) {
 
@@ -126,15 +131,15 @@ namespace NBody {
             for (int i = 1; i < indices.size(); ++i) {
                 msb = std::max(
                         msb,
-                        fls(mortonCodes.get<const MortonCode>(indices[i - 1]) ^
-                            mortonCodes.get<const MortonCode>(indices[i])) - 1
+                        fls(mortonCodes.template get<const MortonCode>(indices[i - 1]) ^
+                            mortonCodes.template get<const MortonCode>(indices[i])) - 1
                 );
             }
 
             // Partition the range based on that bit
             MortonCode boundary = (1 << msb);
             auto middle = std::partition(indices.begin(), indices.end(), [&](auto e) -> bool {
-                return (mortonCodes.get<const MortonCode>(e) & boundary) == 0;
+                return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });
 
             // Each sub-range can now be sorted independently

@@ -10,16 +10,13 @@
 
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<NodeType ActiveNode, DescentCriterionType DescentCriterion, RuleType Rule>
     inline Acceleration activeTree(
             const ActiveNode &node,
             const Position &passivePosition,
             const DescentCriterion &descentCriterion,
             Rule &rule,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &context
+            const ActiveView &context
     ) {
 
         // Empty nodes can be ignored
@@ -38,8 +35,8 @@ namespace NBody::Descent {
                         Physics::Acceleration{}, std::plus{},
                         [&](auto entity) {
                             return rule(context.get<const Position>(entity),
-                                         context.get<const Mass>(entity),
-                                         passivePosition);
+                                        context.get<const Mass>(entity),
+                                        passivePosition);
                         }
                 );
 

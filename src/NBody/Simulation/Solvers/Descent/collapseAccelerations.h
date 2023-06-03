@@ -19,11 +19,7 @@ namespace NBody::Descent {
         p.summary().acceleration().x;
     }
     inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              Entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context,
+                                      PassiveView &context,
                                       Acceleration netAcceleration = {}) {
 
         netAcceleration += node.summary().acceleration();
@@ -47,12 +43,8 @@ namespace NBody::Descent {
     requires requires(PassiveNode &p) {
         p.summary().acceleration().vector();
     }
-    inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              Entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context,
+    inline void collapseAccelerations(const PassiveNode &node,
+                                      const PassiveView &context,
                                       MultipoleAcceleration<Order> netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
@@ -92,11 +84,7 @@ namespace NBody::Descent {
         p.summary().acceleration().vector();
     }
     inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              Entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context) {
+                                      const PassiveView &context) {
 
         using AccelerationType = typename std::remove_reference<decltype(node.summary().acceleration())>::type;
         collapseAccelerations(node, context, AccelerationType{});

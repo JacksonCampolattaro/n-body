@@ -10,7 +10,7 @@ include(FetchContent)
 FetchContent_Declare(
         entt
         GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG v3.8.1) # todo: update to the newest version of entt
+        GIT_TAG v3.11.1) # todo: update to the newest version of entt
 set(ENTT_BUILD_TESTING OFF)
 FetchContent_MakeAvailable(entt)
 

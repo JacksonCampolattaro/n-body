@@ -25,14 +25,7 @@ namespace NBody {
 
     public:
 
-        using Context = entt::basic_view<
-                Entity,
-                entt::exclude_t<>,
-                const Physics::Position,
-                const Physics::Acceleration
-        >;
-
-        static Context context(Simulation &simulation) {
+        static auto context(Simulation &simulation) {
             return simulation.view<const Physics::Position, const Physics::Acceleration>();
         }
 
@@ -41,6 +34,7 @@ namespace NBody {
         MultipoleAccelerationSummary(const MultipoleAcceleration<Order> &acceleration = {}) :
                 _acceleration(acceleration) {}
 
+        template<typename Context>
         void summarize(const std::span<Entity> &entities, const Context &context) {}
 
         template<typename NodeList>

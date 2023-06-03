@@ -115,14 +115,8 @@ namespace NBody::Descent {
             std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext,
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 
@@ -244,14 +238,8 @@ namespace NBody::Descent {
     inline void adaptiveDualTreeImplicitField(
             const ActiveNode &startingActiveNode, PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext
     ) {
 
 

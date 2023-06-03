@@ -79,7 +79,7 @@ void NBody::Simulation::removeParticle(NBody::Entity entity) {
 }
 
 std::size_t NBody::Simulation::particleCount() const {
-    return size<Physics::Position>();
+    return storage<Physics::Position>().size();
 }
 
 NBody::Physics::Position NBody::Simulation::averagePosition() const {

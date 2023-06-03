@@ -15,14 +15,8 @@ namespace NBody::Descent {
     inline void none(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
             Rule &rule,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext
     ) {
 
         for (auto &passiveEntity: passiveNode.contents()) {

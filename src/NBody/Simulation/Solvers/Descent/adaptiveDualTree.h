@@ -13,18 +13,12 @@
 
 namespace NBody::Descent {
 
-    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<NodeType ActiveNode, NodeType PassiveNode, DescentCriterionType DescentCriterion, RuleType Rule>
     inline void adaptiveDualTree(
             const ActiveNode &activeNode, PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext
     ) {
 
         // If either node is empty, we have no need to calculate forces between them

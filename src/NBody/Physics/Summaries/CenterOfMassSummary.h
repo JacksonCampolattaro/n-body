@@ -19,14 +19,7 @@ namespace NBody {
 
     public:
 
-        using Context = entt::basic_group<
-                Entity,
-                entt::exclude_t<>, entt::get_t<>,
-                const Position,
-                const Mass
-        >;
-
-        static Context context(Simulation &simulation) {
+        static auto context(Simulation &simulation) {
             return simulation.group<const Position, const Mass>();
         }
 

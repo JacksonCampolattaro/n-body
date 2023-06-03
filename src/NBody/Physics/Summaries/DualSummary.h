@@ -15,7 +15,6 @@ namespace NBody {
     class DualSummary : public CenterOfMassSummary, public AccelerationSummary {
     public:
 
-        using CenterOfMassSummary::Context;
         using CenterOfMassSummary::context;
 
         using CenterOfMassSummary::CenterOfMassSummary;

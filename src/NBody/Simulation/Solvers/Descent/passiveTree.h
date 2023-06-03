@@ -17,10 +17,7 @@ namespace NBody::Descent {
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion,
             Rule &rule,
-            const entt::basic_view<
-                    Entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &context
+            const PassiveView &context
     ) {
 
         // Empty nodes can be ignored

@@ -21,7 +21,6 @@ namespace NBody {
 
         // We should be able to use the same context type as the base summary,
         // as long as it can provide entity positions
-        using typename SummaryBase::Context;
         using SummaryBase::context;
 
     public:
