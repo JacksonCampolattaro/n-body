@@ -137,6 +137,39 @@ namespace NBody {
     protected:
 
         template<typename Context>
+        [[nodiscard]] std::vector<std::reference_wrapper<Node>> loadBalancedSplit(
+                std::size_t n,
+                std::function<bool(const Node &)> splitCriterion,
+                Context &&context
+        ) {
+
+            std::vector<std::reference_wrapper<Node>> queue;
+            auto comparator = [&](std::reference_wrapper<Node> a, std::reference_wrapper<Node> b) {
+                return a.get().contents().size() < b.get().contents().size();
+            };
+
+            queue.push_back(root());
+
+            while (queue.size() < n) {
+
+                std::pop_heap(queue.begin(), queue.end(), comparator);
+                Node &toSplit = queue.back();
+                // Stop early if we run into a node that shouldn't be split
+                if (!splitCriterion(toSplit)) break;
+                queue.pop_back();
+
+                toSplit.split(context);
+
+                for (Node &child: toSplit.children()) {
+                    queue.push_back(child);
+                    std::push_heap(queue.begin(), queue.end(), comparator);
+                }
+            }
+
+            return queue;
+        }
+
+        template<typename Context>
         [[nodiscard]] std::vector<std::reference_wrapper<Node>> depthSplit(std::size_t depth, Context &&context) {
 
             std::vector<std::reference_wrapper<Node>> queue;

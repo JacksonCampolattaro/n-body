@@ -15,21 +15,23 @@
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
-    Glib::init();
+
+    // Limit to 1 thread when debugging
+    //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
     std::size_t repetitions = 3;
-    std::size_t nMax = 100'000;
+    std::size_t nMax = 500'000;
 
     std::ofstream out{"benchmarks/tree-construction-random-data.csv"};
     out << "Tree,N,Max Leaf Size,Time\n";
 
-    for (std::size_t n = 1'000; n < nMax; n = n * 1.1f) {
+    for (std::size_t n = 1'000; n < nMax; n = n * 1.25f) {
         spdlog::info("Running benchmarks with {} random particles", n);
 
-        for (int i = 0; i < repetitions; ++i) {
+        Simulation scenario = Generator::perlinNoiseRandomVolume(n);
 
-            spdlog::info("Generating dataset, {} / {}", i + 1, repetitions);
-            Simulation scenario = Generator::perlinNoiseRandomVolume(n);
+        for (int i = 0; i < repetitions; ++i) {
+            spdlog::info("{} / {}", i + 1, repetitions);
 
             {
                 spdlog::info("Linear-BVH construction");

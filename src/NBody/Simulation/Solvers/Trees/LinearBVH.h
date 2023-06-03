@@ -53,11 +53,12 @@ namespace NBody {
             MortonCode boundary = (1 << msb);
             auto split = std::upper_bound(contents().begin(), contents().end(), boundary,
                                           [&](MortonCode v, Entity i) {
-                                              return v & context.template get<const MortonCode>(i);
+                                              return (v & context.template get<const MortonCode>(i)) != 0;
                                           });
 
             auto low = std::span<Entity>{contents().begin(), split};
             auto high = std::span<Entity>{split, contents().end()};
+            assert(!low.empty() && !high.empty());
 
             if (isLeaf()) {
                 _children = {{{low}, {high}}};
@@ -77,7 +78,7 @@ namespace NBody {
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     private:
 
-        int _maxLeafSize = 16;
+        int _maxLeafSize = 2;
 
     public:
 
@@ -101,21 +102,22 @@ namespace NBody {
             setMortonCodes(simulation(), outerBoundingBox<typename Node::SummaryType>(simulation()));
 
             // Sort the indices by the associated morton codes
-            mortonSort(simulation().template view<const MortonCode>(), indices());
+            recursiveParallelMortonSort(simulation().template view<const MortonCode>(), indices());
+
+            auto context = simulation().template view<const Position, const Mass, const MortonCode>();
+            auto splitCriterion = [&](const Node &n) {
+                // Don't split if all entities in this node have the same morton code
+                return n.contents().size() > _maxLeafSize &&
+                       context.template get<const MortonCode>(n.contents().front()) !=
+                       context.template get<const MortonCode>(n.contents().back());
+            };
 
             // Build the tree
             // todo: the context used for splitting should be defined by the node type
-            auto context = simulation().template view<const Position, const Mass, const MortonCode>();
-            int preBuildDepth = 2;
-            auto toBeRefined = depthSplit(preBuildDepth, context);
+            auto toBeRefined = this->loadBalancedSplit(256, splitCriterion, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
-                                  [&](const auto &n) {
-                                      // Don't split if all entities in this node have the same morton code
-                                      return n.contents().size() > _maxLeafSize &&
-                                             context.template get<const MortonCode>(n.contents().front()) !=
-                                             context.template get<const MortonCode>(n.contents().back());
-                                  },
+                                  splitCriterion,
                                   context);
             });
             summarizeTreeTop(toBeRefined, context);

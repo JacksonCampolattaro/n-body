@@ -5,6 +5,8 @@
 #ifndef N_BODY_MORTONSORT_H
 #define N_BODY_MORTONSORT_H
 
+#include <tbb/parallel_for_each.h>
+
 #include <cstdint>
 #include <algorithm>
 
@@ -51,7 +53,7 @@ namespace NBody {
     }
 
     static void mortonSort(const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
-                           std::vector<Entity> &indices) {
+                           std::span<Entity> indices) {
 
         boost::sort::spreadsort::integer_sort(indices.begin(), indices.end(),
                                               [&](Entity i, unsigned offset) {
@@ -65,6 +67,91 @@ namespace NBody {
         );
     }
 
+    static void parallelMortonSort(const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
+                                   std::span<Entity> indices, std::size_t threads = 12) {
 
+        std::vector<std::span<Entity>> queue;
+        auto comparator = [&](auto &a, auto &b) {
+            return a.size() < b.size();
+        };
+
+        queue.push_back(indices);
+
+        // todo: this could be done in parallel, too!
+        while (queue.size() < threads) {
+
+            std::pop_heap(queue.begin(), queue.end(), comparator);
+            std::span<Entity> range = queue.back();
+            queue.pop_back();
+
+            // Determine the highest different bit
+            // I wish I could think of a less stupid way to do this...
+            int msb = 0;
+            for (int i = 1; i < range.size(); ++i) {
+                msb = std::max(
+                        msb,
+                        fls(mortonCodes.get<const MortonCode>(range[i - 1]) ^
+                            mortonCodes.get<const MortonCode>(range[i])) - 1
+                );
+            }
+
+            // Partition the range based on that bit
+            MortonCode boundary = (1 << msb);
+            auto middle = std::partition(range.begin(), range.end(), [&](auto e) -> bool {
+                return (mortonCodes.get<const MortonCode>(e) & boundary) == 0;
+            });
+
+            queue.emplace_back(range.begin(), middle);
+            std::push_heap(queue.begin(), queue.end(), comparator);
+
+            queue.emplace_back(middle, range.end());
+            std::push_heap(queue.begin(), queue.end(), comparator);
+        }
+
+        // Each range can now be radix-sorted independently
+        tbb::parallel_for_each(queue, [&](std::span<Entity> range) {
+            mortonSort(mortonCodes, range);
+        });
+    }
+
+    static void recursiveParallelMortonSort(
+            const entt::basic_view<Entity, entt::exclude_t<>, const MortonCode> &mortonCodes,
+            std::span<Entity> indices, std::size_t threads = 12) {
+
+        if (threads > 1) {
+
+            // Determine the highest different bit
+            // I wish I could think of a less stupid way to do this...
+            int msb = 0;
+            for (int i = 1; i < indices.size(); ++i) {
+                msb = std::max(
+                        msb,
+                        fls(mortonCodes.get<const MortonCode>(indices[i - 1]) ^
+                            mortonCodes.get<const MortonCode>(indices[i])) - 1
+                );
+            }
+
+            // Partition the range based on that bit
+            MortonCode boundary = (1 << msb);
+            auto middle = std::partition(indices.begin(), indices.end(), [&](auto e) -> bool {
+                return (mortonCodes.get<const MortonCode>(e) & boundary) == 0;
+            });
+
+            // Each sub-range can now be sorted independently
+            tbb::parallel_for_each(
+                    std::vector<std::span<Entity>>{
+                            {indices.begin(), middle},
+                            {middle,          indices.end()}
+                    },
+                    [&](std::span<Entity> range) {
+                        recursiveParallelMortonSort(mortonCodes, range, threads / 2);
+                    }
+            );
+
+        } else {
+            // Base case, use radix sort
+            mortonSort(mortonCodes, indices);
+        }
+    }
 }
 #endif //N_BODY_MORTONSORT_H
