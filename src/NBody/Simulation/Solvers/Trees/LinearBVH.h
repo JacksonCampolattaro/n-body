@@ -78,7 +78,7 @@ namespace NBody {
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     private:
 
-        int _maxLeafSize = 2;
+        int _maxLeafSize = 16;
 
     public:
 

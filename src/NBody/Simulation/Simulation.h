@@ -76,24 +76,21 @@ namespace NBody {
             Glib::init();
         }
 
-        Simulation(const Simulation &other) : entt::basic_registry<Entity>() { operator=(other); }
+        Simulation(const Simulation &other) : entt::basic_registry<Entity>() {
 
-        Simulation &operator=(const Simulation &other) {
+            // Add all entities from the other simulation, retaining IDs
+            assign(other.data(), other.data() + other.size(), other.released());
 
-            // Clear all entites
-            each([&](auto e) {
-                destroy(e);
+            // Copy components from the other registry
+            invokeForEachType([&]<typename T>() {
+                // todo: this might break for tag types
+                auto view = other.view<T>();
+                insert<T>(view.data(), view.data() + view.size());
             });
+        }
 
-            // Add all entities from the other simulation, giving new ones the same ID
-            other.each([&](auto e) {
-                auto eCopy = create(e);
-                invokeForEachType([&]<typename T>() {
-                    if (other.all_of<T>(e))
-                        emplace<T>(eCopy, other.get<const T>(e));
-                });
-            });
-
+        Simulation &operator=(Simulation other) {
+            std::swap(*this, other);
             return *this;
         }
 

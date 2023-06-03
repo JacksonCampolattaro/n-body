@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
     std::size_t repetitions = 3;
-    std::size_t nMax = 500'000;
+    std::size_t nMax = 300'000;
 
     std::ofstream out{"benchmarks/tree-construction-random-data.csv"};
     out << "Tree,N,Max Leaf Size,Time\n";
