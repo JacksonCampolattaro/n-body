@@ -184,6 +184,12 @@ int main(int argc, char *argv[]) {
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
+    //    auto s = Generator::perlinNoiseRandomVolume(100'000);
+    //    spdlog::info("generated");
+    //    std::ofstream out{"../n-body-scenarios/scenarios/perlin-100000.json"};
+    //    out << s;
+    //    spdlog::info("done");
+
     //json scenario = Generator::realisticGalaxy();
     json scenario = Generator::trio();
     //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'500);

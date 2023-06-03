@@ -11,7 +11,7 @@
 
 namespace NBody {
 
-    template<std::size_t Order, RuleType Rule = Gravity>
+    template<std::size_t Order, RuleType Rule>
     class MultipoleFMMSolver : public DualTraversalSolver<
             MultipoleDualOctree<Order>,
             Descent::SideLengthOverDistance,
@@ -35,13 +35,13 @@ namespace NBody {
         [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using FMMSolver = MultipoleFMMSolver<1, Rule>;
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using QuadrupoleFMMSolver = MultipoleFMMSolver<2, Rule>;
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     using OctupoleFMMSolver = MultipoleFMMSolver<3, Rule>;
 }
 

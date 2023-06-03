@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <requires lib="adwaita" version="1.0"/>
+
+    <object class="AdwPreferencesGroup" id="root">
+        <property name="hexpand">True</property>
+
+        <child>
+            <object class="AdwActionRow" id="theta">
+                <property name="title">Theta</property>
+                <property name="subtitle">Higher values trade accuracy for speed</property>
+                <child type="suffix">
+                    <object class="GtkSpinButton" id="theta-float-entry">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwActionRow" id="tree-depth">
+                <property name="title">Maximum Tree Depth</property>
+                <property name="subtitle">Shallower trees reduce memory load</property>
+                <child type="suffix">
+                    <object class="GtkSpinButton" id="tree-depth-int-entry">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="climb-rate">1.0</property>
+                        <property name="digits">0</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwActionRow" id="tree-leaf-size">
+                <property name="title">Maximum Tree Leaf Size</property>
+                <property name="subtitle">More particles per leaf produces a shallower tree</property>
+                <child type="suffix">
+                    <object class="GtkSpinButton" id="tree-leaf-size-int-entry">
+                        <property name="hexpand">0</property>
+                        <property name="vexpand">0</property>
+                        <property name="valign">center</property>
+                        <property name="climb-rate">1.0</property>
+                        <property name="digits">0</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwExpanderRow" id="active-tree">
+                <property name="title">Active Tree</property>
+                <property name="subtitle">Emits Forces</property>
+                <property name="expanded">True</property>
+                <child>
+                    <object class="AdwActionRow" id="active-tree-leaf-size">
+                        <property name="title">Maximum Leaf Size</property>
+                        <property name="subtitle">More particles per leaf produces a shallower tree</property>
+                        <child type="suffix">
+                            <object class="GtkSpinButton" id="active-tree-leaf-size-int-entry">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="climb-rate">1.0</property>
+                                <property name="digits">0</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow" id="active-tree-depth">
+                        <property name="title">Maximum Depth</property>
+                        <property name="subtitle">Shallower trees reduce memory load</property>
+                        <child type="suffix">
+                            <object class="GtkSpinButton" id="active-tree-depth-int-entry">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="climb-rate">1.0</property>
+                                <property name="digits">0</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="AdwExpanderRow" id="passive-tree">
+                <property name="title">Passive Tree</property>
+                <property name="subtitle">Collects Fields</property>
+                <property name="expanded">True</property>
+                <child>
+                    <object class="AdwActionRow" id="passive-tree-leaf-size">
+                        <property name="title">Maximum Leaf Size</property>
+                        <property name="subtitle">More particles per leaf produces a shallower tree</property>
+                        <child type="suffix">
+                            <object class="GtkSpinButton" id="passive-tree-leaf-size-int-entry">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="climb-rate">1.0</property>
+                                <property name="digits">0</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwActionRow" id="passive-tree-depth">
+                        <property name="title">Maximum Depth</property>
+                        <property name="subtitle">Shallower trees reduce memory load</property>
+                        <child type="suffix">
+                            <object class="GtkSpinButton" id="passive-tree-depth-int-entry">
+                                <property name="hexpand">0</property>
+                                <property name="vexpand">0</property>
+                                <property name="valign">center</property>
+                                <property name="climb-rate">1.0</property>
+                                <property name="digits">0</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

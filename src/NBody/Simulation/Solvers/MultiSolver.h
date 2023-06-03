@@ -11,6 +11,7 @@
 #include <NBody/Simulation/Solvers/MVDRSolver.h>
 #include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/FMMSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
 
 #include <gtkmm/singleselection.h>
 #include <giomm/liststore.h>
@@ -58,6 +59,9 @@ namespace NBody {
             );
             _solverList->append(Glib::make_refptr_for_instance(
                     new NBody::FMMSolver<Gravity>(this->_simulation, this->_rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::QuadrupoleImplicitFMMSolver<Gravity>(this->_simulation, this->_rule)
             ));
 
             // One solver must always be selected

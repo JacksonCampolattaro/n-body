@@ -39,23 +39,23 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
             [&](const Glib::RefPtr<Glib::ObjectBase> &item) -> Gtk::Widget * {
                 auto solver = std::dynamic_pointer_cast<NBody::Solver<Gravity>>(item);
                 if (solver->id() == "naive")
-                    return new NaiveSolverSettings((NBody::NaiveSolver<Gravity> &) *solver);
+                    return new SolverSettings((NBody::NaiveSolver<Gravity> &) *solver);
                 if (solver->id() == "barnes-hut")
-                    return new BarnesHutSolverSettings((NBody::BarnesHutSolver<Gravity> &) *solver);
+                    return new SolverSettings((BarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "barnes-hut-4p")
-                    return new QuadrupoleBarnesHutSolverSettings((NBody::QuadrupoleBarnesHutSolver<Gravity> &) *solver);
+                    return new SolverSettings((QuadrupoleBarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh")
-                    return new LinearBVHSolverSettings((NBody::LinearBVHSolver<Gravity> &) *solver);
+                    return new SolverSettings((NBody::LinearBVHSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh-4p")
-                    return new QuadrupoleLinearBVHSolverSettings((NBody::QuadrupoleLinearBVHSolver<Gravity> &) *solver);
+                    return new SolverSettings((NBody::QuadrupoleLinearBVHSolver<Gravity> &) *solver);
                 if (solver->id() == "mvdr")
-                    return new MVDRSolverSettings((NBody::MVDRSolver<Gravity> &) *solver);
+                    return new SolverSettings((NBody::MVDRSolver<Gravity> &) *solver);
                 if (solver->id() == "mvdr-4p")
-                    return new QuadrupoleMVDRSolverSettings((NBody::QuadrupoleMVDRSolver<Gravity> &) *solver);
-                if (solver->id() == "octree-dual-traversal")
-                    return new OctreeDualTraversalSolverSettings((NBody::OctreeDualTraversalSolver<Gravity> &) *solver);
+                    return new SolverSettings((NBody::QuadrupoleMVDRSolver<Gravity> &) *solver);
                 if (solver->id() == "fmm-4p")
-                    return new FMMSolverSettings((NBody::FMMSolver<Gravity> &) *solver);
+                    return new SolverSettings((QuadrupoleFMMSolver<Gravity> &) *solver);
+                if (solver->id() == "implicit-fmm-4p")
+                    return new SolverSettings((QuadrupoleImplicitFMMSolver<Gravity> &) *solver);
                 return new Gtk::Label{"Unrecognized Solver"};
             }
     ));

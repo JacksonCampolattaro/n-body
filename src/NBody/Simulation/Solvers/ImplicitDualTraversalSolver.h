@@ -13,7 +13,7 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename DualTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<typename DualTree, DescentCriterionType DescentCriterion, RuleType Rule>
     class ImplicitDualTraversalSolver : public Solver<Rule> {
     private:
 
