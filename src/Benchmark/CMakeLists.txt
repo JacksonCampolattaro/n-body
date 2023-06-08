@@ -58,7 +58,6 @@ add_executable(experiment_CompareTreeConstructionOnAGORAData
         Experiments/compareTreeConstructionOnAGORAData.cpp)
 target_link_libraries(experiment_CompareTreeConstructionOnAGORAData PUBLIC
         NBody::Simulation
-        NBody::View
         spdlog::spdlog
         )
 
@@ -66,6 +65,5 @@ add_executable(experiment_CompareTreeConstructionOnRandomData
         Experiments/compareTreeConstructionOnRandomData.cpp)
 target_link_libraries(experiment_CompareTreeConstructionOnRandomData PUBLIC
         NBody::Simulation
-        NBody::View
         spdlog::spdlog
         )

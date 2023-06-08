@@ -78,7 +78,7 @@ namespace NBody {
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     private:
 
-        int _maxLeafSize = 16;
+        int _maxLeafSize = 32;
 
     public:
 
@@ -105,7 +105,7 @@ namespace NBody {
             recursiveParallelMortonSort(simulation().template view<const MortonCode>(), indices());
 
             auto context = simulation().template view<const Position, const Mass, const MortonCode>();
-            auto splitCriterion = [&](const Node &n) {
+            auto splitCriterion = [&](const Node &n) -> bool {
                 // Don't split if all entities in this node have the same morton code
                 return n.contents().size() > _maxLeafSize &&
                        context.template get<const MortonCode>(n.contents().front()) !=
@@ -114,7 +114,7 @@ namespace NBody {
 
             // Build the tree
             // todo: the context used for splitting should be defined by the node type
-            auto toBeRefined = this->loadBalancedSplit(256, splitCriterion, context);
+            auto toBeRefined = this->loadBalancedSplit(32, splitCriterion, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
                 node.get().refine(std::numeric_limits<std::size_t>::max(),
                                   splitCriterion,

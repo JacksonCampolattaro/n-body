@@ -131,7 +131,10 @@ def plot_times_vs_n(filename):
 
     df = df.drop(df[df[x_label] == 'RBH'].index)
 
-    ax = sns.lineplot(data=df, x="N", y="Time", hue=x_label, palette=color_map)
+    plt.figure(figsize=(text_width, 4))
+    ax = sns.lineplot(
+        data=df, x="N", y="Time", hue=x_label, palette=color_map
+    )
     ax.set(ylabel='Time (S / Iteration)')
 
     plt.tight_layout()
@@ -178,7 +181,10 @@ def plot_interactions(filename):
     node_node_interactions = interaction_list.loc[interaction_list['Type'] == "Node-Node"]
     print(node_node_interactions)
 
-    sns.histplot(data=node_node_interactions, x="Passive Size", y="Active Size", bins=100)
+    sns.scatterplot(data=node_node_interactions, x="Passive Size", y="Active Size")
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_ratios.pdf")
+    plt.cla()
 
 
 def main():
@@ -202,9 +208,9 @@ def main():
     # plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
     # plot_times("benchmarks/linear-bvh-descent-criterion.csv")
 
-    # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
-    # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
-    # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
+    plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
+    plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
     plot_times_vs_n("benchmarks/tree-construction-agora-data.csv")
     plot_times_vs_n("benchmarks/tree-construction-random-data.csv")

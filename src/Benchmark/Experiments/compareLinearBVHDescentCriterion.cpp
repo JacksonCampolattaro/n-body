@@ -11,13 +11,11 @@
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 
-#include "../Generator.h"
 #include "../bestTheta.h"
 #include "../benchmark.h"
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
-    Glib::init();
 
     std::ofstream out{"benchmarks/linear-bvh-descent-criterion.csv"};
     out << "Descent Criterion,N,Theta,Time,"

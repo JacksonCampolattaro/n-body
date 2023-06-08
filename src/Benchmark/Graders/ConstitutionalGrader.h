@@ -26,6 +26,7 @@ namespace NBody {
                                               );
                                           }
                     ) / (float) _referenceSimulation.particleCount());
+            spdlog::debug("RMS of reference simulation forces = {}", _rmsForce);
         }
 
     public:
@@ -53,7 +54,9 @@ namespace NBody {
             if (glm::any(glm::isinf((glm::vec3) forceB) || glm::isnan((glm::vec3) forceB)))
                 return std::numeric_limits<float>::infinity();
 
-            return 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            auto error = 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            //if (error > 10.0f) spdlog::error("{}, {} -> {}", a, b, error);
+            return error;
         }
 
     };

@@ -21,7 +21,7 @@ namespace NBody {
         ActiveTree _activeTree;
         PassiveTree _passiveTree;
 
-        DescentCriterion _descentCriterion{0.4f};
+        DescentCriterion _descentCriterion{0.7f};
 
     public:
 
@@ -50,9 +50,11 @@ namespace NBody {
 
             this->_statusDispatcher.emit({"Building active tree"});
             _activeTree.refine();
+            spdlog::debug("Active Tree has a max depth of {}", activeTree().root().depth());
 
             this->_statusDispatcher.emit({"Building passive tree"});
             _passiveTree.refine();
+            spdlog::debug("Passive Tree has a max depth of {}", passiveTree().root().depth());
 
             {
                 this->_statusDispatcher.emit({"Resetting accelerations"});

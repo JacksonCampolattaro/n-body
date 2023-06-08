@@ -21,7 +21,6 @@
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
-    Glib::init();
 
     std::ofstream out{"benchmarks/all-solvers-agora-data.csv"};
     out << "Solver,N,Theta,Iteration,Time\n";
@@ -32,11 +31,11 @@ int main(int argc, char *argv[]) {
                 fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)
         }};
 
-        runShortTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
-        //runShortTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out);
-        runShortTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH", grader, out);
-        runShortTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM", grader, out);
-        runShortTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);
+        runFastTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
+        //runFastTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out, 0.3);
+        runFastTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH", grader, out);
+        runFastTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM", grader, out);
+        runFastTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);
 
     }
 

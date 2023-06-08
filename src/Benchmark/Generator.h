@@ -15,7 +15,7 @@
 
 namespace NBody::Generator {
 
-    static Simulation perlinNoiseRandomVolume(std::size_t n) {
+    static Simulation &perlinNoiseRandomVolume(Simulation &simulation, std::size_t n) {
         spdlog::debug("Generating a perlin-noise scenario with {} particles", n);
 
         std::uint32_t seed = 42;
@@ -25,8 +25,6 @@ namespace NBody::Generator {
                                                                    std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};
         std::uniform_real_distribution<float> colorDistribution{0.3f, 0.9f};
-
-        Simulation simulation;
 
         while (simulation.particleCount() < n) {
 
@@ -49,6 +47,10 @@ namespace NBody::Generator {
                         .setColor({colorDistribution(generator),
                                    colorDistribution(generator),
                                    colorDistribution(generator)});
+
+                // Marks the last added particle in red (useful for debugging)
+                if (simulation.particleCount() == 31343)
+                    particle.setColor({1.0, 0.0, 0.0});
             }
 
         }
@@ -61,7 +63,7 @@ namespace NBody::Generator {
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};
-        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n / 10000)};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f/* * std::cbrt((float) n / 10000)*/};
         std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
                                                                    std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};
@@ -166,19 +168,11 @@ namespace NBody::Generator {
         return scenario;
     }
 
-    static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
-                               std::size_t n) {
+    static Simulation createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
+                                     std::size_t n) {
         Simulation simulation;
         generator(simulation, n);
-
-        json scenario;
-        to_json(scenario, simulation);
-
-        std::ofstream referenceFile{"test.json"};
-        referenceFile << std::setw(4) << scenario;
-        referenceFile.close();
-
-        return scenario;
+        return simulation;
     }
 }
 

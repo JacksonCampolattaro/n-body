@@ -44,6 +44,7 @@ namespace NBody {
             {
                 this->_statusDispatcher.emit({"Building dual tree"});
                 _tree.refine();
+                spdlog::debug("Tree has a max depth of {}", tree().root().depth());
             }
 
             {

@@ -15,7 +15,7 @@ namespace NBody {
     class Grader {
     protected:
 
-        json _scenario;
+        Simulation _scenario;
         Physics::Gravity _rule{};
 
     public:
@@ -26,12 +26,12 @@ namespace NBody {
 
             // Set _scenario and fill the reference simulation
             if (scenarioPath.extension().string() == ".json") {
-                scenarioFile >> _scenario;
+                nlohmann::json jsonScenario;
+                scenarioFile >> jsonScenario;
+                from_json(jsonScenario, _scenario);
             } else if (scenarioPath.extension().string() == ".bin") {
-                Simulation referenceSimulation;
-                from_tipsy(scenarioFile, referenceSimulation);
-                spdlog::info("loaded {} particles", referenceSimulation.particleCount());
-                to_json(_scenario, referenceSimulation);
+                from_tipsy(scenarioFile, _scenario);
+                spdlog::info("loaded {} particles", _scenario.particleCount());
             } else {
                 spdlog::error("Unrecognized file extension");
                 exit(1);
@@ -39,10 +39,14 @@ namespace NBody {
 
         }
 
-        explicit Grader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
+        explicit Grader(json jsonScenario, Physics::Gravity rule = Physics::Gravity{}) : _rule(rule) {
+            from_json(jsonScenario, _scenario);
+        }
+
+        explicit Grader(Simulation scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 _scenario(scenario), _rule(rule) {}
 
-        [[nodiscard]] const json &scenario() const { return _scenario; }
+        [[nodiscard]] const Simulation &scenario() const { return _scenario; }
 
         [[nodiscard]] const Physics::Gravity &rule() const { return _rule; }
 
@@ -57,11 +61,10 @@ namespace NBody {
             if (range.second - range.first < 0.005f)
                 return range.first;
 
-            typename CandidateSolver::Rule rule{this->rule()};
-            Simulation candidate;
-            from_json(scenario(), candidate);
+            Gravity rule = this->rule();
+            Simulation candidate = _scenario;
 
-            CandidateSolver candidateSolver{candidate, rule};
+            ReplaceRule<CandidateSolver, Gravity> candidateSolver{candidate, rule};
             candidateSolver.descentCriterion().theta() = middleValue;
             candidateSolver.step();
 
@@ -122,7 +125,16 @@ namespace NBody {
             from_json(_scenario, _referenceSimulation);
 
             // Run the simulation one step, to prepare the reference
-            spdlog::info("Performing Naive step, for accuracy reference");
+            spdlog::debug("Performing Naive step, for accuracy reference");
+            NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
+            referenceSolver.step();
+        }
+
+        explicit NaiveReferenceGrader(const Simulation& scenario, Physics::Gravity rule = Physics::Gravity{}) :
+                Grader(scenario, rule), _referenceSimulation(scenario) {
+
+            // Run the simulation one step, to prepare the reference
+            spdlog::debug("Performing Naive step, for accuracy reference");
             NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
             referenceSolver.step();
         }

@@ -28,13 +28,13 @@ int main(int argc, char *argv[]) {
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
-    std::size_t nMax = 10'000;
+    std::size_t nMax = 100'000;
 
-    for (std::size_t n = 1'000; n < nMax; n = n * 1.5) {
+
+    for (std::size_t n = 1'000; n < nMax; n = n * 1.15) {
 
         spdlog::info("Generating a random dataset with {} particles", n);
-        Simulation scenario;
-        Generator::uniformRandomVolume(scenario, n);
+        Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);
         Gravity rule{};
 
         ConstitutionalGrader grader{scenario, rule};

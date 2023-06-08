@@ -72,7 +72,7 @@ namespace NBody {
     public:
 
         Simulation() : entt::basic_registry<Entity>() {
-            // Necessary for signals, should be idempotent
+            // Necessary for signals to work properly, should be idempotent
             Glib::init();
         }
 
@@ -85,8 +85,9 @@ namespace NBody {
             invokeForEachType([&]<typename T>() {
                 // todo: this might break for tag types
                 auto view = other.view<T>();
-                insert<T>(view.begin(), view.end(), view.storage().begin());
+                insert<T>(view.begin(), view.end(), view.storage().rbegin());
             });
+
         }
 
         Simulation &operator=(Simulation other) {

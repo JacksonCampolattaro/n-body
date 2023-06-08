@@ -36,6 +36,7 @@ namespace NBody {
                 // Construct an octree from the actor particles
                 this->_statusDispatcher.emit({"Building Tree"});
                 _tree.refine();
+                //spdlog::debug("Max tree depth = {}", _tree.root().depth());
             }
 
             {
