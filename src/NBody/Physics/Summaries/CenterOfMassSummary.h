@@ -28,7 +28,7 @@ namespace NBody {
         CenterOfMassSummary() = default;
 
         template<typename C>
-        void summarize(const std::span<Entity> &entities, const C &context) {
+        void summarize(std::span<const Entity> entities, const C &context) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};

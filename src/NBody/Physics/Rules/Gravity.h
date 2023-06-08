@@ -192,7 +192,7 @@ namespace NBody::Physics {
 
         using RuleBase<Gravity>::operator();
 
-        explicit Gravity(const float &G = 1.0, const float &epsilon = 0.0001) : _g(G), _epsilon(epsilon) {};
+        explicit Gravity(const float &G = 1.0, const float &epsilon = 0.00001) : _g(G), _epsilon(epsilon) {};
 
     public: // Particle-particle interaction
 

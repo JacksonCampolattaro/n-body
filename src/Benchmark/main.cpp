@@ -16,6 +16,7 @@
 #include <NBody/Physics/Rules/Gravity.h>
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 #include <NBody/Physics/Rules/AdvancedTrackingRule.h>
+#include <NBody/Physics/Rules/AccuracyTrackingRule.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
@@ -87,16 +88,21 @@ int main(int argc, char *argv[]) {
     //    out << s;
     //    spdlog::info("done");
 
-    auto scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, 50'166);
-    std::ofstream out{"../n-body-scenarios/scenarios/broken.json"};
-    out << scenario;
+    //auto scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, 50'166);
+    //std::ofstream out{"../n-body-scenarios/scenarios/broken.json"};
+    //out << scenario;
+
+    auto scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, 500);
+    AccuracyTrackingRule<Gravity> accuracyTrackingRule{"benchmarks/accuracy-tracking.csv", scenario};
+    HexadecupoleBarnesHutSolver<AccuracyTrackingRule<Gravity>> solver{scenario, accuracyTrackingRule};
+    solver.step();
 
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Gravity{1.0f}};
+    //ConstitutionalGrader grader{scenario, Gravity{1.0f}};
 
-    realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(grader);
+    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(grader);
     //approximationRatio<QuadrupoleBarnesHutSolver<Gravity>>(grader);
 
     //realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(grader);

@@ -47,6 +47,19 @@ namespace NBody::Physics {
 
         }
 
+        template<ActiveSummaryType ActiveSummary>
+        [[nodiscard]] Acceleration operator()(const Position &activePosition,
+                                              const ActiveSummary &activeSummary,
+                                              const Position &passivePosition) {
+
+            return static_cast<Implementation *>(this)->nodeParticle(
+                    activePosition,
+                    activeSummary,
+                    passivePosition
+            );
+
+        }
+
     public: // Particle-node interaction
 
         template<typename PassiveNode>
