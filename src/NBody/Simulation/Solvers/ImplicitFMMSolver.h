@@ -39,6 +39,9 @@ namespace NBody {
 
     template<RuleType Rule = Gravity>
     using OctupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<3, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using HexadecupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<4, Rule>;
 }
 
 #endif //N_BODY_IMPLICITFMMSOLVER_H

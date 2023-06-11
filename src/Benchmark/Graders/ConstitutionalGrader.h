@@ -46,6 +46,7 @@ namespace NBody {
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
             assert(a == b);
             assert(A.get<Physics::Mass>(a).mass() == B.get<Physics::Mass>(b).mass());
+            assert(A.get<Physics::Position>(a) == B.get<Physics::Position>(b));
 
             auto forceA = A.get<Physics::Acceleration>(a) * A.get<Physics::Mass>(a).mass();
             auto forceB = B.get<Physics::Acceleration>(b) * B.get<Physics::Mass>(b).mass();
@@ -55,7 +56,7 @@ namespace NBody {
                 return std::numeric_limits<float>::infinity();
 
             auto error = 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
-            //if (error > 10.0f) spdlog::error("{}, {} -> {}", a, b, error);
+            if (error > 10.0f) spdlog::error("{}, {} -> {}", a, b, error);
             return error;
         }
 

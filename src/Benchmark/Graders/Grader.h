@@ -66,7 +66,7 @@ namespace NBody {
 
             ReplaceRule<CandidateSolver, Gravity> candidateSolver{candidate, rule};
             candidateSolver.descentCriterion().theta() = middleValue;
-            candidateSolver.step();
+            candidateSolver.updateAccelerations();
 
             if (acceptable(candidate))
                 return optimalTheta<CandidateSolver>({middleValue, range.second});
@@ -105,7 +105,7 @@ namespace NBody {
                 spdlog::debug("Performing Naive step, for accuracy reference");
                 from_json(scenario(), _referenceSimulation);
                 NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
-                referenceSolver.step();
+                referenceSolver.updateAccelerations();
 
                 // Save the reference results, so we don't need to do this again next time
                 spdlog::debug("Saving naive results for future runs");
@@ -127,7 +127,7 @@ namespace NBody {
             // Run the simulation one step, to prepare the reference
             spdlog::debug("Performing Naive step, for accuracy reference");
             NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
-            referenceSolver.step();
+            referenceSolver.updateAccelerations();
         }
 
         explicit NaiveReferenceGrader(const Simulation& scenario, Physics::Gravity rule = Physics::Gravity{}) :
@@ -136,7 +136,7 @@ namespace NBody {
             // Run the simulation one step, to prepare the reference
             spdlog::debug("Performing Naive step, for accuracy reference");
             NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
-            referenceSolver.step();
+            referenceSolver.updateAccelerations();
         }
 
         float averageError(const Simulation &candidateSimulation) const {

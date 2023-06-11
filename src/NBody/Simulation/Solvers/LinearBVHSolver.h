@@ -49,6 +49,9 @@ namespace NBody {
     template<RuleType Rule = Gravity>
     using OctupoleLinearBVHSolver = MultipoleLinearBVHSolver<3, Rule>;
 
+    template<RuleType Rule = Gravity>
+    using HexadecupoleLinearBVHSolver = MultipoleLinearBVHSolver<4, Rule>;
+
 }
 
 #endif //N_BODY_LINEARBVHSOLVER_H

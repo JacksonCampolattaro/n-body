@@ -129,7 +129,8 @@ TEST_CASE("Copy & move construction", "[Simulation]") {
     Simulation copyConstructed{original};
     REQUIRE(copyConstructed == original);
 
-    Simulation copyAssigned = original;
+    Simulation copyAssigned;
+    copyAssigned = original;
     REQUIRE(copyAssigned == original);
 
 }

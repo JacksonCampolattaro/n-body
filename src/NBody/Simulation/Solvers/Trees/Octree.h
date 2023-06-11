@@ -194,13 +194,16 @@ namespace NBody {
             root().sideLength() = boundingBox.maxSideLength() * 1.1f;
 
             const auto &context = Node::Summary::context(simulation());
-            auto splitCriterion = [&](const Node &node) -> bool {
-                return node.contents().size() > _maxLeafSize;
-            };
-
-            auto toBeRefined = this->loadBalancedSplit(32, splitCriterion, context);
+            int preBuildDepth = 2;
+            auto toBeRefined = depthSplit(preBuildDepth, context);
             tbb::parallel_for_each(toBeRefined, [&](auto node) {
-                node.get().refine(_maxDepth, splitCriterion, context);
+                node.get().refine(
+                        _maxDepth,
+                        [&](const auto &n) {
+                            return n.contents().size() > _maxLeafSize;
+                        },
+                        context
+                );
             });
             summarizeTreeTop(toBeRefined, context);
         };

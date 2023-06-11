@@ -85,13 +85,25 @@ namespace NBody {
             invokeForEachType([&]<typename T>() {
                 // todo: this might break for tag types
                 auto view = other.view<T>();
-                insert<T>(view.begin(), view.end(), view.storage().rbegin());
+                insert<T>(view.rbegin(), view.rend(), view.storage().rbegin());
             });
 
+            assert(*this == other);
         }
 
-        Simulation &operator=(Simulation other) {
-            std::swap(*this, other);
+        Simulation &operator=(const Simulation &other) {
+
+            // Add all entities from the other simulation, retaining IDs
+            assign(other.data(), other.data() + other.size(), other.released());
+
+            // Copy components from the other registry
+            invokeForEachType([&]<typename T>() {
+                // todo: this might break for tag types
+                auto view = other.view<T>();
+                insert<T>(view.rbegin(), view.rend(), view.storage().rbegin());
+            });
+
+            assert(*this == other);
             return *this;
         }
 
@@ -181,6 +193,10 @@ namespace NBody {
                 else
                     invokeForEachType([&]<typename T>() {
 
+                        //                        if (lhs.all_of<T>(e) != rhs.all_of<T>(e) ||
+                        //                            lhs.all_of<T>(e) && lhs.get<const T>(e) != rhs.get<const T>(e))
+                        //                            equal = false;
+
                         if (lhs.all_of<T>(e) != rhs.all_of<T>(e))
                             equal = false;
                         else if (lhs.all_of<T>(e) && lhs.get<const T>(e) != rhs.get<const T>(e))
@@ -188,6 +204,22 @@ namespace NBody {
 
                     });
             });
+
+            // Iterations over the two simulations must occur in the same order
+            auto lhsPositions = lhs.view<const Position>();
+            auto rhsPositions = rhs.view<const Position>();
+            equal = equal && std::transform_reduce(
+                    lhsPositions.begin(), lhsPositions.end(), rhsPositions.begin(), true,
+                    [&](bool e1, bool e2) {
+                        return e1 && e2;
+                    },
+                    [&](auto l, auto r) {
+                        assert(l == r);
+                        return l == r &&
+                               lhsPositions.get<const Position>(l) == rhsPositions.get<const Position>(r);
+                    }
+            );
+
             return equal;
         }
 

@@ -55,6 +55,9 @@ namespace NBody {
     template<RuleType Rule = Gravity>
     using OctupoleImplicitMVDRSolver = MultipoleImplicitMVDRSolver<3, Rule>;
 
+    template<RuleType Rule = Gravity>
+    using HexadecupoleImplicitMVDRSolver = MultipoleImplicitMVDRSolver<4, Rule>;
+
 }
 
 #endif //N_BODY_IMPLICITMVDRSOLVER_H

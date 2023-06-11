@@ -20,7 +20,8 @@ namespace NBody::Descent {
                     glm::distance((glm::vec3) activeNode.center(), point),
                     glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point)
             );
-            return (activeNode.boundingBox().diagonalLength() / distance) < _theta;
+            return (activeNode.boundingBox().diagonalLength() / distance) < _theta
+                   && activeNode.contents().size() > 32;
         }
 
         template<NodeType TreeNode>
@@ -42,7 +43,8 @@ namespace NBody::Descent {
             );
 
             if ((activeDiagonal + passiveDiagonal) / distance < _theta
-                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
+                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
+                   && activeNode.contents().size() > 32)
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

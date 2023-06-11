@@ -11,10 +11,10 @@
 
 namespace NBody {
 
-    template<std::size_t Order, RuleType Rule = Gravity>
+    template<std::size_t Order, RuleType Rule>
     class MultipoleImplicitLinearBVHFMMSolver : public ImplicitDualTraversalSolver<
             LinearBVH<MultipoleDualEmptySummary<Order>>,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:
