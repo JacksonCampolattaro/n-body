@@ -67,3 +67,10 @@ target_link_libraries(experiment_CompareTreeConstructionOnRandomData PUBLIC
         NBody::Simulation
         spdlog::spdlog
         )
+
+add_executable(experiment_sampleMultipoles
+        Experiments/sampleMultipoles.cpp)
+target_link_libraries(experiment_sampleMultipoles PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )

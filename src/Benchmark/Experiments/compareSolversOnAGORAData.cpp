@@ -36,8 +36,8 @@ int main(int argc, char *argv[]) {
         //runShortTest<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH", grader, out);
         //runShortTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH", grader, out);
         //runShortTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM", grader, out);
-        //runShortTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);
-        runShortTest<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM", grader, out);
+        runShortTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);
+        //runShortTest<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM", grader, out);
 
     }
 

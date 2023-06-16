@@ -16,7 +16,8 @@ namespace NBody::Descent {
 
         template<NodeType TreeNode>
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
-            return (activeNode.boundingBox().diagonalLength() / separation(activeNode.boundingBox(), point)) < _theta;
+            return (activeNode.boundingBox().diagonalLength() / separation(activeNode.boundingBox(), point)) < _theta
+                   && activeNode.contents().size() > 32;
         }
 
         template<NodeType TreeNode>
@@ -32,7 +33,7 @@ namespace NBody::Descent {
             float passiveDiagonal = passiveNode.boundingBox().diagonalLength();
 
             if ((activeDiagonal + passiveDiagonal) / separation(activeNode.boundingBox(), passiveNode.boundingBox())
-                < _theta)
+                < _theta && activeNode.contents().size() > 32)
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

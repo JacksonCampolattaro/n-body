@@ -48,13 +48,18 @@ namespace NBody {
 
         void updateAccelerations() override {
 
-            this->_statusDispatcher.emit({"Building active tree"});
-            _activeTree.refine();
-            spdlog::debug("Active Tree has a max depth of {}", activeTree().root().depth());
-
-            this->_statusDispatcher.emit({"Building passive tree"});
-            _passiveTree.refine();
-            spdlog::debug("Passive Tree has a max depth of {}", passiveTree().root().depth());
+            tbb::task_group treeBuildingTaskGroup;
+            treeBuildingTaskGroup.run([&]() {
+                this->_statusDispatcher.emit({"Building active tree"});
+                _activeTree.refine();
+                spdlog::debug("Active Tree has a max depth of {}", activeTree().root().depth());
+            });
+            treeBuildingTaskGroup.run([&]() {
+                this->_statusDispatcher.emit({"Building passive tree"});
+                _passiveTree.refine();
+                spdlog::debug("Passive Tree has a max depth of {}", passiveTree().root().depth());
+            });
+            treeBuildingTaskGroup.wait();
 
             {
                 this->_statusDispatcher.emit({"Resetting accelerations"});

@@ -8,13 +8,14 @@
 #include <NBody/Simulation/Solvers/ImplicitDualTraversalSolver.h>
 #include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
 #include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverDistance.h>
+#include <NBody/Simulation/Solvers/Descent/DescentCriterion/DiagonalOverSeparation.h>
 
 namespace NBody {
 
     template<std::size_t Order, RuleType Rule>
     class MultipoleImplicitLinearBVHFMMSolver : public ImplicitDualTraversalSolver<
             LinearBVH<MultipoleDualEmptySummary<Order>>,
-            Descent::DiagonalOverCenterDistance,
+            Descent::DiagonalOverSeparation,
             Rule
     > {
     public:

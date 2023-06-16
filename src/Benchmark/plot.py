@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import colorsys
 from matplotlib import rcParams
+from matplotlib.patches import Rectangle
+import matplotlib.ticker as plticker
 
 # Text-width in inches, to make sure everything fits in the latex document
 text_width = 5
@@ -30,7 +32,7 @@ color_map = {
 }
 
 
-def plot_field(filename):
+def plot_field(filename, zoom_box=None):
     data = pd.read_csv(filename)
 
     # Ignore Z for a 2d plot
@@ -48,15 +50,37 @@ def plot_field(filename):
         hue = (math.atan2(x, y) + math.pi) / (2 * math.pi)
         return np.asarray(colorsys.hsv_to_rgb(hue, saturation, 1.0))
 
+    extent = (data['x'].min(), data['x'].max(), data['y'].min(), data['y'].max())
+
     rgb = np.array([[to_rgb(xy) for xy in row] for row in arr])
 
-    f, ax = plt.subplots()
-    ax.imshow(
+    plt.figure(figsize=(text_width / 2, text_width / 2))
+    plt.imshow(
         rgb,
-        extent=(data['x'].min(), data['x'].max(), data['y'].min(), data['y'].max())
+        origin='lower',
+        extent=extent,
     )
+    plt.gca().xaxis.set_major_locator(plticker.MaxNLocator(nbins=4, min_n_ticks=5))
+    plt.gca().yaxis.set_major_locator(plticker.MaxNLocator(nbins=4, min_n_ticks=5))
 
-    plt.show()
+    # Maybe we can omit X and Y labels?
+    # plt.xlabel('X', size=9)
+    # plt.ylabel('Y', size=9)
+
+    # Mark the zoom box, if it's present
+    if zoom_box is not None:
+        (x_min, x_max, y_min, y_max) = zoom_box
+        plt.gca().add_patch(Rectangle(
+            (x_min, y_min),
+            x_max - x_min, y_max - y_min,
+            edgecolor='red',
+            facecolor='none',
+            lw=1
+        ))
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + ".pdf")
+    return extent
 
 
 def plot_sweep_n(filename):
@@ -195,15 +219,17 @@ def main():
     plt.rc('text', usetex=True)
     plt.rc('font', family='times', size=11)
     plt.rc('axes', labelsize=11)
-    plt.rc('xtick', labelsize=9)
-    plt.rc('ytick', labelsize=9)
+    plt.rc('xtick', labelsize=8)
+    plt.rc('ytick', labelsize=8)
     plt.rc('legend', fontsize=9)
 
     # plot_sweep_n('benchmarks/sweep-n.csv')
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
     # plot_sweep_error('benchmarks/sweep-theta.csv')
-    # plot_field('benchmarks/exact-field.csv')
     # plot_interactions('benchmarks/approximation-tracking.csv')
+
+    zoom_box = plot_field('benchmarks/sample-exact-1x1.csv')
+    plot_field('benchmarks/sample-exact-8x8.csv', zoom_box)
 
     # plot_interaction_counts("benchmarks/linear-bvh-descent-criterion.csv")
     # plot_times("benchmarks/linear-bvh-descent-criterion.csv")
