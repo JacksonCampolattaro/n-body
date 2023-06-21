@@ -13,63 +13,73 @@
 
 #include "NBody/Physics/Rules/Gravity.h"
 
-void sampleExactField(
-        const json &scenario,
-        const std::vector<float> &xValues,
-        const std::vector<float> &yValues,
-        const std::vector<float> &zValues = {0.0f}
-) {
+std::vector<glm::vec3> range3D(const BoundingBox &sampleRegion, float sampleResolution) {
+    std::vector<glm::vec3> samples;
+    for (float x = sampleRegion.min().x; x <= sampleRegion.max().x + sampleResolution; x += sampleResolution)
+        for (float y = sampleRegion.min().y; y <= sampleRegion.max().y + sampleResolution; y += sampleResolution)
+            for (float z = sampleRegion.min().z; z <= sampleRegion.max().z; z += sampleResolution)
+                samples.emplace_back(x, y, z);
 
-    std::ofstream file{"benchmarks/exact-field.csv"};
-    file << "x,y,z,fx,fy,fz" << std::endl;
-
-    Gravity rule{};
-    Simulation simulation;
-    from_json(scenario, simulation);
-
-    for (auto x: xValues) {
-        for (auto y: yValues) {
-            for (auto z: zValues) {
-
-                auto actorsView = simulation.view<const Position, const Mass>();
-                glm::vec3 f = {};
-                actorsView.each([&](const Position &activePosition, const Mass &activeMass) {
-                    f += (glm::vec3) rule(activePosition, activeMass, Position{x, y, z});
-                });
-
-
-                file << fmt::format(
-                        "{},{},{},{},{},{}\n",
-                        x, y, z, f.x, f.y, f.z
-                );
-
-            }
-        }
-    }
-
+    return samples;
 }
 
-void sampleExactField(
-        const json &scenario,
-        const std::pair<float, float> &xRange = {-10.0f, 10.0f},
-        const std::pair<float, float> &yRange = {-10.0f, 10.0f},
-        const std::pair<float, float> &zRange = {0.0f, 0.0f},
-        float epsilon = 0.1f
-) {
+void sampleField(const std::string &name, const std::function<Acceleration(Position)> &field,
+                 const BoundingBox &sampleRegion, float sampleResolution) {
 
-    std::vector<float> xValues{xRange.first};
-    while (xValues.back() < xRange.second)
-        xValues.emplace_back(xValues.back() + epsilon);
+    std::ofstream out{fmt::format(
+            "benchmarks/sample-{}.csv", name
+    )};
+    out << "x,y,z,fx,fy,fz\n";
 
-    std::vector<float> yValues{yRange.first};
-    while (yValues.back() < yRange.second)
-        yValues.emplace_back(yValues.back() + epsilon);
+    for (auto position: range3D(sampleRegion, sampleResolution)) {
+        auto f = field(position);
+        out << fmt::format(
+                "{},{},{},{},{},{}\n",
+                position.x, position.y, position.z,
+                f.x, f.y, f.z
+        );
+    }
+}
 
-    std::vector<float> zValues{zRange.first};
-    while (zValues.back() < zRange.second)
-        zValues.emplace_back(zValues.back() + epsilon);
+void sampleError(const std::string &name,
+                 const std::function<Acceleration(Position)> &field,
+                 const std::function<Acceleration(Position)> &exactField,
+                 const BoundingBox &sampleRegion, float sampleResolution) {
 
-    sampleExactField(scenario, xValues, yValues, zValues);
+    std::ofstream out{fmt::format(
+            "benchmarks/sample-{}-error.csv", name
+    )};
+    out << "x,y,z,ex,ey,ez,e\n";
+
+    for (auto position: range3D(sampleRegion, sampleResolution)) {
+        auto e = exactField(position) - field(position);
+        out << fmt::format(
+                "{},{},{},{},{},{},{}\n",
+                position.x, position.y, position.z,
+                e.x, e.y, e.z,
+                glm::length(e) / glm::length((glm::vec3) exactField(position))
+        );
+    }
+}
+
+void sampleDifference(const std::string &name,
+                      const std::function<Acceleration(Position)> &modulationField,
+                      const std::function<Acceleration(Position)> &baseField,
+                      const BoundingBox &sampleRegion, float sampleResolution) {
+
+    std::ofstream out{fmt::format(
+            "benchmarks/sample-{}.csv", name
+    )};
+    out << "x,y,z,fx,fy,fz\n";
+
+    for (auto position: range3D(sampleRegion, sampleResolution)) {
+        auto f = modulationField(position) - baseField(position);
+        out << fmt::format(
+                "{},{},{},{},{},{}\n",
+                position.x, position.y, position.z,
+                f.x, f.y, f.z
+        );
+    }
 }
 
 #endif //N_BODY_FIELD_H

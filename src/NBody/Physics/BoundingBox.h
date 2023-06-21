@@ -57,7 +57,7 @@ namespace NBody {
 
         [[nodiscard]] bool contains(const Position &position) const {
             return glm::all(glm::lessThanEqual(min(), position)) &&
-                   glm::all(glm::lessThanEqual(position, max()));
+                   glm::all(glm::lessThan(position, max()));
         }
 
         friend std::ostream &operator<<(std::ostream &out, const BoundingBox &b) {

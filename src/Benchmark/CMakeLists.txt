@@ -68,9 +68,23 @@ target_link_libraries(experiment_CompareTreeConstructionOnRandomData PUBLIC
         spdlog::spdlog
         )
 
+add_executable(experiment_recordInteractions
+        Experiments/recordInteractions.cpp)
+target_link_libraries(experiment_recordInteractions PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )
+
 add_executable(experiment_sampleMultipoles
         Experiments/sampleMultipoles.cpp)
 target_link_libraries(experiment_sampleMultipoles PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )
+
+add_executable(experiment_sampleFieldTrees
+        Experiments/sampleFieldTrees.cpp)
+target_link_libraries(experiment_sampleFieldTrees PUBLIC
         NBody::Simulation
         spdlog::spdlog
         )

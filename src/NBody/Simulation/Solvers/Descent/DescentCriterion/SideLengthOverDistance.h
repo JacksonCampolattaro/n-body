@@ -26,7 +26,7 @@ namespace NBody::Descent {
         inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
             float distance = glm::distance((glm::vec3) passiveNode.center(), point);
             return (2 * passiveNode.sideLength() / distance) < _theta
-                   && !doIntersect(exclusionRegion(passiveNode), point);
+                   && !doIntersect(passiveNode.boundingBox(), point);
         }
 
         template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
