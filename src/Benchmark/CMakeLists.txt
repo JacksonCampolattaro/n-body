@@ -1,16 +1,6 @@
 
 # Add necessary libraries
 find_package(spdlog REQUIRED)
-find_package(Matplot++ REQUIRED)
-
-add_executable(Benchmark
-        main.cpp Generator.h Graders/ConstitutionalGrader.h Graders/Grader.h bestTheta.h Graders/RMSGrader.h Graders/MeanGrader.h fieldPlot.h field.h)
-target_link_libraries(Benchmark PUBLIC
-        NBody::Simulation
-        NBody::View
-        spdlog::spdlog
-        Matplot++::matplot
-        )
 
 add_executable(Profile
         profile.cpp Generator.h)

@@ -110,6 +110,7 @@ def plot_field(filename, zoom_box=None):
         rgb,
         origin='lower',
         extent=extent,
+        interpolation='nearest'
     )
     plt.gca().xaxis.set_major_locator(plticker.MaxNLocator(nbins=4, min_n_ticks=5))
     plt.gca().yaxis.set_major_locator(plticker.MaxNLocator(nbins=4, min_n_ticks=5))

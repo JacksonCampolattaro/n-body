@@ -19,7 +19,7 @@ namespace NBody {
     private:
 
         TreeType _tree;
-        DescentCriterion _descentCriterion{0.4f};
+        DescentCriterion _descentCriterion{};
 
     public:
 
