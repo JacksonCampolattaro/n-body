@@ -1,38 +1,16 @@
 
-
+find_package(nlohmann_json REQUIRED)
+find_package(spdlog REQUIRED)
 find_package(TBB REQUIRED)
 
 find_package(PkgConfig)
 pkg_check_modules(sigc++ REQUIRED IMPORTED_TARGET sigc++-3.0)
 
 include(FetchContent)
-
-find_package(spdlog REQUIRED)
-if(NOT spdlog_FOUND)
-    FetchContent_Declare(
-            spdlog
-            GIT_REPOSITORY https://github.com/gabime/spdlog
-            OVERRIDE_FIND_PACKAGE
-    )
-    FetchContent_MakeAvailable(spdlog)
-endif()
-
-find_package(nlohmann_json REQUIRED)
-if(NOT nlohmann_json_FOUND)
-    FetchContent_Declare(
-            nlohmann_json
-            GIT_REPOSITORY https://github.com/nlohmann/json
-            OVERRIDE_FIND_PACKAGE
-    )
-    FetchContent_MakeAvailable(nlohmann_json)
-endif()
-
 FetchContent_Declare(
         entt
         GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG v3.11.1
-        OVERRIDE_FIND_PACKAGE
-)
+        GIT_TAG v3.11.1) # todo: update to the newest version of entt
 set(ENTT_BUILD_TESTING OFF)
 FetchContent_MakeAvailable(entt)
 

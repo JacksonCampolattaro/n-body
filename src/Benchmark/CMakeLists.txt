@@ -1,16 +1,6 @@
 
 # Add necessary libraries
-include(FetchContent)
-
 find_package(spdlog REQUIRED)
-if(NOT spdlog_FOUND)
-    FetchContent_Declare(
-            spdlog
-            GIT_REPOSITORY https://github.com/gabime/spdlog
-            OVERRIDE_FIND_PACKAGE
-    )
-    FetchContent_MakeAvailable(spdlog)
-endif()
 
 add_executable(Profile
         profile.cpp Generator.h)

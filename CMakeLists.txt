@@ -16,8 +16,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 #set(CMAKE_CXX_FLAGS_RELEASE "-Wall -Wextra")
 
-
-
 # Include our targets
 add_subdirectory(src)
 #add_subdirectory(docs)

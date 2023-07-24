@@ -1,17 +1,6 @@
 
 # Add necessary libraries
-include(FetchContent)
-
 find_package(spdlog REQUIRED)
-if(NOT spdlog_FOUND)
-    FetchContent_Declare(
-            spdlog
-            GIT_REPOSITORY https://github.com/gabime/spdlog
-            OVERRIDE_FIND_PACKAGE
-    )
-    FetchContent_MakeAvailable(spdlog)
-endif()
-
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gtkmm REQUIRED IMPORTED_TARGET gtkmm-4.0 glibmm-2.68 giomm-2.68)
 pkg_check_modules(adwaita REQUIRED IMPORTED_TARGET libadwaita-1)
