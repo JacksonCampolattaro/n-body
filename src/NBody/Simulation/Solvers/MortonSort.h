@@ -93,7 +93,7 @@ namespace NBody {
             for (int i = 1; i < range.size(); ++i) {
                 msb = std::max(
                         msb,
-                        (8 * sizeof(MortonCode)) -
+                        (int) (8 * sizeof(MortonCode)) -
                         std::countl_zero(mortonCodes.template get<const MortonCode>(range[i - 1]) ^
                                          mortonCodes.template get<const MortonCode>(range[i])) - 1
                 );
@@ -132,7 +132,7 @@ namespace NBody {
             for (int i = 1; i < indices.size(); ++i) {
                 msb = std::max(
                         msb,
-                        (8 * sizeof(MortonCode)) -
+                        (int) (8 * sizeof(MortonCode)) -
                         std::countl_zero(mortonCodes.template get<const MortonCode>(indices[i - 1]) ^
                                          mortonCodes.template get<const MortonCode>(indices[i])) - 1
                 );
