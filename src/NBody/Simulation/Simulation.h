@@ -40,7 +40,7 @@ using std::ostream;
 namespace NBody {
 
     //typedef entt::entity Entity;
-    using Entity = std::uint64_t;
+    enum class Entity : std::uint64_t {};
 
     class Simulation : public entt::basic_registry<Entity> {
     public:

@@ -5,7 +5,9 @@
 #include "PhongRenderer.h"
 
 void NBody::PhongRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) {
-    auto shader = Shaders::PhongGL{Shaders::PhongGL::Flag::NoSpecular};
+    auto shader = Shaders::PhongGL{Shaders::PhongGL::Configuration{}.setFlags(
+            Shaders::PhongGL::Flag::NoSpecular
+    )};
     auto mesh = NBody::Graphics::Sphere::mesh();
 
     std::scoped_lock l(_simulation.mutex);

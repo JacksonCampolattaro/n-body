@@ -6,10 +6,10 @@
 
 void NBody::VelocityRenderer::draw(const Matrix4 &transformationMatrix, const Matrix4 &projectionMatrix) {
 
-    auto shader = Shaders::FlatGL3D{
+    auto shader = Shaders::FlatGL3D{Shaders::FlatGL3D::Configuration{}.setFlags(
             Shaders::FlatGL3D::Flag::InstancedTransformation |
             Shaders::FlatGL3D::Flag::VertexColor
-    };
+    )};
     auto mesh = MeshTools::compile(Primitives::line3D());
     GL::Buffer lineInstanceBuffer{};
     Containers::Array<LineInstanceData> lineInstanceData;

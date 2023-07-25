@@ -16,6 +16,19 @@ set(CMAKE_CXX_STANDARD 20)
 
 #set(CMAKE_CXX_FLAGS_RELEASE "-Wall -Wextra")
 
+# Make sure catch is present
+find_package(Catch2 3.1.0)
+if(NOT Catch2_FOUND)
+    FetchContent_Declare(
+            Catch2
+            GIT_SHALLOW    TRUE
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_TAG        v3.4.0
+            OVERRIDE_FIND_PACKAGE
+    )
+    FetchContent_MakeAvailable(Catch2)
+endif()
+
 # Include our targets
 add_subdirectory(src)
 #add_subdirectory(docs)
