@@ -19,6 +19,7 @@ set(CMAKE_CXX_STANDARD 20)
 # Make sure catch is present
 find_package(Catch2 3.1.0)
 if(NOT Catch2_FOUND)
+    include(FetchContent)
     FetchContent_Declare(
             Catch2
             GIT_SHALLOW    TRUE
