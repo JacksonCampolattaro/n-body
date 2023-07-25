@@ -48,8 +48,10 @@ namespace NBody {
             // We need to determine where to split
             // Start by finding the most significant bit that changes between the start and the end of the coordinates
             // (because of our split criterion, we have a guarantee that they aren't the same)
-            int msb = fls(context.template get<const MortonCode>(contents().front()) ^
-                          context.template get<const MortonCode>(contents().back())) - 1;
+            // todo
+            int msb = (8 * sizeof(MortonCode)) -
+                      std::countl_zero(context.template get<const MortonCode>(contents().front()) ^
+                                       context.template get<const MortonCode>(contents().back())) - 1;
 
             // Use std::upper_bound to perform a binary search and find where that bit changes
             MortonCode boundary = (1 << msb);
