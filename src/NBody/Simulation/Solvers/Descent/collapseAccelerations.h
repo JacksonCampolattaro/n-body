@@ -8,6 +8,8 @@
 #include <NBody/Physics/Acceleration.h>
 #include <NBody/Simulation/Simulation.h>
 
+#include <bitset>
+
 namespace NBody::Descent {
 
     using Physics::Acceleration;

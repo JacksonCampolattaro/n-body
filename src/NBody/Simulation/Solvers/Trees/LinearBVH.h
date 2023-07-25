@@ -5,7 +5,6 @@
 #ifndef N_BODY_LINEARBVH_H
 #define N_BODY_LINEARBVH_H
 
-#include <tbb/parallel_for_each.h>
 #include "Tree.h"
 
 #include "NBody/Simulation/Solvers/MortonSort.h"
@@ -14,6 +13,9 @@
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/BoundingBoxSummary.h>
+
+#include <tbb/parallel_for_each.h>
+#include <strings.h>
 
 namespace NBody {
 

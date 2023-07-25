@@ -56,7 +56,6 @@ namespace NBody {
                 return std::numeric_limits<float>::infinity();
 
             auto error = 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
-            if (error > 10.0f) spdlog::error("{}, {} -> {}", a, b, error);
             return error;
         }
 
