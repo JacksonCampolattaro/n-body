@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
 
 # todo: this is slower, too?
-#set(CMAKE_CXX_FLAGS_RELEASE "-march=native+simd")
+#set(CMAKE_CXX_FLAGS_RELEASE "-march=native")
 
 #set(CMAKE_CXX_FLAGS_RELEASE "-Wall -Wextra")
 

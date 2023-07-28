@@ -21,7 +21,7 @@
 
 namespace NBody {
 
-    using MortonCode = std::uint32_t;
+    using MortonCode = std::uint64_t;
 
     static std::uint32_t expandBits10(std::uint32_t i) {
         i = (i * 0x00010001u) & 0xFF0000FFu;
@@ -31,12 +31,31 @@ namespace NBody {
         return i;
     }
 
+    static std::uint64_t expandBits21(std::uint64_t i) {
+        // https://stackoverflow.com/questions/1024754/how-to-compute-a-3d-morton-number-interleave-the-bits-of-3-ints
+        i &= 0x1fffff;
+        i = (i | i << 32) & 0x1f00000000ffff;
+        i = (i | i << 16) & 0x1f0000ff0000ff;
+        i = (i | i << 8) & 0x100f00f00f00f00f;
+        i = (i | i << 4) & 0x10c30c30c30c30c3;
+        i = (i | i << 2) & 0x1249249249249249;
+        return i;
+    }
+
     static MortonCode toMortonCode(glm::vec3 v) {
-        v = glm::clamp(v * 1024.f, 0.f, 1023.f);
-        std::uint32_t x = expandBits10(std::uint32_t(v.x));
-        std::uint32_t y = expandBits10(std::uint32_t(v.y));
-        std::uint32_t z = expandBits10(std::uint32_t(v.z));
-        return x * 4u + y * 2u + z;
+        if constexpr (std::is_same_v<MortonCode, std::uint32_t>) {
+            v = glm::clamp(v * 1024.f, 0.f, 1023.f);
+            std::uint32_t x = expandBits10(std::uint32_t(v.x));
+            std::uint32_t y = expandBits10(std::uint32_t(v.y));
+            std::uint32_t z = expandBits10(std::uint32_t(v.z));
+            return x * 4u + y * 2u + z;
+        } else if constexpr (std::is_same_v<MortonCode, std::uint64_t>) {
+            v = glm::clamp(v * 2097152.f, 0.f, 2097151.f);
+            std::uint64_t x = expandBits21(std::uint64_t(v.x));
+            std::uint64_t y = expandBits21(std::uint64_t(v.y));
+            std::uint64_t z = expandBits21(std::uint64_t(v.z));
+            return x * 4u + y * 2u + z;
+        }
     }
 
 
@@ -100,7 +119,7 @@ namespace NBody {
             }
 
             // Partition the range based on that bit
-            MortonCode boundary = (1 << msb);
+            MortonCode boundary = ((MortonCode)1 << msb);
             auto middle = std::partition(range.begin(), range.end(), [&](auto e) -> bool {
                 return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });
@@ -139,7 +158,7 @@ namespace NBody {
             }
 
             // Partition the range based on that bit
-            MortonCode boundary = (1 << msb);
+            MortonCode boundary = ((MortonCode)1 << msb);
             auto middle = std::partition(indices.begin(), indices.end(), [&](auto e) -> bool {
                 return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });

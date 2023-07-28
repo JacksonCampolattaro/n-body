@@ -71,6 +71,13 @@ namespace NBody {
                 _statusDispatcher.emit({"Stopped"});
                 signal_finished().emit();
             });
+
+            if (spdlog::get_level() == spdlog::level::trace) {
+                spdlog::trace("Forwarding solver status updates");
+                _statusDispatcher.signal().connect([](Status s) {
+                    spdlog::trace("Solver status: {}", std::string{s.begin()});
+                });
+            }
         };
 
         ~Solver() override {

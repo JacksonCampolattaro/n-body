@@ -54,11 +54,13 @@ namespace NBody {
                                        context.template get<const MortonCode>(contents().back())) - 1;
 
             // Use std::upper_bound to perform a binary search and find where that bit changes
-            MortonCode boundary = (1 << msb);
-            auto split = std::upper_bound(contents().begin(), contents().end(), boundary,
-                                          [&](MortonCode v, Entity i) {
-                                              return (v & context.template get<const MortonCode>(i)) != 0;
-                                          });
+            MortonCode boundary = ((MortonCode)1 << msb);
+            auto split = std::upper_bound(
+                    contents().begin(), contents().end(), boundary,
+                    [&](MortonCode v, Entity i) {
+                        return (v & context.template get<const MortonCode>(i)) != 0;
+                    }
+            );
 
             auto low = std::span<Entity>{contents().begin(), split};
             auto high = std::span<Entity>{split, contents().end()};
@@ -82,7 +84,7 @@ namespace NBody {
     class LinearBVH : public Tree<LinearBVHNode<S>> {
     private:
 
-        int _maxLeafSize = 32;
+        int _maxLeafSize = 64;
 
     public:
 
@@ -120,9 +122,11 @@ namespace NBody {
             // todo: the context used for splitting should be defined by the node type
             auto toBeRefined = this->loadBalancedSplit(32, splitCriterion, context);
             tbb::parallel_for_each(toBeRefined, [&](std::reference_wrapper<typename LinearBVH::Node> node) {
-                node.get().refine(std::numeric_limits<std::size_t>::max(),
-                                  splitCriterion,
-                                  context);
+                node.get().refine(
+                        std::numeric_limits<std::size_t>::max(),
+                        splitCriterion,
+                        context
+                );
             });
             summarizeTreeTop(toBeRefined, context);
         }

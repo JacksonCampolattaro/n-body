@@ -60,7 +60,7 @@ namespace NBody {
 
             if (_contents.empty()) return;
 
-            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this)) {
+            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this) && !contents().empty()) {
                 implementation().split(std::forward<Context>(context)...);
 
                 for (auto &child: implementation().children())

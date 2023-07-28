@@ -52,12 +52,12 @@ namespace NBody {
             treeBuildingTaskGroup.run([&]() {
                 this->_statusDispatcher.emit({"Building active tree"});
                 _activeTree.refine();
-                spdlog::debug("Active Tree has a max depth of {}", activeTree().root().depth());
+                spdlog::trace("Active Tree has a max depth of {}", activeTree().root().depth());
             });
             treeBuildingTaskGroup.run([&]() {
                 this->_statusDispatcher.emit({"Building passive tree"});
                 _passiveTree.refine();
-                spdlog::debug("Passive Tree has a max depth of {}", passiveTree().root().depth());
+                spdlog::trace("Passive Tree has a max depth of {}", passiveTree().root().depth());
             });
             treeBuildingTaskGroup.wait();
 
