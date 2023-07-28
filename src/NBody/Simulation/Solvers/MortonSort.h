@@ -119,7 +119,7 @@ namespace NBody {
             }
 
             // Partition the range based on that bit
-            MortonCode boundary = ((MortonCode)1 << msb);
+            MortonCode boundary = ((MortonCode) 1 << msb);
             auto middle = std::partition(range.begin(), range.end(), [&](auto e) -> bool {
                 return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });
@@ -140,7 +140,8 @@ namespace NBody {
     template<typename MortonCodeView>
     static void recursiveParallelMortonSort(
             const MortonCodeView &mortonCodes,
-            std::span<Entity> indices, std::size_t threads = 12
+            std::span<Entity> indices,
+            std::size_t threads = tbb::global_control::active_value(tbb::global_control::max_allowed_parallelism)
     ) {
 
         if (threads > 1) {
@@ -158,7 +159,7 @@ namespace NBody {
             }
 
             // Partition the range based on that bit
-            MortonCode boundary = ((MortonCode)1 << msb);
+            MortonCode boundary = ((MortonCode) 1 << msb);
             auto middle = std::partition(indices.begin(), indices.end(), [&](auto e) -> bool {
                 return (mortonCodes.template get<const MortonCode>(e) & boundary) == 0;
             });

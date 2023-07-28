@@ -43,7 +43,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
         auto time = timedStep(solver);
         spdlog::debug("{}s", time.count());
         out << label << ","
-            << lowGrader.scenario().particleCount() << ","
+            << scenario.particleCount() << ","
             << optimalTheta << ","
             << time.count() << "\n";
     }
