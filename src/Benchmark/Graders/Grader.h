@@ -65,6 +65,7 @@ namespace NBody {
             Simulation candidate = _scenario;
 
             ReplaceRule<CandidateSolver, Gravity> candidateSolver{candidate, rule};
+            spdlog::trace("Testing theta value: {}", middleValue);
             candidateSolver.descentCriterion().theta() = middleValue;
             candidateSolver.updateAccelerations();
 

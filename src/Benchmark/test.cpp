@@ -1,5 +1,5 @@
 //
-// Created by Jackson Campolattaro on 5/29/23.
+// Created by Jackson Campolattaro on 7/29/23.
 //
 
 #include <gtkmm.h>
@@ -22,27 +22,27 @@
 #include "NBody/Simulation/Solvers/ImplicitFMMSolver.h"
 
 #include "Benchmark/Generator.h"
+#include "Benchmark/Graders/ConstitutionalGrader.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::trace);
     Glib::init();
 
     std::size_t iterations = 1;
 
-    //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
+    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 1000);
+    //NBody::ConstitutionalGrader grader{scenario};
+    ConstitutionalGrader grader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
 
-    Simulation simulation;
-    from_json(scenario, simulation);
-    Gravity rule{};
+    Simulation simulation = grader.scenario();
+    Gravity rule = grader.rule();
 
     QuadrupoleBarnesHutSolver<Gravity> solver{simulation, rule};
     solver.theta() = 0.6;
 
-    spdlog::info("Running {} for {} iterations",
-                 solver.name(), iterations);
-    for (int i = 0; i < iterations; ++i) {
-        solver.step();
-    }
+    spdlog::info("Running {} for 1 iteration", solver.name());
+    solver.step();
+    auto error = grader.error(simulation);
+    spdlog::info("Error = {} %", error);
 }

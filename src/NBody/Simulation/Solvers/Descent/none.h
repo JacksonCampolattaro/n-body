@@ -20,7 +20,19 @@ namespace NBody::Descent {
     ) {
 
         for (auto &passiveEntity: passiveNode.contents()) {
-            auto &passivePosition = passiveContext.get<const Position>(passiveEntity);
+
+            //            auto &passivePosition = passiveContext.get<const Position>(passiveEntity);
+            //            auto& passiveAcceleration = passiveContext.get<Acceleration>(passiveEntity);
+            //            for (std::size_t i = 0; i < activeNode.contents().size(); ++i) {
+            //                auto activeEntity = activeNode.contents()[i];
+            //                passiveAcceleration += rule(
+            //                        activeContext.get<const Position>(activeEntity),
+            //                        activeContext.get<const Mass>(activeEntity),
+            //                        passivePosition
+            //                );
+            //            }
+
+            const auto &passivePosition = passiveContext.get<const Position>(passiveEntity);
             passiveContext.get<Acceleration>(passiveEntity) += std::transform_reduce(
                     activeNode.contents().begin(), activeNode.contents().end(),
                     Physics::Acceleration{}, std::plus{},

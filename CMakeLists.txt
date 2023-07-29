@@ -13,6 +13,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 # todo: this is slower, too?
 #set(CMAKE_CXX_FLAGS_RELEASE "-march=native")
+#set(CMAKE_CXX_FLAGS_RELEASE "-ffast-math")
+#set(CMAKE_CXX_FLAGS_RELEASE "-funsafe-math-optimizations")
 
 #set(CMAKE_CXX_FLAGS_RELEASE "-Wall -Wextra")
 

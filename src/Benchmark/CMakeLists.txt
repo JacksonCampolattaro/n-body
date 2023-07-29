@@ -9,6 +9,13 @@ target_link_libraries(Profile PUBLIC
         spdlog::spdlog
         )
 
+add_executable(Test
+        test.cpp Generator.h)
+target_link_libraries(Test PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )
+
 add_executable(CountInteractions countInteractions.cpp Generator.h)
 target_link_libraries(CountInteractions PUBLIC
         NBody::Simulation

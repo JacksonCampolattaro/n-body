@@ -37,7 +37,11 @@ namespace NBody {
         explicit ConstitutionalGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
                 NaiveReferenceGrader(scenario, rule) { init(); }
 
-        float error(const Simulation &candidateSimulation) const override { return maximumError(candidateSimulation); }
+        float error(const Simulation &candidateSimulation) const override {
+            auto error = maximumError(candidateSimulation);
+            spdlog::trace("Constitutional error: {}", error);
+            return error;
+        }
 
         bool acceptable(const Simulation &candidateSimulation) const override {
             return error(candidateSimulation) < 0.5;
