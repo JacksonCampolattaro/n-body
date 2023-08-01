@@ -6,6 +6,7 @@
 #define N_BODY_MORTONSORT_H
 
 #include <tbb/parallel_for_each.h>
+#include <tbb/global_control.h>
 
 #include <cstdint>
 #include <algorithm>

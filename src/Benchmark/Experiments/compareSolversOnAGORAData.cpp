@@ -43,11 +43,14 @@ void runFastTests(const std::string &label, std::ostream &out) {
         S solver{scenario, rule};
         solver.descentCriterion().theta() = optimalTheta;
         auto time = timedStep(solver);
-        spdlog::debug("{}s", time.count());
+        spdlog::debug("{} --> {}s", solver.name(), time.count());
         out << label << ","
             << scenario.particleCount() << ","
             << optimalTheta << ","
             << time.count() << "\n";
+
+        // If any scenario takes too long to run, stop early!
+        if (time.count() > 60.0f) break;
     }
 }
 
@@ -58,12 +61,12 @@ int main(int argc, char *argv[]) {
     std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/all-solvers-agora-data.csv"};
     out << "Solver,N,Theta,Time\n";
 
-    //runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
     //runFastTests<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH",  out);
-    //runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH",  out);
-    //runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM",  out);
-    //runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
+    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
+    runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
     runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p", out);
+    runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH",  out);
+    runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM",  out);
     //runFastTests<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM",  out);
 
 }

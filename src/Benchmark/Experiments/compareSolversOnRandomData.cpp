@@ -27,9 +27,9 @@ int main(int argc, char *argv[]) {
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
-    std::size_t nMax = 100'000;
+    std::size_t nMax = 50'000;
 
-    for (std::size_t n = 100; n < nMax; n = n * 1.5) {
+    for (std::size_t n = 10'000; n < nMax; n = n * 1.5) {
 
         spdlog::info("Generating a random dataset with {} particles", n);
         Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);

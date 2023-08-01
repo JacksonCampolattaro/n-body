@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     for (std::size_t n = 1'000; n < nMax; n = n * 1.25f) {
         spdlog::info("Running benchmarks with {} random particles", n);
 
-        Simulation scenario = Generator::perlinNoiseRandomVolume(n);
+        Simulation scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, n);
 
         for (int i = 0; i < repetitions; ++i) {
             spdlog::info("{} / {}", i + 1, repetitions);

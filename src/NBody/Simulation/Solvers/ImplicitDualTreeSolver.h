@@ -28,7 +28,9 @@ namespace NBody {
         ImplicitDualTreeSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _activeTree(simulation),
-                _passiveTree(simulation) {}
+                _passiveTree(simulation) {
+            _passiveTree.maxLeafSize() = 128;
+        }
 
         DescentCriterion &descentCriterion() { return _descentCriterion; }
 
