@@ -47,7 +47,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
         out << label << ","
             << scenario.particleCount() << ","
             << optimalTheta << ","
-            << time.count() << "\n";
+            << time.count() << "\n" << std::flush;
 
         // If any scenario takes too long to run, stop early!
         if (time.count() > 60.0f) break;

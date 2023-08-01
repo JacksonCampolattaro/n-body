@@ -76,7 +76,7 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
         << trackingRule.particleNodeCount() << ","
         << trackingRule.nodeParticleCount() << ","
         << trackingRule.nodeNodeCount() << ","
-        << approximationRatio << "\n";
+        << approximationRatio << "\n" << std::flush;
 
 }
 
@@ -100,7 +100,7 @@ void runShortTest(const std::string &label, const Grader &grader, std::ofstream 
             << simulation.particleCount() << ","
             << solver.descentCriterion().theta() << ","
             << i << ","
-            << time.count() << "\n";
+            << time.count() << "\n" << std::flush;
         spdlog::info("({}/{}) {}s", i, iterations, time.count());
     }
 
@@ -124,7 +124,7 @@ void runFastTest(const std::string &label, const Grader &grader, std::ofstream &
             << simulation.particleCount() << ","
             << solver.descentCriterion().theta() << ","
             << i << ","
-            << time.count() << "\n";
+            << time.count() << "\n" << std::flush;
         spdlog::info("({}/{}) {}s", i, iterations, time.count());
     }
 
@@ -140,7 +140,7 @@ void testTreeConstruction(const std::string &label, Simulation &simulation, std:
     out << label << ","
         << simulation.particleCount() << ","
         << tree.maxLeafSize() << ","
-        << time.count() << "\n";
+        << time.count() << "\n" << std::flush;
 }
 
 #endif //N_BODY_BENCHMARK_H
