@@ -35,7 +35,6 @@ std::chrono::duration<float> timedRun(CandidateSolver &solver, std::size_t itera
         solver.step();
     }
     auto finishTime = std::chrono::steady_clock::now();
-    std::cout << std::endl;
     return (finishTime - startTime) / iterations;
 }
 

@@ -1,5 +1,6 @@
 import math
 import os.path
+import glob
 
 import numpy as np
 import pandas as pd
@@ -46,8 +47,7 @@ def polar_to_rgb(r, th):
 
 
 def field_key():
-
-    fig = plt.figure(figsize=(0.5*text_width, 0.5*text_width))
+    fig = plt.figure(figsize=(0.5 * text_width, 0.5 * text_width))
 
     rad = np.geomspace(0.00001, 100, 100)
     azm = np.linspace(2 * np.pi / 100, 2 * np.pi, 100)
@@ -88,7 +88,6 @@ def plot_field(filename, zoom_box=None):
 
     # Convert to a 3d array, where the third axis contains [fx, fy]
     arr = data.set_index(['x', 'y']).to_xarray().to_array().transpose().to_numpy()
-
 
     # Determine the strongest force being shown
     max_magnitude = max([np.linalg.norm(xy) for xy in arr.reshape(-1, 2)])
@@ -297,6 +296,13 @@ def plot_interactions(filename):
     plt.clf()
 
 
+def merge_benchmarks(path):
+    pattern = os.path.splitext(path)[0] + ".*.csv"
+    benchmark_paths = glob.glob(pattern)
+    tables = [pd.read_csv(p) for p in benchmark_paths]
+    pd.concat(tables).to_csv(path, index=False)
+
+
 def main():
     # Customize the seaborn theme
     custom_params = {"axes.spines.right": False, "axes.spines.top": False}
@@ -320,11 +326,11 @@ def main():
     # print("Generating keys for field plots")
     # field_key()
     # field_error_key()
-    #
+
     # print("Plotting exact fields")
     # zoom_box = plot_field('benchmarks/sample-exact-zoom.csv')
     # plot_field('benchmarks/sample-exact.csv', zoom_box)
-    #
+
     # print("Plotting multipole moment approximations")
     # plot_field('benchmarks/sample-monopole-moment.csv')
     # plot_field_error('benchmarks/sample-monopole-moment-error.csv')
@@ -336,7 +342,7 @@ def main():
     # plot_field_error('benchmarks/sample-octupole-moment-error.csv')
     # plot_field('benchmarks/sample-hexadecupole-moment.csv')
     # plot_field_error('benchmarks/sample-hexadecupole-moment-error.csv')
-    #
+
     # print("Plotting multipole field approximations")
     # plot_field('benchmarks/sample-vector-field.csv')
     # plot_field_error('benchmarks/sample-vector-field-error.csv')
@@ -351,11 +357,11 @@ def main():
     # plot_field('benchmarks/sample-triacontadyupole-field.csv')
     # plot_field_error('benchmarks/sample-triacontadyupole-field-error.csv')
 
-    print("Plotting tree fields")
-    plot_field('benchmarks/sample-vector-tree.csv')
-    plot_field('benchmarks/sample-quadrupole-tree.csv')
-    plot_field('benchmarks/sample-octupole-tree.csv')
-    plot_field('benchmarks/sample-hexadecupole-tree.csv')
+    # print("Plotting tree fields")
+    # plot_field('benchmarks/sample-vector-tree.csv')
+    # plot_field('benchmarks/sample-quadrupole-tree.csv')
+    # plot_field('benchmarks/sample-octupole-tree.csv')
+    # plot_field('benchmarks/sample-hexadecupole-tree.csv')
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
@@ -363,8 +369,11 @@ def main():
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
     #
     # print("Plotting tree benchmarks")
-    # plot_times_vs_n("benchmarks/tree-construction-agora-data.csv")
-    # plot_times_vs_n("benchmarks/tree-construction-random-data.csv")
+    merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
+    merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
+    plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
+    plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
+    # plot_times_vs_n(merge_tables(glob.glob("remote-benchmarks/tree-construction-agora-data.*.csv")))
 
 
 if __name__ == "__main__":
