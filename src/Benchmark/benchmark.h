@@ -42,21 +42,21 @@ std::chrono::duration<float> timedRun(CandidateSolver &solver, std::size_t itera
 template<class CandidateSolver>
 void runTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 5) {
 
-    spdlog::info("Running a battery of tests on solver with label \"{}\"", label);
+    spdlog::info("Running a battery of tests on solver \"{}\"", label);
 
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
 
-    spdlog::info("Finding an appropriate value of Theta for the solver");
+    spdlog::debug("Finding an appropriate value of Theta for the solver");
     CandidateSolver solver{simulation, rule};
     solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
     spdlog::info("Theta = {}", solver.descentCriterion().theta());
 
-    spdlog::info("Timing the solver over {} iterations", iterations);
+    spdlog::debug("Timing the solver over {} iterations", iterations);
     auto time = timedRun(solver, iterations);
     spdlog::info("Average of {}s / iteration", time.count());
 
-    spdlog::info("Running one step and counting interactions");
+    spdlog::debug("Running one step and counting interactions");
     Simulation trackingSimulation = grader.scenario();
     SimpleTrackingRule<Gravity> trackingRule{solver.rule()};
     ReplaceRule<CandidateSolver, SimpleTrackingRule<Gravity>> interactionTrackingSolver{trackingSimulation,
@@ -67,7 +67,7 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
     float approximationRatio = (float) trackingRule.totalCount() / (float) std::pow(simulation.particleCount(), 2);
     spdlog::info("Approximation Ratio = {}", approximationRatio);
 
-    spdlog::info("Recording results to CSV");
+    spdlog::debug("Recording results to CSV");
     out << label << ","
         << simulation.particleCount() << ","
         << solver.descentCriterion().theta() << ","
@@ -78,23 +78,22 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
         << trackingRule.nodeNodeCount() << ","
         << approximationRatio << "\n";
 
-    spdlog::info("Done");
 }
 
 template<class CandidateSolver>
 void runShortTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 10) {
 
-    spdlog::info("Running a battery of tests on solver with label \"{}\"", label);
+    spdlog::info("Running a battery of tests on solver \"{}\"", label);
 
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
 
-    spdlog::info("Finding an appropriate value of Theta for the solver");
+    spdlog::debug("Finding an appropriate value of Theta for the solver");
     CandidateSolver solver{simulation, rule};
     solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
     spdlog::info("Theta = {}", solver.descentCriterion().theta());
 
-    spdlog::info("Timing the solver over {} iterations", iterations);
+    spdlog::debug("Timing the solver over {} iterations", iterations);
     for (int i = 0; i < iterations; ++i) {
         auto time = timedStep(solver);
         out << label << ","
@@ -102,16 +101,15 @@ void runShortTest(const std::string &label, const Grader &grader, std::ofstream 
             << solver.descentCriterion().theta() << ","
             << i << ","
             << time.count() << "\n";
-        spdlog::info("{}s", time.count());
+        spdlog::info("({}/{}) {}s", i, iterations, time.count());
     }
 
-    spdlog::info("Done");
 }
 
 template<class CandidateSolver>
 void runFastTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 5) {
 
-    spdlog::info("Running a battery of tests on solver with label \"{}\"", label);
+    spdlog::info("Running a battery of tests on solver \"{}\"", label);
 
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
@@ -119,7 +117,7 @@ void runFastTest(const std::string &label, const Grader &grader, std::ofstream &
     CandidateSolver solver{simulation, rule};
     spdlog::info("Theta = {}", solver.descentCriterion().theta());
 
-    spdlog::info("Timing the solver over {} iterations", iterations);
+    spdlog::debug("Timing the solver over {} iterations", iterations);
     for (int i = 0; i < iterations; ++i) {
         auto time = timedStep(solver);
         out << label << ","
@@ -127,10 +125,9 @@ void runFastTest(const std::string &label, const Grader &grader, std::ofstream &
             << solver.descentCriterion().theta() << ","
             << i << ","
             << time.count() << "\n";
-        spdlog::info("{}s", time.count());
+        spdlog::info("({}/{}) {}s", i, iterations, time.count());
     }
 
-    spdlog::info("Done");
 }
 
 

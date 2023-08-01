@@ -43,7 +43,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
         S solver{scenario, rule};
         solver.descentCriterion().theta() = optimalTheta;
         auto time = timedStep(solver);
-        spdlog::debug("{} --> {}s", solver.name(), time.count());
+        spdlog::info("{} --> {}s", solver.name(), time.count());
         out << label << ","
             << scenario.particleCount() << ","
             << optimalTheta << ","
