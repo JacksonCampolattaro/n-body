@@ -14,8 +14,7 @@
 #include "../benchmark.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::debug);
-    Glib::init();
+    spdlog::set_level(spdlog::level::info);
 
     std::size_t repetitions = 10;
 

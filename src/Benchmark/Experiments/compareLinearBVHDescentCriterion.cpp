@@ -15,7 +15,7 @@
 #include "../benchmark.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
 
     std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/linear-bvh-descent-criterion.csv"};
     out << "Descent Criterion,N,Theta,Time,"
