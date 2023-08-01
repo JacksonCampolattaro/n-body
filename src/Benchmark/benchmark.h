@@ -6,7 +6,6 @@
 #define N_BODY_BENCHMARK_H
 
 #include <spdlog/spdlog.h>
-#include <boost/progress.hpp>
 
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 
@@ -30,15 +29,10 @@ std::chrono::duration<float> timedStep(CandidateSolver &solver) {
 template<typename CandidateSolver>
 std::chrono::duration<float> timedRun(CandidateSolver &solver, std::size_t iterations) {
 
-    // Don't bother with a progress bar if it's only one step
-    if (iterations == 1) return timedStep(solver);
-
     spdlog::debug("Running solver \"{}\" for {} iteration(s)", solver.name(), iterations);
-    boost::progress_display display(iterations);
     auto startTime = std::chrono::steady_clock::now();
     for (int i = 0; i < iterations; ++i) {
         solver.step();
-        ++display;
     }
     auto finishTime = std::chrono::steady_clock::now();
     std::cout << std::endl;
