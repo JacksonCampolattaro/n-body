@@ -20,9 +20,9 @@
 #include "../benchmark.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::trace);
+    spdlog::set_level(spdlog::level::debug);
 
-    std::ofstream out{"benchmarks/all-solvers-random-data.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/all-solvers-random-data.csv"};
     out << "Solver,N,Theta,Time,"
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";

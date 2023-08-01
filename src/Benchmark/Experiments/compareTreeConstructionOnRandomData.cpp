@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     std::size_t repetitions = 3;
     std::size_t nMax = 10'000'000;
 
-    std::ofstream out{"benchmarks/tree-construction-random-data.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/tree-construction-random-data.csv"};
     out << "Tree,N,Max Leaf Size,Time\n";
 
     for (std::size_t n = 1'000; n < nMax; n = n * 1.25f) {

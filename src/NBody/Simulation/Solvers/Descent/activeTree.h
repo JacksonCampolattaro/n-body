@@ -87,7 +87,6 @@ namespace NBody::Descent {
         // Process a queue of nodes, starting with the one passed as an argument
         // fixme: parallel_pipeline doesn't support const pointers!
         std::atomic<std::size_t> nodesUnderEvaluation = 0;
-        std::atomic<std::size_t> interactionsComputed = 0;
         tbb::concurrent_queue<ActiveNode *> nodeQueue{};
         nodeQueue.emplace(const_cast<ActiveNode *>(&node));
 

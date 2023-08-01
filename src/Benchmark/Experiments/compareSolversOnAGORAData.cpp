@@ -4,6 +4,8 @@
 #include <gtkmm.h>
 #include <spdlog/spdlog.h>
 
+#include <boost/program_options.hpp>
+
 #include <NBody/Physics/Rules/Gravity.h>
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 
@@ -29,7 +31,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
     spdlog::info("Using theta = {}", optimalTheta);
 
     // Next, time it for several simulations
-    for (const std::string &dataset: {"LOW", "MED"/*, "HI"*/}) {
+    for (const std::string &dataset: {"LOW", "MED", "HI"}) {
 
         Physics::Gravity rule{};
         Simulation scenario;
@@ -52,15 +54,16 @@ void runFastTests(const std::string &label, std::ostream &out) {
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::debug);
 
-    std::ofstream out{"benchmarks/all-solvers-agora-data.csv"};
+
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/all-solvers-agora-data.csv"};
     out << "Solver,N,Theta,Time\n";
 
-    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
+    //runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
     //runFastTests<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH",  out);
     //runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH",  out);
     //runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM",  out);
     //runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
-    //runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p",  out);
+    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p", out);
     //runFastTests<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM",  out);
 
 }
