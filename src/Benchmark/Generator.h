@@ -168,6 +168,23 @@ namespace NBody::Generator {
         return scenario;
     }
 
+    static Simulation fromFile(const std::filesystem::path &path) {
+        Simulation simulation;
+        std::ifstream file{path};
+        if (path.extension().string() == ".json") {
+            nlohmann::json jsonScenario;
+            file >> jsonScenario;
+            from_json(jsonScenario, simulation);
+        } else if (path.extension().string() == ".bin") {
+            from_tipsy(file, simulation);
+            spdlog::debug("loaded {} particles", simulation.particleCount());
+        } else {
+            spdlog::error("Unrecognized file extension");
+            exit(1);
+        }
+        return simulation;
+    }
+
     static Simulation createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
                                      std::size_t n) {
         Simulation simulation;

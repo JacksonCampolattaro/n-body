@@ -24,6 +24,8 @@
 #include "Benchmark/Generator.h"
 #include "Benchmark/Graders/ConstitutionalGrader.h"
 
+#include "benchmark.h"
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::trace);
     Glib::init();
@@ -42,7 +44,10 @@ int main(int argc, char *argv[]) {
     solver.theta() = 0.6;
 
     spdlog::info("Running {} for 1 iteration", solver.name());
-    solver.step();
+    auto time = timedInvoke([&]() {
+        solver.step();
+    });
     auto error = grader.error(simulation);
+    spdlog::info("Time = {} s", time.count());
     spdlog::info("Error = {} %", error);
 }

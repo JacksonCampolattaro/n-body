@@ -40,8 +40,20 @@ namespace NBody {
 
             // If the base summary provides a center of mass, ensure it's contained within the bounding box
             // todo: not all SummaryBase types have a center of mass!
-            SummaryBase::centerOfMass() =
-                    glm::min(glm::max((glm::vec3) _boundingBox.min(), SummaryBase::centerOfMass()), _boundingBox.max());
+//            SummaryBase::centerOfMass() =
+//                    glm::min(glm::max((glm::vec3) _boundingBox.min(), SummaryBase::centerOfMass()), _boundingBox.max());
+
+//            // Expand the bounding box slightly
+//            _boundingBox.min() = {
+//                    std::nextafter(_boundingBox.min().x, std::numeric_limits<float>::min()),
+//                    std::nextafter(_boundingBox.min().y, std::numeric_limits<float>::min()),
+//                    std::nextafter(_boundingBox.min().z, std::numeric_limits<float>::min())
+//            };
+//            _boundingBox.max() = {
+//                    std::nextafter(_boundingBox.max().x, std::numeric_limits<float>::max()),
+//                    std::nextafter(_boundingBox.max().y, std::numeric_limits<float>::max()),
+//                    std::nextafter(_boundingBox.max().z, std::numeric_limits<float>::max())
+//            };
         }
 
         template<typename NodeList>

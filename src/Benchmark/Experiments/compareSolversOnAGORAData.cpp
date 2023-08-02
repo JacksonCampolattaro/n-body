@@ -31,14 +31,14 @@ void runFastTests(const std::string &label, std::ostream &out) {
     spdlog::info("Using theta = {}", optimalTheta);
 
     // Next, time it for several simulations
-    for (const std::string &dataset: {"LOW", "MED", "HI"}) {
+    for (const std::string &dataset: {"LOW", "MED"/*, "HI"*/}) {
 
         Physics::Gravity rule{};
         Simulation scenario;
         std::ifstream scenarioFile{fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)};
         assert(scenarioFile.is_open());
         from_tipsy(scenarioFile, scenario);
-        spdlog::info("\nLoaded {} particles", scenario.particleCount());
+        spdlog::info("Loaded {} particles", scenario.particleCount());
 
         S solver{scenario, rule};
         solver.descentCriterion().theta() = optimalTheta;
@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
     out << "Solver,N,Theta,Time\n";
 
     //runFastTests<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH",  out);
-    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
-    runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
-    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p", out);
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH",  out);
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM",  out);
+    runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
+    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p", out);
+    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
     //runFastTests<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM",  out);
 
 }

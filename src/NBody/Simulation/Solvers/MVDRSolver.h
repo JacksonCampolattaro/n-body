@@ -16,7 +16,7 @@ namespace NBody {
     class MVDRSolver : public DualTreeSolver<
             ActiveLinearBVH,
             QuadrupolePassiveOctree,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:
@@ -41,7 +41,7 @@ namespace NBody {
     class MultipoleMVDRSolver : public DualTreeSolver<
             MultipoleActiveLinearBVH<Order>,
             MultipolePassiveOctree<Order + 1>,
-            Descent::DiagonalOverDistance,
+            Descent::DiagonalOverCenterDistance,
             Rule
     > {
     public:

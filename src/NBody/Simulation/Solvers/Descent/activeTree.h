@@ -11,6 +11,9 @@
 #include <tbb/concurrent_queue.h>
 #include <tbb/parallel_pipeline.h>
 
+#include <boost/container/small_vector.hpp>
+#include <boost/container/static_vector.hpp>
+
 #include <semaphore>
 
 namespace NBody::Descent {
@@ -70,6 +73,60 @@ namespace NBody::Descent {
                 );
             }
         }
+    }
+
+    template<NodeType ActiveNode, DescentCriterionType DescentCriterion, RuleType Rule>
+    inline Acceleration activeTreeFarNodesFirst(
+            const ActiveNode &node,
+            const Position &passivePosition,
+            const DescentCriterion &descentCriterion,
+            Rule &rule,
+            const ActiveView &context
+    ) {
+        assert(!node.isLeaf());
+
+        // Treat nodes which can be handled immediately first, sort out the rest
+        Acceleration netAcceleration{};
+        boost::container::static_vector<std::reference_wrapper<const ActiveNode>, 2> nearNodes, leafNodes;
+        for (const ActiveNode &child: node.children()) {
+            if (child.contents().empty())
+                continue;
+            else if (descentCriterion(child, passivePosition))
+                netAcceleration += rule(child, passivePosition);
+            else if (child.isLeaf())
+                leafNodes.emplace_back(child);
+            else
+                nearNodes.emplace_back(child);
+        }
+
+        // Handle leaf nodes (requires retrieving particle data)
+        for (const ActiveNode &child: leafNodes)
+            netAcceleration += std::transform_reduce(
+                    child.contents().begin(), child.contents().end(),
+                    Physics::Acceleration{}, std::plus{},
+                    [&](auto entity) {
+                        return rule(context.get<const Position>(entity),
+                                    context.get<const Mass>(entity),
+                                    passivePosition);
+                    }
+            );
+
+        // Handle nearby nodes (requires retrieving child data)
+        for (const ActiveNode &child: nearNodes)
+            netAcceleration += std::transform_reduce(
+                    child.children().begin(), child.children().end(),
+                    Physics::Acceleration{}, std::plus{},
+                    [&](const auto &child) {
+                        return activeTree(
+                                child, passivePosition,
+                                descentCriterion, rule,
+                                context
+                        );
+                    }
+            );
+
+        return netAcceleration;
+
     }
 
     // fixme: There's a race condition somewhere!

@@ -22,27 +22,26 @@
 #include "NBody/Simulation/Solvers/ImplicitFMMSolver.h"
 
 #include "Benchmark/Generator.h"
+#include "benchmark.h"
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::trace);
     Glib::init();
 
     std::size_t iterations = 1;
 
-    //json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::trio();
-    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 10'000);
-
-    Simulation simulation;
-    from_json(scenario, simulation);
+    Simulation simulation = Generator::fromFile("../n-body-scenarios/benchmark/MED.bin");
     Gravity rule{};
 
-    QuadrupoleBarnesHutSolver<Gravity> solver{simulation, rule};
-    solver.theta() = 0.6;
+    QuadrupoleLinearBVHSolver<Gravity> solver{simulation, rule};
+    solver.theta() = 0.8;
 
     spdlog::info("Running {} for {} iterations",
                  solver.name(), iterations);
     for (int i = 0; i < iterations; ++i) {
-        solver.step();
+        auto time = timedInvoke([&]() {
+            solver.step();
+        });
+        spdlog::info("Time = {} s", time.count());
     }
 }

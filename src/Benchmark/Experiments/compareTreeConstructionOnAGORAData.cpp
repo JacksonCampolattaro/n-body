@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
         std::ifstream scenarioFile{fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)};
 
-        spdlog::info("\nBenchmarking Linear-BVH construction, AGORA {}", dataset);
+        spdlog::info("Benchmarking Linear-BVH construction, AGORA {}", dataset);
         for (int i = 0; i < repetitions; ++i) {
             spdlog::info("{} / {}", i + 1, repetitions);
             Simulation simulation;

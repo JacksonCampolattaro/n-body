@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     for (std::size_t n = 10'000; n < nMax; n = n * 1.15) {
 
-        spdlog::info("\nGenerating a random dataset with {} particles", n);
+        spdlog::info("Generating a random dataset with {} particles", n);
         Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);
         Gravity rule{};
 

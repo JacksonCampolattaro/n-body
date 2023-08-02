@@ -237,7 +237,7 @@ namespace NBody::Physics {
 
         template<std::size_t Order>
         [[nodiscard]] Acceleration nodeParticle(const Position &activePosition,
-                                                const MultipoleMassSummary <Order> &activeSummary,
+                                                const MultipoleMassSummary<Order> &activeSummary,
                                                 const Position &passivePosition) const {
 
             if (activePosition == passivePosition) return {};
@@ -284,7 +284,7 @@ namespace NBody::Physics {
                 const Position &activePosition,
                 const Mass &activeMass,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary <PassiveOrder> &passiveSummary
+                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
         ) const {
 
             if (activePosition == passivePosition) return;
@@ -342,7 +342,7 @@ namespace NBody::Physics {
                 const Position &activePosition,
                 const CenterOfMassSummary &activeSummary,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary <Order> &passiveSummary
+                MultipoleAccelerationSummary<Order> &passiveSummary
         ) const {
             particleNode(activePosition, activeSummary.totalMass(),
                          passivePosition, passiveSummary);
@@ -352,9 +352,9 @@ namespace NBody::Physics {
         template<std::size_t ActiveOrder, std::size_t PassiveOrder>
         void nodeNode(
                 const Position &activePosition,
-                const MultipoleMassSummary <ActiveOrder> &activeSummary,
+                const MultipoleMassSummary<ActiveOrder> &activeSummary,
                 const Position &passivePosition,
-                MultipoleAccelerationSummary <PassiveOrder> &passiveSummary
+                MultipoleAccelerationSummary<PassiveOrder> &passiveSummary
         ) const {
 
             // todo: temporary constraint, for simplicity & consistency with GADGET-4
@@ -395,7 +395,7 @@ namespace NBody::Physics {
         template<std::size_t ActiveOrder>
         void nodeNode(
                 const Position &activePosition,
-                const MultipoleMassSummary <ActiveOrder> &activeSummary,
+                const MultipoleMassSummary<ActiveOrder> &activeSummary,
                 const Position &passivePosition,
                 AccelerationSummary &passiveSummary
         ) const {

@@ -6,6 +6,7 @@
 #define N_BODY_DIAGONALOVERCENTERDISTANCE_H
 
 #include <NBody/Simulation/Solvers/Descent/DescentCriterionType.h>
+#include <glm/gtx/norm.hpp>
 
 namespace NBody::Descent {
 
@@ -27,8 +28,9 @@ namespace NBody::Descent {
         template<NodeType TreeNode>
         inline bool operator()(const Position &point, const TreeNode &passiveNode) const {
             float distance = glm::distance((glm::vec3) passiveNode.center(), point);
-            return (3 * passiveNode.boundingBox().diagonalLength() / distance) < _theta
-                   && !doIntersect(exclusionRegion(passiveNode), point);
+            return (passiveNode.boundingBox().diagonalLength() / distance) < _theta
+                   && !doIntersect(exclusionRegion(passiveNode), point)
+                   && passiveNode.contents().size() > 32;
         }
 
         template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
@@ -42,9 +44,12 @@ namespace NBody::Descent {
                     glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center())
             );
 
-            if ((activeDiagonal + passiveDiagonal) / distance < _theta
-                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
-                   && activeNode.contents().size() > 32)
+            if (
+                    (activeDiagonal + passiveDiagonal) / distance < _theta
+                    && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
+                    && activeNode.contents().size() > 32
+                //&& passiveNode.contents().size() > 32
+                    )
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

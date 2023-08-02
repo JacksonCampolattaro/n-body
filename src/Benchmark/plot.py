@@ -39,6 +39,7 @@ directional_color_map = mpl.colors.LinearSegmentedColormap.from_list(
     "directional",
     sns.color_palette("husl", 4) + [sns.color_palette("husl", 4)[0]]
 )
+histogram_color_map = sns.cubehelix_palette(start=.5, rot=-.75, as_cmap=True)
 
 
 def polar_to_rgb(r, th):
@@ -220,6 +221,73 @@ def plot_interaction_counts(filename):
     plt.clf()
 
 
+def plot_interaction_distances_vs_sizes(filename, theta=None):
+    df = pd.read_csv(filename)
+    df['Max Size'] = df[['Active Size', 'Passive Size']].max(axis=1)
+    df = df[['Distance', 'Max Size']]
+    print(df)
+
+    min_x = df['Distance'].min()
+    max_x = df['Distance'].max()
+    min_y = df['Max Size'].min()
+    max_y = df['Max Size'].max()
+
+    plt.figure(figsize=(text_width, 4))
+    ax = sns.histplot(
+        data=df, x='Distance', y='Max Size',
+        bins=(np.geomspace(min_x, max_x, num=100), np.geomspace(min_y, max_y, num=64)),
+        cmap=histogram_color_map,
+        linewidth=-0.1
+        # marker="o", color=(*brewer_colors[1], 0.25),
+    )
+    ax.set_xscale('log', base=2)
+    ax.set_yscale('log', base=2)
+    ax.set(ylabel='Node Size')
+
+    if theta is not None:
+        sns.lineplot(
+            x=[min_x, max_x], y=[min_x * theta, max_x * theta], ax=ax,
+            color="black"
+        )
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_size.pdf")
+    plt.clf()
+
+
+def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
+    df = pd.read_csv(filename)
+    df['Max Size'] = df[['Active Size', 'Passive Size']].max(axis=1)
+    print(df)
+
+    min_x = df['Distance'].min()
+    max_x = df['Distance'].max()
+    min_y = df['Max Size'].min()
+    max_y = df['Max Size'].max()
+
+    plt.figure(figsize=(text_width, 4))
+    ax = sns.histplot(
+        data=df, x='Distance', y='Max Size',
+        bins=(np.geomspace(min_x, max_x, num=100), np.geomspace(min_y, max_y, num=64)),
+        cmap=histogram_color_map,
+        linewidth=-0.1
+        # marker="o", color=(*brewer_colors[1], 0.25),
+    )
+    ax.set_xscale('log', base=2)
+    ax.set_yscale('log', base=2)
+    ax.set(ylabel='Node Size')
+
+    if theta is not None:
+        sns.lineplot(
+            x=[min_x, max_x], y=[min_x * theta, max_x * theta], ax=ax,
+            color="black"
+        )
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_size.pdf")
+    plt.clf()
+
+
 def plot_times(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
@@ -369,11 +437,16 @@ def main():
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
     #
     # print("Plotting tree benchmarks")
-    merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
-    merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
-    plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
-    plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
+    # merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
+    # merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
+    # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
+    # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
     # plot_times_vs_n(merge_tables(glob.glob("remote-benchmarks/tree-construction-agora-data.*.csv")))
+
+    print("Plotting interaction lists")
+    plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
+    plot_interaction_distances_vs_sizes("benchmarks/lbvh-bh-2-interactions-theta=0.7292969.csv", 0.7292969)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/mvdr-2-interactions-theta=0.7292969.csv", 0.7292969)
 
 
 if __name__ == "__main__":
