@@ -61,7 +61,7 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
     ReplaceRule<CandidateSolver, SimpleTrackingRule<Gravity>> interactionTrackingSolver{trackingSimulation,
                                                                                         trackingRule};
     interactionTrackingSolver.descentCriterion().theta() = solver.descentCriterion().theta();
-    interactionTrackingSolver.step();
+    //interactionTrackingSolver.step();
     spdlog::info("Interactions = {}", trackingRule.toString());
     float approximationRatio = (float) trackingRule.totalCount() / (float) std::pow(simulation.particleCount(), 2);
     spdlog::info("Approximation Ratio = {}", approximationRatio);
@@ -108,7 +108,7 @@ void runShortTest(const std::string &label, const Grader &grader, std::ofstream 
 template<class CandidateSolver>
 void runFastTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 5) {
 
-    spdlog::info("Running a battery of tests on solver \"{}\"", label);
+    spdlog::info("\nRunning a battery of tests on solver \"{}\"", label);
 
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
