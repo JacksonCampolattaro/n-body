@@ -38,7 +38,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
         std::ifstream scenarioFile{fmt::format("../n-body-scenarios/benchmark/{}.bin", dataset)};
         assert(scenarioFile.is_open());
         from_tipsy(scenarioFile, scenario);
-        spdlog::info("loaded {} particles", scenario.particleCount());
+        spdlog::info("\nLoaded {} particles", scenario.particleCount());
 
         S solver{scenario, rule};
         solver.descentCriterion().theta() = optimalTheta;

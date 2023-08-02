@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     out << "Tree,N,Max Leaf Size,Time\n";
 
     for (std::size_t n = 1'000; n < nMax; n = n * 1.25f) {
-        spdlog::info("Running benchmarks with {} random particles", n);
+        spdlog::info("\nRunning benchmarks with {} random particles", n);
 
         Simulation scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, n);
 
