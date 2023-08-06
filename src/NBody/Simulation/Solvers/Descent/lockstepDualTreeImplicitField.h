@@ -148,8 +148,6 @@ namespace NBody::Descent {
                         activeNode.get().children().begin(), activeNode.get().children().end()
                 );
 
-            spdlog::error(deeperActiveNodes.size());
-
             for (auto &child: passiveNode.children()) {
                 lockstepDualTreeImplicitField<ActiveNode>(
                         deeperActiveNodes, child,
