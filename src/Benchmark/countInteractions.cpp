@@ -37,16 +37,20 @@ int main(int argc, char *argv[]) {
 
     //QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
 
-    QuadrupoleLinearBVHSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    //QuadrupoleLinearBVHSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    //solver.theta() = 0.7925781;
 
     //QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
-    //QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    solver.theta() = 0.38476565;
 
     //QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
     //QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    //solver.theta() = 0.7925781;
+
+
 
     spdlog::info("Running {} for 1 iteration", solver.name());
-    solver.theta() = 0.7925781;
     solver.step();
 
     std::cout << rule

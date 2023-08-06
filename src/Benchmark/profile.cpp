@@ -30,11 +30,20 @@ int main(int argc, char *argv[]) {
 
     std::size_t iterations = 1;
 
-    Simulation simulation = Generator::fromFile("../n-body-scenarios/benchmark/MED.bin");
+    Simulation simulation = Generator::fromFile("../n-body-scenarios/benchmark/LOW.bin");
     Gravity rule{};
 
-    QuadrupoleLinearBVHSolver<Gravity> solver{simulation, rule};
-    solver.theta() = 0.8;
+//    QuadrupoleBarnesHutSolver<Gravity> solver{simulation, rule};
+//    solver.theta() = 0.448;
+
+//    QuadrupoleLinearBVHSolver<Gravity> solver{simulation, rule};
+//    solver.theta() = 0.729;
+
+    QuadrupoleImplicitFMMSolver<Gravity> solver{simulation, rule};
+    solver.theta() = 0.384;
+
+//    QuadrupoleImplicitMVDRSolver<Gravity> solver{simulation, rule};
+//    solver.theta() = 0.729;
 
     spdlog::info("Running {} for {} iterations",
                  solver.name(), iterations);

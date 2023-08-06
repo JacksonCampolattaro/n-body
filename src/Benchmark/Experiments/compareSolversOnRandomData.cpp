@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     std::size_t nMax = 250'000;
 
-    for (std::size_t n = 10'000; n < nMax; n = n * 1.15) {
+    for (std::size_t n = 75'000; n < nMax; n = n * 1.15) {
 
         spdlog::info("Generating a random dataset with {} particles", n);
         Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);
@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
 
         ConstitutionalGrader grader{scenario, rule};
 
-        runTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
         runTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH", grader, out);
+        runTest<QuadrupoleBarnesHutSolver<Gravity>>("BH", grader, out);
         runTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM", grader, out);
         runTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR", grader, out);
 

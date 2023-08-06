@@ -10,11 +10,14 @@
 
 #include <tbb/concurrent_queue.h>
 #include <tbb/parallel_pipeline.h>
+#include <tbb/flow_graph.h>
 
 #include <boost/container/small_vector.hpp>
 #include <boost/container/static_vector.hpp>
 
 #include <semaphore>
+
+#include "none.h"
 
 namespace NBody::Descent {
 
@@ -87,7 +90,7 @@ namespace NBody::Descent {
 
         // Treat nodes which can be handled immediately first, sort out the rest
         Acceleration netAcceleration{};
-        boost::container::static_vector<std::reference_wrapper<const ActiveNode>, 2> nearNodes, leafNodes;
+        boost::container::static_vector<std::reference_wrapper<const ActiveNode>, 8> nearNodes, leafNodes;
         for (const ActiveNode &child: node.children()) {
             if (child.contents().empty())
                 continue;
@@ -139,7 +142,6 @@ namespace NBody::Descent {
             Rule &rule,
             const ActiveView &context
     ) {
-
 
         // Process a queue of nodes, starting with the one passed as an argument
         // fixme: parallel_pipeline doesn't support const pointers!
@@ -295,6 +297,74 @@ namespace NBody::Descent {
 
         return netAcceleration;
 
+    }
+
+    template<NodeType ActiveNode, DescentCriterionType DescentCriterion, RuleType Rule>
+    inline Acceleration queueActiveTree(
+            const ActiveNode &node,
+            const Position &passivePosition,
+            const DescentCriterion &descentCriterion,
+            Rule &rule,
+            const ActiveView &context
+    ) {
+
+        Acceleration netAcceleration{};
+
+        std::queue<std::span<const ActiveNode>> queue;
+        std::vector<std::span<Entity>> leafEntities;
+
+        if (node.isLeaf())
+            leafEntities.emplace_back(node.contents());
+        else
+            queue.emplace(node.children());
+
+        std::size_t maxLength = 0;
+        while (!queue.empty()) {
+            maxLength = std::max(maxLength, queue.size());
+            auto children = queue.front();
+            queue.pop();
+
+            for (const ActiveNode &child: children) {
+                if (descentCriterion(child, passivePosition)) {
+                    netAcceleration += rule(child, passivePosition);
+                } else if (child.isLeaf()) {
+                    leafEntities.emplace_back(child.contents());
+                } else {
+                    queue.emplace(child.children());
+                }
+            }
+        }
+
+//        // Combine all the entities into one list
+//        std::vector<Entity> mergedLeafEntities;
+//        for (const auto &entitiesGroup: leafEntities) {
+//            for (auto e: entitiesGroup) {
+//                mergedLeafEntities.emplace_back(e);
+//            }
+//        }
+//        netAcceleration += std::transform_reduce(
+//                mergedLeafEntities.begin(), mergedLeafEntities.end(),
+//                Physics::Acceleration{}, std::plus{},
+//                [&](auto entity) {
+//                    return rule(context.get<const Position>(entity),
+//                                context.get<const Mass>(entity),
+//                                passivePosition);
+//                }
+//        );
+
+        for (const auto &group: leafEntities)
+            netAcceleration += std::transform_reduce(
+                    group.begin(), group.end(),
+                    Physics::Acceleration{}, std::plus{},
+                    [&](auto entity) {
+                        return rule(context.get<const Position>(entity),
+                                    context.get<const Mass>(entity),
+                                    passivePosition);
+                    }
+            );
+
+        //spdlog::error("{}, {}", maxLength, leaves.size());
+        return netAcceleration;
     }
 
 }

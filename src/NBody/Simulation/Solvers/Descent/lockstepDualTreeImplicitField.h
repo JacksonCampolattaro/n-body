@@ -14,6 +14,7 @@
 #include <NBody/Physics/Summaries/EmptySummary.h>
 
 #include <queue>
+#include <boost/container/small_vector.hpp>
 
 namespace NBody::Descent {
 
@@ -110,7 +111,6 @@ namespace NBody::Descent {
                             descentCriterion, rule,
                             activeContext
                     );
-
                 }
 
                 // Include the net local force from far particles
@@ -128,11 +128,8 @@ namespace NBody::Descent {
                         activeEntititesInLeaves.end(),
                         activeNode.get().contents().begin(), activeNode.get().contents().end()
                 );
-            std::span<Entity> activeEntititesInLeavesSpan{
-                    activeEntititesInLeaves.begin(), activeEntititesInLeaves.end()
-            };
             passiveTreeImplicitField(
-                    activeEntititesInLeavesSpan,
+                    activeEntititesInLeaves,
                     passiveNode,
                     descentCriterion, rule,
                     activeContext, passiveContext
@@ -143,13 +140,15 @@ namespace NBody::Descent {
 
             // Descend other active nodes to create the active node list for the next depth
             std::vector<std::reference_wrapper<const ActiveNode>> deeperActiveNodes{};
-            // todo: this is different depending on the tree type!
-            deeperActiveNodes.reserve(nonLeafActiveNodes.size() * 8);
+            if (!deeperActiveNodes.empty())
+                deeperActiveNodes.reserve(nonLeafActiveNodes.size() * deeperActiveNodes[0].get().contents().size());
             for (auto &activeNode: nonLeafActiveNodes)
                 deeperActiveNodes.insert(
                         deeperActiveNodes.end(),
                         activeNode.get().children().begin(), activeNode.get().children().end()
                 );
+
+            spdlog::error(deeperActiveNodes.size());
 
             for (auto &child: passiveNode.children()) {
                 lockstepDualTreeImplicitField<ActiveNode>(

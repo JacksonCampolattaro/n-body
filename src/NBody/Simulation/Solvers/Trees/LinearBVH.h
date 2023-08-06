@@ -23,7 +23,7 @@ namespace NBody {
     class LinearBVHNode : public NodeBase<LinearBVHNode<S>, BoundingBoxSummary<S>> {
     private:
 
-        std::vector<LinearBVHNode<S>> _children;
+        std::unique_ptr<std::array<LinearBVHNode<S>, 2>> _children;
 
     public:
 
@@ -31,12 +31,13 @@ namespace NBody {
 
         using NodeBase<LinearBVHNode, SummaryType>::NodeBase;
         using NodeBase<LinearBVHNode, SummaryType>::contents;
-        using NodeBase<LinearBVHNode, SummaryType>::isLeaf;
         using NodeBase<LinearBVHNode, SummaryType>::summary;
 
-        [[nodiscard]] std::vector<LinearBVHNode> &children() { return _children; }
+        [[nodiscard]] std::array<LinearBVHNode, 2> &children() { return *_children; }
 
-        [[nodiscard]] const std::vector<LinearBVHNode> &children() const { return _children; }
+        [[nodiscard]] const std::array<LinearBVHNode, 2> &children() const { return *_children; }
+
+        [[nodiscard]] bool isLeaf() const { return !_children; }
 
         [[nodiscard]] const BoundingBox &boundingBox() const { return summary().boundingBox(); }
 
@@ -54,7 +55,7 @@ namespace NBody {
                                        context.template get<const MortonCode>(contents().back())) - 1;
 
             // Use std::upper_bound to perform a binary search and find where that bit changes
-            MortonCode boundary = ((MortonCode)1 << msb);
+            MortonCode boundary = ((MortonCode) 1 << msb);
             auto split = std::upper_bound(
                     contents().begin(), contents().end(), boundary,
                     [&](MortonCode v, Entity i) {
@@ -66,16 +67,15 @@ namespace NBody {
             auto high = std::span<Entity>{split, contents().end()};
             assert(!low.empty() && !high.empty());
 
-            if (isLeaf()) {
-                _children = {{{low}, {high}}};
-            } else {
-                children()[0].contents() = low;
-                children()[1].contents() = high;
-            }
+            if (isLeaf())
+                _children = std::make_unique<std::array<LinearBVHNode<S>, 2>>();
+
+            children()[0].contents() = low;
+            children()[1].contents() = high;
         }
 
         void merge() {
-            _children.clear();
+            _children.reset();
         }
 
     };

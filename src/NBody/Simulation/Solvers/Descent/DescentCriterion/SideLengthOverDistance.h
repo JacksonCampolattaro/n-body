@@ -33,13 +33,14 @@ namespace NBody::Descent {
         inline Recommendation operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
 
             float activeSideLength = activeNode.sideLength();
-            float passiveSideLength = passiveNode.sideLength();
+            float passiveSideLength = passiveNode.sideLength() * 2;
 
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
             if (((activeSideLength + passiveSideLength) / distance) < _theta
                 && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
-                   && activeNode.contents().size() > 10)
+                   //&& activeNode.contents().size() > 10
+                   )
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node

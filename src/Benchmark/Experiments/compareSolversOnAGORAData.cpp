@@ -1,7 +1,6 @@
 //
 // Created by Jackson Campolattaro on 6/1/23.
 //
-#include <gtkmm.h>
 #include <spdlog/spdlog.h>
 
 #include <boost/program_options.hpp>
@@ -61,10 +60,12 @@ int main(int argc, char *argv[]) {
     out << "Solver,N,Theta,Time\n";
 
     //runFastTests<QuadrupoleImplicitReverseBarnesHutSolver<Gravity>>("RBH",  out);
+    runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-2",  out);
+    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-3", out);
+    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR-4", out);
+    runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM-2",  out);
+    runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM-3",  out);
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH-BH",  out);
-    runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM",  out);
-    runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR-4p",  out);
-    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR-8p", out);
     runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH",  out);
     //runFastTests<QuadrupoleImplicitLinearBVHFMMSolver<Gravity>>("LBVH-FMM",  out);
 

@@ -68,7 +68,7 @@ namespace NBody {
     class OctreeNode : public NodeBase<OctreeNode<SummaryType>, SummaryType> {
     private:
 
-        std::vector<OctreeNode> _children;
+        std::unique_ptr<std::array<OctreeNode<SummaryType>, 8>> _children;
 
         Position _center{0.0f, 0.0f, 0.0f};
         float _sideLength{1.0f};
@@ -77,15 +77,17 @@ namespace NBody {
 
         using NodeBase<OctreeNode, SummaryType>::NodeBase;
         using NodeBase<OctreeNode, SummaryType>::contents;
-        using NodeBase<OctreeNode, SummaryType>::isLeaf;
 
         OctreeNode(std::span<Entity> contents, const Position &center, float sideLength) :
                 NodeBase<OctreeNode, SummaryType>(contents),
                 _center(center), _sideLength(sideLength) {}
 
-        [[nodiscard]] std::vector<OctreeNode> &children() { return _children; }
 
-        [[nodiscard]] const std::vector<OctreeNode> &children() const { return _children; }
+        [[nodiscard]] std::array<OctreeNode, 8> &children() { return *_children; }
+
+        [[nodiscard]] const std::array<OctreeNode, 8> &children() const { return *_children; }
+
+        [[nodiscard]] bool isLeaf() const { return !_children; }
 
         [[nodiscard]] BoundingBox boundingBox() const {
             glm::vec3 dimensions{_sideLength, _sideLength, _sideLength};
@@ -98,17 +100,7 @@ namespace NBody {
         template<typename Context>
         void split(const Context &context) {
 
-            std::span<NBody::Entity>
-                    xyz000,
-                    xyz100,
-                    xyz010,
-                    xyz110,
-                    xyz001,
-                    xyz101,
-                    xyz011,
-                    xyz111;
-
-            std::tie(
+            auto [
                     xyz000,
                     xyz100,
                     xyz010,
@@ -117,41 +109,45 @@ namespace NBody {
                     xyz101,
                     xyz011,
                     xyz111
-            ) = partition<2>(contents(), context, _center);
+            ] = partition<2>(contents(), context, _center);
 
             // Initialize 8 child nodes
             float childSideLength = sideLength() / 2.0f;
             float childOffset = childSideLength / 2.0f;
-            _children = {{
-                                 {xyz000,
-                                  center() + glm::vec3{-childOffset, -childOffset, -childOffset},
-                                  childSideLength},
-                                 {xyz001,
-                                  center() + glm::vec3{-childOffset, -childOffset, childOffset},
-                                  childSideLength},
-                                 {xyz010,
-                                  center() + glm::vec3{-childOffset, childOffset, -childOffset},
-                                  childSideLength},
-                                 {xyz011,
-                                  center() + glm::vec3{-childOffset, childOffset, childOffset},
-                                  childSideLength},
-                                 {xyz100,
-                                  center() + glm::vec3{childOffset, -childOffset, -childOffset},
-                                  childSideLength},
-                                 {xyz101,
-                                  center() + glm::vec3{childOffset, -childOffset, childOffset},
-                                  childSideLength},
-                                 {xyz110,
-                                  center() + glm::vec3{childOffset, childOffset, -childOffset},
-                                  childSideLength},
-                                 {xyz111,
-                                  center() + glm::vec3{childOffset, childOffset, childOffset},
-                                  childSideLength}
-                         }};
+
+            if (isLeaf())
+                _children = std::make_unique<std::array<OctreeNode, 8>>();
+
+            *_children = {{
+                                  {xyz000,
+                                   center() + glm::vec3{-childOffset, -childOffset, -childOffset},
+                                   childSideLength},
+                                  {xyz001,
+                                   center() + glm::vec3{-childOffset, -childOffset, childOffset},
+                                   childSideLength},
+                                  {xyz010,
+                                   center() + glm::vec3{-childOffset, childOffset, -childOffset},
+                                   childSideLength},
+                                  {xyz011,
+                                   center() + glm::vec3{-childOffset, childOffset, childOffset},
+                                   childSideLength},
+                                  {xyz100,
+                                   center() + glm::vec3{childOffset, -childOffset, -childOffset},
+                                   childSideLength},
+                                  {xyz101,
+                                   center() + glm::vec3{childOffset, -childOffset, childOffset},
+                                   childSideLength},
+                                  {xyz110,
+                                   center() + glm::vec3{childOffset, childOffset, -childOffset},
+                                   childSideLength},
+                                  {xyz111,
+                                   center() + glm::vec3{childOffset, childOffset, childOffset},
+                                   childSideLength}
+                          }};
         }
 
         void merge() {
-            _children.clear();
+            _children.reset();
         }
 
         [[nodiscard]] Position &center() { return _center; }

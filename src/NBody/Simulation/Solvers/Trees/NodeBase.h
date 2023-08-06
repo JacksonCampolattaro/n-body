@@ -20,6 +20,7 @@ namespace NBody {
 
         using Summary = S;
 
+
     private:
 
         std::span<Entity> _contents;
@@ -41,7 +42,7 @@ namespace NBody {
 
         template<typename Context>
         void summarize(const Context &context) {
-            if (isLeaf()) _summary.summarize(implementation().contents(), context);
+            if (implementation().isLeaf()) _summary.summarize(implementation().contents(), context);
             else _summary.summarize(implementation().children());
 
             // sanity check: a node should always enclose all of its children
@@ -78,15 +79,12 @@ namespace NBody {
         [[nodiscard]] std::span<Entity> &contents() { return _contents; };
 
         [[nodiscard]] std::size_t depth() const {
-            if (isLeaf()) return 0;
+            if (implementation().isLeaf()) return 0;
             std::size_t maxDepth = 0;
             for (const NodeImplementation &child: implementation().children())
                 maxDepth = std::max(maxDepth, child.depth());
             return maxDepth + 1;
         }
-
-        [[nodiscard]] bool isLeaf() const { return implementation().children().empty(); }
-
 
         [[nodiscard]] std::string toString(const std::string &offset = "") const {
             if (contents().empty()) return "";

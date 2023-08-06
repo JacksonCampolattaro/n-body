@@ -50,13 +50,13 @@ namespace NBody {
                 this->_statusDispatcher.emit({"Computing Accelerations"});
                 auto view = this->_simulation.template view<const Position, Acceleration>();
 
-                //                view.each([&](const Position &targetPosition, Acceleration &acceleration) {
-                //                    acceleration = Descent::pipelineActiveTree(
-                //                            _tree.root(), targetPosition,
-                //                            _descentCriterion, this->_rule,
-                //                            this->simulation().template view<const Position, const Mass>()
-                //                    );
-                //                });
+//                view.each([&](const Position &targetPosition, Acceleration &acceleration) {
+//                    acceleration = Descent::queueActiveTree(
+//                            _tree.root(), targetPosition,
+//                            _descentCriterion, this->_rule,
+//                            this->simulation().template view<const Position, const Mass>()
+//                    );
+//                });
 
                 tbb::parallel_for_each(view, [&](Entity e) {
                     const auto &targetPosition = view.template get<const Position>(e);

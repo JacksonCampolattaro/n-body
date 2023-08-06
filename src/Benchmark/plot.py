@@ -255,6 +255,41 @@ def plot_interaction_distances_vs_sizes(filename, theta=None):
     plt.clf()
 
 
+def plot_dual_interaction_distances_vs_ratios(filename):
+    df = pd.read_csv(filename)
+    df = df.loc[df["Type"] == 'Node-Node']
+    df['Ratio'] = df[['Active Size', 'Passive Size']].max(axis=1)
+    df = df[['Distance', 'Ratio']]
+    print(df)
+
+    min_x = df['Distance'].min()
+    max_x = df['Distance'].max()
+    min_y = df['Ratio'].min()
+    max_y = df['Ratio'].max()
+
+    plt.figure(figsize=(text_width/2, text_width/2))
+    ax = sns.histplot(
+        data=df, x='Distance', y='Ratio',
+        bins=(np.geomspace(min_x, max_x, num=64), np.geomspace(min_x, max_x, num=64)),
+        cmap=histogram_color_map,
+        linewidth=-0.1
+        # marker="o", color=(*brewer_colors[1], 0.25),
+    )
+    ax.set_xscale('log', base=2)
+    ax.set_yscale('log', base=2)
+    ax.set(ylabel='Active Size / Passive Size')
+    ax.set_aspect('equal', adjustable='box')
+
+    sns.lineplot(
+        x=[min_x, max_x], y=[min_x, max_x], ax=ax,
+        color="black", alpha=0.3
+    )
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_ratio.pdf")
+    plt.clf()
+
+
 def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
     df = pd.read_csv(filename)
     df['Max Size'] = df[['Active Size', 'Passive Size']].max(axis=1)
@@ -430,6 +465,7 @@ def main():
     # plot_field('benchmarks/sample-quadrupole-tree.csv')
     # plot_field('benchmarks/sample-octupole-tree.csv')
     # plot_field('benchmarks/sample-hexadecupole-tree.csv')
+    plot_field('benchmarks/sample-triacontadyupole-tree.csv')
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
@@ -447,6 +483,8 @@ def main():
     plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
     plot_interaction_distances_vs_sizes("benchmarks/lbvh-bh-2-interactions-theta=0.7292969.csv", 0.7292969)
     plot_dual_interaction_distances_vs_sizes("benchmarks/mvdr-2-interactions-theta=0.7292969.csv", 0.7292969)
+    plot_dual_interaction_distances_vs_ratios("benchmarks/mvdr-2-interactions-theta=0.7292969.csv")
+    plot_dual_interaction_distances_vs_ratios("benchmarks/fmm-2-interactions-theta=0.38476565.csv")
 
 
 if __name__ == "__main__":

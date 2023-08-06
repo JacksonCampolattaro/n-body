@@ -61,7 +61,7 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
     ReplaceRule<CandidateSolver, SimpleTrackingRule<Gravity>> interactionTrackingSolver{trackingSimulation,
                                                                                         trackingRule};
     interactionTrackingSolver.descentCriterion().theta() = solver.descentCriterion().theta();
-    //interactionTrackingSolver.step();
+    interactionTrackingSolver.step();
     spdlog::info("Interactions = {}", trackingRule.toString());
     float approximationRatio = (float) trackingRule.totalCount() / (float) std::pow(simulation.particleCount(), 2);
     spdlog::info("Approximation Ratio = {}", approximationRatio);
