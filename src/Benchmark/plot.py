@@ -26,8 +26,11 @@ color_map = {
     'MVDR': brewer_colors[3],
     'FMM': brewer_colors[2],
 
-    'Octree': 'blue',
-    'Linear BVH': 'red',
+    'Octree': brewer_colors[1],
+    'Linear BVH': brewer_colors[0],
+
+    'Time': brewer_colors[1],
+    'Error': brewer_colors[0],
 
     'Particle-Particle': 'gray',
     'Particle-Node': 'cadetblue',
@@ -177,25 +180,117 @@ def plot_field_error(filename):
     return extent
 
 
-def plot_sweep_n(filename):
+def plot_solvers_vs_n_vs_time(filename):
     sweep_n = pd.read_csv(filename)
 
     sns.lineplot(data=sweep_n, x="n", y="Time (s)", hue="Solver")
     plt.show()
 
 
-def plot_sweep_theta(filename):
+def plot_solvers_vs_theta_vs_time(filename):
     sweep_theta = pd.read_csv(filename)
 
     sns.lineplot(data=sweep_theta, x="θ", y="Time (s)", hue="Solver")
     plt.show()
 
 
-def plot_sweep_error(filename):
+def plot_theta_vs_time_and_error(filename, multipole):
+    fig = plt.figure(figsize=(text_width, 2))
+    df = pd.read_csv(filename)
+    df = df[df["Multipole Order"] == multipole]
+
+    with plt.rc_context({
+        "axes.spines.right": False,
+        "axes.spines.left": True,
+        "ytick.color": color_map["Time"]
+    }):
+        ax1 = sns.lineplot(data=df, x="θ", y="Time (s)", color=color_map["Time"])
+        ax1.set(xlabel="$\\theta$", ylabel='Time (s)')
+        #ax1.set_yscale('log')
+        ax1.tick_params(axis='y', colors=color_map["Time"])
+        ax1.spines['left'].set_color(color_map["Time"])
+
+    with plt.rc_context({
+        "axes.spines.right": True,
+        "axes.spines.left": False,
+        "ytick.color": color_map["Error"]
+    }):
+        ax2 = plt.twinx()
+        sns.lineplot(ax=ax2, data=df, x="θ", y="% Error (Constitutional)", color=color_map["Error"])
+        #ax2.set_yscale('log')
+        ax2.set(xlabel="$\\theta$", ylabel='\\% Error (Constitutional)')
+        ax2.spines['right'].set_color(color_map["Error"])
+        x_range = ax2.get_xlim()
+        sns.lineplot(ax=ax2, x=x_range, y=[0.5, 0.5], color=color_map["Error"], alpha=0.25)
+        sns.lineplot(ax=ax2, x=x_range, y=[1.0, 1.0], color=color_map["Error"], alpha=0.25)
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-time-and-error.pdf")
+    plt.clf()
+
+
+def plot_solvers_vs_error_vs_time(filename):
+    fig = plt.figure(figsize=(text_width, text_width))
     sweep_theta = pd.read_csv(filename)
 
-    sns.lineplot(data=sweep_theta, x="% Error (Constitutional)", y="Time (s)", hue="Solver")
-    plt.show()
+    ax = sns.lineplot(data=sweep_theta, x="% Error (Constitutional)", y="Time (s)", hue="Solver")
+    ax.set(xlabel="\\% Error (Constitutional)")
+    # ax.set_xscale('log')
+    # ax.set_yscale('log')
+    y_range = ax.get_ylim()
+    sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
+    sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
+    plt.savefig(os.path.splitext(filename)[0] + "-error-vs-time.pdf")
+
+    plt.tight_layout()
+    plt.clf()
+
+
+def plot_error_vs_time(filename, multipole_order):
+    fig = plt.figure(figsize=(0.8*text_width, 0.8*text_width))
+    df = pd.read_csv(filename)
+    base_color = color_map[df["Solver"][0]]
+    df = df[df["Multipole Order"] == multipole_order]
+
+    ax = sns.lineplot(
+        data=df,
+        x="% Error (Constitutional)", y="Time (s)",
+        color=base_color
+    )
+    ax.set(xlabel="\\% Error (Constitutional)")
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    # ax.set_xlim(0.1, 10)
+    y_range = ax.get_ylim()
+    sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
+    sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
+    plt.savefig(os.path.splitext(filename)[0] + f"-{multipole_order.lower()}-error-vs-time.pdf")
+
+    plt.tight_layout()
+    plt.clf()
+
+
+def plot_multipoles_vs_error_vs_time(filename):
+    fig = plt.figure(figsize=(0.8*text_width, 0.8*text_width))
+    df = pd.read_csv(filename)
+    base_color = color_map[df["Solver"][0]]
+
+    ax = sns.lineplot(
+        data=df,
+        x="% Error (Constitutional)", y="Time (s)",
+        hue="Multipole Order", palette=sns.light_palette(base_color, n_colors=4)[1:]
+    )
+    ax.set(xlabel="\\% Error (Constitutional)")
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    # ax.set_xlim(0.1, 10)
+    y_range = ax.get_ylim()
+    sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
+    sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
+    plt.savefig(os.path.splitext(filename)[0] + "-error-vs-time.pdf")
+
+    plt.tight_layout()
+    plt.clf()
 
 
 def plot_interaction_counts(filename):
@@ -267,7 +362,7 @@ def plot_dual_interaction_distances_vs_ratios(filename):
     min_y = df['Ratio'].min()
     max_y = df['Ratio'].max()
 
-    plt.figure(figsize=(text_width/2, text_width/2))
+    plt.figure(figsize=(text_width / 2, text_width / 2))
     ax = sns.histplot(
         data=df, x='Distance', y='Ratio',
         bins=(np.geomspace(min_x, max_x, num=64), np.geomspace(min_x, max_x, num=64)),
@@ -465,7 +560,7 @@ def main():
     # plot_field('benchmarks/sample-quadrupole-tree.csv')
     # plot_field('benchmarks/sample-octupole-tree.csv')
     # plot_field('benchmarks/sample-hexadecupole-tree.csv')
-    plot_field('benchmarks/sample-triacontadyupole-tree.csv')
+    # plot_field('benchmarks/sample-triacontadyupole-tree.csv')
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
@@ -479,12 +574,20 @@ def main():
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
     # plot_times_vs_n(merge_tables(glob.glob("remote-benchmarks/tree-construction-agora-data.*.csv")))
 
-    print("Plotting interaction lists")
-    plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
-    plot_interaction_distances_vs_sizes("benchmarks/lbvh-bh-2-interactions-theta=0.7292969.csv", 0.7292969)
-    plot_dual_interaction_distances_vs_sizes("benchmarks/mvdr-2-interactions-theta=0.7292969.csv", 0.7292969)
-    plot_dual_interaction_distances_vs_ratios("benchmarks/mvdr-2-interactions-theta=0.7292969.csv")
-    plot_dual_interaction_distances_vs_ratios("benchmarks/fmm-2-interactions-theta=0.38476565.csv")
+    # print("Plotting interaction lists")
+    # plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
+    # plot_interaction_distances_vs_sizes("benchmarks/lbvh-bh-2-interactions-theta=0.7292969.csv", 0.7292969)
+    # plot_dual_interaction_distances_vs_sizes("benchmarks/mvdr-2-interactions-theta=0.7292969.csv", 0.7292969)
+    # plot_dual_interaction_distances_vs_ratios("benchmarks/mvdr-2-interactions-theta=0.7292969.csv")
+    # plot_dual_interaction_distances_vs_ratios("benchmarks/fmm-2-interactions-theta=0.38476565.csv")
+
+    print("Plotting theta comparisons")
+    plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
+    plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
+    plot_multipoles_vs_error_vs_time("benchmarks/bh-theta.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/lbvh-theta.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/fmm-theta.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/mvdr-theta.csv")
 
 
 if __name__ == "__main__":

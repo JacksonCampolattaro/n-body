@@ -80,3 +80,10 @@ target_link_libraries(experiment_sampleFieldTrees PUBLIC
         NBody::Simulation
         spdlog::spdlog
         )
+
+add_executable(experiment_CompareThetaValues
+        Experiments/compareThetaValues.cpp)
+target_link_libraries(experiment_CompareThetaValues PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )
