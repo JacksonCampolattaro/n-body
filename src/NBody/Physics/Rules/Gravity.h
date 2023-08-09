@@ -41,7 +41,7 @@ namespace {
     }
 
     template<std::size_t Order>
-    inline auto D(const glm::vec3 &R, float r) {
+    [[gnu::always_inline]] inline auto D(const glm::vec3 &R, float r) {
 
         float f1 = -1.0f / pow<2>(r);
         float f2 = 3.0f / pow<3>(r);

@@ -12,7 +12,7 @@ namespace NBody::Descent {
 
     // todo: This is a terrible name, I need to find a more descriptive naming scheme,
     template<NodeType ActiveNode, RuleType Rule = Gravity>
-    [[clang::noinline]] inline Acceleration none(
+    inline Acceleration none(
             const ActiveNode &node,
             const Position &passivePosition,
             Rule &rule,

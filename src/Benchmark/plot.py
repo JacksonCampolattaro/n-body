@@ -564,15 +564,16 @@ def main():
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
+    plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
-    #
+
     # print("Plotting tree benchmarks")
     # merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
     # merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
-    # plot_times_vs_n(merge_tables(glob.glob("remote-benchmarks/tree-construction-agora-data.*.csv")))
 
     # print("Plotting interaction lists")
     # plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
