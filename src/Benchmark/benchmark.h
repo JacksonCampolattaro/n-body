@@ -11,7 +11,7 @@
 
 #include "Graders/Grader.h"
 
-std::chrono::duration<float> timedInvoke(const std::function<void()>& function) {
+std::chrono::duration<float> timedInvoke(const std::function<void()> &function) {
     auto startTime = std::chrono::steady_clock::now();
     function();
     auto finishTime = std::chrono::steady_clock::now();
@@ -41,7 +41,7 @@ std::chrono::duration<float> timedRun(CandidateSolver &solver, std::size_t itera
 template<class CandidateSolver>
 void runTest(const std::string &label, const Grader &grader, std::ofstream &out, std::size_t iterations = 5) {
 
-    spdlog::info("Running a battery of tests on solver \"{}\"", label);
+    spdlog::debug("Running a battery of tests on solver \"{}\"", label);
 
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
@@ -49,11 +49,9 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
     spdlog::debug("Finding an appropriate value of Theta for the solver");
     CandidateSolver solver{simulation, rule};
     solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
-    spdlog::info("Theta = {}", solver.descentCriterion().theta());
+    spdlog::debug("Theta = {}", solver.descentCriterion().theta());
 
-    spdlog::debug("Timing the solver over {} iterations", iterations);
-    auto time = timedRun(solver, iterations);
-    spdlog::info("Average of {}s / iteration", time.count());
+    if (solver.descentCriterion().theta() == 0.1) return;
 
     spdlog::debug("Running one step and counting interactions");
     Simulation trackingSimulation = grader.scenario();
@@ -62,20 +60,29 @@ void runTest(const std::string &label, const Grader &grader, std::ofstream &out,
                                                                                         trackingRule};
     interactionTrackingSolver.descentCriterion().theta() = solver.descentCriterion().theta();
     interactionTrackingSolver.step();
-    spdlog::info("Interactions = {}", trackingRule.toString());
+    spdlog::debug("Interactions = {}", trackingRule.toString());
     float approximationRatio = (float) trackingRule.totalCount() / (float) std::pow(simulation.particleCount(), 2);
-    spdlog::info("Approximation Ratio = {}", approximationRatio);
+    spdlog::debug("Approximation Ratio = {}", approximationRatio);
 
-    spdlog::debug("Recording results to CSV");
-    out << label << ","
-        << simulation.particleCount() << ","
-        << solver.descentCriterion().theta() << ","
-        << time.count() << ","
-        << trackingRule.particleParticleCount() << ","
-        << trackingRule.particleNodeCount() << ","
-        << trackingRule.nodeParticleCount() << ","
-        << trackingRule.nodeNodeCount() << ","
-        << approximationRatio << "\n" << std::flush;
+    spdlog::debug("Timing the solver for {} iterations", iterations);
+    std::chrono::duration<float> time;
+    for (int i = 0; i < iterations; ++i) {
+
+        time = timedInvoke([&]() { solver.step(); });
+        spdlog::debug("{}s", time.count());
+
+        out << label << ","
+            << simulation.particleCount() << ","
+            << solver.descentCriterion().theta() << ","
+            << time.count() << ","
+            << trackingRule.particleParticleCount() << ","
+            << trackingRule.particleNodeCount() << ","
+            << trackingRule.nodeParticleCount() << ","
+            << trackingRule.nodeNodeCount() << ","
+            << approximationRatio << "\n" << std::flush;
+    }
+    spdlog::info("{} (theta={}) --> {}s", solver.name(), solver.descentCriterion().theta(), time.count());
+
 
 }
 

@@ -22,14 +22,14 @@
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/all-solvers-random-data.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/random/all-solvers.csv"};
     out << "Solver,Multipole Order,N,Theta,Time,"
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
-    std::size_t nMax = 250'000;
+    std::size_t nMax = 100'000;
 
-    for (std::size_t n = 15'000; n < nMax; n = n * 1.15) {
+    for (std::size_t n = 10'000; n < nMax; n = n * 1.25) {
 
         spdlog::info("Generating a random dataset with {} particles", n);
         Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);

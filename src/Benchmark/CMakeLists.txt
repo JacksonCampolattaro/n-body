@@ -67,6 +67,13 @@ target_link_libraries(experiment_recordInteractions PUBLIC
         spdlog::spdlog
         )
 
+add_executable(experiment_countInteractions
+        Experiments/countInteractions.cpp)
+target_link_libraries(experiment_countInteractions PUBLIC
+        NBody::Simulation
+        spdlog::spdlog
+        )
+
 add_executable(experiment_sampleMultipoles
         Experiments/sampleMultipoles.cpp)
 target_link_libraries(experiment_sampleMultipoles PUBLIC

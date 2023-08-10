@@ -30,7 +30,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
     spdlog::info("Using theta = {}", optimalTheta);
 
     // Next, time it for several simulations
-    for (const std::string &dataset: {"LOW", "MED"/*, "HI"*/}) {
+    for (const std::string &dataset: {"LOW"/*, "MED", "HI"*/}) {
 
         Physics::Gravity rule{};
         Simulation scenario;
@@ -49,30 +49,30 @@ void runFastTests(const std::string &label, std::ostream &out) {
             << time.count() << "\n" << std::flush;
 
         // If any scenario takes too long to run, stop early!
-        if (time.count() > 60.0f) break;
+        if (time.count() > 25.0f) break;
     }
 }
 
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/all-solvers-agora-data.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/agora/all-solvers.csv"};
     out << "Solver,Multipole Order,N,Theta,Time\n";
 
     runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole",  out);
-    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
-    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
+//    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
+//    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole",  out);
-    runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
-    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
+//    runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
+//    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
 
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole",  out);
-    runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
-    runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
+//    runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
+//    runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
 
     runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
-    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
-    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
+//    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
+//    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
 
 }

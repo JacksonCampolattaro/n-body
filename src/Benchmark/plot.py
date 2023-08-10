@@ -212,9 +212,9 @@ def plot_solvers_vs_theta_vs_time(filename):
 
 
 def plot_theta_vs_time_and_error(filename, multipole):
-    fig = plt.figure(figsize=(text_width, 2))
     df = pd.read_csv(filename)
     df = df[df["Multipole Order"] == multipole]
+    fig = plt.figure(figsize=(text_width, text_width / 2))
 
     with plt.rc_context({
         "axes.spines.right": False,
@@ -264,7 +264,7 @@ def plot_solvers_vs_error_vs_time(filename):
 
 
 def plot_error_vs_time(filename, multipole_order):
-    fig = plt.figure(figsize=(0.8 * text_width, 0.8 * text_width))
+    fig = plt.figure(figsize=(text_width, text_width / 2))
     df = pd.read_csv(filename)
     base_color = color_map[df["Solver"][0]]
     df = df[df["Multipole Order"] == multipole_order]
@@ -281,14 +281,14 @@ def plot_error_vs_time(filename, multipole_order):
     y_range = ax.get_ylim()
     sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
     sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
-    plt.savefig(os.path.splitext(filename)[0] + f"-{multipole_order.lower()}-error-vs-time.pdf")
 
     plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + f"-{multipole_order.lower()}-error-vs-time.pdf")
     plt.clf()
 
 
 def plot_multipoles_vs_error_vs_time(filename):
-    fig = plt.figure(figsize=(0.8 * text_width, 0.8 * text_width))
+    fig = plt.figure(figsize=(0.5 * text_width, 0.5 * text_width))
     df = pd.read_csv(filename)
     base_color = color_map[df["Solver"][0]]
 
@@ -304,14 +304,21 @@ def plot_multipoles_vs_error_vs_time(filename):
     y_range = ax.get_ylim()
     sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
     sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
-    plt.savefig(os.path.splitext(filename)[0] + "-error-vs-time.pdf")
 
     plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "-error-vs-time.pdf")
     plt.clf()
 
 
 def plot_interaction_counts(filename):
     df = pd.read_csv(filename)
+    df.style.format('{:,}')
+    print(df.to_latex(
+        columns=['Solver', 'Particle-Particle', 'Particle-Node', 'Node-Particle', 'Node-Node', 'Approximation Ratio'],
+        float_format="%.4f",
+        index=False
+    ))
+
     x_label = df.columns[0]
     particle_count = df['N'][0]
     df = df[
@@ -323,7 +330,8 @@ def plot_interaction_counts(filename):
 
     ax = df.plot(kind='bar', stacked=True,
                  figsize=(text_width / 2, 3),
-                 x=x_label, color=color_map)
+                 x=x_label,
+                 color=color_map, linewidth=0)
     ax.set(xlabel=x_label, ylabel='Interactions (\% of Naive)')
     ax.set_xticklabels(df[x_label], rotation=45, ha='right', rotation_mode='anchor')
 
@@ -344,7 +352,7 @@ def plot_interaction_distances_vs_sizes(filename, theta=None):
     min_y = df['Max Size'].min()
     max_y = df['Max Size'].max()
 
-    plt.figure(figsize=(text_width, 4))
+    plt.figure(figsize=(text_width / 2, text_width / 2))
     ax = sns.histplot(
         data=df, x='Distance', y='Max Size',
         bins=(np.geomspace(min_x, max_x, num=100), np.geomspace(min_y, max_y, num=64)),
@@ -413,13 +421,12 @@ def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
     min_y = df['Max Size'].min()
     max_y = df['Max Size'].max()
 
-    plt.figure(figsize=(text_width, 4))
+    plt.figure(figsize=(text_width / 2, text_width / 2))
     ax = sns.histplot(
         data=df, x='Distance', y='Max Size',
         bins=(np.geomspace(min_x, max_x, num=100), np.geomspace(min_y, max_y, num=64)),
         cmap=histogram_color_map,
         linewidth=-0.1
-        # marker="o", color=(*brewer_colors[1], 0.25),
     )
     ax.set_xscale('log', base=2)
     ax.set_yscale('log', base=2)
@@ -458,7 +465,7 @@ def plot_dual_interaction_sizes(filename):
     ax.set_aspect('equal', adjustable='box')
 
     sns.lineplot(
-        x=[min_x, max_x], y=[min_x*2, max_x*2], ax=ax,
+        x=[min_x, max_x], y=[min_x * 2, max_x * 2], ax=ax,
         color="black", alpha=0.3
     )
 
@@ -488,7 +495,7 @@ def plot_times_vs_n(filename):
     x_label = df.columns[0]
 
     df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
-    #df = df[[x_label, 'N', 'Time']]
+    # df = df[[x_label, 'N', 'Time']]
 
     df = df.drop(df[df[x_label] == 'RBH'].index)
 
@@ -523,16 +530,15 @@ def plot_theta_vs_n(filename):
 def plot_interaction_counts_vs_n(filename, solver=None):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
-    df['Total Interactions'] = df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
+    df['Total Interactions'] = df['Particle-Particle']
+    # df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
     df = df[[x_label, 'N', 'Total Interactions']]
-
-    df = df.drop(df[df['Solver'] == 'RBH'].index)
 
     ax = sns.lineplot(data=df, x="N", y="Total Interactions", hue="Solver", palette=color_map)
     ax.set(ylabel='Interaction Count')
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "_vs_interaction-count.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-n-vs-interactions.pdf")
     plt.clf()
 
 
@@ -616,7 +622,7 @@ def main():
     # plot_field('benchmarks/sample-triacontadyupole-tree.csv')
 
     # print("Plotting solver benchmarks")
-    # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
     # merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
@@ -629,10 +635,14 @@ def main():
     # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
 
-    # print("Plotting interaction lists")
+    print("Plotting interaction counts")
+    plot_interaction_counts("benchmarks/interactions/all-solvers-count.csv")
+    plot_interaction_counts_vs_n("benchmarks/random/all-solvers.csv")
+
+    print("Plotting interaction lists")
     plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
     plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
-    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031/2)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031 / 2)
     plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
     plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
     plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
@@ -640,12 +650,14 @@ def main():
     plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
 
     print("Plotting theta comparisons")
-    plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
-    plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
-    plot_multipoles_vs_error_vs_time("benchmarks/bh-theta.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/lbvh-theta.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/fmm-theta.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/mvdr-theta.csv")
+    plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
+    plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
+    # plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
+    # plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
 
 
 if __name__ == "__main__":
