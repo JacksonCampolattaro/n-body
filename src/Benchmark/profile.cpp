@@ -37,19 +37,19 @@ int main(int argc, char *argv[]) {
 
     if (solverName == "fmm") {
         auto s = new QuadrupoleImplicitFMMSolver<Gravity>{simulation, rule};
-        s->descentCriterion().theta() = 0.384;
+        s->descentCriterion().theta() = 0.41992188;
         solver = s;
     } else if (solverName == "mvdr") {
         auto s = new QuadrupoleImplicitMVDRSolver<Gravity>{simulation, rule};
-        s->descentCriterion().theta() = 0.729;
+        s->descentCriterion().theta() = 0.7082031;
         solver = s;
     } else if (solverName == "bh") {
         auto s = new QuadrupoleBarnesHutSolver<Gravity>{simulation, rule};
-        s->descentCriterion().theta() = 0.448;
+        s->descentCriterion().theta() = 0.41289064;
         solver = s;
     } else if (solverName == "lbvh") {
         auto s = new QuadrupoleLinearBVHSolver<Gravity>{simulation, rule};
-        s->descentCriterion().theta() = 0.729;
+        s->descentCriterion().theta() = 0.72578126;
         solver = s;
     } else {
         spdlog::error("Unrecognized solver \"{}\"", solverName);
