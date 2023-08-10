@@ -25,7 +25,7 @@ void recordInteractions(NBody::Grader &grader, std::filesystem::path outputPath)
 
     float theta = grader.optimalTheta<CandidateSolver>();
     AdvancedTrackingRule<Gravity> trackingRule{
-            outputPath.parent_path().string() + "/" + outputPath.stem().string() + fmt::format("-theta={}.csv", theta),
+            outputPath,
             0.01,
             grader.rule()
     };
@@ -49,23 +49,24 @@ int main(int argc, char *argv[]) {
     //    ConstitutionalGrader grader(simulation);
     ConstitutionalGrader grader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
 
-    //    recordInteractions<QuadrupoleBarnesHutSolver<Gravity>>(
-    //            grader,
-    //            argc > 1 ? std::string{argv[1]} : "benchmarks/bh-2-interactions.csv"
-    //    );
+    recordInteractions<QuadrupoleBarnesHutSolver<Gravity>>(
+            grader,
+            argc > 1 ? std::string{argv[1]} : "benchmarks/interactions/bh-2.csv"
+    );
 
-    //    recordInteractions<QuadrupoleLinearBVHSolver<Gravity>>(
-    //            grader,
-    //            argc > 1 ? std::string{argv[1]} : "benchmarks/lbvh-bh-2-interactions.csv"
-    //    );
-
-    //    recordInteractions<QuadrupoleMVDRSolver<Gravity>>(
-    //            grader,
-    //            argc > 1 ? std::string{argv[1]} : "benchmarks/mvdr-2-interactions.csv"
-    //    );
+    recordInteractions<QuadrupoleLinearBVHSolver<Gravity>>(
+            grader,
+            argc > 1 ? std::string{argv[1]} : "benchmarks/interactions/lbvh-2.csv"
+    );
 
     recordInteractions<QuadrupoleFMMSolver<Gravity>>(
             grader,
-            argc > 1 ? std::string{argv[1]} : "benchmarks/fmm-2-interactions.csv"
+            argc > 1 ? std::string{argv[1]} : "benchmarks/interactions/fmm-2.csv"
     );
+
+    recordInteractions<QuadrupoleMVDRSolver<Gravity>>(
+            grader,
+            argc > 1 ? std::string{argv[1]} : "benchmarks/interactions/mvdr-2.csv"
+    );
+
 }

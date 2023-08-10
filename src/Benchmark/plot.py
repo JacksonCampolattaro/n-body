@@ -20,11 +20,28 @@ text_width = 5
 # Standard colors, to be used in all plots
 brewer_colors = sns.color_palette("Set1", 5)
 color_map = {
+
     'RBH': brewer_colors[0],
+
     'BH': brewer_colors[1],
+    'BH (Quadrupole)': sns.light_palette(brewer_colors[1], n_colors=4)[1],
+    'BH (Octupole)': sns.light_palette(brewer_colors[1], n_colors=4)[2],
+    'BH (Hexadecupole)': sns.light_palette(brewer_colors[1], n_colors=4)[3],
+
     'LBVH': brewer_colors[4],
+    'LBVH (Quadrupole)': sns.light_palette(brewer_colors[4], n_colors=4)[1],
+    'LBVH (Octupole)': sns.light_palette(brewer_colors[4], n_colors=4)[2],
+    'LBVH (Hexadecupole)': sns.light_palette(brewer_colors[4], n_colors=4)[3],
+
     'MVDR': brewer_colors[3],
+    'MVDR (Quadrupole)': sns.light_palette(brewer_colors[3], n_colors=4)[1],
+    'MVDR (Octupole)': sns.light_palette(brewer_colors[3], n_colors=4)[2],
+    'MVDR (Hexadecupole)': sns.light_palette(brewer_colors[3], n_colors=4)[3],
+
     'FMM': brewer_colors[2],
+    'FMM (Quadrupole)': sns.light_palette(brewer_colors[2], n_colors=4)[1],
+    'FMM (Octupole)': sns.light_palette(brewer_colors[2], n_colors=4)[2],
+    'FMM (Hexadecupole)': sns.light_palette(brewer_colors[2], n_colors=4)[3],
 
     'Octree': brewer_colors[1],
     'Linear BVH': brewer_colors[0],
@@ -206,7 +223,7 @@ def plot_theta_vs_time_and_error(filename, multipole):
     }):
         ax1 = sns.lineplot(data=df, x="θ", y="Time (s)", color=color_map["Time"])
         ax1.set(xlabel="$\\theta$", ylabel='Time (s)')
-        #ax1.set_yscale('log')
+        # ax1.set_yscale('log')
         ax1.tick_params(axis='y', colors=color_map["Time"])
         ax1.spines['left'].set_color(color_map["Time"])
 
@@ -217,7 +234,7 @@ def plot_theta_vs_time_and_error(filename, multipole):
     }):
         ax2 = plt.twinx()
         sns.lineplot(ax=ax2, data=df, x="θ", y="% Error (Constitutional)", color=color_map["Error"])
-        #ax2.set_yscale('log')
+        # ax2.set_yscale('log')
         ax2.set(xlabel="$\\theta$", ylabel='\\% Error (Constitutional)')
         ax2.spines['right'].set_color(color_map["Error"])
         x_range = ax2.get_xlim()
@@ -247,7 +264,7 @@ def plot_solvers_vs_error_vs_time(filename):
 
 
 def plot_error_vs_time(filename, multipole_order):
-    fig = plt.figure(figsize=(0.8*text_width, 0.8*text_width))
+    fig = plt.figure(figsize=(0.8 * text_width, 0.8 * text_width))
     df = pd.read_csv(filename)
     base_color = color_map[df["Solver"][0]]
     df = df[df["Multipole Order"] == multipole_order]
@@ -271,7 +288,7 @@ def plot_error_vs_time(filename, multipole_order):
 
 
 def plot_multipoles_vs_error_vs_time(filename):
-    fig = plt.figure(figsize=(0.8*text_width, 0.8*text_width))
+    fig = plt.figure(figsize=(0.8 * text_width, 0.8 * text_width))
     df = pd.read_csv(filename)
     base_color = color_map[df["Solver"][0]]
 
@@ -346,14 +363,14 @@ def plot_interaction_distances_vs_sizes(filename, theta=None):
         )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_size.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-size.pdf")
     plt.clf()
 
 
 def plot_dual_interaction_distances_vs_ratios(filename):
     df = pd.read_csv(filename)
     df = df.loc[df["Type"] == 'Node-Node']
-    df['Ratio'] = df[['Active Size', 'Passive Size']].max(axis=1)
+    df['Ratio'] = df['Active Size'] / df['Passive Size']
     df = df[['Distance', 'Ratio']]
     print(df)
 
@@ -373,20 +390,21 @@ def plot_dual_interaction_distances_vs_ratios(filename):
     ax.set_xscale('log', base=2)
     ax.set_yscale('log', base=2)
     ax.set(ylabel='Active Size / Passive Size')
-    ax.set_aspect('equal', adjustable='box')
+    # ax.set_aspect('equal', adjustable='box')
 
-    sns.lineplot(
-        x=[min_x, max_x], y=[min_x, max_x], ax=ax,
-        color="black", alpha=0.3
-    )
+    # sns.lineplot(
+    #     x=[min_x, max_x], y=[min_x, max_x], ax=ax,
+    #     color="black", alpha=0.3
+    # )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_ratio.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-ratio.pdf")
     plt.clf()
 
 
 def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
     df = pd.read_csv(filename)
+    df = df[df["Type"] == "Node-Node"]
     df['Max Size'] = df[['Active Size', 'Passive Size']].max(axis=1)
     print(df)
 
@@ -414,7 +432,38 @@ def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
         )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "_distance_vs_size.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-max-size.pdf")
+    plt.clf()
+
+
+def plot_dual_interaction_sizes(filename):
+    df = pd.read_csv(filename)
+    df = df.loc[df["Type"] == 'Node-Node']
+    print(df)
+
+    min_x = df['Passive Size'].min()
+    max_x = df['Passive Size'].max()
+
+    plt.figure(figsize=(text_width / 2, text_width / 2))
+    ax = sns.histplot(
+        data=df, x='Passive Size', y='Active Size',
+        bins=(np.geomspace(min_x, max_x, num=64), np.geomspace(min_x, max_x, num=64)),
+        cmap=histogram_color_map,
+        linewidth=-0.1
+        # marker="o", color=(*brewer_colors[1], 0.25),
+    )
+    ax.set_xscale('log', base=2)
+    ax.set_yscale('log', base=2)
+    # ax.set(ylabel='Active Size / Passive Size')
+    ax.set_aspect('equal', adjustable='box')
+
+    sns.lineplot(
+        x=[min_x, max_x], y=[min_x*2, max_x*2], ax=ax,
+        color="black", alpha=0.3
+    )
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "-sizes.pdf")
     plt.clf()
 
 
@@ -437,7 +486,9 @@ def plot_times(filename):
 def plot_times_vs_n(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
-    df = df[[x_label, 'N', 'Time']]
+
+    df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
+    #df = df[[x_label, 'N', 'Time']]
 
     df = df.drop(df[df[x_label] == 'RBH'].index)
 
@@ -446,6 +497,8 @@ def plot_times_vs_n(filename):
         data=df, x="N", y="Time", hue=x_label, palette=color_map
     )
     ax.set(ylabel='Time (S / Iteration)')
+    ax.set_xscale('log')
+    ax.set_yscale('log')
 
     plt.tight_layout()
     plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
@@ -467,7 +520,7 @@ def plot_theta_vs_n(filename):
     plt.clf()
 
 
-def plot_interaction_counts_vs_n(filename):
+def plot_interaction_counts_vs_n(filename, solver=None):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
     df['Total Interactions'] = df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
@@ -564,8 +617,9 @@ def main():
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
-    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
-    plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
+    # merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
+    # plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
+    # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
@@ -576,11 +630,14 @@ def main():
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
 
     # print("Plotting interaction lists")
-    # plot_interaction_distances_vs_sizes("benchmarks/bh-2-interactions-theta=0.44804686.csv", 0.44804686)
-    # plot_interaction_distances_vs_sizes("benchmarks/lbvh-bh-2-interactions-theta=0.7292969.csv", 0.7292969)
-    # plot_dual_interaction_distances_vs_sizes("benchmarks/mvdr-2-interactions-theta=0.7292969.csv", 0.7292969)
-    # plot_dual_interaction_distances_vs_ratios("benchmarks/mvdr-2-interactions-theta=0.7292969.csv")
-    # plot_dual_interaction_distances_vs_ratios("benchmarks/fmm-2-interactions-theta=0.38476565.csv")
+    plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
+    plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031/2)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
+    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
+    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
+    plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
+    plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
 
     print("Plotting theta comparisons")
     plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")

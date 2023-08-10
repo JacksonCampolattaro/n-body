@@ -30,7 +30,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
     spdlog::info("Using theta = {}", optimalTheta);
 
     // Next, time it for several simulations
-    for (const std::string &dataset: {"LOW", "MED", "HI"}) {
+    for (const std::string &dataset: {"LOW", "MED"/*, "HI"*/}) {
 
         Physics::Gravity rule{};
         Simulation scenario;

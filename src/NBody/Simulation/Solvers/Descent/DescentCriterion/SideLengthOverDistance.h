@@ -18,8 +18,7 @@ namespace NBody::Descent {
         inline bool operator()(const TreeNode &activeNode, const Position &point) const {
             float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), point);
             return (activeNode.sideLength() / distance) < _theta
-                   && !doIntersect(exclusionRegion(activeNode), point)
-                   && activeNode.contents().size() > 10;
+                   && !doIntersect(exclusionRegion(activeNode), point);
         }
 
         template<NodeType TreeNode>
@@ -32,23 +31,21 @@ namespace NBody::Descent {
         template<NodeType ActiveTreeNode, NodeType PassiveTreeNode>
         inline Recommendation operator()(const ActiveTreeNode &activeNode, const PassiveTreeNode &passiveNode) const {
 
-            float activeSideLength = activeNode.sideLength();
-            float passiveSideLength = passiveNode.sideLength() * 2;
+            float activeSideLength2 = activeNode.sideLength() * activeNode.sideLength();
+            float passiveSideLength2 = passiveNode.sideLength() * passiveNode.sideLength();
 
-            float distance = glm::distance((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
+            float distance2 = glm::distance2((glm::vec3) activeNode.summary().centerOfMass(), passiveNode.center());
 
-            if (((activeSideLength + passiveSideLength) / distance) < _theta
-                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode))
-                   //&& activeNode.contents().size() > 10
-                   )
+            if ((4 * std::max(activeSideLength2, passiveSideLength2) / distance2) < (_theta * _theta)
+                && !doIntersect(exclusionRegion(passiveNode), exclusionRegion(activeNode)))
                 return Recommendation::Approximate;
 
             // Descend the passive node, as long as it's more than half the size of the active node
-            Recommendation shouldDescendPassive = (activeNode.sideLength() <= passiveNode.sideLength() * 2.0f) ?
+            Recommendation shouldDescendPassive = (activeSideLength2 <= passiveSideLength2 * 4.0f) ?
                                                   Recommendation::DescendPassiveNode : Recommendation::DoNotDescend;
 
             // Descend the active node, as long as it's more than half the size of the passive node
-            Recommendation shouldDescendActive = (passiveNode.sideLength() <= activeNode.sideLength() * 2.0f) ?
+            Recommendation shouldDescendActive = (passiveSideLength2 <= activeSideLength2 * 4.0f) ?
                                                  Recommendation::DescendActiveNode : Recommendation::DoNotDescend;
 
             return shouldDescendPassive | shouldDescendActive;
