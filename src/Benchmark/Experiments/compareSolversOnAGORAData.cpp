@@ -25,7 +25,7 @@ template<typename S>
 void runFastTests(const std::string &label, std::ostream &out) {
 
     // First, determine the best value of theta for this solver
-    ConstitutionalGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
+    RMSGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
     auto optimalTheta = lowGrader.optimalTheta<S>();
     spdlog::info("Using theta = {}", optimalTheta);
 
@@ -56,7 +56,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/agora/all-solvers.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/agora/all-solvers-rms.csv"};
     out << "Solver,Multipole Order,N,Theta,Time\n";
 
     runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole",  out);

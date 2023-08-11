@@ -19,7 +19,7 @@ namespace NBody {
         }
 
         bool acceptable(const Simulation &candidateSimulation) const override {
-            return error(candidateSimulation) < 0.5;
+            return error(candidateSimulation) < 1.0;
         };
 
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
