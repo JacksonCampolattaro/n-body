@@ -30,7 +30,7 @@ void runFastTests(const std::string &label, std::ostream &out) {
     spdlog::info("Using theta = {}", optimalTheta);
 
     // Next, time it for several simulations
-    for (const std::string &dataset: {"LOW"/*, "MED", "HI"*/}) {
+    for (const std::string &dataset: {"LOW", "MED", "HI"}) {
 
         Physics::Gravity rule{};
         Simulation scenario;
@@ -60,19 +60,19 @@ int main(int argc, char *argv[]) {
     out << "Solver,Multipole Order,N,Theta,Time\n";
 
     runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole",  out);
-//    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
-//    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
+    runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
+    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole",  out);
-//    runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
-//    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
+    runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
+    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
 
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole",  out);
-//    runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
-//    runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
+    runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
+    runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
 
     runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
-//    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
-//    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
+    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
+    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
 
 }
