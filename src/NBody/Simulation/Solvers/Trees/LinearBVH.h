@@ -13,6 +13,7 @@
 
 #include <NBody/Physics/Summaries/CenterOfMassSummary.h>
 #include <NBody/Physics/Summaries/BoundingBoxSummary.h>
+#include <NBody/Physics/Summaries/EmptySummary.h>
 
 #include <tbb/parallel_for_each.h>
 #include <strings.h>
@@ -143,6 +144,10 @@ namespace NBody {
 
     using ActiveLinearBVH = LinearBVH<CenterOfMassSummary>;
     using QuadrupoleActiveLinearBVH = MultipoleActiveLinearBVH<2>;
+    using OctupoleActiveLinearBVH = MultipoleActiveLinearBVH<3>;
+    using HexadecupoleActiveLinearBVH = MultipoleActiveLinearBVH<4>;
+
+    using ImplicitPassiveLinearBVH = LinearBVH<EmptySummary<AccelerationSummary>>;
 
 }
 

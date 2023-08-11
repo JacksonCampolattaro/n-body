@@ -474,6 +474,20 @@ def plot_dual_interaction_sizes(filename):
     plt.clf()
 
 
+def plot_tree_sizes(filename):
+    df = pd.read_csv(filename)
+    df['Tree Size (bytes)'] = df["Node Count"] * 48
+
+    plt.figure(figsize=(text_width / 2, text_width / 2))
+    ax = sns.lineplot(
+        data=df, x="N", y="Tree Size (bytes)", hue="Tree", palette=color_map
+    )
+
+    plt.tight_layout()
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-size.pdf")
+    plt.clf()
+
+
 def plot_times(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
@@ -493,6 +507,8 @@ def plot_times(filename):
 def plot_times_vs_n(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
+
+    df = df[df['Multipole Order'] == "Octupole"]
 
     df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
     # df = df[[x_label, 'N', 'Time']]
@@ -622,14 +638,16 @@ def main():
     # plot_field('benchmarks/sample-triacontadyupole-tree.csv')
 
     # print("Plotting solver benchmarks")
-    plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
-    # merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
-    # plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
+    # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
+    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
+    plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
 
     # print("Plotting tree benchmarks")
+    # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")
+    # plot_tree_sizes("benchmarks/tree-construction-random-data.csv")
     # merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
     # merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")

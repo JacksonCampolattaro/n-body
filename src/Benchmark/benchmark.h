@@ -146,6 +146,7 @@ void testTreeConstruction(const std::string &label, Simulation &simulation, std:
     out << label << ","
         << simulation.particleCount() << ","
         << tree.maxLeafSize() << ","
+        << tree.root().numberOfDescendants() << ","
         << time.count() << "\n" << std::flush;
 }
 

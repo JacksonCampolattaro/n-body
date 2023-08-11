@@ -15,11 +15,11 @@
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::size_t repetitions = 3;
+    std::size_t repetitions = 1;
     std::size_t nMax = 10'000'000;
 
     std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/tree-construction-random-data.csv"};
-    out << "Tree,N,Max Leaf Size,Time\n";
+    out << "Tree,N,Max Leaf Size,Node Count,Time\n";
 
     for (std::size_t n = 1'000; n < nMax; n = n * 1.25f) {
         spdlog::info("Running benchmarks with {} random particles", n);
@@ -32,13 +32,13 @@ int main(int argc, char *argv[]) {
             {
                 spdlog::info("Linear-BVH construction");
                 Simulation simulation{scenario};
-                testTreeConstruction<ActiveLinearBVH>("Linear BVH", simulation, out);
+                testTreeConstruction<ImplicitPassiveLinearBVH>("Linear BVH", simulation, out);
             }
 
             {
                 spdlog::info("Octree construction");
                 Simulation simulation{scenario};
-                testTreeConstruction<ActiveOctree>("Octree", simulation, out);
+                testTreeConstruction<ImplicitPassiveOctree>("Octree", simulation, out);
             }
         }
     }

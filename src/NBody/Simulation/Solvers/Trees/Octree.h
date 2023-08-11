@@ -219,6 +219,7 @@ namespace NBody {
     using ActiveOctree = Octree<CenterOfMassSummary>;
     using QuadrupoleActiveOctree = MultipoleActiveOctree<2>;
     using OctupoleActiveOctree = MultipoleActiveOctree<3>;
+    using HexadecupoleActiveOctree = MultipoleActiveOctree<4>;
 
     template<std::size_t Order>
     using MultipolePassiveOctree = Octree<MultipoleAccelerationSummary<Order>>;

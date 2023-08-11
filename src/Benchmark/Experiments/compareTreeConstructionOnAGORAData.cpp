@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     std::size_t repetitions = 10;
 
     std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/tree-construction-agora-data.csv"};
-    out << "Tree,N,Max Leaf Size,Time\n";
+    out << "Tree,N,Max Leaf Size,Node Count,Time\n";
 
     for (const std::string &dataset: {"LOW", "MED", "HI"}) {
 

@@ -47,11 +47,11 @@ namespace NBody {
 
             // sanity check: a node should always enclose all of its children
             // fixme: this is actually subject to rounding error
-//            for (auto &entity: contents()) {
-//                auto bbox = implementation().boundingBox();
-//                auto p = context.template get<const Position>(entity);
-//                assert(bbox.contains(p));
-//            }
+            //            for (auto &entity: contents()) {
+            //                auto bbox = implementation().boundingBox();
+            //                auto p = context.template get<const Position>(entity);
+            //                assert(bbox.contains(p));
+            //            }
         }
 
         template<typename... Context>
@@ -84,6 +84,17 @@ namespace NBody {
             for (const NodeImplementation &child: implementation().children())
                 maxDepth = std::max(maxDepth, child.depth());
             return maxDepth + 1;
+        }
+
+        [[nodiscard]] std::size_t numberOfDescendants() const {
+            if (implementation().isLeaf())
+                return 1;
+            else
+                return std::transform_reduce(
+                        implementation().children().begin(), implementation().children().end(),
+                        1, std::plus<>{},
+                        [](const auto &node) { return node.numberOfDescendants(); }
+                );
         }
 
         [[nodiscard]] std::string toString(const std::string &offset = "") const {
