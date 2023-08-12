@@ -97,8 +97,14 @@ namespace NBody::Descent {
         if (passiveNode.isLeaf()) {
 
             // Treat leaf-leaf interactions
-            for (auto &activeNode: leafActiveNodes)
-                Descent::none(activeNode.get(), passiveNode, rule, activeContext, passiveContext);
+            for (const ActiveNode &activeNode: leafActiveNodes)
+                for (auto passiveEntity: passiveNode.contents())
+                    passiveContext.get<Acceleration>(passiveEntity) += Descent::activeTree(
+                            activeNode,
+                            passiveContext.get<const Position>(passiveEntity),
+                            descentCriterion, rule,
+                            activeContext
+                    );
 
             // Apply forces for each contained particle
             for (auto passiveEntity: passiveNode.contents()) {

@@ -33,7 +33,7 @@ namespace NBody::Generator {
                                positionDistribution(generator)};
 
             auto perlin = glm::perlin(position / 256.0f) + glm::perlin(position);
-            if (perlin > 0.5) {
+            if (perlin > 0.9) {
 
                 auto particle = simulation.newParticle()
                         .setPosition(position)

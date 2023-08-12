@@ -19,6 +19,50 @@
 #include "../bestTheta.h"
 #include "../benchmark.h"
 
+template<typename S>
+void sweepNFixedTheta(const std::string &label, std::ostream &out, std::pair<int, int> range = {140'000, 150'000}) {
+
+    // First, determine the best value of theta for this solver
+    ConstitutionalGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
+    auto optimalTheta = lowGrader.optimalTheta<S>();
+    spdlog::info("Using theta = {}", optimalTheta);
+
+    // Next, time it for several simulations
+    for (std::size_t n = range.first; n < range.second; n = n * 1.5) {
+
+        Simulation scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, n);
+        Gravity rule{};
+
+        S solver{scenario, rule};
+        solver.descentCriterion().theta() = optimalTheta;
+        auto time = timedStep(solver);
+        spdlog::info("{}, {} --> {}s", solver.name(), n, time.count());
+
+        // If any scenario takes too long to run, stop early!
+        if (time.count() > 60.0f) break;
+
+        spdlog::debug("Running one step and counting interactions");
+        Simulation trackingSimulation = scenario;
+        SimpleTrackingRule<Gravity> trackingRule{solver.rule()};
+        ReplaceRule<S, SimpleTrackingRule<Gravity>> interactionTrackingSolver{trackingSimulation, trackingRule};
+        interactionTrackingSolver.descentCriterion().theta() = solver.descentCriterion().theta();
+        interactionTrackingSolver.step();
+        spdlog::debug("Interactions = {}", trackingRule.toString());
+        float approximationRatio = (float) trackingRule.totalCount() / (float) std::pow(scenario.particleCount(), 2);
+        spdlog::debug("Approximation Ratio = {}", approximationRatio);
+
+        out << label << ","
+            << scenario.particleCount() << ","
+            << solver.descentCriterion().theta() << ","
+            << time.count() << ","
+            << trackingRule.particleParticleCount() << ","
+            << trackingRule.particleNodeCount() << ","
+            << trackingRule.nodeParticleCount() << ","
+            << trackingRule.nodeNodeCount() << ","
+            << approximationRatio << "\n" << std::flush;
+    }
+}
+
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
@@ -27,31 +71,21 @@ int main(int argc, char *argv[]) {
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
-    std::size_t nMax = 100'000;
+    sweepNFixedTheta<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole", out);
+    //sweepNFixedTheta<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
+    //sweepNFixedTheta<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
-    for (std::size_t n = 10'000; n < nMax; n = n * 1.25) {
+    sweepNFixedTheta<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole", out);
+    //sweepNFixedTheta<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole", out);
+    //sweepNFixedTheta<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole", out);
 
-        spdlog::info("Generating a random dataset with {} particles", n);
-        Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);
-        Gravity rule{};
+    sweepNFixedTheta<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole", out);
+    //sweepNFixedTheta<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", out);
+    //sweepNFixedTheta<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole", out);
 
-        ConstitutionalGrader grader{scenario, rule};
+    sweepNFixedTheta<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole", out);
+    //sweepNFixedTheta<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", out);
+    //sweepNFixedTheta<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole", out);
 
-        runTest<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole", grader, out);
-        runTest<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole", grader, out);
-        runTest<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole", grader, out);
-        runTest<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole", grader, out);
-
-        runTest<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", grader, out);
-        runTest<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", grader, out);
-        runTest<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole", grader, out);
-        runTest<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", grader, out);
-
-        runTest<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole", grader, out);
-        runTest<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole", grader, out);
-        runTest<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole", grader, out);
-        runTest<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", grader, out);
-
-    }
 
 }

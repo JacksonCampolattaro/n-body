@@ -56,16 +56,16 @@ void runFastTests(const std::string &label, std::ostream &out) {
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/agora/all-solvers-rms.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/agora/all-solvers-constitutional.csv"};
     out << "Solver,Multipole Order,N,Theta,Time\n";
 
     runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole",  out);
     runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
-    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
+    //runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole",  out);
     runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
-    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
+    //runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
 
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole",  out);
     runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);

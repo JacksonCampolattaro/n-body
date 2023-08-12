@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
     Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
 
-    QuadrupoleLinearBVHSolver<Gravity> solver{simulation, rule};
-    solver.theta() = 0.8;
+    QuadrupoleImplicitFMMSolver<Gravity> solver{simulation, rule};
+    solver.theta() = 0.41;
 
     spdlog::info("Running {} for 1 iteration", solver.name());
     auto time = timedInvoke([&]() {

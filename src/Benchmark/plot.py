@@ -488,6 +488,16 @@ def plot_tree_sizes(filename):
     plt.clf()
 
 
+def solver_mean_values(filename):
+    df = pd.read_csv(filename)
+    df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
+    df.groupby("Solver")[df.select_dtypes(include=np.number).columns.tolist()].mean()
+    df = df.pivot_table(index=['Solver'], columns=['N'], values='Time')
+    print(df.to_latex(
+        float_format="%.2f",
+    ))
+
+
 def plot_times(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
@@ -546,10 +556,12 @@ def plot_theta_vs_n(filename):
 def plot_interaction_counts_vs_n(filename, solver=None):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
-    df['Total Interactions'] = df['Particle-Particle']
-    # df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
+
+    df['Total Interactions'] = df['Particle-Particle'] + df['Particle-Node'] + df['Node-Particle'] + df['Node-Node']
+    df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
     df = df[[x_label, 'N', 'Total Interactions']]
 
+    plt.figure(figsize=(text_width, text_width / 2))
     ax = sns.lineplot(data=df, x="N", y="Total Interactions", hue="Solver", palette=color_map)
     ax.set(ylabel='Interaction Count')
 
@@ -569,11 +581,10 @@ def plot_interactions(filename):
     plt.clf()
 
 
-def merge_benchmarks(path):
-    pattern = os.path.splitext(path)[0] + ".*.csv"
+def merge_benchmarks(pattern, output):
     benchmark_paths = glob.glob(pattern)
     tables = [pd.read_csv(p) for p in benchmark_paths]
-    pd.concat(tables).to_csv(path, index=False)
+    pd.concat(tables).to_csv(output, index=False)
 
 
 def main():
@@ -639,13 +650,16 @@ def main():
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
-    # merge_benchmarks("remote-benchmarks/all-solvers-cluster-rms.csv")
     # plot_times_vs_n("remote-benchmarks/all-solvers-agora-data-constitutional.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
+    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.*.csv",
+                     "benchmarks/agora/all-solvers-cluster-rms.csv")
     # plot_times_vs_n("benchmarks/agora/all-solvers-cluster-constitutional.csv")
     plot_times_vs_n("benchmarks/agora/all-solvers-cluster-rms.csv")
+    solver_mean_values("benchmarks/agora/all-solvers-cluster-constitutional.csv")
+    solver_mean_values("benchmarks/agora/all-solvers-cluster-rms.csv")
 
     # print("Plotting tree benchmarks")
     # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")
@@ -655,27 +669,27 @@ def main():
     # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
 
-    print("Plotting interaction counts")
-    plot_interaction_counts("benchmarks/interactions/all-solvers-count.csv")
-    plot_interaction_counts_vs_n("benchmarks/random/all-solvers.csv")
+    # print("Plotting interaction counts")
+    # plot_interaction_counts("benchmarks/interactions/all-solvers-count.csv")
+    # plot_interaction_counts_vs_n("benchmarks/random/all-solvers.csv")
 
-    print("Plotting interaction lists")
-    plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
-    plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
-    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031 / 2)
-    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
-    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
-    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
-    plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
-    plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
+    # print("Plotting interaction lists")
+    # plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
+    # plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
+    # plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031 / 2)
+    # plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
+    # plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
+    # plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
+    # plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
+    # plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
 
-    print("Plotting theta comparisons")
-    plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
-    plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
+    # print("Plotting theta comparisons")
+    # plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
+    # plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
     # plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
 
