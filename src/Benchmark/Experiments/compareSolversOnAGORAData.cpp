@@ -63,16 +63,16 @@ int main(int argc, char *argv[]) {
     runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
     runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
-    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
-    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
-    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
-
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole",  out);
     runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
-    //runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
+    runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
 
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole",  out);
     runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
     //runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
+
+    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
+    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
+    //runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
 
 }
