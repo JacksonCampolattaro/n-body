@@ -27,9 +27,9 @@ int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
     Glib::init();
 
-    json scenario = Generator::realisticGalaxy();
+    //json scenario = Generator::realisticGalaxy();
     //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 40'000);
+    json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'500);
 
     Simulation simulation;
     from_json(scenario, simulation);
@@ -41,14 +41,15 @@ int main(int argc, char *argv[]) {
     //solver.theta() = 0.7925781;
 
     //QuadrupoleFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
-    QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
-    solver.theta() = 0.38476565;
+    //QuadrupoleImplicitFMMSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    //solver.theta() = 0.38476565;
 
     //QuadrupoleMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
     //QuadrupoleImplicitMVDRSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
     //solver.theta() = 0.7925781;
 
-
+    QuadrupoleBarnesHutSolver<SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    solver.descentCriterion().theta() = 0.5;
 
     spdlog::info("Running {} for 1 iteration", solver.name());
     solver.step();

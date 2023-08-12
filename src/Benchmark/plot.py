@@ -508,7 +508,7 @@ def plot_times_vs_n(filename):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
 
-    df = df[df['Multipole Order'] == "Octupole"]
+    df = df[df['Multipole Order'] == "Quadrupole"]
 
     df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
     # df = df[[x_label, 'N', 'Time']]
@@ -639,11 +639,13 @@ def main():
 
     # print("Plotting solver benchmarks")
     # plot_times_vs_n("benchmarks/all-solvers-random-data.csv")
-    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.csv")
-    plot_times_vs_n("remote-benchmarks/all-solvers-agora-data.csv")
+    # merge_benchmarks("remote-benchmarks/all-solvers-cluster-rms.csv")
+    # plot_times_vs_n("remote-benchmarks/all-solvers-agora-data-constitutional.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
+    # plot_times_vs_n("benchmarks/agora/all-solvers-cluster-constitutional.csv")
+    plot_times_vs_n("benchmarks/agora/all-solvers-cluster-rms.csv")
 
     # print("Plotting tree benchmarks")
     # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")

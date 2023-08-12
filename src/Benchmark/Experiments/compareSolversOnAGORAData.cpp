@@ -25,7 +25,7 @@ template<typename S>
 void runFastTests(const std::string &label, std::ostream &out) {
 
     // First, determine the best value of theta for this solver
-    RMSGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
+    ConstitutionalGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
     auto optimalTheta = lowGrader.optimalTheta<S>();
     spdlog::info("Using theta = {}", optimalTheta);
 
@@ -61,18 +61,18 @@ int main(int argc, char *argv[]) {
 
     runFastTests<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole",  out);
     runFastTests<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
-    //runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
+    runFastTests<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
+
+    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
+    runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
+    runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
 
     runFastTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole",  out);
     runFastTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole",  out);
     //runFastTests<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole",  out);
 
     runFastTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole",  out);
-    //runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
+    runFastTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole",  out);
     //runFastTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole",  out);
-
-    runFastTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole",  out);
-    //runFastTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole",  out);
-    //runFastTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole",  out);
 
 }
