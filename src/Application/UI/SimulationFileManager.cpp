@@ -46,7 +46,7 @@ void NBody::SimulationFileManager::importFromPath(const Glib::RefPtr<Gio::File> 
         return;
     }
 
-    if (path.extension().string() == ".bin") {
+    if (path.extension().string() == ".bin" || path.extension().string() == ".std") {
         spdlog::debug("Opening Tipsy file at path \"{}\"", file->get_path());
         std::ifstream inputFile(file->get_path(), std::ios::binary);
         from_tipsy(inputFile, _simulation);

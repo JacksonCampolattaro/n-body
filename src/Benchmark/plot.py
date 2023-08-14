@@ -298,9 +298,12 @@ def plot_multipoles_vs_error_vs_time(filename):
         hue="Multipole Order", palette=sns.light_palette(base_color, n_colors=4)[1:]
     )
     ax.set(xlabel="\\% Error (Constitutional)")
+    ax.legend(loc="upper right")
     ax.set_xscale('log')
     ax.set_yscale('log')
-    # ax.set_xlim(0.1, 10)
+    ax.set_xlim(0.1, 5)
+    ax.set_ylim(0.1, 15)
+    #sns.move_legend(ax, "upper right")
     y_range = ax.get_ylim()
     sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
     sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
@@ -488,10 +491,10 @@ def plot_tree_sizes(filename):
     plt.clf()
 
 
-def solver_mean_values(filename):
+def solver_median_values_to_latex(filename):
     df = pd.read_csv(filename)
     df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
-    df.groupby("Solver")[df.select_dtypes(include=np.number).columns.tolist()].mean()
+    df.groupby("Solver")[df.select_dtypes(include=np.number).columns.tolist()].median()
     df = df.pivot_table(index=['Solver'], columns=['N'], values='Time')
     print(df.to_latex(
         float_format="%.2f",
@@ -514,27 +517,25 @@ def plot_times(filename):
     plt.clf()
 
 
-def plot_times_vs_n(filename):
+def plot_times_vs_n(filename, multipole_order=None):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
 
-    df = df[df['Multipole Order'] == "Quadrupole"]
+    if multipole_order is not None:
+        df = df[df['Multipole Order'] == multipole_order]
 
     df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
-    # df = df[[x_label, 'N', 'Time']]
-
-    df = df.drop(df[df[x_label] == 'RBH'].index)
 
     plt.figure(figsize=(text_width, 4))
     ax = sns.lineplot(
         data=df, x="N", y="Time", hue=x_label, palette=color_map
     )
     ax.set(ylabel='Time (S / Iteration)')
-    ax.set_xscale('log')
-    ax.set_yscale('log')
+    #ax.set_xscale('log')
+    #ax.set_yscale('log')
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "_vs_time.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-time.pdf")
     plt.clf()
 
 
@@ -654,12 +655,16 @@ def main():
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
-    merge_benchmarks("remote-benchmarks/all-solvers-agora-data.*.csv",
-                     "benchmarks/agora/all-solvers-cluster-rms.csv")
-    # plot_times_vs_n("benchmarks/agora/all-solvers-cluster-constitutional.csv")
-    plot_times_vs_n("benchmarks/agora/all-solvers-cluster-rms.csv")
-    solver_mean_values("benchmarks/agora/all-solvers-cluster-constitutional.csv")
-    solver_mean_values("benchmarks/agora/all-solvers-cluster-rms.csv")
+    merge_benchmarks("remote-benchmarks/random/all-solvers-constitutional.*.csv",
+                     "benchmarks/random/all-solvers-cluster-constitutional.csv")
+    plot_times_vs_n("benchmarks/random/all-solvers-cluster-constitutional.csv", "Octupole")
+    merge_benchmarks("remote-benchmarks/random/all-solvers-rms.*.csv",
+                     "benchmarks/random/all-solvers-cluster-rms.csv")
+    plot_times_vs_n("benchmarks/random/all-solvers-cluster-rms.csv", "Quadrupole")
+    plot_times_vs_n("benchmarks/agora/all-solvers-constitutional.csv")
+
+    solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-constitutional.csv")
+    solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-rms.csv")
 
     # print("Plotting tree benchmarks")
     # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")
@@ -683,13 +688,13 @@ def main():
     # plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
     # plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
 
-    # print("Plotting theta comparisons")
+    print("Plotting theta comparisons")
     # plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
-    # plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
-    # plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
-    # plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
-    # plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
     # plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
 
