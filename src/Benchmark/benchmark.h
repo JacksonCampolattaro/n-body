@@ -136,6 +136,38 @@ void runFastTest(const std::string &label, const Grader &grader, std::ofstream &
 
 }
 
+template<class CandidateSolver>
+void timeSolverOnScenarios(const std::string &label,
+                  const Grader &grader, const std::list<Simulation> &scenarios,
+                  std::ofstream &out) {
+
+    // If the file is empty, add a header
+    if (out.tellp() == 0)
+        out << "Solver,Multipole Order,N,Theta,Time\n";
+
+    // Select theta for this solver
+    float theta = grader.optimalTheta<CandidateSolver>();
+    spdlog::info("Using theta={}", theta);
+
+    // Time the solver on each of the scenarios
+    for (const auto &s: scenarios) {
+        Simulation simulation{s};
+        Physics::Gravity rule{};
+
+        CandidateSolver solver{simulation, rule};
+        solver.descentCriterion().theta() = theta;
+        auto time = timedStep(solver);
+        spdlog::info("{}, n={} --> {}s", solver.name(), simulation.particleCount(), time.count());
+        out << label << ","
+            << simulation.particleCount() << ","
+            << theta << ","
+            << time.count() << std::endl;
+
+        // If any scenario takes too long to run, stop early!
+        if (time.count() > 300.0f) break;
+    }
+}
+
 
 template<typename TreeType>
 void testTreeConstruction(const std::string &label, Simulation &simulation, std::ofstream &out) {

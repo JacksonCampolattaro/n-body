@@ -29,6 +29,7 @@ namespace NBody {
 
             // Compute accelerations
             {
+                std::atomic<std::size_t> completedParticles = 0;
                 this->_statusDispatcher.emit({"Computing accelerations"});
                 auto view = this->_simulation.template view<const Position, Acceleration>();
                 auto actorsView = this->_simulation.template view<const Position, const Mass>();
@@ -39,6 +40,13 @@ namespace NBody {
                     actorsView.each([&](const Position &activePosition, const Mass &activeMass) {
                         passiveAcceleration += (glm::vec3) this->_rule(activePosition, activeMass, passivePosition);
                     });
+                    completedParticles++;
+                    if (completedParticles % (view.size_hint() / 100) == 0)
+                        spdlog::trace(
+                                "{}/{} ({} %)",
+                                (std::size_t) completedParticles, view.size_hint(),
+                                100.0f * (float) completedParticles / view.size_hint()
+                        );
                 });
             }
         }

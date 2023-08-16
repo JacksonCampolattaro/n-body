@@ -20,7 +20,7 @@
 #include "../benchmark.h"
 
 template<typename S>
-void sweepNFixedTheta(const std::string &label, std::ostream &out, std::pair<int, int> range = {140'000, 150'000}) {
+void sweepNFixedTheta(const std::string &label, std::ostream &out, std::pair<int, int> range = {10'000, 1'000'000}) {
 
     // First, determine the best value of theta for this solver
     ConstitutionalGrader lowGrader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
@@ -30,7 +30,7 @@ void sweepNFixedTheta(const std::string &label, std::ostream &out, std::pair<int
     // Next, time it for several simulations
     for (std::size_t n = range.first; n < range.second; n = n * 1.5) {
 
-        Simulation scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, n);
+        Simulation scenario = Generator::createScenario(Generator::uniformRandomVolume, n);
         Gravity rule{};
 
         S solver{scenario, rule};
@@ -66,25 +66,25 @@ void sweepNFixedTheta(const std::string &label, std::ostream &out, std::pair<int
 int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
-    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/random/all-solvers.csv"};
+    std::ofstream out{argc > 1 ? std::string{argv[1]} : "benchmarks/uniform/all-solvers.csv"};
     out << "Solver,Multipole Order,N,Theta,Time,"
            "Particle-Particle,Particle-Node,Node-Particle,Node-Node,"
            "Approximation Ratio\n";
 
     sweepNFixedTheta<QuadrupoleImplicitMVDRSolver<Gravity>>("MVDR,Quadrupole", out);
-    //sweepNFixedTheta<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
+    sweepNFixedTheta<OctupoleImplicitMVDRSolver<Gravity>>("MVDR,Octupole", out);
     //sweepNFixedTheta<HexadecupoleImplicitMVDRSolver<Gravity>>("MVDR,Hexadecupole", out);
 
     sweepNFixedTheta<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole", out);
-    //sweepNFixedTheta<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole", out);
+    sweepNFixedTheta<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole", out);
     //sweepNFixedTheta<HexadecupoleImplicitFMMSolver<Gravity>>("FMM,Hexadecupole", out);
 
     sweepNFixedTheta<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole", out);
-    //sweepNFixedTheta<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", out);
+    sweepNFixedTheta<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", out);
     //sweepNFixedTheta<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole", out);
 
     sweepNFixedTheta<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole", out);
-    //sweepNFixedTheta<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", out);
+    sweepNFixedTheta<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", out);
     //sweepNFixedTheta<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole", out);
 
 

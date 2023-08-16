@@ -27,7 +27,7 @@ void sampleField(const std::string &name, const std::function<Acceleration(Posit
                  const BoundingBox &sampleRegion, float sampleResolution) {
 
     std::ofstream out{fmt::format(
-            "benchmarks/sample-{}.csv", name
+            "benchmarks/field/sample-{}.csv", name
     )};
     out << "x,y,z,fx,fy,fz\n";
 

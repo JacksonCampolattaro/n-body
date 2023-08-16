@@ -29,7 +29,7 @@ namespace NBody {
                 nlohmann::json jsonScenario;
                 scenarioFile >> jsonScenario;
                 from_json(jsonScenario, _scenario);
-            } else if (scenarioPath.extension().string() == ".bin") {
+            } else if (scenarioPath.extension().string() == ".bin" || scenarioPath.extension().string() == ".std") {
                 from_tipsy(scenarioFile, _scenario);
                 spdlog::info("loaded {} particles", _scenario.particleCount());
             } else {
@@ -104,7 +104,7 @@ namespace NBody {
             } else {
                 // Otherwise, we need to produce the reference simulation using the naive solver
                 spdlog::debug("Performing Naive step, for accuracy reference");
-                from_json(scenario(), _referenceSimulation);
+                _referenceSimulation = _scenario;
                 NaiveSolver<Physics::Gravity> referenceSolver{_referenceSimulation, _rule};
                 referenceSolver.updateAccelerations();
 

@@ -36,8 +36,8 @@ int main(int argc, char *argv[]) {
                           {10,  10,  0}};
     float fullRangeResolution = 0.05;
 
-    BoundingBox zoomRange{{4, -1, 0},
-                          {6, 1,  0}};
+    BoundingBox zoomRange{{1, -1, 0},
+                          {3, 1,  0}};
     float zoomRangeResolution = 0.01;
 
     BoundingBox extremeZoomRange{{4.9, -0.1, 0},

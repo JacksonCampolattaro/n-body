@@ -22,7 +22,7 @@
 template<typename CandidateSolver>
 void runThetaTests(std::string label, std::ostream &out, const Grader &grader, float minTheta, float maxTheta) {
 
-    int steps = 100;
+    int steps = 10;
     for (int i = 0; i < steps; ++i) {
         float theta = std::lerp(minTheta, maxTheta, sqrt((float) i / (float) steps));
 
@@ -50,26 +50,26 @@ int main(int argc, char *argv[]) {
     spdlog::set_level(spdlog::level::info);
 
 
-    ConstitutionalGrader grader{std::filesystem::path{"../n-body-scenarios/benchmark/LOW.bin"}};
+    ConstitutionalGrader grader{std::filesystem::path{"../n-body-scenarios/benchmark/mugs/g7124.std"}};
+
+//    {
+//        std::ofstream out{"benchmarks/theta/bh-mugs.csv"};
+//        out << "Solver,Multipole Order,N,θ,Time (s),% Error (Constitutional)\n";
+//        runThetaTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole", out, grader, 0.15, 0.6);
+//        runThetaTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", out, grader, 0.2, 0.8);
+//        runThetaTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole", out, grader, 0.25, 0.85);
+//    }
 
     {
-        std::ofstream out{"benchmarks/theta/bh.csv"};
+        std::ofstream out{"benchmarks/theta/lbvh-mugs.csv"};
         out << "Solver,Multipole Order,N,θ,Time (s),% Error (Constitutional)\n";
-        runThetaTests<QuadrupoleBarnesHutSolver<Gravity>>("BH,Quadrupole", out, grader, 0.1, 0.7);
-        runThetaTests<OctupoleBarnesHutSolver<Gravity>>("BH,Octupole", out, grader, 0.2, 0.8);
-        runThetaTests<HexadecupoleBarnesHutSolver<Gravity>>("BH,Hexadecupole", out, grader, 0.25, 0.85);
+        runThetaTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole", out, grader, 0.1, 1.0);
+        runThetaTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", out, grader, 0.2, 1.1);
+        runThetaTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole", out, grader, 0.3, 1.2);
     }
 
     {
-        std::ofstream out{"benchmarks/theta/lbvh.csv"};
-        out << "Solver,Multipole Order,N,θ,Time (s),% Error (Constitutional)\n";
-        runThetaTests<QuadrupoleLinearBVHSolver<Gravity>>("LBVH,Quadrupole", out, grader, 0.3, 1.5);
-        runThetaTests<OctupoleLinearBVHSolver<Gravity>>("LBVH,Octupole", out, grader, 0.3, 1.5);
-        runThetaTests<HexadecupoleLinearBVHSolver<Gravity>>("LBVH,Hexadecupole", out, grader, 0.3, 1.5);
-    }
-
-    {
-        std::ofstream out{"benchmarks/theta/fmm.csv"};
+        std::ofstream out{"benchmarks/theta/fmm-mugs.csv"};
         out << "Solver,Multipole Order,N,θ,Time (s),% Error (Constitutional)\n";
         runThetaTests<QuadrupoleImplicitFMMSolver<Gravity>>("FMM,Quadrupole", out, grader, 0.1, 0.7);
         runThetaTests<OctupoleImplicitFMMSolver<Gravity>>("FMM,Octupole", out, grader, 0.2, 0.8);

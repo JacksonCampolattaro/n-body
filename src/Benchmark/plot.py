@@ -302,7 +302,7 @@ def plot_multipoles_vs_error_vs_time(filename):
     ax.set_xscale('log')
     ax.set_yscale('log')
     ax.set_xlim(0.1, 5)
-    ax.set_ylim(0.1, 15)
+    ax.set_ylim(0.1, 50)
     #sns.move_legend(ax, "upper right")
     y_range = ax.get_ylim()
     sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
@@ -613,8 +613,9 @@ def main():
     # field_error_key()
 
     # print("Plotting exact fields")
-    # zoom_box = plot_field('benchmarks/sample-exact-zoom.csv')
-    # plot_field('benchmarks/sample-exact.csv', zoom_box)
+    # zoom_box = plot_field('benchmarks/field/sample-exact-zoom.csv')
+    # plot_field('benchmarks/field/sample-exact.csv', zoom_box)
+    # plot_field('benchmarks/field/sample-exact.csv')
 
     # print("Plotting multipole moment approximations")
     # plot_field('benchmarks/sample-monopole-moment.csv')
@@ -655,16 +656,17 @@ def main():
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
-    merge_benchmarks("remote-benchmarks/random/all-solvers-constitutional.*.csv",
-                     "benchmarks/random/all-solvers-cluster-constitutional.csv")
-    plot_times_vs_n("benchmarks/random/all-solvers-cluster-constitutional.csv", "Octupole")
-    merge_benchmarks("remote-benchmarks/random/all-solvers-rms.*.csv",
-                     "benchmarks/random/all-solvers-cluster-rms.csv")
-    plot_times_vs_n("benchmarks/random/all-solvers-cluster-rms.csv", "Quadrupole")
-    plot_times_vs_n("benchmarks/agora/all-solvers-constitutional.csv")
-
-    solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-constitutional.csv")
-    solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-rms.csv")
+    # merge_benchmarks("remote-benchmarks/random/all-solvers-constitutional.*.csv",
+    #                  "benchmarks/random/all-solvers-cluster-constitutional.csv")
+    # plot_times_vs_n("benchmarks/random/all-solvers-cluster-constitutional.csv", "Octupole")
+    # merge_benchmarks("remote-benchmarks/random/all-solvers-rms.*.csv",
+    #                  "benchmarks/random/all-solvers-cluster-rms.csv")
+    # plot_times_vs_n("benchmarks/random/all-solvers-cluster-rms.csv", "Quadrupole")
+    # plot_times_vs_n("benchmarks/agora/all-solvers-constitutional.csv")
+    #
+    # solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-constitutional.csv")
+    # solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-rms.csv")
+    plot_times_vs_n("benchmarks/uniform/all-solvers.csv")
 
     # print("Plotting tree benchmarks")
     # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")
@@ -692,8 +694,11 @@ def main():
     # plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
     plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh-mugs.csv")
     plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh-mugs.csv")
     plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
+    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm-mugs.csv")
     plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
     # plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
