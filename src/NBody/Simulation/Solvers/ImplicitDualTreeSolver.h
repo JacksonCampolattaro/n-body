@@ -21,14 +21,20 @@ namespace NBody {
         ActiveTree _activeTree;
         PassiveTree _passiveTree;
 
-        DescentCriterion _descentCriterion{0.4f};
+        DescentCriterion _descentCriterion{0.7f};
 
     public:
 
         ImplicitDualTreeSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _activeTree(simulation),
-                _passiveTree(simulation) {}
+                _passiveTree(simulation) {
+            _passiveTree.maxLeafSize() = 128;
+        }
+
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
 
         float &theta() { return _descentCriterion.theta(); }
 
@@ -44,11 +50,18 @@ namespace NBody {
 
         void updateAccelerations() override {
 
-            this->_statusDispatcher.emit({"Building active tree"});
-            _activeTree.refine();
-
-            this->_statusDispatcher.emit({"Building passive tree"});
-            _passiveTree.refine();
+            tbb::task_group treeBuildingTaskGroup;
+            treeBuildingTaskGroup.run([&]() {
+                this->_statusDispatcher.emit({"Building active tree"});
+                _activeTree.refine();
+                spdlog::trace("Active Tree has a max depth of {}", activeTree().root().depth());
+            });
+            treeBuildingTaskGroup.run([&]() {
+                this->_statusDispatcher.emit({"Building passive tree"});
+                _passiveTree.refine();
+                spdlog::trace("Passive Tree has a max depth of {}", passiveTree().root().depth());
+            });
+            treeBuildingTaskGroup.wait();
 
             {
                 this->_statusDispatcher.emit({"Resetting accelerations"});

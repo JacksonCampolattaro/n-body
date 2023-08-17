@@ -13,7 +13,7 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename DualTree, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<typename DualTree, DescentCriterionType DescentCriterion, RuleType Rule>
     class ImplicitDualTraversalSolver : public Solver<Rule> {
     private:
 
@@ -26,6 +26,10 @@ namespace NBody {
         ImplicitDualTraversalSolver(Simulation &simulation, Rule &rule) :
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
+
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
 
         float &theta() { return _descentCriterion.theta(); }
 
@@ -40,6 +44,7 @@ namespace NBody {
             {
                 this->_statusDispatcher.emit({"Building dual tree"});
                 _tree.refine();
+                //spdlog::debug("Tree has a max depth of {}", tree().root().depth());
             }
 
             {

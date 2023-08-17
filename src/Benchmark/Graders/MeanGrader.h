@@ -9,15 +9,18 @@
 
 namespace NBody {
 
-    class MeanGrader : public Grader {
+    class MeanGrader : public NaiveReferenceGrader {
     public:
 
-        explicit MeanGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
-                Grader(scenario, rule) {}
+        using NaiveReferenceGrader::NaiveReferenceGrader;
 
         float error(const Simulation &candidateSimulation) const override {
             return averageError(candidateSimulation) * 100.0f;
         }
+
+        bool acceptable(const Simulation &candidateSimulation) const override {
+            return error(candidateSimulation) < 0.5;
+        };
 
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
             assert(a == b);

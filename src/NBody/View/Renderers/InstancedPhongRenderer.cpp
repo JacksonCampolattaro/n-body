@@ -9,11 +9,11 @@ void NBody::InstancedPhongRenderer::draw(const Matrix4 &transformationMatrix, co
     // Allocate the shader & mesh, if this hasn't been done before
     if (!_shader || !_mesh) {
 
-        _shader = Shaders::PhongGL{
+        _shader = Shaders::PhongGL{Shaders::PhongGL::Configuration{}.setFlags(
                 Shaders::PhongGL::Flag::NoSpecular |
                 Shaders::PhongGL::Flag::VertexColor |
                 Shaders::PhongGL::Flag::InstancedTransformation
-        };
+        )};
         _mesh = NBody::Graphics::Sphere::mesh();
     }
 

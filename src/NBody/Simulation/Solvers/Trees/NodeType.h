@@ -12,7 +12,7 @@ namespace NBody {
     // To satisfy the NodeType concept, a class must extend the appropriate CRTP base class & provide a few methods
     template<typename T>
     concept NodeType = std::is_base_of_v<NodeBase<T, typename T::Summary>, T> &&
-                       requires(T &t, typename T::Summary::Context &context) {
+                       requires(T &t, ContextType<typename T::Summary> &context) {
                            t.children();
                            t.boundingBox();
                            t.split(context);

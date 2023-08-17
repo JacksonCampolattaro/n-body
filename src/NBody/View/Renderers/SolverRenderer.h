@@ -119,8 +119,10 @@ namespace NBody {
                   const TreeNode &root,
                   const Color4 &color) {
 
-            auto shader = Shaders::FlatGL3D{Shaders::FlatGL3D::Flag::VertexColor |
-                                            Shaders::FlatGL3D::Flag::InstancedTransformation};
+            auto shader = Shaders::FlatGL3D{Shaders::FlatGL3D::Configuration{}.setFlags(
+                    Shaders::FlatGL3D::Flag::VertexColor |
+                    Shaders::FlatGL3D::Flag::InstancedTransformation
+            )};
             auto mesh = MeshTools::compile(Primitives::cubeWireframe());
             GL::Buffer boxInstanceBuffer{};
             Containers::Array<BoxInstanceData> boxInstanceData;

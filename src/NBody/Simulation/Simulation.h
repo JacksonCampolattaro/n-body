@@ -15,8 +15,8 @@
 #include <nlohmann/json.hpp>
 
 #include <entt/entity/registry.hpp>
-#include <entt/entity/handle.hpp>
 #include <entt/entity/group.hpp>
+#include <entt/entity/handle.hpp>
 
 #include <glibmm/interface.h>
 
@@ -29,6 +29,7 @@
 #include <giomm/listmodel.h>
 #include <glibmm/dispatcher.h>
 #include <giomm/file.h>
+#include <glibmm/init.h>
 
 #include "NBody/Physics/BoundingBox.h"
 
@@ -38,19 +39,20 @@ using std::ostream;
 
 namespace NBody {
 
-    typedef entt::entity Entity;
+    //typedef entt::entity Entity;
+    enum class Entity : std::uint64_t {};
 
     class Simulation : public entt::basic_registry<Entity> {
     public:
 
-        class Particle : public entt::basic_handle<Entity>, public Glib::Object {
+        class Particle : public entt::basic_handle<Simulation>, public Glib::Object {
         public:
 
-            Particle(const Particle &other) : entt::basic_handle<Entity>(other),
+            Particle(const Particle &other) : entt::basic_handle<Simulation>(other),
                                               Glib::ObjectBase(typeid(Particle)),
                                               Glib::Object() {}
 
-            Particle(Simulation &ref, Entity value) : entt::basic_handle<Entity>(ref, value) {}
+            Particle(Simulation &ref, Entity value) : entt::basic_handle<Simulation>(ref, value) {}
 
             Particle &setPosition(const Physics::Position &position);
 
@@ -69,13 +71,47 @@ namespace NBody {
 
     public:
 
-        Simulation() : entt::basic_registry<Entity>() {}
+        Simulation() : entt::basic_registry<Entity>() {
+            // Necessary for signals to work properly, should be idempotent
+            Glib::init();
+        }
+
+        Simulation(const Simulation &other) : entt::basic_registry<Entity>() {
+
+            // Add all entities from the other simulation, retaining IDs
+            assign(other.data(), other.data() + other.size(), other.released());
+
+            // Copy components from the other registry
+            invokeForEachType([&]<typename T>() {
+                // todo: this might break for tag types
+                auto view = other.view<T>();
+                insert<T>(view.rbegin(), view.rend(), view.storage().rbegin());
+            });
+
+            assert(*this == other);
+        }
+
+        Simulation &operator=(const Simulation &other) {
+
+            // Add all entities from the other simulation, retaining IDs
+            assign(other.data(), other.data() + other.size(), other.released());
+
+            // Copy components from the other registry
+            invokeForEachType([&]<typename T>() {
+                // todo: this might break for tag types
+                auto view = other.view<T>();
+                insert<T>(view.rbegin(), view.rend(), view.storage().rbegin());
+            });
+
+            assert(*this == other);
+            return *this;
+        }
 
         void save(Gio::File &destination) const;
 
         void load(Gio::File &source);
 
-        std::vector<NBody::Entity> validEntities();
+        std::vector<NBody::Entity> validEntities() const;
 
         void removeParticle(NBody::Entity e);
 
@@ -107,6 +143,20 @@ namespace NBody {
 
     public:
 
+        template<typename Lambda>
+        static void invokeForEachType(Lambda &&lambda) {
+
+            lambda.template operator()<Physics::Position>();
+            lambda.template operator()<Physics::Velocity>();
+            lambda.template operator()<Physics::Acceleration>();
+            lambda.template operator()<Physics::Mass>();
+
+            lambda.template operator()<Graphics::Color>();
+            lambda.template operator()<Graphics::Sphere>();
+        }
+
+    public:
+
         friend void to_json(json &j, const Simulation &s);
 
         friend void from_json(const json &j, Simulation &s);
@@ -126,7 +176,59 @@ namespace NBody {
             from_json(j, s);
             return in;
         }
+
+        friend inline bool operator==(const Simulation &lhs, const Simulation &rhs) {
+            bool equal = true;
+
+            // The two simulations must have the same number of each component
+            invokeForEachType([&]<typename T>() {
+                if (lhs.storage<T>().size() != rhs.storage<T>().size()) equal = false;
+            });
+            if (!equal) return false;
+
+            // The two simulations must have the same entity IDs & the same values for each ID
+            lhs.each([&](auto e) {
+                if (!rhs.valid(e))
+                    equal = false;
+                else
+                    invokeForEachType([&]<typename T>() {
+
+                        //                        if (lhs.all_of<T>(e) != rhs.all_of<T>(e) ||
+                        //                            lhs.all_of<T>(e) && lhs.get<const T>(e) != rhs.get<const T>(e))
+                        //                            equal = false;
+
+                        if (lhs.all_of<T>(e) != rhs.all_of<T>(e))
+                            equal = false;
+                        else if (lhs.all_of<T>(e) && lhs.get<const T>(e) != rhs.get<const T>(e))
+                            equal = false;
+
+                    });
+            });
+
+            // Iterations over the two simulations must occur in the same order
+            auto lhsPositions = lhs.view<const Position>();
+            auto rhsPositions = rhs.view<const Position>();
+            equal = equal && std::transform_reduce(
+                    lhsPositions.begin(), lhsPositions.end(), rhsPositions.begin(), true,
+                    [&](bool e1, bool e2) {
+                        return e1 && e2;
+                    },
+                    [&](auto l, auto r) {
+                        assert(l == r);
+                        return l == r &&
+                               lhsPositions.get<const Position>(l) == rhsPositions.get<const Position>(r);
+                    }
+            );
+
+            return equal;
+        }
+
+        friend inline bool operator!=(const Simulation &lhs, const Simulation &rhs) { return !(lhs == rhs); }
     };
+
+    // todo: these should be declared elsewhere
+    using ActiveView = decltype(std::declval<Simulation>().view<const Position, const Physics::Mass>());
+    using PassiveView = decltype(std::declval<Simulation>().view<const Position, Physics::Acceleration>());
 
     void to_json(json &j, const Simulation &s);
 

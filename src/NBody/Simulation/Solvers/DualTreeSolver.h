@@ -10,6 +10,7 @@
 #include <NBody/Simulation/Solvers/Descent/collapseAccelerations.h>
 #include <NBody/Simulation/Solvers/Descent/lockstepDualTree.h>
 #include <NBody/Simulation/Solvers/Descent/adaptiveDualTree.h>
+#include <NBody/Simulation/Solvers/Descent/balancedLockstepDualTree.h>
 
 namespace NBody {
 
@@ -30,6 +31,10 @@ namespace NBody {
                 Solver<Rule>(simulation, rule),
                 _activeTree(simulation),
                 _passiveTree(simulation) {}
+
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
 
         float &theta() { return _descentCriterion.theta(); }
 
@@ -61,7 +66,7 @@ namespace NBody {
                 this->_statusDispatcher.emit({"Computing accelerations"});
                 auto startingNodes = _passiveTree.loadBalancedBreak(256);
                 tbb::parallel_for_each(startingNodes, [&](std::reference_wrapper<typename PassiveTree::Node> node) {
-                    Descent::adaptiveDualTree(
+                    Descent::balancedLockstepDualTree(
                             _activeTree.root(), node.get(),
                             _descentCriterion, this->_rule,
                             this->_simulation.template view<const Position, const Mass>(),

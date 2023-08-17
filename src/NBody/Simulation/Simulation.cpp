@@ -13,7 +13,8 @@ NBody::Simulation::Particle NBody::Simulation::newParticle() {
     // Create a new empty particle
     Particle particle = {*this, create()};
     particle.setPosition({0, 0, 0})
-            .setVelocity({0, 0, 0});
+            .setVelocity({0, 0, 0})
+            .setAcceleration({0, 0, 0});
 
     signal_particles_added.emit({particle.entity()});
     return particle;
@@ -61,7 +62,7 @@ void NBody::Simulation::load(Gio::File &source) {
     inputFile >> (*this);
 }
 
-std::vector<NBody::Entity> NBody::Simulation::validEntities() {
+std::vector<NBody::Entity> NBody::Simulation::validEntities() const {
     std::vector<NBody::Entity> alive;
     each([&](auto e) {
         alive.emplace_back(e);
@@ -78,7 +79,7 @@ void NBody::Simulation::removeParticle(NBody::Entity entity) {
 }
 
 std::size_t NBody::Simulation::particleCount() const {
-    return size<Physics::Position>();
+    return storage<Physics::Position>().size();
 }
 
 NBody::Physics::Position NBody::Simulation::averagePosition() const {
@@ -153,6 +154,7 @@ NBody::BoundingBox NBody::Simulation::passiveBoundingBox() const {
 void NBody::to_json(json &j, const NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
+    j["particles"] = json::array();
     s.each([&](const auto &entity) {
         json e;
 
@@ -174,7 +176,9 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
         if (s.all_of<NBody::Graphics::Sphere>(entity))
             e["sphere"] = s.get<NBody::Graphics::Sphere>(entity);
 
-        j["particles"].push_back(e);
+        // Always add to the front, because ENTT iteration is reversed
+        // todo: check if this harms performance
+        j["particles"].insert(j["particles"].begin(), e);
     });
 
     spdlog::debug("Serialized {} particles", j["particles"].size());
@@ -183,10 +187,11 @@ void NBody::to_json(json &j, const NBody::Simulation &s) {
 void NBody::from_json(const json &j, NBody::Simulation &s) {
     std::scoped_lock l(s.mutex);
 
-    auto entities = std::vector<Simulation::entity_type>{j["particles"].size()};
+    auto entities = std::vector<Entity>(j["particles"].size());
     s.create(entities.begin(), entities.end());
 
     for (int i = 0; i < entities.size(); ++i) {
+        assert(entities[i] != entt::null);
 
         auto p = j["particles"][i];
         Simulation::Particle particle = {s, entities[i]};
@@ -200,8 +205,9 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
         if (p.contains("mass"))
             particle.setMass(p["mass"].get<float>());
 
-        if (!p.contains("passive") || p["passive"].get<bool>() // todo: remove
-            || p.contains("acceleration"))
+        if (p.contains("acceleration"))
+            particle.emplace<NBody::Physics::Acceleration>(p["acceleration"].get<NBody::Physics::Acceleration>());
+        else if (!p.contains("passive") || p["passive"].get<bool>())
             particle.emplace<NBody::Physics::Acceleration>(0.0f, 0.0f, 0.0f); // Passive particles have acceleration
 
         if (p.contains("color"))
@@ -218,7 +224,7 @@ void NBody::from_json(const json &j, NBody::Simulation &s) {
     s.signal_particles_added.emit(entities);
     s.signal_changed.emit();
 
-    spdlog::debug("Read {} particles", j["particles"].size());
+    spdlog::debug("Read {} particles", s.particleCount());
 }
 
 template<typename T>
@@ -243,6 +249,27 @@ T correctEndian(T u, bool shouldSwap) {
     return shouldSwap ? swapEndian(u) : u;
 }
 
+template<typename T>
+T read(std::ifstream &in, bool shouldSwap) {
+    T value;
+    in.read(reinterpret_cast<char *>(&value), sizeof(value));
+    return correctEndian(value, shouldSwap);
+}
+
+template<>
+glm::vec3 read<glm::vec3>(std::ifstream &in, bool shouldSwap) {
+    return {read<float>(in, shouldSwap), read<float>(in, shouldSwap), read<float>(in, shouldSwap)};
+}
+
+inline NBody::Graphics::Color colorByVelocity(const NBody::Simulation::Particle &p) {
+    glm::vec3 velocity = p.get<NBody::Physics::Velocity>();
+    float magnitude = glm::length(velocity);
+    auto red = std::abs(velocity.x) / magnitude;
+    auto blue = std::abs(velocity.y) / magnitude;
+    auto green = std::abs(velocity.z) / magnitude;
+    return {red, green, blue};
+};
+
 void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
     // see: https://github.com/N-BodyShop/pytipsy/blob/master/pytipsy.py
 
@@ -265,9 +292,9 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
 
     // If the number of dimensions is unreasonable, the endianness must be incorrect
     bool wrongEndian = (ndim < 1 || 3 < ndim);
+    ndim = correctEndian(ndim, wrongEndian);
     t = correctEndian(t, wrongEndian);
     n = correctEndian(n, wrongEndian);
-    ndim = correctEndian(ndim, wrongEndian);
     ng = correctEndian(ng, wrongEndian);
     nd = correctEndian(nd, wrongEndian);
     ns = correctEndian(ns, wrongEndian);
@@ -289,65 +316,75 @@ void NBody::from_tipsy(std::ifstream &in, NBody::Simulation &s) {
     }
 
     // Read gaseous matter
-    // Skip this for now
-    in.seekg(48 * ng, std::ios::cur);
+    // For now, only load this if there aren't any stars (SPH is unsupported)
+    if (ns > 0)
+        in.seekg(48 * ng, std::ios::cur);
+    else {
+        auto entities = std::vector<Simulation::entity_type>(ng);
+        s.create(entities.begin(), entities.end());
+        for (auto e: entities) {
+            if (!in.good()) spdlog::error("Encountered an issue while reading the file");
+            if (e == entt::null) spdlog::error("Attempted to load more than the maximum number of particles.");
+
+            Simulation::Particle particle = {s, e};
+            particle.setMass(read<float>(in, wrongEndian))
+                    .setPosition(read<glm::vec3>(in, wrongEndian))
+                    .setVelocity(read<glm::vec3>(in, wrongEndian))
+                    .setAcceleration({0.0f, 0.0f, 0.0f})
+                    .setSphere({std::cbrt(particle.get<Physics::Mass>().mass())})
+                    .setColor({1.0, 1.0, 1.0});
+
+            float dens, tempg, h, zmetal, phi;
+            in.read(reinterpret_cast<char *>(&dens), sizeof(dens));
+            in.read(reinterpret_cast<char *>(&tempg), sizeof(tempg));
+            in.read(reinterpret_cast<char *>(&h), sizeof(h));
+            in.read(reinterpret_cast<char *>(&zmetal), sizeof(zmetal));
+            in.read(reinterpret_cast<char *>(&phi), sizeof(phi));
+            dens = correctEndian(dens, wrongEndian);
+            tempg = correctEndian(tempg, wrongEndian);
+            h = correctEndian(h, wrongEndian);
+            zmetal = correctEndian(zmetal, wrongEndian);
+            phi = correctEndian(phi, wrongEndian);
+
+            // Notify any watchers that this particle has new data
+            if (particle.all_of<sigc::signal<void()>>())
+                particle.get<sigc::signal<void()>>().emit();
+
+        }
+    }
 
     // Read dark matter
     // Skip this for now
     in.seekg(36 * nd, std::ios::cur);
 
     // Read stars
-    auto entities = std::vector<Simulation::entity_type>{ns};
+    auto entities = std::vector<Simulation::entity_type>(ns);
     s.create(entities.begin(), entities.end());
-    for (int i = 0; i < entities.size(); ++i) {
+    for (auto e: entities) {
         if (!in.good()) spdlog::error("Encountered an issue while reading the file");
+        if (e == entt::null) spdlog::error("Attempted to load more than the maximum number of particles.");
 
-        float mass, x, y, z, vx, vy, vz, metals, tform, eps, phi;
-        in.read(reinterpret_cast<char *>(&mass), sizeof(mass));
-        in.read(reinterpret_cast<char *>(&x), sizeof(x));
-        in.read(reinterpret_cast<char *>(&y), sizeof(y));
-        in.read(reinterpret_cast<char *>(&z), sizeof(z));
-        in.read(reinterpret_cast<char *>(&vx), sizeof(vx));
-        in.read(reinterpret_cast<char *>(&vy), sizeof(vy));
-        in.read(reinterpret_cast<char *>(&vz), sizeof(vz));
+        Simulation::Particle particle = {s, e};
+        particle.setMass(read<float>(in, wrongEndian))
+                .setPosition(read<glm::vec3>(in, wrongEndian))
+                .setVelocity(read<glm::vec3>(in, wrongEndian))
+                .setAcceleration({0.0f, 0.0f, 0.0f})
+                .setSphere({std::cbrt(particle.get<Physics::Mass>().mass())})
+                .setColor(colorByVelocity(particle));
+
+        float metals, tform, eps, phi;
         in.read(reinterpret_cast<char *>(&metals), sizeof(metals));
         in.read(reinterpret_cast<char *>(&tform), sizeof(tform));
         in.read(reinterpret_cast<char *>(&eps), sizeof(eps));
         in.read(reinterpret_cast<char *>(&phi), sizeof(phi));
-        mass = correctEndian(mass, wrongEndian);
-        x = correctEndian(x, wrongEndian);
-        y = correctEndian(y, wrongEndian);
-        z = correctEndian(z, wrongEndian);
-        vx = correctEndian(vx, wrongEndian);
-        vy = correctEndian(vy, wrongEndian);
-        vz = correctEndian(vz, wrongEndian);
         metals = correctEndian(metals, wrongEndian);
         tform = correctEndian(tform, wrongEndian);
         eps = correctEndian(eps, wrongEndian);
         phi = correctEndian(phi, wrongEndian);
 
-        // Choose a color based on Velocity
-        float magnitude = glm::length(glm::vec3{vx, vy, vz});
-        auto red = std::abs(vx) / magnitude;
-        auto blue = std::abs(vy) / magnitude;
-        auto green = std::abs(vz) / magnitude;
-        //auto multiplier = (1.0f - (magnitude / (1.0f - std::pow(magnitude, 2.0f))));
-        //        auto red = 1.0f - (vx / (1.0f + std::pow(vx, 2.0f)));
-        //        auto green = 1.0f - (vy / (1.0f + std::pow(vy, 2.0f)));
-        //        auto blue = 1.0f - (vz / (1.0f + std::pow(vz, 2.0f)));
-
-        Simulation::Particle particle = {s, entities[i]};
-        particle.setMass(mass)
-                .setPosition({x, y, z})
-                .setVelocity({vx, vy, vz})
-                .setAcceleration({0.0f, 0.0f, 0.0f})
-                .setSphere({std::cbrt(mass)})
-                .setColor({red, green, blue});
-
         // Notify any watchers that this particle has new data
         if (particle.all_of<sigc::signal<void()>>())
             particle.get<sigc::signal<void()>>().emit();
-
 
     }
 

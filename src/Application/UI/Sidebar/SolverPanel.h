@@ -17,12 +17,7 @@
 #include <gtkmm/singleselection.h>
 #include <gtkmm/label.h>
 
-#include "NaiveSolverSettings.h"
-#include "BarnesHutSolverSettings.h"
-#include "LinearBVHSolverSettings.h"
-#include "MVDRSolverSettings.h"
-#include "OctreeDualTraversalSolverSettings.h"
-#include "FMMSolverSettings.h"
+#include "SolverSettings.h"
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/ListView/StackView.h"

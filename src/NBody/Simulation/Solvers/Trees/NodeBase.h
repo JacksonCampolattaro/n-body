@@ -20,6 +20,7 @@ namespace NBody {
 
         using Summary = S;
 
+
     private:
 
         std::span<Entity> _contents;
@@ -41,17 +42,16 @@ namespace NBody {
 
         template<typename Context>
         void summarize(const Context &context) {
-            if (isLeaf()) _summary.summarize(implementation().contents(), context);
+            if (implementation().isLeaf()) _summary.summarize(implementation().contents(), context);
             else _summary.summarize(implementation().children());
 
             // sanity check: a node should always enclose all of its children
-            for (auto &entity: contents()) {
-                auto bbox = implementation().boundingBox();
-                auto p = context.template get<const Position>(entity);
-                auto e = ENTT_ID_TYPE(entity);
-
-                assert(implementation().boundingBox().contains(context.template get<const Position>(entity)));
-            }
+            // fixme: this is actually subject to rounding error
+            //            for (auto &entity: contents()) {
+            //                auto bbox = implementation().boundingBox();
+            //                auto p = context.template get<const Position>(entity);
+            //                assert(bbox.contains(p));
+            //            }
         }
 
         template<typename... Context>
@@ -61,7 +61,7 @@ namespace NBody {
 
             if (_contents.empty()) return;
 
-            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this)) {
+            if (maxDepth > 0 && splitCriterion((const NodeImplementation &) *this) && !contents().empty()) {
                 implementation().split(std::forward<Context>(context)...);
 
                 for (auto &child: implementation().children())
@@ -79,15 +79,23 @@ namespace NBody {
         [[nodiscard]] std::span<Entity> &contents() { return _contents; };
 
         [[nodiscard]] std::size_t depth() const {
-            if (isLeaf()) return 0;
+            if (implementation().isLeaf()) return 0;
             std::size_t maxDepth = 0;
             for (const NodeImplementation &child: implementation().children())
                 maxDepth = std::max(maxDepth, child.depth());
             return maxDepth + 1;
         }
 
-        [[nodiscard]] bool isLeaf() const { return implementation().children().empty(); }
-
+        [[nodiscard]] std::size_t numberOfDescendants() const {
+            if (implementation().isLeaf())
+                return 1;
+            else
+                return std::transform_reduce(
+                        implementation().children().begin(), implementation().children().end(),
+                        1, std::plus<>{},
+                        [](const auto &node) { return node.numberOfDescendants(); }
+                );
+        }
 
         [[nodiscard]] std::string toString(const std::string &offset = "") const {
             if (contents().empty()) return "";

@@ -17,13 +17,7 @@ namespace NBody {
 
         using Acceleration = typename ImpliedSummary::Acceleration;
 
-        using Context = entt::basic_view<
-                entt::entity, entt::exclude_t<>,
-                const Physics::Position,
-                const Physics::Acceleration
-        >;
-
-        static Context context(Simulation &simulation) {
+        static auto context(Simulation &simulation) {
             return simulation.view<const Physics::Position, const Physics::Acceleration>();
         }
 
@@ -31,6 +25,7 @@ namespace NBody {
 
         EmptySummary() = default;
 
+        template<typename Context>
         void summarize(const std::span<Entity> &entities, const Context &context) {}
 
         template<typename NodeList>
@@ -43,7 +38,6 @@ namespace NBody {
             public MultipoleMassSummary<Order>, public EmptySummary<MultipoleAccelerationSummary<Order + 1>> {
     public:
 
-        using typename MultipoleMassSummary<Order>::Context;
         using MultipoleMassSummary<Order>::context;
 
         using MultipoleMassSummary<Order>::MultipoleMassSummary;
@@ -57,7 +51,6 @@ namespace NBody {
             public CenterOfMassSummary, public EmptySummary<MultipoleAccelerationSummary<2>> {
     public:
 
-        using typename CenterOfMassSummary::Context;
         using CenterOfMassSummary::context;
 
         using CenterOfMassSummary::CenterOfMassSummary;

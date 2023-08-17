@@ -17,9 +17,11 @@ namespace NBody::Physics {
     class RuleBase {
     public: // Particle-particle interaction
 
-        [[nodiscard]] Acceleration operator()(const Position &activePosition,
-                                              const Mass &activeMass,
-                                              const Position &passivePosition) {
+        [[gnu::flatten]] [[nodiscard]] inline Acceleration operator()(
+                const Position &activePosition,
+                const Mass &activeMass,
+                const Position &passivePosition
+        ) {
             return static_cast<Implementation *>(this)->particleParticle(activePosition, activeMass,
                                                                          passivePosition);
         }
@@ -27,8 +29,10 @@ namespace NBody::Physics {
     public: // Node-particle interaction
 
         template<typename ActiveNode>
-        [[nodiscard]] Acceleration operator()(const ActiveNode &activeNode,
-                                              const Position &passivePosition) {
+        [[nodiscard]] Acceleration operator()(
+                const ActiveNode &activeNode,
+                const Position &passivePosition
+        ) {
 
             if constexpr (requires(Implementation &i) { i.nodeParticle(activeNode, passivePosition); }) {
                 return static_cast<Implementation *>(this)->nodeParticle(activeNode, passivePosition);
@@ -44,6 +48,35 @@ namespace NBody::Physics {
                 return static_cast<Implementation *>(this)->nodeParticle(activePosition, activeNode.summary(),
                                                                          passivePosition);
             }
+
+        }
+
+        template<ActiveSummaryType ActiveSummary>
+        [[nodiscard]] Acceleration operator()(
+                const Position &activePosition,
+                const ActiveSummary &activeSummary,
+                const Position &passivePosition
+        ) {
+
+            return static_cast<Implementation *>(this)->nodeParticle(
+                    activePosition,
+                    activeSummary,
+                    passivePosition
+            );
+
+        }
+
+        template<ActiveSummaryType ActiveSummary>
+        [[nodiscard]] Acceleration operator()(
+                const ActiveSummary &activeSummary,
+                const Position &passivePosition
+        ) {
+
+            return static_cast<Implementation *>(this)->nodeParticle(
+                    activeSummary.centerOfMass(),
+                    activeSummary,
+                    passivePosition
+            );
 
         }
 

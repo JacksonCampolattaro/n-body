@@ -37,7 +37,9 @@ namespace NBody::Descent {
     template<typename T>
     concept DescentCriterionType = requires(T &t, const typename ActiveOctree::Node &n, const Position &p) {
         { t(n, p) } -> std::convertible_to<bool>;
-    } && requires(T &t, const typename ActiveOctree::Node &an, const typename PassiveOctree::Node &pn) {
+    } || requires(T &t, const typename PassiveOctree::Node &n, const Position &p) {
+        { t(p, n) } -> std::convertible_to<bool>;
+    } || requires(T &t, const typename ActiveOctree::Node &an, const typename PassiveOctree::Node &pn) {
         { t(an, pn) } -> std::convertible_to<Recommendation>;
     };
 

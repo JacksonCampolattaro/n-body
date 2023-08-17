@@ -10,16 +10,16 @@
 
 namespace NBody::Physics {
 
-    template<RuleType Rule = Gravity>
+    template<RuleType Rule>
     class SimpleTrackingRule : public RuleBase<SimpleTrackingRule<Rule>> {
     private:
 
         Rule _underlyingRule;
 
-        std::atomic<std::size_t> _particleParticleCount = 0;
-        std::atomic<std::size_t> _particleNodeCount = 0;
-        std::atomic<std::size_t> _nodeParticleCount = 0;
-        std::atomic<std::size_t> _nodeNodeCount = 0;
+        std::atomic<int> _particleParticleCount = 0;
+        std::atomic<int> _particleNodeCount = 0;
+        std::atomic<int> _nodeParticleCount = 0;
+        std::atomic<int> _nodeNodeCount = 0;
 
     public:
 
@@ -28,29 +28,31 @@ namespace NBody::Physics {
 
         template<typename ...Args>
         [[nodiscard]] Acceleration particleParticle(Args &&... args) {
-            _particleParticleCount++;
-            return _underlyingRule.particleParticle(std::forward<Args>(args)...);
+            _particleParticleCount.fetch_add(1, std::memory_order_relaxed);
+            return {}; //_underlyingRule.particleParticle(std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
         void particleNode(Args &&... args) {
-            _particleNodeCount++;
-            _underlyingRule.particleNode(std::forward<Args>(args)...);
+            _particleNodeCount.fetch_add(1, std::memory_order_relaxed);
+            //_underlyingRule.particleNode(std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
         [[nodiscard]] Acceleration nodeParticle(Args &&... args) {
-            _nodeParticleCount++;
-            return _underlyingRule.nodeParticle(std::forward<Args>(args)...);
+            _nodeParticleCount.fetch_add(1, std::memory_order_relaxed);
+            return {};//_underlyingRule.nodeParticle(std::forward<Args>(args)...);
         }
 
         template<typename ...Args>
         void nodeNode(Args &&... args) {
-            _nodeNodeCount++;
-            _underlyingRule.nodeNode(std::forward<Args>(args)...);
+            _nodeNodeCount.fetch_add(1, std::memory_order_relaxed);
+            //_underlyingRule.nodeNode(std::forward<Args>(args)...);
         }
 
     public:
+
+        const Rule &underlyingRule() { return _underlyingRule; }
 
         [[nodiscard]] std::size_t particleParticleCount() const { return _particleParticleCount; }
 
@@ -64,14 +66,20 @@ namespace NBody::Physics {
             return _particleParticleCount + _particleNodeCount + _nodeParticleCount + _nodeNodeCount;
         }
 
+        [[nodiscard]] std::string toString() const {
+            return fmt::format(
+                    "pp:{}, pn:{}, np:{}, nn:{}",
+                    particleParticleCount(),
+                    particleNodeCount(),
+                    nodeParticleCount(),
+                    nodeNodeCount()
+            );
+        }
+
     public:
 
         friend std::ostream &operator<<(std::ostream &o, const SimpleTrackingRule<Rule> &rule) {
-            return o << fmt::format("pp={}, pn={}, np={}, nn={}\n",
-                                    rule._particleParticleCount,
-                                    rule._particleNodeCount,
-                                    rule._nodeParticleCount,
-                                    rule._nodeNodeCount);
+            return o << rule.toString();
         }
 
     };

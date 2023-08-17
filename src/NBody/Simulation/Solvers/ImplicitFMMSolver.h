@@ -29,14 +29,6 @@ namespace NBody {
         std::string name() override {
             return fmt::format("Implicit Fast Multipole Method ({})", Multipole<Order>::name());
         };
-
-        int &maxDepth() { return tree().maxDepth(); }
-
-        [[nodiscard]] const int &maxDepth() const { return tree().maxDepth(); }
-
-        int &maxLeafSize() { return tree().maxLeafSize(); }
-
-        [[nodiscard]] const int &maxLeafSize() const { return tree().maxLeafSize(); }
     };
 
     template<RuleType Rule = Gravity>
@@ -47,6 +39,9 @@ namespace NBody {
 
     template<RuleType Rule = Gravity>
     using OctupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<3, Rule>;
+
+    template<RuleType Rule = Gravity>
+    using HexadecupoleImplicitFMMSolver = MultipoleImplicitFMMSolver<4, Rule>;
 }
 
 #endif //N_BODY_IMPLICITFMMSOLVER_H

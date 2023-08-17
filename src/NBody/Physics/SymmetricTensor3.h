@@ -509,8 +509,6 @@ namespace NBody {
         static constexpr std::size_t NumValues = 3;
         static constexpr std::size_t NumUniqueValues = 3;
 
-        SymmetricTensor3<1>() = delete;
-
         template<Dimension Index>
         static constexpr std::size_t linearIndex() {
             return linearIndex<std::array<Dimension, 1>{Index}>();

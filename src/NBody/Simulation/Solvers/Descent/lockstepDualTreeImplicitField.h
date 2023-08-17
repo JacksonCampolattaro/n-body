@@ -14,6 +14,7 @@
 #include <NBody/Physics/Summaries/EmptySummary.h>
 
 #include <queue>
+#include <boost/container/small_vector.hpp>
 
 namespace NBody::Descent {
 
@@ -61,14 +62,8 @@ namespace NBody::Descent {
             std::span<std::reference_wrapper<const ActiveNode>> activeNodes,
             PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext,
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext,
             typename PassiveNode::Summary::ImpliedSummary localField = {}
     ) {
 
@@ -102,8 +97,14 @@ namespace NBody::Descent {
         if (passiveNode.isLeaf()) {
 
             // Treat leaf-leaf interactions
-            for (auto &activeNode: leafActiveNodes)
-                Descent::none(activeNode.get(), passiveNode, rule, activeContext, passiveContext);
+            for (const ActiveNode &activeNode: leafActiveNodes)
+                for (auto passiveEntity: passiveNode.contents())
+                    passiveContext.get<Acceleration>(passiveEntity) += Descent::activeTree(
+                            activeNode,
+                            passiveContext.get<const Position>(passiveEntity),
+                            descentCriterion, rule,
+                            activeContext
+                    );
 
             // Apply forces for each contained particle
             for (auto passiveEntity: passiveNode.contents()) {
@@ -116,7 +117,6 @@ namespace NBody::Descent {
                             descentCriterion, rule,
                             activeContext
                     );
-
                 }
 
                 // Include the net local force from far particles
@@ -134,11 +134,8 @@ namespace NBody::Descent {
                         activeEntititesInLeaves.end(),
                         activeNode.get().contents().begin(), activeNode.get().contents().end()
                 );
-            std::span<Entity> activeEntititesInLeavesSpan{
-                    activeEntititesInLeaves.begin(), activeEntititesInLeaves.end()
-            };
             passiveTreeImplicitField(
-                    activeEntititesInLeavesSpan,
+                    activeEntititesInLeaves,
                     passiveNode,
                     descentCriterion, rule,
                     activeContext, passiveContext
@@ -149,8 +146,8 @@ namespace NBody::Descent {
 
             // Descend other active nodes to create the active node list for the next depth
             std::vector<std::reference_wrapper<const ActiveNode>> deeperActiveNodes{};
-            // todo: this is different depending on the tree type!
-            deeperActiveNodes.reserve(nonLeafActiveNodes.size() * 8);
+            if (!deeperActiveNodes.empty())
+                deeperActiveNodes.reserve(nonLeafActiveNodes.size() * deeperActiveNodes[0].get().contents().size());
             for (auto &activeNode: nonLeafActiveNodes)
                 deeperActiveNodes.insert(
                         deeperActiveNodes.end(),

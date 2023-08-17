@@ -71,6 +71,13 @@ namespace NBody {
                 _statusDispatcher.emit({"Stopped"});
                 signal_finished().emit();
             });
+
+            if (spdlog::get_level() == spdlog::level::trace) {
+                spdlog::trace("Forwarding solver status updates");
+                _statusDispatcher.signal().connect([](Status s) {
+                    spdlog::trace("Solver status: {}", std::string{s.begin()});
+                });
+            }
         };
 
         ~Solver() override {
@@ -79,9 +86,9 @@ namespace NBody {
             _thread.reset();
         }
 
-        virtual std::string id() = 0;
+        virtual std::string id() { return "unnamed-solver"; }
 
-        virtual std::string name() = 0;
+        virtual std::string name() { return "unnamed-solver"; }
 
         Simulation &simulation() { return _simulation; }
 
@@ -178,6 +185,43 @@ namespace NBody {
             });
         }
     };
+
+
+    namespace {
+
+        template<typename, typename>
+        struct ReplaceRuleHelper {
+        };
+
+        template<typename NewRule, template<typename> typename S, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<OldRule>> {
+            using type = S<NewRule>;
+        };
+
+        template<typename NewRule, template<auto, typename> typename S, auto A, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, OldRule>> {
+            using type = S<A, NewRule>;
+        };
+
+        template<typename NewRule, template<typename, typename, typename> typename S, typename A, typename B, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, B, OldRule>> {
+            using type = S<A, B, NewRule>;
+        };
+
+        template<typename NewRule, template<typename, typename, typename, typename> typename S, typename A, typename B, typename C, typename OldRule>
+        struct ReplaceRuleHelper<NewRule, S<A, B, C, OldRule>> {
+            using type = S<A, B, C, NewRule>;
+        };
+
+        // todo: it would be nice if this worked!
+        //template<typename NewRule, template<auto..., typename> typename S, auto ...T, typename OldRule>
+        //struct ReplaceRuleHelper<NewRule, S<T..., OldRule>> {
+        //    using type = S<T..., NewRule>;
+        //};
+    }
+
+    template<typename S, typename NewRule>
+    using ReplaceRule = typename ReplaceRuleHelper<NewRule, S>::type;
 
 }
 

@@ -8,6 +8,8 @@
 #include <NBody/Physics/Acceleration.h>
 #include <NBody/Simulation/Simulation.h>
 
+#include <bitset>
+
 namespace NBody::Descent {
 
     using Physics::Acceleration;
@@ -19,11 +21,7 @@ namespace NBody::Descent {
         p.summary().acceleration().x;
     }
     inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              entt::entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context,
+                                      PassiveView &context,
                                       Acceleration netAcceleration = {}) {
 
         netAcceleration += node.summary().acceleration();
@@ -47,12 +45,8 @@ namespace NBody::Descent {
     requires requires(PassiveNode &p) {
         p.summary().acceleration().vector();
     }
-    inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              entt::entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context,
+    inline void collapseAccelerations(const PassiveNode &node,
+                                      const PassiveView &context,
                                       MultipoleAcceleration<Order> netAcceleration = {}) {
 
         // Add the local multipole acceleration of this node to the accumulated acceleration in this location
@@ -92,14 +86,31 @@ namespace NBody::Descent {
         p.summary().acceleration().vector();
     }
     inline void collapseAccelerations(PassiveNode &node,
-                                      const entt::basic_view<
-                                              entt::entity, entt::exclude_t<>,
-                                              const Position,
-                                              Acceleration
-                                      > &context) {
+                                      const PassiveView &context) {
 
         using AccelerationType = typename std::remove_reference<decltype(node.summary().acceleration())>::type;
         collapseAccelerations(node, context, AccelerationType{});
+    }
+
+
+    // todo: this helper method could probably be made available elsewhere
+    template<typename Node>
+    inline const Node &childContaining(const Node &node, const Position &p) {
+        assert(!node.isLeaf());
+        auto relativeAddress = glm::lessThan((glm::vec3)node.center(), p);
+        std::bitset<3> index{};
+        index[2] = relativeAddress.x;
+        index[1] = relativeAddress.y;
+        index[0] = relativeAddress.z;
+        return node.children()[index.to_ulong()];
+    }
+
+    template<typename PassiveNode>
+    inline Acceleration accelerationAt(const PassiveNode &node, const Position &p) {
+        if (node.isLeaf())
+            return node.summary().acceleration().at(p - node.center());
+        else
+            return node.summary().acceleration().at(p - node.center()) + accelerationAt(childContaining(node, p), p);
     }
 }
 

@@ -19,14 +19,7 @@ namespace NBody {
 
     public:
 
-        using Context = entt::basic_group<
-                entt::entity, entt::exclude_t<>,
-                entt::get_t<>,
-                const Position,
-                const Mass
-        >;
-
-        static Context context(Simulation &simulation) {
+        static auto context(Simulation &simulation) {
             return simulation.group<const Position, const Mass>();
         }
 
@@ -35,7 +28,7 @@ namespace NBody {
         CenterOfMassSummary() = default;
 
         template<typename C>
-        void summarize(const std::span<Entity> &entities, const C &context) {
+        void summarize(std::span<const Entity> entities, const C &context) {
 
             _totalMass = 0.0f;
             _centerOfMass = {0.0f, 0.0f, 0.0f};

@@ -13,12 +13,12 @@ namespace NBody {
 
     using Descent::DescentCriterionType;
 
-    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule = Gravity>
+    template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule>
     class ActiveTreeSolver : public Solver<Rule> {
     private:
 
         TreeType _tree;
-        DescentCriterion _descentCriterion{0.4f};
+        DescentCriterion _descentCriterion{0.3f};
 
     public:
 
@@ -26,12 +26,17 @@ namespace NBody {
                 Solver<Rule>(simulation, rule),
                 _tree(simulation) {}
 
+        DescentCriterion &descentCriterion() { return _descentCriterion; }
+
+        const DescentCriterion &descentCriterion() const { return _descentCriterion; }
+
         void updateAccelerations() override {
 
             {
                 // Construct an octree from the actor particles
                 this->_statusDispatcher.emit({"Building Tree"});
                 _tree.refine();
+                //spdlog::debug("Max tree depth = {}", _tree.root().depth());
             }
 
             {
@@ -44,6 +49,15 @@ namespace NBody {
                 // Use the octree to estimate forces on each passive particle
                 this->_statusDispatcher.emit({"Computing Accelerations"});
                 auto view = this->_simulation.template view<const Position, Acceleration>();
+
+//                view.each([&](const Position &targetPosition, Acceleration &acceleration) {
+//                    acceleration = Descent::queueActiveTree(
+//                            _tree.root(), targetPosition,
+//                            _descentCriterion, this->_rule,
+//                            this->simulation().template view<const Position, const Mass>()
+//                    );
+//                });
+
                 tbb::parallel_for_each(view, [&](Entity e) {
                     const auto &targetPosition = view.template get<const Position>(e);
                     auto &acceleration = view.template get<Acceleration>(e);
@@ -66,6 +80,8 @@ namespace NBody {
         [[nodiscard]] const float &theta() const { return _descentCriterion.theta(); }
 
     };
+
+    //template<typename TreeType, DescentCriterionType DescentCriterion, RuleType Rule, RuleType NewRule>
 
 }
 

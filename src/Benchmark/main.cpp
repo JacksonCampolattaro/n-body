@@ -2,25 +2,21 @@
 // Created by Jackson Campolattaro on 1/8/23.
 //
 
-#include "Comparison.h"
-#include "ConstitutionalGrader.h"
-#include "MeanGrader.h"
-#include "RMSGrader.h"
+#include "Benchmark/Graders/ConstitutionalGrader.h"
+#include "Benchmark/Graders/MeanGrader.h"
+#include "Benchmark/Graders/RMSGrader.h"
 #include "Generator.h"
-#include "bestTheta.h"
 #include "field.h"
 #include "fieldPlot.h"
+#include "benchmark.h"
 
 #include <gtkmm.h>
 #include <matplot/matplot.h>
 
-#include <spdlog/spdlog.h>
-
-#include <boost/progress.hpp>
-
 #include <NBody/Physics/Rules/Gravity.h>
 #include <NBody/Physics/Rules/SimpleTrackingRule.h>
 #include <NBody/Physics/Rules/AdvancedTrackingRule.h>
+#include <NBody/Physics/Rules/AccuracyTrackingRule.h>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
@@ -37,142 +33,16 @@
 
 using namespace NBody;
 
-template<typename SolverType>
-std::chrono::duration<float> timedStep(SolverType &solver) {
-    auto startTime = std::chrono::steady_clock::now();
-    solver.step();
-    auto finishTime = std::chrono::steady_clock::now();
-    return (finishTime - startTime);
-}
-
-template<typename SolverType>
-std::chrono::duration<float> timedRun(SolverType &solver, std::size_t iterations) {
-
-    // Don't bother with a progress bar if it's only one step
-    if (iterations == 1) return timedStep(solver);
-
-    spdlog::info("Running solver \"{}\" for {} iteration(s)", solver.name(), iterations);
-    boost::progress_display display(iterations);
-    auto startTime = std::chrono::steady_clock::now();
-    for (int i = 0; i < iterations; ++i) {
-        solver.step();
-        ++display;
-    }
-    auto finishTime = std::chrono::steady_clock::now();
-    std::cout << std::endl;
-    return (finishTime - startTime) / iterations;
-}
-
-template<typename... Solvers>
-void sweepN(const std::vector<std::size_t> &nValues, std::size_t iterations) {
-
-    // Open a CSV file and add the header
-    std::ofstream file{"benchmarks/sweep-n.csv"};
-    file << "n,solver-id,Solver,θ,Time (s)" << std::endl;
-
-    Gravity rule{};
-
-    for (std::size_t n: nValues) {
-
-        json scenario = Generator::createScenario(&Generator::uniformRandomVolume, n);
-        ConstitutionalGrader grader(scenario, rule);
-
-        // For each solver being tested
-        ([&] {
-
-            // Set up the simulation
-            Simulation simulation;
-            from_json(scenario, simulation);
-            Solvers solver(simulation, rule);
-
-            // Find an appropriate value of theta
-            solver.theta() = searchTheta<Solvers>(scenario, grader, {0.1, 0.9});
-
-            // Time the simulation
-            auto time = timedRun(solver, iterations);
-            spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
-
-            // Write the results to CSV
-            file << fmt::format(
-                    "{},{},{},{},{}\n",
-                    n, solver.id(), solver.name(), solver.theta(), time.count()
-            );
-
-        }(), ...);
-    }
-}
-
-template<typename... Solvers>
-void sweepTheta(json scenario, const std::vector<float> &thetaValues) {
-
-    // Open a CSV file and add the header
-    std::ofstream file{"benchmarks/sweep-theta.csv"};
-    file << "n,solver-id,Solver,θ,Time (s),% Error (Constitutional)" << std::endl;
-
-    Gravity rule{};
-
-    for (float theta: thetaValues) {
-
-        ConstitutionalGrader grader(scenario, rule);
-
-        // For each solver being tested
-        ([&] {
-
-            // Set up the simulation
-            Simulation simulation;
-            from_json(scenario, simulation);
-            Solvers solver(simulation, rule);
-            solver.theta() = theta;
-
-            // Time the simulation
-            auto time = timedStep(solver);
-
-            // Measure error
-            auto error = grader.error(simulation);
-
-            spdlog::info(
-                    "{} (θ={}) --> {} s / iteration, {} % error",
-                    solver.name(), solver.theta(), time.count(), error
-            );
-
-            // Write the results to CSV
-            file << fmt::format(
-                    "{},{},{},{},{},{}\n",
-                    simulation.size(), solver.id(), solver.name(), solver.theta(), time.count(), error
-            );
-
-        }(), ...);
-    }
-}
-
 template<typename CandidateSolver>
-float accuracy(json scenario, const Grader &grader, float theta = 0.5) {
+std::chrono::duration<float> realPerformance(const Grader &grader, int iterations = 1) {
 
     // Create a solver
-    Gravity rule{grader.rule()};
-    Simulation simulation;
-    from_json(scenario, simulation);
-    CandidateSolver solver{simulation, rule};
-    solver.theta() = theta;
-
-    // Evaluate forces
-    solver.step();
-
-    // Check its accuracy
-    return grader.error(simulation);
-}
-
-template<typename CandidateSolver>
-std::chrono::duration<float> realPerformance(json scenario, const Grader &grader, int iterations = 1) {
-
-    // Create a solver
+    Simulation simulation = grader.scenario();
     Gravity rule = grader.rule();
-    Simulation simulation;
-    from_json(scenario, simulation);
     CandidateSolver solver{simulation, rule};
 
     // Select a value of theta that can produce the necessary accuracy
-    solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
+    solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
 
     // Time the solver
     auto time = timedRun(solver, iterations);
@@ -181,23 +51,21 @@ std::chrono::duration<float> realPerformance(json scenario, const Grader &grader
 }
 
 template<typename CandidateSolver>
-void approximationRatio(json scenario, const Grader &grader) {
+void approximationRatio(const NaiveReferenceGrader &grader) {
 
     SimpleTrackingRule<Gravity> rule{grader.rule()};
-    Simulation simulation;
-    from_json(scenario, simulation);
-    CandidateSolver solver{simulation, rule};
-    solver.theta() = searchTheta<CandidateSolver>(scenario, grader);
-
+    Simulation simulation = grader.scenario();
+    ReplaceRule<CandidateSolver, SimpleTrackingRule<Gravity>> solver{simulation, rule};
+    solver.descentCriterion().theta() = grader.optimalTheta<CandidateSolver>();
     auto time = timedStep(solver);
     spdlog::info("{} (θ={}) --> {} s / iteration", solver.name(), solver.theta(), time.count());
-    std::cout << "Interaction counts: " << rule;
+    spdlog::info("Interaction counts: {}", rule.toString());
     spdlog::info("Approximation ratio: {}",
                  (float) rule.totalCount() / (float) (simulation.particleCount() * simulation.particleCount()));
 }
 
 template<typename CandidateSolver>
-void approximationTracking(json scenario, const Grader &grader) {
+void approximationTracking(json scenario, const NaiveReferenceGrader &grader) {
 
     AdvancedTrackingRule<Gravity> rule{"benchmarks/approximation-tracking.csv", grader.rule()};
     Simulation simulation;
@@ -210,26 +78,40 @@ void approximationTracking(json scenario, const Grader &grader) {
 }
 
 int main(int argc, char *argv[]) {
-    spdlog::set_level(spdlog::level::info);
-    Glib::init();
+    spdlog::set_level(spdlog::level::debug);
     // Limit to 1 thread when debugging
     //tbb::global_control c{tbb::global_control::max_allowed_parallelism, 1};
 
-    json scenario = Generator::realisticGalaxy();
-    //json scenario = Generator::trio();
-    //json scenario = Generator::createScenario(Generator::uniformRandomVolume, 112'500);
+    //    auto s = Generator::perlinNoiseRandomVolume(100'000);
+    //    spdlog::info("generated");
+    //    std::ofstream out{"../n-body-scenarios/scenarios/perlin-100000.json"};
+    //    out << s;
+    //    spdlog::info("done");
+
+    //auto scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, 50'166);
+    //std::ofstream out{"../n-body-scenarios/scenarios/broken.json"};
+    //out << scenario;
+
+    auto scenario = Generator::createScenario(Generator::perlinNoiseRandomVolume, 500);
+    AccuracyTrackingRule<Gravity> accuracyTrackingRule{"benchmarks/accuracy-tracking.csv", scenario};
+    HexadecupoleBarnesHutSolver<AccuracyTrackingRule<Gravity>> solver{scenario, accuracyTrackingRule};
+    solver.step();
+
 
     //MeanGrader grader{scenario};
     //RMSGrader grader{scenario};
-    ConstitutionalGrader grader{scenario, Gravity{1.0f}};
+    //ConstitutionalGrader grader{scenario, Gravity{1.0f}};
 
-    //plotExactField(scenario);
-    //plotMomentApproximations(scenario);
-    //plotFieldApproximations(scenario);
+    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(grader);
+    //approximationRatio<QuadrupoleBarnesHutSolver<Gravity>>(grader);
 
+    //realPerformance<QuadrupoleImplicitFMMSolver<Gravity>>(grader);
+    //approximationRatio<QuadrupoleImplicitFMMSolver<Gravity>>(grader);
+
+    //realPerformance<QuadrupoleImplicitMVDRSolver<Gravity>>(grader);
+    //approximationRatio<QuadrupoleImplicitMVDRSolver<Gravity>>(grader);
 
     //realPerformance<BarnesHutSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleBarnesHutSolver<Gravity>>(scenario, grader);
     //realPerformance<HexadecupoleBarnesHutSolver<Gravity>>(scenario, grader);
 
@@ -245,7 +127,6 @@ int main(int argc, char *argv[]) {
     //realPerformance<OctupoleLinearBVHSolver<Gravity>>(scenario, grader);
 
     //realPerformance<FMMSolver<Gravity>>(scenario, grader);
-    //realPerformance<QuadrupoleFMMSolver<Gravity>>(scenario, grader);
     //realPerformance<OctupoleFMMSolver<Gravity>>(scenario, grader);
 
     //realPerformance<ImplicitFMMSolver<Gravity>>(scenario, grader);

@@ -8,18 +8,62 @@
 #include <random>
 
 #include <spdlog/spdlog.h>
+#include <glm/gtc/noise.hpp>
 
 #include <NBody/Simulation/Simulation.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 
 namespace NBody::Generator {
 
-    static Simulation &uniformRandomVolume(Simulation &simulation, std::size_t n) {
-        spdlog::info("Generating a random scenario with {} particles", n);
+    static Simulation &perlinNoiseRandomVolume(Simulation &simulation, std::size_t n) {
+        spdlog::debug("Generating a perlin-noise scenario with {} particles", n);
 
         std::uint32_t seed = 42;
         std::mt19937 generator{seed};
-        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n / 10000)};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f * std::cbrt((float) n)};
+        std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
+                                                                   std::cbrt((float) n) / 10};
+        std::exponential_distribution<float> massDistribution{1.0f};
+        std::uniform_real_distribution<float> colorDistribution{0.3f, 0.9f};
+
+        while (simulation.particleCount() < n) {
+
+            glm::vec3 position{positionDistribution(generator),
+                               positionDistribution(generator),
+                               positionDistribution(generator)};
+
+            auto perlin = glm::perlin(position / 256.0f) + glm::perlin(position);
+            if (perlin > 0.9) {
+
+                auto particle = simulation.newParticle()
+                        .setPosition(position)
+                        .setVelocity({velocityDistribution(generator),
+                                      velocityDistribution(generator),
+                                      velocityDistribution(generator)})
+                        .setMass(massDistribution(generator) * (perlin - 0.5f) * 4.0f);
+
+                particle
+                        .setSphere({std::cbrt(particle.get<Physics::Mass>().mass())})
+                        .setColor({colorDistribution(generator),
+                                   colorDistribution(generator),
+                                   colorDistribution(generator)});
+
+                // Marks the last added particle in red (useful for debugging)
+                if (simulation.particleCount() == 31343)
+                    particle.setColor({1.0, 0.0, 0.0});
+            }
+
+        }
+
+        return simulation;
+    }
+
+    static Simulation &uniformRandomVolume(Simulation &simulation, std::size_t n) {
+        spdlog::debug("Generating a random scenario with {} particles", n);
+
+        std::uint32_t seed = 42;
+        std::mt19937 generator{seed};
+        std::uniform_real_distribution<float> positionDistribution{0.0f, 10.0f/* * std::cbrt((float) n / 10000)*/};
         std::uniform_real_distribution<float> velocityDistribution{-std::cbrt((float) n) / 10,
                                                                    std::cbrt((float) n) / 10};
         std::exponential_distribution<float> massDistribution{1.0f};
@@ -124,19 +168,28 @@ namespace NBody::Generator {
         return scenario;
     }
 
-    static json createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
-                               std::size_t n) {
+    static Simulation fromFile(const std::filesystem::path &path) {
+        Simulation simulation;
+        std::ifstream file{path};
+        if (path.extension().string() == ".json") {
+            nlohmann::json jsonScenario;
+            file >> jsonScenario;
+            from_json(jsonScenario, simulation);
+        } else if (path.extension().string() == ".bin") {
+            from_tipsy(file, simulation);
+            spdlog::debug("loaded {} particles", simulation.particleCount());
+        } else {
+            spdlog::error("Unrecognized file extension");
+            exit(1);
+        }
+        return simulation;
+    }
+
+    static Simulation createScenario(const std::function<Simulation &(Simulation &, std::size_t)> &generator,
+                                     std::size_t n) {
         Simulation simulation;
         generator(simulation, n);
-
-        json scenario;
-        to_json(scenario, simulation);
-
-        std::ofstream referenceFile{"test.json"};
-        referenceFile << std::setw(4) << scenario;
-        referenceFile.close();
-
-        return scenario;
+        return simulation;
     }
 }
 

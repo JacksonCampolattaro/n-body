@@ -79,8 +79,6 @@ add_executable(NBody
         UI/Widgets/View/ParticleIconView.h
         UI/Windows/ParticleEditorWindow.cpp UI/Windows/ParticleEditorWindow.h
         UI/Windows/ParticleListWindow.cpp UI/Windows/ParticleListWindow.h
-        UI/Sidebar/NaiveSolverSettings.cpp UI/Sidebar/NaiveSolverSettings.h
-        UI/Sidebar/BarnesHutSolverSettings.cpp UI/Sidebar/BarnesHutSolverSettings.h
         UI/Widgets/View/TimeView.h
         UI/Widgets/Entry/ParticleTagEntry.h
         UI/Widgets/View/ParticleIDView.h
@@ -93,7 +91,16 @@ add_executable(NBody
         UI/SimulationFileManager.cpp UI/SimulationFileManager.h
         UI/Windows/SimulationFileSaverDialog.cpp UI/Windows/SimulationFileSaverDialog.h
         UI/Windows/SimulationFileLoaderDialog.cpp UI/Windows/SimulationFileLoaderDialog.h
-        UI/Widgets/ListView/StackView.cpp UI/Widgets/ListView/StackView.h UI/Widgets/ListView/DropDownView.cpp UI/Widgets/ListView/DropDownView.h UI/Sidebar/ContinuousRunnerController.cpp UI/Sidebar/ContinuousRunnerController.h UI/Sidebar/OneStepRunnerController.cpp UI/Sidebar/OneStepRunnerController.h UI/Sidebar/NStepsRunnerController.cpp UI/Sidebar/NStepsRunnerController.h UI/Sidebar/LinearBVHSolverSettings.cpp UI/Sidebar/LinearBVHSolverSettings.h UI/Sidebar/MVDRSolverSettings.cpp UI/Sidebar/MVDRSolverSettings.h UI/Sidebar/OctreeDualTraversalSolverSettings.cpp UI/Sidebar/OctreeDualTraversalSolverSettings.h UI/Widgets/View/ParticleAccelerationView.h UI/Widgets/Entry/ParticleMassCheckButton.h UI/Widgets/Entry/ParticleAccelerationCheckButton.h UI/Widgets/Entry/ParticleAccelerationEntry.h UI/Sidebar/FMMSolverSettings.cpp UI/Sidebar/FMMSolverSettings.h)
+        UI/Widgets/ListView/StackView.cpp UI/Widgets/ListView/StackView.h
+        UI/Widgets/ListView/DropDownView.cpp UI/Widgets/ListView/DropDownView.h
+        UI/Sidebar/OneStepRunnerController.cpp UI/Sidebar/OneStepRunnerController.h
+        UI/Sidebar/NStepsRunnerController.cpp UI/Sidebar/NStepsRunnerController.h
+        UI/Sidebar/ContinuousRunnerController.cpp UI/Sidebar/ContinuousRunnerController.h
+        UI/Widgets/View/ParticleAccelerationView.h
+        UI/Widgets/Entry/ParticleMassCheckButton.h
+        UI/Widgets/Entry/ParticleAccelerationCheckButton.h
+        UI/Widgets/Entry/ParticleAccelerationEntry.h
+        UI/Sidebar/SolverSettings.h)
 
 target_link_libraries(NBody PUBLIC
 

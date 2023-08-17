@@ -8,6 +8,7 @@
 #include "Position.h"
 
 #include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
 
 namespace NBody {
 
@@ -51,13 +52,15 @@ namespace NBody {
 
         [[nodiscard]] float diagonalLength() const { return glm::distance((glm::vec3) _min, (glm::vec3) _max); }
 
+        [[nodiscard]] float diagonalLength2() const { return glm::distance2((glm::vec3) _min, (glm::vec3) _max); }
+
         [[nodiscard]] float maxSideLength() const {
             return std::max({dimensions().x, dimensions().y, dimensions().z});
         }
 
         [[nodiscard]] bool contains(const Position &position) const {
             return glm::all(glm::lessThanEqual(min(), position)) &&
-                   glm::all(glm::lessThanEqual(position, max()));
+                   glm::all(glm::lessThan(position, max()));
         }
 
         friend std::ostream &operator<<(std::ostream &out, const BoundingBox &b) {

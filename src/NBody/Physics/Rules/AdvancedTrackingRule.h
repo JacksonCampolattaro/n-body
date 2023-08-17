@@ -8,13 +8,27 @@
 #include <NBody/Physics/Rules/RuleType.h>
 #include <NBody/Physics/Rules/Gravity.h>
 
+#include <NBody/Simulation/Solvers/Trees/Octree.h>
+#include <NBody/Simulation/Solvers/Trees/LinearBVH.h>
+
 namespace NBody::Physics {
+
+    template<typename S>
+    float representativeSize(const OctreeNode<S> &node) {
+        return node.sideLength();
+    }
+
+    template<typename S>
+    float representativeSize(const LinearBVHNode<S> &node) {
+        return node.boundingBox().diagonalLength();
+    }
 
     template<RuleType Rule = Gravity>
     class AdvancedTrackingRule : public RuleBase<AdvancedTrackingRule<Rule>> {
     private:
 
         Rule _underlyingRule;
+        float _sampleRate;
 
         std::ofstream _output;
         std::mutex _mutex;
@@ -22,8 +36,9 @@ namespace NBody::Physics {
     public:
 
         template<typename ...Args>
-        explicit AdvancedTrackingRule(const std::string &path, Args &&... args) :
+        explicit AdvancedTrackingRule(const std::string &path, float sampleRate, Args &&... args) :
                 _output(path),
+                _sampleRate(sampleRate),
                 _underlyingRule(std::forward<Args>(args)...) {
             std::scoped_lock l{_mutex};
 
@@ -33,6 +48,7 @@ namespace NBody::Physics {
                        "Passive Count,"
                        "Active Size,"
                        "Passive Size,"
+                       "Distance,"
                        "Active is Leaf,"
                        "Passive is Leaf"
                        "\n";
@@ -55,15 +71,18 @@ namespace NBody::Physics {
         template<typename ActiveNode>
         [[nodiscard]] Acceleration nodeParticle(const ActiveNode &activeNode,
                                                 const Position &passivePosition) {
-            std::scoped_lock l{_mutex};
-            _output << "Node-Particle,"
-                    << activeNode.contents().size() << ","
-                    << "1,"
-                    << activeNode.boundingBox().maxSideLength() << ","
-                    << "0.0,"
-                    << activeNode.isLeaf() << ","
-                    << ""
-                    << "\n";
+            if ((double)rand() < ((double)_sampleRate * RAND_MAX) && activeNode.contents().size() > 1) {
+                std::scoped_lock l{_mutex};
+                _output << "Node-Particle,"
+                        << activeNode.contents().size() << ","
+                        << "1,"
+                        << representativeSize(activeNode) << ","
+                        << "0.0,"
+                        << glm::distance((glm::vec3)activeNode.summary().centerOfMass(), passivePosition) << ","
+                        << activeNode.isLeaf() << ","
+                        << ""
+                        << "\n";
+            }
             return _underlyingRule.nodeParticle(activeNode.summary().centerOfMass(), activeNode.summary(),
                                                 passivePosition);
         }
@@ -84,15 +103,18 @@ namespace NBody::Physics {
                 const Mass &activeMass,
                 PassiveNode &passiveNode
         ) {
-            std::scoped_lock l{_mutex};
-            _output << "Particle-Node,"
-                    << "1,"
-                    << passiveNode.contents().size() << ","
-                    << "0.0,"
-                    << passiveNode.boundingBox().maxSideLength() << ","
-                    << ","
-                    << passiveNode.isLeaf()
-                    << "\n";
+            if ((double)rand() < ((double)_sampleRate * RAND_MAX)) {
+                std::scoped_lock l{_mutex};
+                _output << "Particle-Node,"
+                        << "1,"
+                        << passiveNode.contents().size() << ","
+                        << "0.0,"
+                        << representativeSize(passiveNode) << ","
+                        << glm::distance((glm::vec3) passiveNode.center(), activePosition) << ","
+                        << ","
+                        << passiveNode.isLeaf()
+                        << "\n";
+            }
             _underlyingRule.particleNode(activePosition, activeMass, passiveNode.center(), passiveNode.summary());
         }
 
@@ -111,15 +133,18 @@ namespace NBody::Physics {
                 const ActiveNode &activeNode,
                 PassiveNode &passiveNode
         ) {
-            std::scoped_lock l{_mutex};
-            _output << "Node-Node,"
-                    << activeNode.contents().size() << ","
-                    << passiveNode.contents().size() << ","
-                    << activeNode.boundingBox().maxSideLength() << ","
-                    << passiveNode.boundingBox().maxSideLength() << ","
-                    << activeNode.isLeaf() << ","
-                    << passiveNode.isLeaf()
-                    << "\n";
+            if ((double)rand() < ((double)_sampleRate * RAND_MAX) && activeNode.contents().size() > 1) {
+                std::scoped_lock l{_mutex};
+                _output << "Node-Node,"
+                        << activeNode.contents().size() << ","
+                        << passiveNode.contents().size() << ","
+                        << activeNode.boundingBox().diagonalLength() << ","
+                        << passiveNode.boundingBox().diagonalLength() << ","
+                        << glm::distance((glm::vec3) passiveNode.center(), activeNode.summary().centerOfMass()) << ","
+                        << activeNode.isLeaf() << ","
+                        << passiveNode.isLeaf()
+                        << "\n";
+            }
             _underlyingRule.nodeNode(activeNode.summary().centerOfMass(), activeNode.summary(),
                                      passiveNode.center(), passiveNode.summary());
         }

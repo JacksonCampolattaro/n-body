@@ -15,10 +15,13 @@
 
 namespace NBody {
 
+    template<typename SummaryType>
+    using ContextType = typename std::invoke_result<decltype(&SummaryType::context), Simulation &>::type;
+
     template<typename T>
     concept IsEntityListSummarizer = requires(T &t,
                                               const std::span<Entity> &entities,
-                                              const typename T::Context &context) {
+                                              const ContextType<T> &context) {
         { t.summarize(entities, context) } -> std::convertible_to<void>;
     };
 
@@ -55,7 +58,7 @@ namespace NBody {
 
     template<SummaryType S>
     decltype(auto) positionsView(Simulation &simulation) {
-        if constexpr(std::is_same_v<typename S::Context, Simulation>)
+        if constexpr (std::is_same_v<typename S::Context, Simulation>)
             return simulation.template view<const Position>();
         else
             return S::context(simulation);
@@ -63,14 +66,14 @@ namespace NBody {
 
     template<SummaryType S>
     static std::vector<Entity> relevantEntities(Simulation &simulation) {
-        const auto &&context = positionsView<S>(simulation);
+        const auto &&context = S::context(simulation);
         return {context.begin(), context.end()};
     }
 
     template<SummaryType S>
     static BoundingBox outerBoundingBox(Simulation &simulation) {
         BoundingBox bbox;
-        for (Entity e: positionsView<S>(simulation)) {
+        for (Entity e: S::context(simulation)) {
             bbox.min() = glm::min((glm::vec3) bbox.min(), simulation.get<const Position>(e));
             bbox.max() = glm::max((glm::vec3) bbox.max(), simulation.get<const Position>(e));
         };

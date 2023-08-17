@@ -9,16 +9,12 @@
 
 namespace NBody {
 
-    class ConstitutionalGrader : public Grader {
+    class ConstitutionalGrader : public NaiveReferenceGrader {
     private:
 
         float _rmsForce = 0.0f;
 
-    public:
-
-        explicit ConstitutionalGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
-                Grader(scenario, rule) {
-
+        void init() {
             // Determine the average force, to be used in scoring
             auto referenceValues = _referenceSimulation.view<const Physics::Acceleration, const Physics::Mass>();
             _rmsForce = std::sqrt(
@@ -29,23 +25,42 @@ namespace NBody {
                                                       referenceValues.get<const Physics::Mass>(e).mass()
                                               );
                                           }
-                    ) / (float) scenario["particles"].size());
+                    ) / (float) _referenceSimulation.particleCount());
+            spdlog::debug("RMS of reference simulation forces = {}", _rmsForce);
         }
 
-        float error(const Simulation &candidateSimulation) const override { return maximumError(candidateSimulation); }
+    public:
+
+        explicit ConstitutionalGrader(const std::filesystem::path &path) :
+                NaiveReferenceGrader(path) { init(); }
+
+        explicit ConstitutionalGrader(json scenario, Physics::Gravity rule = Physics::Gravity{}) :
+                NaiveReferenceGrader(scenario, rule) { init(); }
+
+        float error(const Simulation &candidateSimulation) const override {
+            auto error = maximumError(candidateSimulation);
+            spdlog::trace("Constitutional error: {}", error);
+            return error;
+        }
+
+        bool acceptable(const Simulation &candidateSimulation) const override {
+            return error(candidateSimulation) < 0.5;
+        };
 
         float error(const Simulation &A, Entity a, const Simulation &B, Entity b) const override {
             assert(a == b);
             assert(A.get<Physics::Mass>(a).mass() == B.get<Physics::Mass>(b).mass());
+            assert(A.get<Physics::Position>(a) == B.get<Physics::Position>(b));
 
             auto forceA = A.get<Physics::Acceleration>(a) * A.get<Physics::Mass>(a).mass();
             auto forceB = B.get<Physics::Acceleration>(b) * B.get<Physics::Mass>(b).mass();
             float differenceInForces = glm::distance(forceA, forceB);
 
-            if (glm::any(glm::isinf((glm::vec3)forceB) || glm::isnan((glm::vec3)forceB)))
+            if (glm::any(glm::isinf((glm::vec3) forceB) || glm::isnan((glm::vec3) forceB)))
                 return std::numeric_limits<float>::infinity();
 
-            return 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            auto error = 100.0f * (differenceInForces / std::min(glm::length(forceA), _rmsForce));
+            return error;
         }
 
     };

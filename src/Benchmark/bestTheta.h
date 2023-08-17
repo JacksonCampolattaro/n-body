@@ -8,13 +8,13 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
-#include "ConstitutionalGrader.h"
-#include "RMSGrader.h"
+#include "Benchmark/Graders/ConstitutionalGrader.h"
+#include "Benchmark/Graders/RMSGrader.h"
 
 using namespace NBody;
 
 template<typename CandidateSolver>
-inline float searchTheta(json scenario, const Grader &grader,
+inline float searchTheta(json scenario, const NaiveReferenceGrader &grader,
                          std::pair<float, float> range = {0.1, 1.0}) {
 
     // Binary search is partitioned around this value
@@ -30,7 +30,7 @@ inline float searchTheta(json scenario, const Grader &grader,
     from_json(scenario, candidate);
 
     CandidateSolver candidateSolver{candidate, rule};
-    candidateSolver.theta() = middleValue;
+    candidateSolver.descentCriterion().theta() = middleValue;
     candidateSolver.step();
 
     float error = grader.error(candidate);
@@ -41,6 +41,12 @@ inline float searchTheta(json scenario, const Grader &grader,
         return searchTheta<CandidateSolver>(scenario, grader, {middleValue, range.second});
     else
         return searchTheta<CandidateSolver>(scenario, grader, {range.first, middleValue});
+}
+
+template<typename CandidateSolver>
+inline float searchTheta(const NaiveReferenceGrader &grader,
+                         std::pair<float, float> range = {0.1, 1.0}) {
+    return searchTheta<CandidateSolver>(grader.scenario(), grader, range);
 }
 
 template<typename CandidateSolver>

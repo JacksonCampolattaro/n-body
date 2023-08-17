@@ -17,14 +17,8 @@ namespace NBody::Descent {
     inline void balancedLockstepDualTree(
             const ActiveNode &activeRoot, PassiveNode &passiveNode,
             const DescentCriterion &descentCriterion, Rule &rule,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, const Mass
-            > &activeContext,
-            const entt::basic_view<
-                    entt::entity, entt::exclude_t<>,
-                    const Position, Acceleration
-            > &passiveContext
+            const ActiveView &activeContext,
+            const PassiveView &passiveContext
     ) {
 
 
