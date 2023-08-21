@@ -13,6 +13,7 @@ from matplotlib import rcParams
 from matplotlib.patches import Rectangle
 import matplotlib.ticker as plticker
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.font_manager import get_font_names
 
 # Text-width in inches, to make sure everything fits in the latex document
 text_width = 5
@@ -59,7 +60,12 @@ directional_color_map = mpl.colors.LinearSegmentedColormap.from_list(
     "directional",
     sns.color_palette("husl", 4) + [sns.color_palette("husl", 4)[0]]
 )
-histogram_color_map = sns.cubehelix_palette(start=.5, rot=-.75, as_cmap=True)
+histogram_color_map = sns.color_palette("crest_r", as_cmap=True)
+    #sns.cubehelix_palette(start=.5, rot=-.75, as_cmap=True)
+#fg_color = 'black'
+bg_color = '#212121'
+fg_color = '#adadad'
+output_type = 'png'
 
 
 def polar_to_rgb(r, th):
@@ -84,7 +90,7 @@ def field_key():
     plt.gca().yaxis.set_major_formatter(mpl.ticker.PercentFormatter())
 
     plt.tight_layout()
-    plt.savefig("benchmarks/field_key.pdf")
+    plt.savefig("benchmarks/field_key." + output_type)
     plt.clf()
 
 
@@ -97,7 +103,7 @@ def field_error_key():
                               format=mpl.ticker.PercentFormatter()
                               )
     plt.tight_layout()
-    plt.savefig("benchmarks/error_key.pdf")
+    plt.savefig("benchmarks/error_key." + output_type)
     plt.clf()
 
 
@@ -151,7 +157,7 @@ def plot_field(filename, zoom_box=None):
         ))
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + ".pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "." + output_type)
     plt.clf()
     plt.cla()
     return extent
@@ -192,7 +198,7 @@ def plot_field_error(filename):
     # plt.ylabel('Y', size=9)
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + ".pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "." + output_type)
     plt.clf()
     return extent
 
@@ -242,7 +248,7 @@ def plot_theta_vs_time_and_error(filename, multipole):
         sns.lineplot(ax=ax2, x=x_range, y=[1.0, 1.0], color=color_map["Error"], alpha=0.25)
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-vs-time-and-error.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-time-and-error." + output_type)
     plt.clf()
 
 
@@ -303,7 +309,7 @@ def plot_multipoles_vs_error_vs_time(filename):
     ax.set_yscale('log')
     ax.set_xlim(0.1, 5)
     ax.set_ylim(0.1, 50)
-    #sns.move_legend(ax, "upper right")
+    # sns.move_legend(ax, "upper right")
     y_range = ax.get_ylim()
     sns.lineplot(x=[0.5, 0.5], y=y_range, ax=ax, color="black")
     sns.lineplot(x=[1.0, 1.0], y=y_range, ax=ax, color="black")
@@ -370,7 +376,7 @@ def plot_interaction_distances_vs_sizes(filename, theta=None):
     if theta is not None:
         sns.lineplot(
             x=[min_x, max_x], y=[min_x * theta, max_x * theta], ax=ax,
-            color="black"
+            color=fg_color
         )
 
     plt.tight_layout()
@@ -409,7 +415,7 @@ def plot_dual_interaction_distances_vs_ratios(filename):
     # )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-ratio.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-ratio." + output_type)
     plt.clf()
 
 
@@ -438,11 +444,11 @@ def plot_dual_interaction_distances_vs_sizes(filename, theta=None):
     if theta is not None:
         sns.lineplot(
             x=[min_x, max_x], y=[min_x * theta, max_x * theta], ax=ax,
-            color="black"
+            color=fg_color
         )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-max-size.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-distance-vs-max-size." + output_type)
     plt.clf()
 
 
@@ -469,11 +475,11 @@ def plot_dual_interaction_sizes(filename):
 
     sns.lineplot(
         x=[min_x, max_x], y=[min_x * 2, max_x * 2], ax=ax,
-        color="black", alpha=0.3
+        color=fg_color, alpha=0.3
     )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-sizes.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-sizes." + output_type)
     plt.clf()
 
 
@@ -487,7 +493,7 @@ def plot_tree_sizes(filename):
     )
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-vs-size.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-size." + output_type)
     plt.clf()
 
 
@@ -521,21 +527,21 @@ def plot_times_vs_n(filename, multipole_order=None):
     df = pd.read_csv(filename)
     x_label = df.columns[0]
 
-    if multipole_order is not None:
-        df = df[df['Multipole Order'] == multipole_order]
-
-    df["Solver"] = df["Solver"] + " (" + df["Multipole Order"] + ")"
+    if 'Multipole Order' in df.columns:
+        if multipole_order is not None:
+            df = df[df['Multipole Order'] == multipole_order]
+        df[x_label] = df[x_label] + " (" + df["Multipole Order"] + ")"
 
     plt.figure(figsize=(text_width, 4))
     ax = sns.lineplot(
         data=df, x="N", y="Time", hue=x_label, palette=color_map
     )
     ax.set(ylabel='Time (S / Iteration)')
-    #ax.set_xscale('log')
-    #ax.set_yscale('log')
+    # ax.set_xscale('log')
+    # ax.set_yscale('log')
 
     plt.tight_layout()
-    plt.savefig(os.path.splitext(filename)[0] + "-vs-time.pdf")
+    plt.savefig(os.path.splitext(filename)[0] + "-vs-time." + output_type)
     plt.clf()
 
 
@@ -593,6 +599,7 @@ def main():
     custom_params = {"axes.spines.right": False, "axes.spines.top": False}
     sns.set_theme(style="ticks", rc=custom_params)
 
+    plt.style.use("dark_background")
     plt.rc('text', usetex=True)
     plt.rc('font', family='times', size=11)
     plt.rc('axes', labelsize=11)
@@ -600,7 +607,18 @@ def main():
     plt.rc('ytick', labelsize=8)
     plt.rc('legend', fontsize=9)
 
-    # plot_sweep_n('benchmarks/sweep-n.csv')
+    # Style overrides for use in presentation
+    plt.style.use("dark_background")
+    plt.rcParams['font.sans-serif'] = "Arial"
+    plt.rc('font', family='sans-serif', size=11)
+    plt.rcParams["figure.facecolor"] = bg_color
+    plt.rcParams["axes.facecolor"] = bg_color
+    plt.rcParams["savefig.facecolor"] = bg_color
+    plt.rcParams['savefig.dpi'] = 800
+    plt.rcParams["text.latex.preamble"] = r"\usepackage{cmbright}"
+
+
+# plot_sweep_n('benchmarks/sweep-n.csv')
     # plot_sweep_theta('benchmarks/sweep-theta.csv')
     # plot_sweep_error('benchmarks/sweep-theta.csv')
     # plot_interactions('benchmarks/approximation-tracking.csv')
@@ -618,30 +636,30 @@ def main():
     # plot_field('benchmarks/field/sample-exact.csv')
 
     # print("Plotting multipole moment approximations")
-    # plot_field('benchmarks/sample-monopole-moment.csv')
-    # plot_field_error('benchmarks/sample-monopole-moment-error.csv')
-    # plot_field_error('benchmarks/sample-monopole-moment-extended-error.csv')
-    # plot_field('benchmarks/sample-net-quadrupole-moment.csv')
-    # plot_field('benchmarks/sample-quadrupole-moment.csv')
-    # plot_field_error('benchmarks/sample-quadrupole-moment-error.csv')
-    # plot_field('benchmarks/sample-octupole-moment.csv')
-    # plot_field_error('benchmarks/sample-octupole-moment-error.csv')
-    # plot_field('benchmarks/sample-hexadecupole-moment.csv')
-    # plot_field_error('benchmarks/sample-hexadecupole-moment-error.csv')
+    # plot_field('benchmarks/multipoles/sample-monopole-moment.csv')
+    # plot_field_error('benchmarks/multipoles/sample-monopole-moment-error.csv')
+    # plot_field_error('benchmarks/multipoles/sample-monopole-moment-extended-error.csv')
+    # plot_field('benchmarks/multipoles/sample-net-quadrupole-moment.csv')
+    # plot_field('benchmarks/multipoles/sample-quadrupole-moment.csv')
+    # plot_field_error('benchmarks/multipoles/sample-quadrupole-moment-error.csv')
+    # plot_field('benchmarks/multipoles/sample-octupole-moment.csv')
+    # plot_field_error('benchmarks/multipoles/sample-octupole-moment-error.csv')
+    # plot_field('benchmarks/multipoles/sample-hexadecupole-moment.csv')
+    # plot_field_error('benchmarks/multipoles/sample-hexadecupole-moment-error.csv')
 
     # print("Plotting multipole field approximations")
-    # plot_field('benchmarks/sample-vector-field.csv')
-    # plot_field_error('benchmarks/sample-vector-field-error.csv')
-    # plot_field('benchmarks/sample-net-quadrupole-field.csv')
-    # plot_field('benchmarks/sample-quadrupole-field.csv')
-    # plot_field_error('benchmarks/sample-quadrupole-field-error.csv')
-    # plot_field_error('benchmarks/sample-quadrupole-field-zoom-error.csv')
-    # plot_field('benchmarks/sample-octupole-field.csv')
-    # plot_field_error('benchmarks/sample-octupole-field-error.csv')
-    # plot_field('benchmarks/sample-hexadecupole-field.csv')
-    # plot_field_error('benchmarks/sample-hexadecupole-field-error.csv')
-    # plot_field('benchmarks/sample-triacontadyupole-field.csv')
-    # plot_field_error('benchmarks/sample-triacontadyupole-field-error.csv')
+    # plot_field('benchmarks/multipoles/sample-vector-field.csv')
+    # plot_field_error('benchmarks/multipoles/sample-vector-field-error.csv')
+    # plot_field('benchmarks/multipoles/sample-net-quadrupole-field.csv')
+    # plot_field('benchmarks/multipoles/sample-quadrupole-field.csv')
+    # plot_field_error('benchmarks/multipoles/sample-quadrupole-field-error.csv')
+    # plot_field_error('benchmarks/multipoles/sample-quadrupole-field-zoom-error.csv')
+    # plot_field('benchmarks/multipoles/sample-octupole-field.csv')
+    # plot_field_error('benchmarks/multipoles/sample-octupole-field-error.csv')
+    # plot_field('benchmarks/multipoles/sample-hexadecupole-field.csv')
+    # plot_field_error('benchmarks/multipoles/sample-hexadecupole-field-error.csv')
+    # plot_field('benchmarks/multipoles/sample-triacontadyupole-field.csv')
+    # plot_field_error('benchmarks/multipoles/sample-triacontadyupole-field-error.csv')
 
     # print("Plotting tree fields")
     # plot_field('benchmarks/sample-vector-tree.csv')
@@ -656,50 +674,58 @@ def main():
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv", "mvdr")
     # plot_theta_vs_n("benchmarks/all-solvers-random-data.csv")
     # plot_interaction_counts_vs_n("benchmarks/all-solvers-random-data.csv")
-    # merge_benchmarks("remote-benchmarks/random/all-solvers-constitutional.*.csv",
-    #                  "benchmarks/random/all-solvers-cluster-constitutional.csv")
     # plot_times_vs_n("benchmarks/random/all-solvers-cluster-constitutional.csv", "Octupole")
     # merge_benchmarks("remote-benchmarks/random/all-solvers-rms.*.csv",
     #                  "benchmarks/random/all-solvers-cluster-rms.csv")
+    # plot_times_vs_n("benchmarks/random/all-solvers-cluster-rms.csv", "Octupole")
+    # merge_benchmarks("remote-benchmarks/random/all-solvers-rms.*.csv",
+    #                  "benchmarks/random/all-solvers-cluster-rms.csv")
     # plot_times_vs_n("benchmarks/random/all-solvers-cluster-rms.csv", "Quadrupole")
-    # plot_times_vs_n("benchmarks/agora/all-solvers-constitutional.csv")
+    # plot_times_vs_n("benchmarks/agora/all-solvers-cluster-constitutional.csv", "Octupole")
+    # merge_benchmarks("remote-benchmarks/uniform/all-solvers-rms.*.csv",
+    #                  "benchmarks/uniform/all-solvers-cluster-rms.csv")
+    # plot_times_vs_n("benchmarks/uniform/all-solvers-cluster-rms.csv")
     #
-    # solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-constitutional.csv")
     # solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-rms.csv")
-    plot_times_vs_n("benchmarks/uniform/all-solvers.csv")
+    # solver_median_values_to_latex("benchmarks/agora/all-solvers-cluster-rms.csv")
 
     # print("Plotting tree benchmarks")
     # plot_tree_sizes("benchmarks/tree-construction-agora-data.csv")
     # plot_tree_sizes("benchmarks/tree-construction-random-data.csv")
     # merge_benchmarks("remote-benchmarks/tree-construction-random-data.csv")
     # merge_benchmarks("remote-benchmarks/tree-construction-agora-data.csv")
-    # plot_times_vs_n("remote-benchmarks/tree-construction-agora-data.csv")
+    # merge_benchmarks("remote-benchmarks/archive/tree-construction-agora-data.*.csv",
+    #                  "benchmarks/trees/construction-cluster-agora.csv")
+    # plot_times_vs_n("benchmarks/trees/construction-cluster-agora.csv")
+    # merge_benchmarks("remote-benchmarks/archive/tree-construction-random-data.*.csv",
+    #                  "benchmarks/trees/construction-cluster-random.csv")
+    # plot_times_vs_n("benchmarks/trees/construction-cluster-random.csv")
     # plot_times_vs_n("remote-benchmarks/tree-construction-random-data.csv")
 
     # print("Plotting interaction counts")
     # plot_interaction_counts("benchmarks/interactions/all-solvers-count.csv")
     # plot_interaction_counts_vs_n("benchmarks/random/all-solvers.csv")
 
-    # print("Plotting interaction lists")
-    # plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
-    # plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
-    # plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031 / 2)
-    # plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
-    # plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
-    # plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
-    # plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
-    # plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
+    print("Plotting interaction lists")
+    plot_interaction_distances_vs_sizes("benchmarks/interactions/bh-2.csv", theta=0.44804686)
+    plot_interaction_distances_vs_sizes("benchmarks/interactions/lbvh-2.csv", theta=0.7082031)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/mvdr-2.csv", theta=0.7082031 / 2)
+    plot_dual_interaction_distances_vs_sizes("benchmarks/interactions/fmm-2.csv", theta=0.41289064)
+    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/mvdr-2.csv")
+    plot_dual_interaction_distances_vs_ratios("benchmarks/interactions/fmm-2.csv")
+    plot_dual_interaction_sizes("benchmarks/interactions/mvdr-2.csv")
+    plot_dual_interaction_sizes("benchmarks/interactions/fmm-2.csv")
 
-    print("Plotting theta comparisons")
+    # print("Plotting theta comparisons")
     # plot_theta_vs_time_and_error("benchmarks/theta/bh.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/theta/bh.csv", "Quadrupole")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/bh-mugs.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh-mugs.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm-mugs.csv")
-    plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/bh.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/bh-mugs.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/lbvh-mugs.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/fmm-mugs.csv")
+    # plot_multipoles_vs_error_vs_time("benchmarks/theta/mvdr.csv")
     # plot_theta_vs_time_and_error("benchmarks/fmm-theta.csv", "Quadrupole")
     # plot_error_vs_time("benchmarks/fmm-theta.csv", "Quadrupole")
 
