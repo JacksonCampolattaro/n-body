@@ -79,7 +79,7 @@ def field_key():
     rad = np.geomspace(0.00001, 100, 100)
     azm = np.linspace(2 * np.pi / 100, 2 * np.pi, 100)
     r, th = np.meshgrid(rad, azm)
-    colors = np.vectorize(polar_to_rgb, signature='(),()->(n)')(r / 100, th)
+    colors = np.vectorize(polar_to_rgb, signature='(),()->(n)')(r / 100, (2 * np.pi) - (th + np.pi / 2) % (2 * np.pi))
 
     plt.subplot(projection="polar")
     plt.pcolormesh(th, r, colors, shading='nearest')
@@ -627,7 +627,7 @@ def main():
     # plot_times("benchmarks/linear-bvh-descent-criterion.csv")
 
     # print("Generating keys for field plots")
-    # field_key()
+    field_key()
     # field_error_key()
 
     # print("Plotting exact fields")
