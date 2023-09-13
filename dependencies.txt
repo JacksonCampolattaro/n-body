@@ -1,8 +1,15 @@
+catch
 spdlog-devel
-nlohmann-json
+gtkmm4.0-devel
+libadwaita-devel
 glm-devel
-gtkmm40-devel
-magnum
+json-devel # aka nlohmann-json
+corrade
+magnum # build with -DMAGNUM_WITH_GLXCONTEXT=ON
+tbb-devel # > 2021, may need to build from source
+ffmpeg-free-devel # aka libav*-devel
+boost-devel
+
 doxygen
 python3-pygments
 ffmpeg
