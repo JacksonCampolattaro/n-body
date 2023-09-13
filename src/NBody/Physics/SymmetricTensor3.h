@@ -320,12 +320,6 @@ namespace NBody {
             return (lhs * (1 / rhs));
         }
 
-        // todo: this could be generalized to arbitrary lower-order tensors
-        friend SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3<Order> &lhs,
-                                                        const SymmetricTensor3<Order> &rhs) {
-            return SymmetricTensor3<Order + 1>::outerProduct(lhs, rhs);
-        }
-
         friend SymmetricTensor3<Order + 1> outerProduct(const SymmetricTensor3<Order> &lhs,
                                                         const glm::vec3 &rhs) {
             return SymmetricTensor3<Order + 1>::outerProduct(lhs, rhs);

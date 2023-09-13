@@ -301,17 +301,6 @@ TEST_CASE("Tensor-Vector outer product (3x3 % 3 --> 3x3x3)", "[SymmetricTensor3]
     REQUIRE(product == NBody::SymmetricTensor3<3>{{0, 0, 0, 1, 2, 4, 3, 6, 8, 10}});
 }
 
-TEST_CASE("Tensor-Tensor outer product (3x3 % 3x3 --> 3x3x3x3)", "[SymmetricTensor3]") {
-
-    NBody::SymmetricTensor3<2> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
-    NBody::SymmetricTensor3<2> b{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f}};
-
-    auto product = outerProduct(a, b);
-
-    CAPTURE(product.flat());
-    REQUIRE(product == NBody::SymmetricTensor3<3>{{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}});
-}
-
 TEST_CASE("Tensor contraction to produce a vector (3x3x3 * 3x3 --> 3)", "[SymmetricTensor3]") {
 
     NBody::SymmetricTensor3<3> a{{0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f}};
