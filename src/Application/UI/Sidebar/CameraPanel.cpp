@@ -54,7 +54,10 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
 
     // Set the chosen background color based on the selected style
     if (adw_style_manager_get_dark(adw_style_manager_get_default()))
-        _backgroundColorEntry.set_rgba({0.12, 0.12, 0.1, 1.0});
+        _backgroundColorEntry.set_rgba(
+                Gdk::RGBA{"#212121"}
+                //{0.12, 0.12, 0.1, 1.0}
+                );
     else _backgroundColorEntry.set_rgba({0.9, 0.9, 0.92, 1.0});
     auto color = _backgroundColorEntry.get_rgba();
     camera.setBackgroundColor({color.get_red(), color.get_green(), color.get_blue(), color.get_alpha()});

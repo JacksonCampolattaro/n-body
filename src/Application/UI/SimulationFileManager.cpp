@@ -70,18 +70,12 @@ void NBody::SimulationFileManager::openPath(const Glib::RefPtr<Gio::File> &file)
 void NBody::SimulationFileManager::close() {
 
     // Notify the UI that _all_ entities have been removed
+    auto entities = _simulation.validEntities();
     _simulation.signal_particles_removed(_simulation.validEntities());
 
     // Then remove all valid entities
-    _simulation.clear<
-            Physics::Position,
-            Physics::Velocity,
-            Physics::Mass,
-            Physics::Acceleration,
-            NBody::Graphics::Color,
-            NBody::Graphics::Sphere,
-            sigc::signal<void()>
-    >();
+    _simulation.destroy(entities.begin(), entities.end());
+    assert(_simulation.validEntities().empty());
 
     _file.reset();
     _simulation.signal_changed.emit();

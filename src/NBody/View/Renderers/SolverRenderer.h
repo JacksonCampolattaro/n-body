@@ -23,6 +23,8 @@
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
 #include <NBody/Simulation/Solvers/DualTreeSolver.h>
 #include <NBody/Simulation/Solvers/DualTraversalSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitMVDRSolver.h>
 
 #include "../Renderer.h"
 
@@ -59,18 +61,43 @@ namespace NBody {
             if (!_enabled) return;
 
             const auto &solver = _solver.get();
+
             if (typeid(solver) == typeid(NBody::BarnesHutSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
                      dynamic_cast<const NBody::BarnesHutSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::QuadrupoleBarnesHutSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::QuadrupoleBarnesHutSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctupoleBarnesHutSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::OctupoleBarnesHutSolver<Gravity> &>(solver));
+
             else if (typeid(solver) == typeid(NBody::LinearBVHSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
                      dynamic_cast<const NBody::LinearBVHSolver<Gravity> &>(solver));
-            else if (typeid(solver) == typeid(NBody::MVDRSolver<Gravity>))
+            else if (typeid(solver) == typeid(NBody::QuadrupoleLinearBVHSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::MVDRSolver<Gravity> &>(solver));
-            else if (typeid(solver) == typeid(NBody::OctreeDualTraversalSolver<Gravity>))
+                     dynamic_cast<const NBody::QuadrupoleLinearBVHSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctupoleLinearBVHSolver<Gravity>))
                 draw(transformationMatrix, projectionMatrix,
-                     dynamic_cast<const NBody::OctreeDualTraversalSolver<Gravity> &>(solver));
+                     dynamic_cast<const NBody::OctupoleLinearBVHSolver<Gravity> &>(solver));
+
+            else if (typeid(solver) == typeid(NBody::QuadrupoleImplicitFMMSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::QuadrupoleImplicitFMMSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctupoleImplicitFMMSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::OctupoleImplicitFMMSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::HexadecupoleImplicitFMMSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::HexadecupoleImplicitFMMSolver<Gravity> &>(solver));
+
+            else if (typeid(solver) == typeid(NBody::QuadrupoleImplicitMVDRSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::QuadrupoleImplicitMVDRSolver<Gravity> &>(solver));
+            else if (typeid(solver) == typeid(NBody::OctupoleImplicitMVDRSolver<Gravity>))
+                draw(transformationMatrix, projectionMatrix,
+                     dynamic_cast<const NBody::OctupoleImplicitMVDRSolver<Gravity> &>(solver));
         }
 
         sigc::signal<void()> &signal_changed() override { return _signal_changed; };
@@ -85,32 +112,26 @@ namespace NBody {
     private:
         // todo: these should all be generic, with support for any ActiveTree, DualTree, etc.
 
+        template<typename Tree, typename DescentCriterion>
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const BarnesHutSolver<Gravity> &solver) {
-            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
-                 0xFFFFFFAA_rgbaf);
+                  const ActiveTreeSolver<Tree, DescentCriterion, Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0xFFFFFFAA_rgbaf);
         }
 
+        template<typename Tree, typename DescentCriterion>
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const LinearBVHSolver<Gravity> &solver) {
-            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
-                 0xFFFFFFAA_rgbaf);
+                  const ImplicitDualTraversalSolver<Tree, DescentCriterion, Gravity> &solver) {
+            draw(transformationMatrix, projectionMatrix, solver.tree().root(), 0xFFFFFFAA_rgbaf);
         }
 
+        template<typename ActiveTree, typename PassiveTree, typename DescentCriterion>
         void draw(const Matrix4 &transformationMatrix,
                   const Matrix4 &projectionMatrix,
-                  const MVDRSolver<Gravity> &solver) {
+                  const ImplicitDualTreeSolver<ActiveTree, PassiveTree, DescentCriterion, Gravity> &solver) {
             draw(transformationMatrix, projectionMatrix, solver.activeTree().root(), 0xFF000055_rgbaf);
             draw(transformationMatrix, projectionMatrix, solver.passiveTree().root(), 0x0000FF55_rgbaf);
-        }
-
-        void draw(const Matrix4 &transformationMatrix,
-                  const Matrix4 &projectionMatrix,
-                  const OctreeDualTraversalSolver<Gravity> &solver) {
-            draw(transformationMatrix, projectionMatrix, solver.tree().root(),
-                 0xFFFFFFAA_rgbaf);
         }
 
         template<typename TreeNode>

@@ -8,9 +8,8 @@
 #include <NBody/Simulation/Solvers/NaiveSolver.h>
 #include <NBody/Simulation/Solvers/BarnesHutSolver.h>
 #include <NBody/Simulation/Solvers/LinearBVHSolver.h>
-#include <NBody/Simulation/Solvers/MVDRSolver.h>
 #include <NBody/Simulation/Solvers/OctreeDualTraversalSolver.h>
-#include <NBody/Simulation/Solvers/FMMSolver.h>
+#include <NBody/Simulation/Solvers/ImplicitMVDRSolver.h>
 #include <NBody/Simulation/Solvers/ImplicitFMMSolver.h>
 
 #include <gtkmm/singleselection.h>
@@ -49,19 +48,16 @@ namespace NBody {
                     new NBody::QuadrupoleLinearBVHSolver<Gravity>(this->_simulation, this->_rule))
             );
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::MVDRSolver<Gravity>(this->_simulation, this->_rule)
+                    new NBody::QuadrupoleImplicitMVDRSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::QuadrupoleMVDRSolver<Gravity>(this->_simulation, this->_rule)
-            ));
-            _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::OctreeDualTraversalSolver<Gravity>(this->_simulation, this->_rule))
-            );
-            _solverList->append(Glib::make_refptr_for_instance(
-                    new NBody::FMMSolver<Gravity>(this->_simulation, this->_rule)
+                    new NBody::OctupoleImplicitMVDRSolver<Gravity>(this->_simulation, this->_rule)
             ));
             _solverList->append(Glib::make_refptr_for_instance(
                     new NBody::QuadrupoleImplicitFMMSolver<Gravity>(this->_simulation, this->_rule)
+            ));
+            _solverList->append(Glib::make_refptr_for_instance(
+                    new NBody::OctupoleImplicitFMMSolver<Gravity>(this->_simulation, this->_rule)
             ));
 
             // One solver must always be selected

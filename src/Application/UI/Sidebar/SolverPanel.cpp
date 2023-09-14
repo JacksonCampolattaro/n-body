@@ -16,6 +16,8 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
         _maxThreadCountEntry(getWidget<Gtk::SpinButton>("thread-count-int-entry")),
         _timeStepEntry(getWidget<PositiveFloatEntry>("time-step-float-entry")) {
 
+    _timeStepEntry.set_digits(4);
+    _timeStepEntry.set_increments(0.0001, 0.001);
     _timeStepEntry.setValue(NBody::Solver<Gravity>::timeStep());
     _timeStepEntry.signal_changed.connect([&](float t) {
         NBody::Solver<Gravity>::timeStep() = t;
@@ -44,18 +46,24 @@ UI::SolverPanel::SolverPanel(Gtk::Box::BaseObjectType *cobject,
                     return new SolverSettings((BarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "barnes-hut-4p")
                     return new SolverSettings((QuadrupoleBarnesHutSolver<Gravity> &) *solver);
+                if (solver->id() == "barnes-hut-8p")
+                    return new SolverSettings((OctupoleBarnesHutSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh")
-                    return new SolverSettings((NBody::LinearBVHSolver<Gravity> &) *solver);
+                    return new SolverSettings((LinearBVHSolver<Gravity> &) *solver);
                 if (solver->id() == "linear-bvh-4p")
-                    return new SolverSettings((NBody::QuadrupoleLinearBVHSolver<Gravity> &) *solver);
-                if (solver->id() == "mvdr")
-                    return new SolverSettings((NBody::MVDRSolver<Gravity> &) *solver);
-                if (solver->id() == "mvdr-4p")
-                    return new SolverSettings((NBody::QuadrupoleMVDRSolver<Gravity> &) *solver);
-                if (solver->id() == "fmm-4p")
-                    return new SolverSettings((QuadrupoleFMMSolver<Gravity> &) *solver);
+                    return new SolverSettings((QuadrupoleLinearBVHSolver<Gravity> &) *solver);
+                if (solver->id() == "linear-bvh-8p")
+                    return new SolverSettings((OctupoleLinearBVHSolver<Gravity> &) *solver);
+                if (solver->id() == "implicit-mvdr")
+                    return new SolverSettings((ImplicitMVDRSolver<Gravity> &) *solver);
+                if (solver->id() == "implicit-mvdr-4p")
+                    return new SolverSettings((QuadrupoleImplicitMVDRSolver<Gravity> &) *solver);
+                if (solver->id() == "implicit-mvdr-8p")
+                    return new SolverSettings((OctupoleImplicitMVDRSolver<Gravity> &) *solver);
                 if (solver->id() == "implicit-fmm-4p")
                     return new SolverSettings((QuadrupoleImplicitFMMSolver<Gravity> &) *solver);
+                if (solver->id() == "implicit-fmm-8p")
+                    return new SolverSettings((OctupoleImplicitFMMSolver<Gravity> &) *solver);
                 return new Gtk::Label{"Unrecognized Solver"};
             }
     ));
