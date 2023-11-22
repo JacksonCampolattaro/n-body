@@ -39,6 +39,11 @@ namespace NBody {
 
         const float &theta() const { return _descentCriterion.theta(); }
 
+        Acceleration sampleAcceleration(const Position &position) override {
+            // todo
+            return {};
+        }
+
         void updateAccelerations() override {
 
             {

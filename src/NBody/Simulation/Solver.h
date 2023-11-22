@@ -96,7 +96,7 @@ namespace NBody {
 
         std::size_t &maxThreadCount() { return _maxThreadCount; }
 
-        const std::size_t &maxThreadCount() const { return _maxThreadCount; }
+        [[maybe_unused]] const std::size_t &maxThreadCount() const { return _maxThreadCount; }
 
         static float &timeStep() { return Solver::_dt; }
 
@@ -111,6 +111,8 @@ namespace NBody {
             // Update positions, based on velocity
             updatePositions();
         }
+
+        virtual Acceleration sampleAcceleration(const Position &) = 0;
 
         virtual void updateAccelerations() = 0;
 

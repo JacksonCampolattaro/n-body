@@ -83,6 +83,18 @@
                         </child>
                         <child>
                             <object class="AdwActionRow">
+                                <property name="title">Field Overlay</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="field-overlay-switch">
+                                        <property name="hexpand">0</property>
+                                        <property name="vexpand">0</property>
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
                                 <property name="title">Debug Overlay</property>
                                 <child type="suffix">
                                     <object class="GtkSwitch" id="debug-overlay-switch">

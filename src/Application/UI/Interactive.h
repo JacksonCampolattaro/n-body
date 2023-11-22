@@ -30,6 +30,7 @@ namespace UI {
 
         NBody::MultiRenderer _simulationRenderer;
         NBody::SolverRenderer<Gravity> _solverRenderer;
+        NBody::FieldRenderer<Gravity> _fieldRenderer;
 
         NBody::Recorder _recorder;
 

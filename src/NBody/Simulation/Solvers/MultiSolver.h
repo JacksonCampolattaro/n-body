@@ -68,6 +68,10 @@ namespace NBody {
 
         std::string name() override { return get().name(); };
 
+        Acceleration sampleAcceleration(const Position &position) override {
+            return get().sampleAcceleration(position);
+        }
+
         void updateAccelerations() override { get().updateAccelerations(); };
 
         void select(guint index) {

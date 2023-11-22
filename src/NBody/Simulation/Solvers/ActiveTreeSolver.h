@@ -30,6 +30,19 @@ namespace NBody {
 
         const DescentCriterion &descentCriterion() const { return _descentCriterion; }
 
+        Acceleration sampleAcceleration(const Position &position) override {
+
+            // It's okay if the tree is a little bit out of date, as long as it's been built
+            if (_tree.root().isLeaf())
+                _tree.refine();
+
+            return Descent::activeTree(
+                    _tree.root(), position,
+                    _descentCriterion, this->_rule,
+                    this->simulation().template view<const Position, const Mass>()
+            );
+        }
+
         void updateAccelerations() override {
 
             {
@@ -49,14 +62,6 @@ namespace NBody {
                 // Use the octree to estimate forces on each passive particle
                 this->_statusDispatcher.emit({"Computing Accelerations"});
                 auto view = this->_simulation.template view<const Position, Acceleration>();
-
-//                view.each([&](const Position &targetPosition, Acceleration &acceleration) {
-//                    acceleration = Descent::queueActiveTree(
-//                            _tree.root(), targetPosition,
-//                            _descentCriterion, this->_rule,
-//                            this->simulation().template view<const Position, const Mass>()
-//                    );
-//                });
 
                 tbb::parallel_for_each(view, [&](Entity e) {
                     const auto &targetPosition = view.template get<const Position>(e);

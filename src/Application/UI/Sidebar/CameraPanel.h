@@ -19,6 +19,7 @@
 #include <NBody/View/Renderers/VelocityRenderer.h>
 
 #include <NBody/View/Renderers/SolverRenderer.h>
+#include <NBody/View/Renderers/FieldRenderer.h>
 
 #include "Application/UI/Widgets/BuilderWidget.h"
 #include "Application/UI/Widgets/Entry/VectorEntry.h"
@@ -38,6 +39,7 @@ namespace UI {
         FloatEntry &_zoomEntry;
         Gtk::ColorButton &_backgroundColorEntry;
         DropDownView &_rendererDropdown;
+        Gtk::Switch &_fieldOverlaySwitch;
         Gtk::Switch &_debugOverlaySwitch;
 
         VideoRecorder &_videoRecorder;
@@ -49,6 +51,7 @@ namespace UI {
                     NBody::ArcBallControllableCamera &camera,
                     NBody::MultiRenderer &renderer,
                     NBody::SolverRenderer<Gravity> &solverRenderer,
+                    NBody::FieldRenderer<Gravity> &fieldRenderer,
                     NBody::Recorder &recorder);
 
     };

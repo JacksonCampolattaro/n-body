@@ -39,6 +39,20 @@ namespace NBody {
 
         DualTree &tree() { return _tree; }
 
+        Acceleration sampleAcceleration(const Position &position) override {
+            // todo: actually use the dual-tree algorithm!
+
+            // It's okay if the tree is a little bit out of date, as long as it's been built
+            if (_tree.root().isLeaf())
+                _tree.refine();
+
+            return Descent::activeTree(
+                    _tree.root(), position,
+                    _descentCriterion, this->_rule,
+                    this->_simulation.template view<const Position, const Mass>()
+            );
+        }
+
         void updateAccelerations() override {
 
             {

@@ -12,6 +12,7 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
                              NBody::ArcBallControllableCamera &camera,
                              NBody::MultiRenderer &renderer,
                              NBody::SolverRenderer<Gravity> &solverRenderer,
+                             NBody::FieldRenderer<Gravity> &fieldRenderer,
                              NBody::Recorder &recorder) :
         BuilderWidget<Gtk::Box>(cobject, builder, "/ui/camera_panel.xml"),
         _positionEntry(getWidget<CompactPositionEntry>("camera-position-entry")),
@@ -19,12 +20,18 @@ UI::CameraPanel::CameraPanel(Gtk::Box::BaseObjectType *cobject,
         _zoomEntry(getWidget<FloatEntry>("camera-zoom-entry")),
         _backgroundColorEntry(getWidget<Gtk::ColorButton>("background-color-entry")),
         _rendererDropdown(getWidget<DropDownView>("renderer-dropdown")),
+        _fieldOverlaySwitch(getWidget<Gtk::Switch>("field-overlay-switch")),
         _debugOverlaySwitch(getWidget<Gtk::Switch>("debug-overlay-switch")),
         _videoRecorder(getWidget<VideoRecorder>("video-recorder", recorder)) {
 
     _debugOverlaySwitch.set_active(solverRenderer.enabled());
     _debugOverlaySwitch.property_active().signal_changed().connect([&]() {
         solverRenderer.setEnabled(_debugOverlaySwitch.get_active());
+    });
+
+    _fieldOverlaySwitch.set_active(fieldRenderer.enabled());
+    _fieldOverlaySwitch.property_active().signal_changed().connect([&]() {
+        fieldRenderer.setEnabled(_fieldOverlaySwitch.get_active());
     });
 
     camera.signal_changed().connect([&]() {

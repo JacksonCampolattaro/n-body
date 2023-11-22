@@ -48,6 +48,20 @@ namespace NBody {
 
         PassiveTree &passiveTree() { return _passiveTree; }
 
+        Acceleration sampleAcceleration(const Position &position) override {
+            // todo: actually use the dual-tree algorithm!
+
+            // It's okay if the tree is a little bit out of date, as long as it's been built
+            if (_activeTree.root().isLeaf())
+                _activeTree.refine();
+
+            return Descent::activeTree(
+                    _activeTree.root(), position,
+                    _descentCriterion, this->_rule,
+                    this->_simulation.template view<const Position, const Mass>()
+            );
+        }
+
         void updateAccelerations() override {
 
             tbb::task_group treeBuildingTaskGroup;

@@ -13,6 +13,7 @@ namespace NBody {
     template<typename T>
     concept NodeType = std::is_base_of_v<NodeBase<T, typename T::Summary>, T> &&
                        requires(T &t, ContextType<typename T::Summary> &context) {
+                           t.isLeaf();
                            t.children();
                            t.boundingBox();
                            t.split(context);

@@ -19,6 +19,15 @@ namespace NBody {
 
         std::string name() override { return "Naive"; }
 
+        Acceleration sampleAcceleration(const Position &position) override {
+            Acceleration acceleration;
+            auto actorsView = this->_simulation.template view<const Position, const Mass>();
+            actorsView.each([&](const Position &activePosition, const Mass &activeMass) {
+                acceleration += (glm::vec3) this->_rule(activePosition, activeMass, position);
+            });
+            return acceleration;
+        }
+
         void updateAccelerations() override {
 
             {
@@ -27,7 +36,6 @@ namespace NBody {
                 view.each([](Acceleration &acceleration) { acceleration = {0.0f, 0.0f, 0.0f}; });
             }
 
-            // Compute accelerations
             {
                 std::atomic<std::size_t> completedParticles = 0;
                 this->_statusDispatcher.emit({"Computing accelerations"});
